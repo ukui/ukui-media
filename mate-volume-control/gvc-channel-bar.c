@@ -27,7 +27,7 @@
 #include <gtk/gtk.h>
 
 #include <canberra-gtk.h>
-#include <libmatemixer/matemixer.h>
+#include <libukuimixer/ukuimixer.h>
 
 #include "gvc-channel-bar.h"
 
@@ -55,8 +55,8 @@ struct _GvcChannelBarPrivate
         GtkSizeGroup               *size_group;
         gboolean                    symmetric;
         gboolean                    click_lock;
-        MateMixerStreamControl     *control;
-        MateMixerStreamControlFlags control_flags;
+        UkuiMixerStreamControl     *control;
+        UkuiMixerStreamControlFlags control_flags;
 };
 
 enum {
@@ -214,11 +214,11 @@ on_adjustment_value_changed (GtkAdjustment *adjustment,
         value = gtk_adjustment_get_value (bar->priv->adjustment);
         lower = gtk_adjustment_get_lower (bar->priv->adjustment);
 
-        if (bar->priv->control_flags & MATE_MIXER_STREAM_CONTROL_MUTE_WRITABLE)
-                mate_mixer_stream_control_set_mute (bar->priv->control, (value <= lower));
+        if (bar->priv->control_flags & UKUI_MIXER_STREAM_CONTROL_MUTE_WRITABLE)
+                ukui_mixer_stream_control_set_mute (bar->priv->control, (value <= lower));
 
-        if (bar->priv->control_flags & MATE_MIXER_STREAM_CONTROL_VOLUME_WRITABLE)
-                mate_mixer_stream_control_set_volume (bar->priv->control, (guint) value);
+        if (bar->priv->control_flags & UKUI_MIXER_STREAM_CONTROL_VOLUME_WRITABLE)
+                ukui_mixer_stream_control_set_volume (bar->priv->control, (guint) value);
 }
 
 static void
@@ -228,7 +228,7 @@ on_mute_button_toggled (GtkToggleButton *button, GvcChannelBar *bar)
 
         mute = gtk_toggle_button_get_active (button);
 
-        mate_mixer_stream_control_set_mute (bar->priv->control, mute);
+        ukui_mixer_stream_control_set_mute (bar->priv->control, mute);
 }
 
 static void
@@ -302,8 +302,8 @@ update_marks (GvcChannelBar *bar)
 
         /* Base volume represents unamplified volume, normal volume is the 100%
          * volume, in many cases they are the same as unamplified volume is unknown */
-        base   = mate_mixer_stream_control_get_base_volume (bar->priv->control);
-        normal = mate_mixer_stream_control_get_normal_volume (bar->priv->control);
+        base   = ukui_mixer_stream_control_get_base_volume (bar->priv->control);
+        normal = ukui_mixer_stream_control_get_normal_volume (bar->priv->control);
 
         if (normal <= gtk_adjustment_get_lower (bar->priv->adjustment))
                 return;
@@ -371,13 +371,13 @@ update_adjustment_value (GvcChannelBar *bar)
          * volume is unavailable */
         if (bar->priv->control == NULL)
                 set_lower = TRUE;
-        else if (bar->priv->control_flags & MATE_MIXER_STREAM_CONTROL_MUTE_READABLE)
-                set_lower = mate_mixer_stream_control_get_mute (bar->priv->control);
+        else if (bar->priv->control_flags & UKUI_MIXER_STREAM_CONTROL_MUTE_READABLE)
+                set_lower = ukui_mixer_stream_control_get_mute (bar->priv->control);
 
         if (set_lower == TRUE)
                 value = gtk_adjustment_get_lower (bar->priv->adjustment);
         else
-                value = mate_mixer_stream_control_get_volume (bar->priv->control);
+                value = ukui_mixer_stream_control_get_volume (bar->priv->control);
 
         gdouble maximum = gtk_adjustment_get_upper (bar->priv->adjustment);
         gdouble minimum = gtk_adjustment_get_lower (bar->priv->adjustment);
@@ -404,11 +404,11 @@ update_adjustment_limits (GvcChannelBar *bar)
         gdouble maximum = 0.0;
 
         if (bar->priv->control != NULL) {
-                minimum = mate_mixer_stream_control_get_min_volume (bar->priv->control);
+                minimum = ukui_mixer_stream_control_get_min_volume (bar->priv->control);
                 if (bar->priv->extended)
-                        maximum = mate_mixer_stream_control_get_max_volume (bar->priv->control);
+                        maximum = ukui_mixer_stream_control_get_max_volume (bar->priv->control);
                 else
-                        maximum = mate_mixer_stream_control_get_normal_volume (bar->priv->control);
+                        maximum = ukui_mixer_stream_control_get_normal_volume (bar->priv->control);
         }
 
         gtk_adjustment_configure (bar->priv->adjustment,
@@ -427,11 +427,11 @@ update_mute_button (GvcChannelBar *bar)
                 gboolean enable = FALSE;
 
                 if (bar->priv->control != NULL &&
-                    bar->priv->control_flags & MATE_MIXER_STREAM_CONTROL_MUTE_READABLE)
+                    bar->priv->control_flags & UKUI_MIXER_STREAM_CONTROL_MUTE_READABLE)
                         enable = TRUE;
 
                 if (enable == TRUE) {
-                        gboolean mute = mate_mixer_stream_control_get_mute (bar->priv->control);
+                        gboolean mute = ukui_mixer_stream_control_get_mute (bar->priv->control);
 
                         gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (bar->priv->mute_button),
                                                       mute);
@@ -454,12 +454,12 @@ on_scale_button_press_event (GtkWidget      *widget,
         /* Muting the stream when volume is non-zero moves the slider to zero,
          * but the volume remains the same. In this case delay unmuting and
          * changing volume until user releases the mouse button. */
-        if (bar->priv->control_flags & MATE_MIXER_STREAM_CONTROL_MUTE_READABLE &&
-            bar->priv->control_flags & MATE_MIXER_STREAM_CONTROL_VOLUME_READABLE) {
-                if (mate_mixer_stream_control_get_mute (bar->priv->control) == TRUE) {
+        if (bar->priv->control_flags & UKUI_MIXER_STREAM_CONTROL_MUTE_READABLE &&
+            bar->priv->control_flags & UKUI_MIXER_STREAM_CONTROL_VOLUME_READABLE) {
+                if (ukui_mixer_stream_control_get_mute (bar->priv->control) == TRUE) {
                         guint minimum = (guint) gtk_adjustment_get_lower (bar->priv->adjustment);
 
-                        if (mate_mixer_stream_control_get_volume (bar->priv->control) > minimum)
+                        if (ukui_mixer_stream_control_get_volume (bar->priv->control) > minimum)
                                 bar->priv->click_lock = TRUE;
                 }
         }
@@ -483,7 +483,7 @@ on_scale_button_release_event (GtkWidget      *widget,
         ca_gtk_play_for_widget (GTK_WIDGET (bar), 0,
                                 CA_PROP_EVENT_ID, "audio-volume-change",
                                 CA_PROP_EVENT_DESCRIPTION, "Volume change",
-                                CA_PROP_APPLICATION_ID, "org.mate.VolumeControl",
+                                CA_PROP_APPLICATION_ID, "org.ukui.VolumeControl",
                                 CA_PROP_APPLICATION_NAME, _("Volume Control"),
                                 CA_PROP_APPLICATION_VERSION, VERSION,
                                 CA_PROP_APPLICATION_ICON_NAME, "multimedia-volume-control",
@@ -515,7 +515,7 @@ on_scale_scroll_event (GtkWidget      *widget,
 }
 
 static void
-on_control_volume_notify (MateMixerStreamControl *control,
+on_control_volume_notify (UkuiMixerStreamControl *control,
                           GParamSpec             *pspec,
                           GvcChannelBar          *bar)
 {
@@ -523,12 +523,12 @@ on_control_volume_notify (MateMixerStreamControl *control,
 }
 
 static void
-on_control_mute_notify (MateMixerStreamControl *control,
+on_control_mute_notify (UkuiMixerStreamControl *control,
                         GParamSpec             *pspec,
                         GvcChannelBar          *bar)
 {
         if (bar->priv->show_mute == TRUE) {
-                gboolean mute = mate_mixer_stream_control_get_mute (control);
+                gboolean mute = ukui_mixer_stream_control_get_mute (control);
 
                 g_signal_handlers_block_by_func (G_OBJECT (bar->priv->mute_button),
                                                  on_mute_button_toggled,
@@ -543,7 +543,7 @@ on_control_mute_notify (MateMixerStreamControl *control,
         update_adjustment_value (bar);
 }
 
-MateMixerStreamControl *
+UkuiMixerStreamControl *
 gvc_channel_bar_get_control (GvcChannelBar *bar)
 {
         g_return_val_if_fail (GVC_IS_CHANNEL_BAR (bar), NULL);
@@ -552,7 +552,7 @@ gvc_channel_bar_get_control (GvcChannelBar *bar)
 }
 
 void
-gvc_channel_bar_set_control (GvcChannelBar *bar, MateMixerStreamControl *control)
+gvc_channel_bar_set_control (GvcChannelBar *bar, UkuiMixerStreamControl *control)
 {
         g_return_if_fail (GVC_IS_CHANNEL_BAR (bar));
 
@@ -575,16 +575,16 @@ gvc_channel_bar_set_control (GvcChannelBar *bar, MateMixerStreamControl *control
         bar->priv->control = control;
 
         if (control != NULL)
-                bar->priv->control_flags = mate_mixer_stream_control_get_flags (control);
+                bar->priv->control_flags = ukui_mixer_stream_control_get_flags (control);
         else
-                bar->priv->control_flags = MATE_MIXER_STREAM_CONTROL_NO_FLAGS;
+                bar->priv->control_flags = UKUI_MIXER_STREAM_CONTROL_NO_FLAGS;
 
-        if (bar->priv->control_flags & MATE_MIXER_STREAM_CONTROL_VOLUME_READABLE)
+        if (bar->priv->control_flags & UKUI_MIXER_STREAM_CONTROL_VOLUME_READABLE)
                 g_signal_connect (G_OBJECT (control),
                                   "notify::volume",
                                   G_CALLBACK (on_control_volume_notify),
                                   bar);
-        if (bar->priv->control_flags & MATE_MIXER_STREAM_CONTROL_MUTE_READABLE)
+        if (bar->priv->control_flags & UKUI_MIXER_STREAM_CONTROL_MUTE_READABLE)
                 g_signal_connect (G_OBJECT (control),
                                   "notify::mute",
                                   G_CALLBACK (on_control_mute_notify),
@@ -984,8 +984,8 @@ gvc_channel_bar_class_init (GvcChannelBarClass *klass)
         properties[PROP_CONTROL] =
                 g_param_spec_object ("control",
                                      "Control",
-                                     "MateMixer stream control",
-                                     MATE_MIXER_TYPE_STREAM_CONTROL,
+                                     "UkuiMixer stream control",
+                                     UKUI_MIXER_TYPE_STREAM_CONTROL,
                                      G_PARAM_READWRITE |
                                      G_PARAM_CONSTRUCT |
                                      G_PARAM_STATIC_STRINGS);
@@ -1136,7 +1136,7 @@ gvc_channel_bar_init (GvcChannelBar *bar)
 }
 
 GtkWidget *
-gvc_channel_bar_new (MateMixerStreamControl *control)
+gvc_channel_bar_new (UkuiMixerStreamControl *control)
 {
         return g_object_new (GVC_TYPE_CHANNEL_BAR,
                              "control", control,

@@ -26,7 +26,7 @@
 #include <glib-object.h>
 #include <gtk/gtk.h>
 
-#include <libmatemixer/matemixer.h>
+#include <libukuimixer/ukuimixer.h>
 
 G_BEGIN_DECLS
 
@@ -54,9 +54,9 @@ struct _GvcSpeakerTestClass
 
 GType               gvc_speaker_test_get_type            (void) G_GNUC_CONST;
 
-GtkWidget *         gvc_speaker_test_new                 (MateMixerStream *stream);
+GtkWidget *         gvc_speaker_test_new                 (UkuiMixerStream *stream);
 
-MateMixerStream *   gvc_speaker_test_get_stream          (GvcSpeakerTest  *test);
+UkuiMixerStream *   gvc_speaker_test_get_stream          (GvcSpeakerTest  *test);
 
 G_END_DECLS
 

@@ -26,7 +26,7 @@
 #include <glib-object.h>
 #include <gtk/gtk.h>
 
-#include <libmatemixer/matemixer.h>
+#include <libukuimixer/ukuimixer.h>
 
 G_BEGIN_DECLS
 
@@ -62,7 +62,7 @@ struct _GvcBalanceBarClass
 
 GType               gvc_balance_bar_get_type            (void) G_GNUC_CONST;
 
-GtkWidget *         gvc_balance_bar_new                 (MateMixerStreamControl *control,
+GtkWidget *         gvc_balance_bar_new                 (UkuiMixerStreamControl *control,
                                                          GvcBalanceType   btype);
 
 void                gvc_balance_bar_set_size_group      (GvcBalanceBar   *bar,

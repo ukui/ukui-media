@@ -27,7 +27,7 @@
 
 G_BEGIN_DECLS
 
-#define GVC_APPLET_DBUS_NAME    "org.mate.VolumeControlApplet"
+#define GVC_APPLET_DBUS_NAME    "org.ukui.VolumeControlApplet"
 
 #define GVC_TYPE_APPLET         (gvc_applet_get_type ())
 #define GVC_APPLET(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GVC_TYPE_APPLET, GvcApplet))

@@ -27,7 +27,7 @@
 #include <gdk/gdk.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
-#include <libmatemixer/matemixer.h>
+#include <libukuimixer/ukuimixer.h>
 
 #include "gvc-channel-bar.h"
 #include "gvc-balance-bar.h"
@@ -42,8 +42,8 @@
 
 struct _GvcMixerDialogPrivate
 {
-        MateMixerContext *context;
-        MateMixerBackendFlags backend_flags;
+        UkuiMixerContext *context;
+        UkuiMixerBackendFlags backend_flags;
         GHashTable       *bars;
         GtkWidget        *notebook;
         GtkWidget        *output_bar;
@@ -115,9 +115,9 @@ static void gvc_mixer_dialog_init       (GvcMixerDialog         *dialog);
 static void gvc_mixer_dialog_finalize   (GObject                *object);
 
 static void add_stream                  (GvcMixerDialog         *dialog,
-                                         MateMixerStream        *stream);
+                                         UkuiMixerStream        *stream);
 static void add_application_control     (GvcMixerDialog         *dialog,
-                                         MateMixerStreamControl *control);
+                                         UkuiMixerStreamControl *control);
 
 static void remove_stream               (GvcMixerDialog         *dialog,
                                          const gchar            *name);
@@ -126,66 +126,66 @@ static void remove_application_control  (GvcMixerDialog         *dialog,
 
 static void bar_set_stream              (GvcMixerDialog         *dialog,
                                          GtkWidget              *bar,
-                                         MateMixerStream        *stream);
+                                         UkuiMixerStream        *stream);
 static void bar_set_stream_control      (GvcMixerDialog         *dialog,
                                          GtkWidget              *bar,
-                                         MateMixerStreamControl *control);
+                                         UkuiMixerStreamControl *control);
 
 G_DEFINE_TYPE (GvcMixerDialog, gvc_mixer_dialog, GTK_TYPE_DIALOG)
 
-static MateMixerSwitch *
-find_stream_port_switch (MateMixerStream *stream)
+static UkuiMixerSwitch *
+find_stream_port_switch (UkuiMixerStream *stream)
 {
         const GList *switches;
 
-        switches = mate_mixer_stream_list_switches (stream);
+        switches = ukui_mixer_stream_list_switches (stream);
         while (switches != NULL) {
-                MateMixerStreamSwitch *swtch = MATE_MIXER_STREAM_SWITCH (switches->data);
+                UkuiMixerStreamSwitch *swtch = UKUI_MIXER_STREAM_SWITCH (switches->data);
 
-                if (!MATE_MIXER_IS_STREAM_TOGGLE (swtch) &&
-                    mate_mixer_stream_switch_get_role (swtch) == MATE_MIXER_STREAM_SWITCH_ROLE_PORT)
-                    return MATE_MIXER_SWITCH (swtch);
+                if (!UKUI_MIXER_IS_STREAM_TOGGLE (swtch) &&
+                    ukui_mixer_stream_switch_get_role (swtch) == UKUI_MIXER_STREAM_SWITCH_ROLE_PORT)
+                    return UKUI_MIXER_SWITCH (swtch);
 
                 switches = switches->next;
         }
         return NULL;
 }
 
-static MateMixerSwitch *
-find_device_profile_switch (MateMixerDevice *device)
+static UkuiMixerSwitch *
+find_device_profile_switch (UkuiMixerDevice *device)
 {
         const GList *switches;
 
-        switches = mate_mixer_device_list_switches (device);
+        switches = ukui_mixer_device_list_switches (device);
         while (switches != NULL) {
-                MateMixerDeviceSwitch *swtch = MATE_MIXER_DEVICE_SWITCH (switches->data);
+                UkuiMixerDeviceSwitch *swtch = UKUI_MIXER_DEVICE_SWITCH (switches->data);
 
-                if (mate_mixer_device_switch_get_role (swtch) == MATE_MIXER_DEVICE_SWITCH_ROLE_PROFILE)
-                        return MATE_MIXER_SWITCH (swtch);
+                if (ukui_mixer_device_switch_get_role (swtch) == UKUI_MIXER_DEVICE_SWITCH_ROLE_PROFILE)
+                        return UKUI_MIXER_SWITCH (swtch);
 
                 switches = switches->next;
         }
         return NULL;
 }
 
-static MateMixerStream *
-find_device_test_stream (GvcMixerDialog *dialog, MateMixerDevice *device)
+static UkuiMixerStream *
+find_device_test_stream (GvcMixerDialog *dialog, UkuiMixerDevice *device)
 {
         const GList *streams;
 
-        streams = mate_mixer_device_list_streams (device);
+        streams = ukui_mixer_device_list_streams (device);
         while (streams != NULL) {
-                MateMixerStream   *stream;
-                MateMixerDirection direction;
+                UkuiMixerStream   *stream;
+                UkuiMixerDirection direction;
 
-                stream = MATE_MIXER_STREAM (streams->data);
-                direction = mate_mixer_stream_get_direction (stream);
+                stream = UKUI_MIXER_STREAM (streams->data);
+                direction = ukui_mixer_stream_get_direction (stream);
 
-                if (direction == MATE_MIXER_DIRECTION_OUTPUT) {
-                    MateMixerStreamControl *control;
+                if (direction == UKUI_MIXER_DIRECTION_OUTPUT) {
+                    UkuiMixerStreamControl *control;
 
-                    control = mate_mixer_stream_get_default_control (stream);
-                    if (mate_mixer_stream_control_get_num_channels (control) > 0)
+                    control = ukui_mixer_stream_get_default_control (stream);
+                    if (ukui_mixer_stream_control_get_num_channels (control) > 0)
                         return stream;
                 }
                 streams = streams->next;
@@ -220,7 +220,7 @@ find_tree_item_by_name (GtkTreeModel *model,
 static void
 update_default_tree_item (GvcMixerDialog  *dialog,
                           GtkTreeModel    *model,
-                          MateMixerStream *stream)
+                          UkuiMixerStream *stream)
 {
         GtkTreeIter  iter;
         const gchar *name = NULL;
@@ -232,7 +232,7 @@ update_default_tree_item (GvcMixerDialog  *dialog,
          * the item list and mark each item as being selected or not. Also do not
          * presume some known stream is selected and allow NULL here. */
         if (stream != NULL)
-                name = mate_mixer_stream_get_name (stream);
+                name = ukui_mixer_stream_get_name (stream);
 
         do {
                 gchar *n;
@@ -250,10 +250,10 @@ update_default_tree_item (GvcMixerDialog  *dialog,
 static void
 update_output_settings (GvcMixerDialog *dialog)
 {
-        MateMixerStream            *stream;
-        MateMixerStreamControl     *control;
-        MateMixerStreamControlFlags flags;
-        MateMixerSwitch            *port_switch;
+        UkuiMixerStream            *stream;
+        UkuiMixerStreamControl     *control;
+        UkuiMixerStreamControlFlags flags;
+        UkuiMixerSwitch            *port_switch;
         gboolean                    has_settings = FALSE;
 
         g_debug ("Updating output settings");
@@ -290,10 +290,10 @@ update_output_settings (GvcMixerDialog *dialog)
                 gtk_widget_hide (dialog->priv->output_settings_frame);
                 return;
         }
-        flags = mate_mixer_stream_control_get_flags (control);
+        flags = ukui_mixer_stream_control_get_flags (control);
 
         /* Enable balance bar if it is available */
-        if (flags & MATE_MIXER_STREAM_CONTROL_CAN_BALANCE) {
+        if (flags & UKUI_MIXER_STREAM_CONTROL_CAN_BALANCE) {
                 dialog->priv->output_balance_bar =
                         gvc_balance_bar_new (control, BALANCE_TYPE_RL);
 
@@ -310,7 +310,7 @@ update_output_settings (GvcMixerDialog *dialog)
         }
 
         /* Enable fade bar if it is available */
-        if (flags & MATE_MIXER_STREAM_CONTROL_CAN_FADE) {
+        if (flags & UKUI_MIXER_STREAM_CONTROL_CAN_FADE) {
                 dialog->priv->output_fade_bar =
                         gvc_balance_bar_new (control, BALANCE_TYPE_FR);
 
@@ -327,7 +327,7 @@ update_output_settings (GvcMixerDialog *dialog)
         }
 
         /* Enable subwoofer volume bar if subwoofer is available */
-        if (mate_mixer_stream_control_has_channel_position (control, MATE_MIXER_CHANNEL_LFE)) {
+        if (ukui_mixer_stream_control_has_channel_position (control, UKUI_MIXER_CHANNEL_LFE)) {
                 dialog->priv->output_lfe_bar =
                         gvc_balance_bar_new (control, BALANCE_TYPE_LFE);
 
@@ -344,7 +344,7 @@ update_output_settings (GvcMixerDialog *dialog)
         }
 
         /* Get owning stream of the control */
-        stream = mate_mixer_stream_control_get_stream (control);
+        stream = ukui_mixer_stream_control_get_stream (control);
         if (G_UNLIKELY (stream == NULL))
                 return;
 
@@ -373,11 +373,11 @@ update_output_settings (GvcMixerDialog *dialog)
 }
 
 static void
-set_output_stream (GvcMixerDialog *dialog, MateMixerStream *stream)
+set_output_stream (GvcMixerDialog *dialog, UkuiMixerStream *stream)
 {
         GtkTreeModel           *model;
-        MateMixerSwitch        *swtch;
-        MateMixerStreamControl *control;
+        UkuiMixerSwitch        *swtch;
+        UkuiMixerStreamControl *control;
 
         control = gvc_channel_bar_get_control (GVC_CHANNEL_BAR (dialog->priv->output_bar));
         if (control != NULL) {
@@ -396,24 +396,24 @@ set_output_stream (GvcMixerDialog *dialog, MateMixerStream *stream)
         if (stream != NULL) {
                 const GList *controls;
 
-                controls = mate_mixer_context_list_stored_controls (dialog->priv->context);
+                controls = ukui_mixer_context_list_stored_controls (dialog->priv->context);
 
                 /* Move all stored controls to the newly selected default stream */
                 while (controls != NULL) {
-                        MateMixerStream        *parent;
-                        MateMixerStreamControl *control;
+                        UkuiMixerStream        *parent;
+                        UkuiMixerStreamControl *control;
 
-                        control = MATE_MIXER_STREAM_CONTROL (controls->data);
-                        parent  = mate_mixer_stream_control_get_stream (control);
+                        control = UKUI_MIXER_STREAM_CONTROL (controls->data);
+                        parent  = ukui_mixer_stream_control_get_stream (control);
 
                         /* Prefer streamless controls to stay the way they are, forcing them to
                          * a particular owning stream would be wrong for eg. event controls */
                         if (parent != NULL && parent != stream) {
-                                MateMixerDirection direction =
-                                        mate_mixer_stream_get_direction (parent);
+                                UkuiMixerDirection direction =
+                                        ukui_mixer_stream_get_direction (parent);
 
-                                if (direction == MATE_MIXER_DIRECTION_OUTPUT)
-                                        mate_mixer_stream_control_set_stream (control, stream);
+                                if (direction == UKUI_MIXER_DIRECTION_OUTPUT)
+                                        ukui_mixer_stream_control_set_stream (control, stream);
                         }
                         controls = controls->next;
                 }
@@ -426,13 +426,13 @@ set_output_stream (GvcMixerDialog *dialog, MateMixerStream *stream)
 }
 
 static void
-on_context_default_output_stream_notify (MateMixerContext *context,
+on_context_default_output_stream_notify (UkuiMixerContext *context,
                                          GParamSpec       *pspec,
                                          GvcMixerDialog   *dialog)
 {
-        MateMixerStream *stream;
+        UkuiMixerStream *stream;
 
-        stream = mate_mixer_context_get_default_output_stream (context);
+        stream = ukui_mixer_context_get_default_output_stream (context);
 
         set_output_stream (dialog, stream);
 }
@@ -440,7 +440,7 @@ on_context_default_output_stream_notify (MateMixerContext *context,
 #define DECAY_STEP .15
 
 static void
-on_stream_control_monitor_value (MateMixerStream *stream,
+on_stream_control_monitor_value (UkuiMixerStream *stream,
                                  gdouble          value,
                                  GvcMixerDialog  *dialog)
 {
@@ -464,10 +464,10 @@ on_stream_control_monitor_value (MateMixerStream *stream,
 static void
 update_input_settings (GvcMixerDialog *dialog)
 {
-        MateMixerStream            *stream;
-        MateMixerStreamControl     *control;
-        MateMixerStreamControlFlags flags;
-        MateMixerSwitch            *port_switch;
+        UkuiMixerStream            *stream;
+        UkuiMixerStreamControl     *control;
+        UkuiMixerStreamControlFlags flags;
+        UkuiMixerSwitch            *port_switch;
 
         g_debug ("Updating input settings");
 
@@ -483,17 +483,17 @@ update_input_settings (GvcMixerDialog *dialog)
         if (control == NULL)
                 return;
 
-        flags = mate_mixer_stream_control_get_flags (control);
+        flags = ukui_mixer_stream_control_get_flags (control);
 
         /* Enable level bar only if supported by the control */
-        if (flags & MATE_MIXER_STREAM_CONTROL_HAS_MONITOR)
+        if (flags & UKUI_MIXER_STREAM_CONTROL_HAS_MONITOR)
                 g_signal_connect (G_OBJECT (control),
                                   "monitor-value",
                                   G_CALLBACK (on_stream_control_monitor_value),
                                   dialog);
 
         /* Get owning stream of the control */
-        stream = mate_mixer_stream_control_get_stream (control);
+        stream = ukui_mixer_stream_control_get_stream (control);
         if (G_UNLIKELY (stream == NULL))
                 return;
 
@@ -516,23 +516,23 @@ update_input_settings (GvcMixerDialog *dialog)
 }
 
 static void
-on_stream_control_mute_notify (MateMixerStreamControl *control,
+on_stream_control_mute_notify (UkuiMixerStreamControl *control,
                                GParamSpec             *pspec,
                                GvcMixerDialog         *dialog)
 {
         /* Stop monitoring the input stream when it gets muted */
-        if (mate_mixer_stream_control_get_mute (control) == TRUE)
-                mate_mixer_stream_control_set_monitor_enabled (control, FALSE);
+        if (ukui_mixer_stream_control_get_mute (control) == TRUE)
+                ukui_mixer_stream_control_set_monitor_enabled (control, FALSE);
         else
-                mate_mixer_stream_control_set_monitor_enabled (control, TRUE);
+                ukui_mixer_stream_control_set_monitor_enabled (control, TRUE);
 }
 
 static void
-set_input_stream (GvcMixerDialog *dialog, MateMixerStream *stream)
+set_input_stream (GvcMixerDialog *dialog, UkuiMixerStream *stream)
 {
         GtkTreeModel           *model;
-        MateMixerSwitch        *swtch;
-        MateMixerStreamControl *control;
+        UkuiMixerSwitch        *swtch;
+        UkuiMixerStreamControl *control;
 
         control = gvc_channel_bar_get_control (GVC_CHANNEL_BAR (dialog->priv->input_bar));
         if (control != NULL) {
@@ -550,7 +550,7 @@ set_input_stream (GvcMixerDialog *dialog, MateMixerStream *stream)
                                                       G_CALLBACK (on_stream_control_monitor_value),
                                                       dialog);
 
-                mate_mixer_stream_control_set_monitor_enabled (control, FALSE);
+                ukui_mixer_stream_control_set_monitor_enabled (control, FALSE);
         }
 
         bar_set_stream (dialog, dialog->priv->input_bar, stream);
@@ -559,33 +559,33 @@ set_input_stream (GvcMixerDialog *dialog, MateMixerStream *stream)
                 const GList *controls;
                 guint page = gtk_notebook_get_current_page (GTK_NOTEBOOK (dialog->priv->notebook));
 
-                controls = mate_mixer_context_list_stored_controls (dialog->priv->context);
+                controls = ukui_mixer_context_list_stored_controls (dialog->priv->context);
 
                 /* Move all stored controls to the newly selected default stream */
                 while (controls != NULL) {
-                        MateMixerStream *parent;
+                        UkuiMixerStream *parent;
 
-                        control = MATE_MIXER_STREAM_CONTROL (controls->data);
-                        parent  = mate_mixer_stream_control_get_stream (control);
+                        control = UKUI_MIXER_STREAM_CONTROL (controls->data);
+                        parent  = ukui_mixer_stream_control_get_stream (control);
 
                         /* Prefer streamless controls to stay the way they are, forcing them to
                          * a particular owning stream would be wrong for eg. event controls */
                         if (parent != NULL && parent != stream) {
-                                MateMixerDirection direction =
-                                        mate_mixer_stream_get_direction (parent);
+                                UkuiMixerDirection direction =
+                                        ukui_mixer_stream_get_direction (parent);
 
-                                if (direction == MATE_MIXER_DIRECTION_INPUT)
-                                        mate_mixer_stream_control_set_stream (control, stream);
+                                if (direction == UKUI_MIXER_DIRECTION_INPUT)
+                                        ukui_mixer_stream_control_set_stream (control, stream);
                         }
                         controls = controls->next;
                 }
 
                 if (page == PAGE_INPUT) {
-                        MateMixerStreamControl *control =
+                        UkuiMixerStreamControl *control =
                                 gvc_channel_bar_get_control (GVC_CHANNEL_BAR (dialog->priv->input_bar));
 
                         if (G_LIKELY (control != NULL))
-                                mate_mixer_stream_control_set_monitor_enabled (control, TRUE);
+                                ukui_mixer_stream_control_set_monitor_enabled (control, TRUE);
                 }
 
                 /* Enable/disable the peak level monitor according to mute state */
@@ -602,15 +602,15 @@ set_input_stream (GvcMixerDialog *dialog, MateMixerStream *stream)
 }
 
 static void
-on_context_default_input_stream_notify (MateMixerContext *context,
+on_context_default_input_stream_notify (UkuiMixerContext *context,
                                         GParamSpec       *pspec,
                                         GvcMixerDialog   *dialog)
 {
-        MateMixerStream *stream;
+        UkuiMixerStream *stream;
 
         g_debug ("Default input stream has changed");
 
-        stream = mate_mixer_context_get_default_input_stream (context);
+        stream = ukui_mixer_context_get_default_input_stream (context);
 
         set_input_stream (dialog, stream);
 }
@@ -639,12 +639,12 @@ create_bar (GvcMixerDialog *dialog, gboolean use_size_group, gboolean symmetric)
 static void
 bar_set_stream (GvcMixerDialog  *dialog,
                 GtkWidget       *bar,
-                MateMixerStream *stream)
+                UkuiMixerStream *stream)
 {
-        MateMixerStreamControl *control = NULL;
+        UkuiMixerStreamControl *control = NULL;
 
         if (stream != NULL)
-                control = mate_mixer_stream_get_default_control (stream);
+                control = ukui_mixer_stream_get_default_control (stream);
 
         bar_set_stream_control (dialog, bar, control);
 }
@@ -652,17 +652,17 @@ bar_set_stream (GvcMixerDialog  *dialog,
 static void
 bar_set_stream_control (GvcMixerDialog         *dialog,
                         GtkWidget              *bar,
-                        MateMixerStreamControl *control)
+                        UkuiMixerStreamControl *control)
 {
         const gchar            *name;
-        MateMixerStreamControl *previous;
+        UkuiMixerStreamControl *previous;
 
         previous = gvc_channel_bar_get_control (GVC_CHANNEL_BAR (bar));
         if (previous == control)
                 return;
 
         if (previous != NULL) {
-                name = mate_mixer_stream_control_get_name (previous);
+                name = ukui_mixer_stream_control_get_name (previous);
 
                 g_debug ("Removing stream control %s from bar %s",
                          name,
@@ -673,7 +673,7 @@ bar_set_stream_control (GvcMixerDialog         *dialog,
                 /* This may not do anything because we no longer have the information
                  * about the owning stream, in case it was an input stream, make
                  * sure to disconnected from the peak level monitor */
-                mate_mixer_stream_control_set_monitor_enabled (previous, FALSE);
+                ukui_mixer_stream_control_set_monitor_enabled (previous, FALSE);
 
                 g_hash_table_remove (dialog->priv->bars, name);
         }
@@ -681,7 +681,7 @@ bar_set_stream_control (GvcMixerDialog         *dialog,
         gvc_channel_bar_set_control (GVC_CHANNEL_BAR (bar), control);
 
         if (control != NULL) {
-                name = mate_mixer_stream_control_get_name (control);
+                name = ukui_mixer_stream_control_get_name (control);
 
                 g_debug ("Setting stream control %s for bar %s",
                          name,
@@ -697,46 +697,46 @@ bar_set_stream_control (GvcMixerDialog         *dialog,
 }
 
 static void
-add_application_control (GvcMixerDialog *dialog, MateMixerStreamControl *control)
+add_application_control (GvcMixerDialog *dialog, UkuiMixerStreamControl *control)
 {
-        MateMixerStream                *stream;
-        MateMixerStreamControlMediaRole media_role;
-        MateMixerAppInfo               *info;
-        MateMixerDirection              direction = MATE_MIXER_DIRECTION_UNKNOWN;
+        UkuiMixerStream                *stream;
+        UkuiMixerStreamControlMediaRole media_role;
+        UkuiMixerAppInfo               *info;
+        UkuiMixerDirection              direction = UKUI_MIXER_DIRECTION_UNKNOWN;
         GtkWidget                      *bar;
         const gchar                    *app_id;
         const gchar                    *app_name;
         const gchar                    *app_icon;
 
-        media_role = mate_mixer_stream_control_get_media_role (control);
+        media_role = ukui_mixer_stream_control_get_media_role (control);
 
         /* Add stream to the applications page, but make sure the stream qualifies
          * for the inclusion */
-        info = mate_mixer_stream_control_get_app_info (control);
+        info = ukui_mixer_stream_control_get_app_info (control);
         if (info == NULL)
                 return;
 
         /* Skip streams with roles we don't care about */
-        if (media_role == MATE_MIXER_STREAM_CONTROL_MEDIA_ROLE_EVENT ||
-            media_role == MATE_MIXER_STREAM_CONTROL_MEDIA_ROLE_TEST ||
-            media_role == MATE_MIXER_STREAM_CONTROL_MEDIA_ROLE_ABSTRACT ||
-            media_role == MATE_MIXER_STREAM_CONTROL_MEDIA_ROLE_FILTER)
+        if (media_role == UKUI_MIXER_STREAM_CONTROL_MEDIA_ROLE_EVENT ||
+            media_role == UKUI_MIXER_STREAM_CONTROL_MEDIA_ROLE_TEST ||
+            media_role == UKUI_MIXER_STREAM_CONTROL_MEDIA_ROLE_ABSTRACT ||
+            media_role == UKUI_MIXER_STREAM_CONTROL_MEDIA_ROLE_FILTER)
                 return;
 
-        app_id = mate_mixer_app_info_get_id (info);
+        app_id = ukui_mixer_app_info_get_id (info);
 
         /* These applications may have associated streams because they do peak
          * level monitoring, skip these too */
-        if (!g_strcmp0 (app_id, "org.mate.VolumeControl") ||
+        if (!g_strcmp0 (app_id, "org.ukui.VolumeControl") ||
             !g_strcmp0 (app_id, "org.gnome.VolumeControl") ||
             !g_strcmp0 (app_id, "org.PulseAudio.pavucontrol"))
                 return;
 
-        app_name = mate_mixer_app_info_get_name (info);
+        app_name = ukui_mixer_app_info_get_name (info);
         if (app_name == NULL)
-                app_name = mate_mixer_stream_control_get_label (control);
+                app_name = ukui_mixer_stream_control_get_label (control);
         if (app_name == NULL)
-                app_name = mate_mixer_stream_control_get_name (control);
+                app_name = ukui_mixer_stream_control_get_name (control);
         if (G_UNLIKELY (app_name == NULL))
                 return;
 
@@ -749,19 +749,19 @@ add_application_control (GvcMixerDialog *dialog, MateMixerStreamControl *control
 
         /* By default channel bars use speaker icons, use microphone icons
          * instead for recording applications */
-        stream = mate_mixer_stream_control_get_stream (control);
+        stream = ukui_mixer_stream_control_get_stream (control);
         if (stream != NULL)
-                direction = mate_mixer_stream_get_direction (stream);
+                direction = ukui_mixer_stream_get_direction (stream);
 
-        if (direction == MATE_MIXER_DIRECTION_INPUT)
+        if (direction == UKUI_MIXER_DIRECTION_INPUT)
                 g_object_set (G_OBJECT (bar),
                               "low-icon-name", "audio-input-microphone-low",
                               "high-icon-name", "audio-input-microphone-high",
                               NULL);
 
-        app_icon = mate_mixer_app_info_get_icon (info);
+        app_icon = ukui_mixer_app_info_get_icon (info);
         if (app_icon == NULL) {
-                if (direction == MATE_MIXER_DIRECTION_INPUT)
+                if (direction == UKUI_MIXER_DIRECTION_INPUT)
                         app_icon = "audio-input-microphone";
                 else
                         app_icon = "applications-multimedia";
@@ -782,33 +782,33 @@ add_application_control (GvcMixerDialog *dialog, MateMixerStreamControl *control
 }
 
 static void
-on_stream_control_added (MateMixerStream *stream,
+on_stream_control_added (UkuiMixerStream *stream,
                          const gchar     *name,
                          GvcMixerDialog  *dialog)
 {
-        MateMixerStreamControl    *control;
-        MateMixerStreamControlRole role;
+        UkuiMixerStreamControl    *control;
+        UkuiMixerStreamControlRole role;
 
-        control = mate_mixer_stream_get_control (stream, name);
+        control = ukui_mixer_stream_get_control (stream, name);
         if G_UNLIKELY (control == NULL)
                 return;
 
-        role = mate_mixer_stream_control_get_role (control);
+        role = ukui_mixer_stream_control_get_role (control);
 
-        if (role == MATE_MIXER_STREAM_CONTROL_ROLE_APPLICATION)
+        if (role == UKUI_MIXER_STREAM_CONTROL_ROLE_APPLICATION)
                 add_application_control (dialog, control);
 }
 
 static void
-on_stream_control_removed (MateMixerStream *stream,
+on_stream_control_removed (UkuiMixerStream *stream,
                            const gchar     *name,
                            GvcMixerDialog  *dialog)
 {
-        MateMixerStreamControl *control;
+        UkuiMixerStreamControl *control;
 
         control = gvc_channel_bar_get_control (GVC_CHANNEL_BAR (dialog->priv->input_bar));
         if (control != NULL) {
-                const gchar *input_name = mate_mixer_stream_control_get_name (control);
+                const gchar *input_name = ukui_mixer_stream_control_get_name (control);
 
                 if (strcmp (name, input_name) == 0) {
                         // XXX probably can't even happen, but handle it somehow
@@ -818,7 +818,7 @@ on_stream_control_removed (MateMixerStream *stream,
 
         control = gvc_channel_bar_get_control (GVC_CHANNEL_BAR (dialog->priv->output_bar));
         if (control != NULL) {
-                const gchar *input_name = mate_mixer_stream_control_get_name (control);
+                const gchar *input_name = ukui_mixer_stream_control_get_name (control);
 
                 if (strcmp (name, input_name) == 0) {
                         // XXX probably can't even happen, but handle it somehow
@@ -832,21 +832,21 @@ on_stream_control_removed (MateMixerStream *stream,
 }
 
 static void
-add_stream (GvcMixerDialog *dialog, MateMixerStream *stream)
+add_stream (GvcMixerDialog *dialog, UkuiMixerStream *stream)
 {
         GtkTreeModel      *model = NULL;
         GtkTreeIter        iter;
         const gchar       *speakers = NULL;
         const GList       *controls;
         gboolean           is_default = FALSE;
-        MateMixerDirection direction;
+        UkuiMixerDirection direction;
 
-        direction = mate_mixer_stream_get_direction (stream);
+        direction = ukui_mixer_stream_get_direction (stream);
 
-        if (direction == MATE_MIXER_DIRECTION_INPUT) {
-                MateMixerStream *input;
+        if (direction == UKUI_MIXER_DIRECTION_INPUT) {
+                UkuiMixerStream *input;
 
-                input = mate_mixer_context_get_default_input_stream (dialog->priv->context);
+                input = ukui_mixer_context_get_default_input_stream (dialog->priv->context);
                 if (stream == input) {
                         bar_set_stream (dialog, dialog->priv->input_bar, stream);
 
@@ -855,11 +855,11 @@ add_stream (GvcMixerDialog *dialog, MateMixerStream *stream)
                 }
                 model = gtk_tree_view_get_model (GTK_TREE_VIEW (dialog->priv->input_treeview));
         }
-        else if (direction == MATE_MIXER_DIRECTION_OUTPUT) {
-                MateMixerStream        *output;
-                MateMixerStreamControl *control;
+        else if (direction == UKUI_MIXER_DIRECTION_OUTPUT) {
+                UkuiMixerStream        *output;
+                UkuiMixerStreamControl *control;
 
-                output = mate_mixer_context_get_default_output_stream (dialog->priv->context);
+                output = ukui_mixer_context_get_default_output_stream (dialog->priv->context);
                 if (stream == output) {
                         bar_set_stream (dialog, dialog->priv->output_bar, stream);
 
@@ -868,19 +868,19 @@ add_stream (GvcMixerDialog *dialog, MateMixerStream *stream)
                 }
                 model = gtk_tree_view_get_model (GTK_TREE_VIEW (dialog->priv->output_treeview));
 
-                control = mate_mixer_stream_get_default_control (stream);
+                control = ukui_mixer_stream_get_default_control (stream);
                 if (G_LIKELY (control != NULL))
                         speakers = gvc_channel_map_to_pretty_string (control);
         }
 
-        controls = mate_mixer_stream_list_controls (stream);
+        controls = ukui_mixer_stream_list_controls (stream);
         while (controls != NULL) {
-                MateMixerStreamControl    *control = MATE_MIXER_STREAM_CONTROL (controls->data);
-                MateMixerStreamControlRole role;
+                UkuiMixerStreamControl    *control = UKUI_MIXER_STREAM_CONTROL (controls->data);
+                UkuiMixerStreamControlRole role;
 
-                role = mate_mixer_stream_control_get_role (control);
+                role = ukui_mixer_stream_control_get_role (control);
 
-                if (role == MATE_MIXER_STREAM_CONTROL_ROLE_APPLICATION)
+                if (role == UKUI_MIXER_STREAM_CONTROL_ROLE_APPLICATION)
                         add_application_control (dialog, control);
 
                 controls = controls->next;
@@ -890,8 +890,8 @@ add_stream (GvcMixerDialog *dialog, MateMixerStream *stream)
                 const gchar *name;
                 const gchar *label;
 
-                name  = mate_mixer_stream_get_name (stream);
-                label = mate_mixer_stream_get_label (stream);
+                name  = ukui_mixer_stream_get_name (stream);
+                label = ukui_mixer_stream_get_label (stream);
 
                 gtk_list_store_append (GTK_LIST_STORE (model), &iter);
                 gtk_list_store_set (GTK_LIST_STORE (model),
@@ -917,8 +917,8 @@ add_stream (GvcMixerDialog *dialog, MateMixerStream *stream)
 static void
 update_device_test_visibility (GvcMixerDialog *dialog)
 {
-        MateMixerDevice *device;
-        MateMixerStream *stream;
+        UkuiMixerDevice *device;
+        UkuiMixerStream *stream;
 
         device = g_object_get_data (G_OBJECT (dialog->priv->hw_profile_combo), "device");
         if (G_UNLIKELY (device == NULL)) {
@@ -933,28 +933,28 @@ update_device_test_visibility (GvcMixerDialog *dialog)
 }
 
 static void
-on_context_stream_added (MateMixerContext *context,
+on_context_stream_added (UkuiMixerContext *context,
                          const gchar      *name,
                          GvcMixerDialog   *dialog)
 {
-        MateMixerStream   *stream;
-        MateMixerDirection direction;
+        UkuiMixerStream   *stream;
+        UkuiMixerDirection direction;
         GtkWidget         *bar;
 
-        stream = mate_mixer_context_get_stream (context, name);
+        stream = ukui_mixer_context_get_stream (context, name);
         if (G_UNLIKELY (stream == NULL))
                 return;
 
-        direction = mate_mixer_stream_get_direction (stream);
+        direction = ukui_mixer_stream_get_direction (stream);
 
         /* If the newly added stream belongs to the currently selected device and
          * the test button is hidden, this stream may be the one to allow the
          * sound test and therefore we may need to enable the button */
-        if (dialog->priv->hw_profile_combo != NULL && direction == MATE_MIXER_DIRECTION_OUTPUT) {
-                MateMixerDevice *device1;
-                MateMixerDevice *device2;
+        if (dialog->priv->hw_profile_combo != NULL && direction == UKUI_MIXER_DIRECTION_OUTPUT) {
+                UkuiMixerDevice *device1;
+                UkuiMixerDevice *device2;
 
-                device1 = mate_mixer_stream_get_device (stream);
+                device1 = ukui_mixer_stream_get_device (stream);
                 device2 = g_object_get_data (G_OBJECT (dialog->priv->hw_profile_combo),
                                              "device");
 
@@ -1039,7 +1039,7 @@ remove_application_control (GvcMixerDialog *dialog, const gchar *name)
 }
 
 static void
-on_context_stream_removed (MateMixerContext *context,
+on_context_stream_removed (UkuiMixerContext *context,
                            const gchar      *name,
                            GvcMixerDialog   *dialog)
 {
@@ -1058,25 +1058,25 @@ on_context_stream_removed (MateMixerContext *context,
 }
 
 static void
-on_context_stored_control_added (MateMixerContext *context,
+on_context_stored_control_added (UkuiMixerContext *context,
                                  const gchar      *name,
                                  GvcMixerDialog   *dialog)
 {
-        MateMixerStreamControl         *control;
-        MateMixerStreamControlMediaRole media_role;
+        UkuiMixerStreamControl         *control;
+        UkuiMixerStreamControlMediaRole media_role;
 
-        control = MATE_MIXER_STREAM_CONTROL (mate_mixer_context_get_stored_control (context, name));
+        control = UKUI_MIXER_STREAM_CONTROL (ukui_mixer_context_get_stored_control (context, name));
         if (G_UNLIKELY (control == NULL))
                 return;
 
-        media_role = mate_mixer_stream_control_get_media_role (control);
+        media_role = ukui_mixer_stream_control_get_media_role (control);
 
-        if (media_role == MATE_MIXER_STREAM_CONTROL_MEDIA_ROLE_EVENT)
+        if (media_role == UKUI_MIXER_STREAM_CONTROL_MEDIA_ROLE_EVENT)
                 bar_set_stream_control (dialog, dialog->priv->effects_bar, control);
 }
 
 static void
-on_context_stored_control_removed (MateMixerContext *context,
+on_context_stored_control_removed (UkuiMixerContext *context,
                                    const gchar      *name,
                                    GvcMixerDialog   *dialog)
 {
@@ -1096,7 +1096,7 @@ on_context_stored_control_removed (MateMixerContext *context,
 }
 
 static gchar *
-device_status (MateMixerDevice *device)
+device_status (UkuiMixerDevice *device)
 {
         guint        inputs = 0;
         guint        outputs = 0;
@@ -1105,16 +1105,16 @@ device_status (MateMixerDevice *device)
         const GList *streams;
 
         /* Get number of input and output streams in the device */
-        streams = mate_mixer_device_list_streams (device);
+        streams = ukui_mixer_device_list_streams (device);
         while (streams != NULL) {
-                MateMixerStream   *stream = MATE_MIXER_STREAM (streams->data);
-                MateMixerDirection direction;
+                UkuiMixerStream   *stream = UKUI_MIXER_STREAM (streams->data);
+                UkuiMixerDirection direction;
 
-                direction = mate_mixer_stream_get_direction (stream);
+                direction = ukui_mixer_stream_get_direction (stream);
 
-                if (direction == MATE_MIXER_DIRECTION_INPUT)
+                if (direction == UKUI_MIXER_DIRECTION_INPUT)
                         inputs++;
-                else if (direction == MATE_MIXER_DIRECTION_OUTPUT)
+                else if (direction == UKUI_MIXER_DIRECTION_OUTPUT)
                         outputs++;
 
                 streams = streams->next;
@@ -1160,32 +1160,32 @@ device_status (MateMixerDevice *device)
 }
 
 static void
-update_device_info (GvcMixerDialog *dialog, MateMixerDevice *device)
+update_device_info (GvcMixerDialog *dialog, UkuiMixerDevice *device)
 {
         GtkTreeModel    *model = NULL;
         GtkTreeIter      iter;
         const gchar     *label;
         const gchar     *profile_label = NULL;
         gchar           *status;
-        MateMixerSwitch *profile_switch;
+        UkuiMixerSwitch *profile_switch;
 
         model = gtk_tree_view_get_model (GTK_TREE_VIEW (dialog->priv->hw_treeview));
 
         if (find_tree_item_by_name (model,
-                                    mate_mixer_device_get_name (device),
+                                    ukui_mixer_device_get_name (device),
                                     HW_NAME_COLUMN,
                                     &iter) == FALSE)
                 return;
 
-        label = mate_mixer_device_get_label (device);
+        label = ukui_mixer_device_get_label (device);
 
         profile_switch = find_device_profile_switch (device);
         if (profile_switch != NULL) {
-                MateMixerSwitchOption *active;
+                UkuiMixerSwitchOption *active;
 
-                active = mate_mixer_switch_get_active_option (profile_switch);
+                active = ukui_mixer_switch_get_active_option (profile_switch);
                 if (G_LIKELY (active != NULL))
-                        profile_label = mate_mixer_switch_option_get_label (active);
+                        profile_label = ukui_mixer_switch_option_get_label (active);
         }
 
         status = device_status (device);
@@ -1200,19 +1200,19 @@ update_device_info (GvcMixerDialog *dialog, MateMixerDevice *device)
 }
 
 static void
-on_device_profile_active_option_notify (MateMixerDeviceSwitch *swtch,
+on_device_profile_active_option_notify (UkuiMixerDeviceSwitch *swtch,
                                         GParamSpec            *pspec,
                                         GvcMixerDialog        *dialog)
 {
-        MateMixerDevice *device;
+        UkuiMixerDevice *device;
 
-        device = mate_mixer_device_switch_get_device (swtch);
+        device = ukui_mixer_device_switch_get_device (swtch);
 
         update_device_info (dialog, device);
 }
 
 static void
-add_device (GvcMixerDialog *dialog, MateMixerDevice *device)
+add_device (GvcMixerDialog *dialog, UkuiMixerDevice *device)
 {
         GtkTreeModel    *model;
         GtkTreeIter      iter;
@@ -1221,12 +1221,12 @@ add_device (GvcMixerDialog *dialog, MateMixerDevice *device)
         const gchar     *label;
         gchar           *status;
         const gchar     *profile_label = NULL;
-        MateMixerSwitch *profile_switch;
+        UkuiMixerSwitch *profile_switch;
 
         model = gtk_tree_view_get_model (GTK_TREE_VIEW (dialog->priv->hw_treeview));
 
-        name  = mate_mixer_device_get_name (device);
-        label = mate_mixer_device_get_label (device);
+        name  = ukui_mixer_device_get_name (device);
+        label = ukui_mixer_device_get_label (device);
 
         if (find_tree_item_by_name (GTK_TREE_MODEL (model),
                                     name,
@@ -1234,15 +1234,15 @@ add_device (GvcMixerDialog *dialog, MateMixerDevice *device)
                                     &iter) == FALSE)
                 gtk_list_store_append (GTK_LIST_STORE (model), &iter);
 
-        icon = g_themed_icon_new_with_default_fallbacks (mate_mixer_device_get_icon (device));
+        icon = g_themed_icon_new_with_default_fallbacks (ukui_mixer_device_get_icon (device));
 
         profile_switch = find_device_profile_switch (device);
         if (profile_switch != NULL) {
-                MateMixerSwitchOption *active;
+                UkuiMixerSwitchOption *active;
 
-                active = mate_mixer_switch_get_active_option (profile_switch);
+                active = ukui_mixer_switch_get_active_option (profile_switch);
                 if (G_LIKELY (active != NULL))
-                        profile_label = mate_mixer_switch_option_get_label (active);
+                        profile_label = ukui_mixer_switch_option_get_label (active);
 
                 g_signal_connect (G_OBJECT (profile_switch),
                                   "notify::active-option",
@@ -1265,11 +1265,11 @@ add_device (GvcMixerDialog *dialog, MateMixerDevice *device)
 }
 
 static void
-on_context_device_added (MateMixerContext *context, const gchar *name, GvcMixerDialog *dialog)
+on_context_device_added (UkuiMixerContext *context, const gchar *name, GvcMixerDialog *dialog)
 {
-        MateMixerDevice *device;
+        UkuiMixerDevice *device;
 
-        device = mate_mixer_context_get_device (context, name);
+        device = ukui_mixer_context_get_device (context, name);
         if (G_UNLIKELY (device == NULL))
                 return;
 
@@ -1277,7 +1277,7 @@ on_context_device_added (MateMixerContext *context, const gchar *name, GvcMixerD
 }
 
 static void
-on_context_device_removed (MateMixerContext *context,
+on_context_device_removed (UkuiMixerContext *context,
                            const gchar      *name,
                            GvcMixerDialog   *dialog)
 {
@@ -1333,10 +1333,10 @@ on_input_radio_toggled (GtkCellRendererToggle *renderer,
                             ACTIVE_COLUMN, &toggled,
                             -1);
         if (toggled ^ 1) {
-                MateMixerStream      *stream;
-                MateMixerBackendFlags flags;
+                UkuiMixerStream      *stream;
+                UkuiMixerBackendFlags flags;
 
-                stream = mate_mixer_context_get_stream (dialog->priv->context, name);
+                stream = ukui_mixer_context_get_stream (dialog->priv->context, name);
                 if (G_UNLIKELY (stream == NULL)) {
                         g_warn_if_reached ();
                         g_free (name);
@@ -1346,10 +1346,10 @@ on_input_radio_toggled (GtkCellRendererToggle *renderer,
                 g_debug ("Default input stream selection changed to %s", name);
 
                 // XXX cache this
-                flags = mate_mixer_context_get_backend_flags (dialog->priv->context);
+                flags = ukui_mixer_context_get_backend_flags (dialog->priv->context);
 
-                if (flags & MATE_MIXER_BACKEND_CAN_SET_DEFAULT_INPUT_STREAM)
-                        mate_mixer_context_set_default_input_stream (dialog->priv->context, stream);
+                if (flags & UKUI_MIXER_BACKEND_CAN_SET_DEFAULT_INPUT_STREAM)
+                        ukui_mixer_context_set_default_input_stream (dialog->priv->context, stream);
                 else
                         set_input_stream (dialog, stream);
         }
@@ -1378,10 +1378,10 @@ on_output_radio_toggled (GtkCellRendererToggle *renderer,
                             ACTIVE_COLUMN, &toggled,
                             -1);
         if (toggled ^ 1) {
-                MateMixerStream      *stream;
-                MateMixerBackendFlags flags;
+                UkuiMixerStream      *stream;
+                UkuiMixerBackendFlags flags;
 
-                stream = mate_mixer_context_get_stream (dialog->priv->context, name);
+                stream = ukui_mixer_context_get_stream (dialog->priv->context, name);
                 if (G_UNLIKELY (stream == NULL)) {
                         g_warn_if_reached ();
                         g_free (name);
@@ -1391,10 +1391,10 @@ on_output_radio_toggled (GtkCellRendererToggle *renderer,
                 g_debug ("Default output stream selection changed to %s", name);
 
                 // XXX cache this
-                flags = mate_mixer_context_get_backend_flags (dialog->priv->context);
+                flags = ukui_mixer_context_get_backend_flags (dialog->priv->context);
 
-                if (flags & MATE_MIXER_BACKEND_CAN_SET_DEFAULT_OUTPUT_STREAM)
-                        mate_mixer_context_set_default_output_stream (dialog->priv->context, stream);
+                if (flags & UKUI_MIXER_BACKEND_CAN_SET_DEFAULT_OUTPUT_STREAM)
+                        ukui_mixer_context_set_default_output_stream (dialog->priv->context, stream);
                 else
                         set_output_stream (dialog, stream);
         }
@@ -1520,7 +1520,7 @@ create_stream_treeview (GvcMixerDialog *dialog, GCallback on_toggled)
 
 static void
 on_device_profile_changing (GvcComboBox           *combobox,
-                            MateMixerSwitchOption *option,
+                            UkuiMixerSwitchOption *option,
                             GvcMixerDialog        *dialog)
 {
         g_debug ("Changing device profile");
@@ -1534,8 +1534,8 @@ on_test_speakers_clicked (GvcComboBox *widget, GvcMixerDialog *dialog)
                         *test,
                         *container;
         gchar           *title;
-        MateMixerDevice *device;
-        MateMixerStream *stream;
+        UkuiMixerDevice *device;
+        UkuiMixerStream *stream;
 
         device = g_object_get_data (G_OBJECT (widget), "device");
         if (G_UNLIKELY (device == NULL)) {
@@ -1550,7 +1550,7 @@ on_test_speakers_clicked (GvcComboBox *widget, GvcMixerDialog *dialog)
         }
 
         title = g_strdup_printf (_("Speaker Testing for %s"),
-                                 mate_mixer_device_get_label (device));
+                                 ukui_mixer_device_get_label (device));
 
         d = gtk_dialog_new_with_buttons (title,
                                          GTK_WINDOW (dialog),
@@ -1578,8 +1578,8 @@ on_device_selection_changed (GtkTreeSelection *selection, GvcMixerDialog *dialog
 {
         GtkTreeIter          iter;
         gchar               *name;
-        MateMixerDevice     *device;
-        MateMixerSwitch     *profile_switch;
+        UkuiMixerDevice     *device;
+        UkuiMixerSwitch     *profile_switch;
 
         g_debug ("Device selection changed");
 
@@ -1598,7 +1598,7 @@ on_device_selection_changed (GtkTreeSelection *selection, GvcMixerDialog *dialog
                             HW_NAME_COLUMN, &name,
                             -1);
 
-        device = mate_mixer_context_get_device (dialog->priv->context, name);
+        device = ukui_mixer_context_get_device (dialog->priv->context, name);
         if (G_UNLIKELY (device == NULL)) {
                 g_warn_if_reached ();
                 g_free (name);
@@ -1649,7 +1649,7 @@ on_notebook_switch_page (GtkNotebook    *notebook,
                          guint           page_num,
                          GvcMixerDialog *dialog)
 {
-        MateMixerStreamControl *control;
+        UkuiMixerStreamControl *control;
 
         // XXX because this is called too early in constructor
         if (G_UNLIKELY (dialog->priv->input_bar == NULL))
@@ -1660,9 +1660,9 @@ on_notebook_switch_page (GtkNotebook    *notebook,
                 return;
 
         if (page_num == PAGE_INPUT)
-                mate_mixer_stream_control_set_monitor_enabled (control, TRUE);
+                ukui_mixer_stream_control_set_monitor_enabled (control, TRUE);
         else
-                mate_mixer_stream_control_set_monitor_enabled (control, FALSE);
+                ukui_mixer_stream_control_set_monitor_enabled (control, FALSE);
 }
 
 static void
@@ -1829,7 +1829,7 @@ create_page_effects (GvcMixerDialog *self)
          * Only look for a stored control because regular controls only exist
          * for short time periods when an event sound is played.
          */
-        if (self->priv->backend_flags & MATE_MIXER_BACKEND_HAS_STORED_CONTROLS) {
+        if (self->priv->backend_flags & UKUI_MIXER_BACKEND_HAS_STORED_CONTROLS) {
                 GvcChannelBar *bar;
                 const GList   *list;
 
@@ -1844,14 +1844,14 @@ create_page_effects (GvcMixerDialog *self)
                 gvc_channel_bar_set_name (bar, _("_Alert volume: "));
 
                 /* Find an event role stored control */
-                list = mate_mixer_context_list_stored_controls (self->priv->context);
+                list = ukui_mixer_context_list_stored_controls (self->priv->context);
                 while (list != NULL) {
-                        MateMixerStreamControl *control = MATE_MIXER_STREAM_CONTROL (list->data);
-                        MateMixerStreamControlMediaRole media_role;
+                        UkuiMixerStreamControl *control = UKUI_MIXER_STREAM_CONTROL (list->data);
+                        UkuiMixerStreamControlMediaRole media_role;
 
-                        media_role = mate_mixer_stream_control_get_media_role (control);
+                        media_role = ukui_mixer_stream_control_get_media_role (control);
 
-                        if (media_role == MATE_MIXER_STREAM_CONTROL_MEDIA_ROLE_EVENT) {
+                        if (media_role == UKUI_MIXER_STREAM_CONTROL_MEDIA_ROLE_EVENT) {
                                 bar_set_stream_control (self, GTK_WIDGET (bar), control);
                                 break;
                         }
@@ -2149,15 +2149,15 @@ gvc_mixer_dialog_constructor (GType                  type,
 
         gtk_widget_show_all (main_vbox);
 
-        list = mate_mixer_context_list_streams (self->priv->context);
+        list = ukui_mixer_context_list_streams (self->priv->context);
         while (list != NULL) {
-                add_stream (self, MATE_MIXER_STREAM (list->data));
+                add_stream (self, UKUI_MIXER_STREAM (list->data));
                 list = list->next;
         }
 
-        list = mate_mixer_context_list_devices (self->priv->context);
+        list = ukui_mixer_context_list_devices (self->priv->context);
         while (list != NULL) {
-                add_device (self, MATE_MIXER_DEVICE (list->data));
+                add_device (self, UKUI_MIXER_DEVICE (list->data));
                 list = list->next;
         }
 
@@ -2176,14 +2176,14 @@ gvc_mixer_dialog_constructor (GType                  type,
         return object;
 }
 
-static MateMixerContext *
+static UkuiMixerContext *
 gvc_mixer_dialog_get_context (GvcMixerDialog *dialog)
 {
         return dialog->priv->context;
 }
 
 static void
-gvc_mixer_dialog_set_context (GvcMixerDialog *dialog, MateMixerContext *context)
+gvc_mixer_dialog_set_context (GvcMixerDialog *dialog, UkuiMixerContext *context)
 {
         dialog->priv->context = g_object_ref (context);
 
@@ -2223,7 +2223,7 @@ gvc_mixer_dialog_set_context (GvcMixerDialog *dialog, MateMixerContext *context)
                           G_CALLBACK (on_context_stored_control_removed),
                           dialog);
 
-        dialog->priv->backend_flags = mate_mixer_context_get_backend_flags (context);
+        dialog->priv->backend_flags = ukui_mixer_context_get_backend_flags (context);
 
         g_object_notify (G_OBJECT (dialog), "context");
 }
@@ -2294,8 +2294,8 @@ gvc_mixer_dialog_class_init (GvcMixerDialogClass *klass)
                                          PROP_CONTEXT,
                                          g_param_spec_object ("context",
                                                               "Context",
-                                                              "MateMixer context",
-                                                              MATE_MIXER_TYPE_CONTEXT,
+                                                              "UkuiMixer context",
+                                                              UKUI_MIXER_TYPE_CONTEXT,
                                                               G_PARAM_READWRITE |
                                                               G_PARAM_CONSTRUCT_ONLY |
                                                               G_PARAM_STATIC_STRINGS));
@@ -2330,7 +2330,7 @@ gvc_mixer_dialog_finalize (GObject *object)
 }
 
 GvcMixerDialog *
-gvc_mixer_dialog_new (MateMixerContext *context)
+gvc_mixer_dialog_new (UkuiMixerContext *context)
 {
         return g_object_new (GVC_TYPE_MIXER_DIALOG,
                              "icon-name", "multimedia-volume-control",

@@ -28,7 +28,7 @@
 
 #include <libintl.h>
 #include <gio/gio.h>
-#include <libmatemixer/matemixer.h>
+#include <libukuimixer/ukuimixer.h>
 
 #include "gvc-applet.h"
 
@@ -52,7 +52,7 @@ main (int argc, char **argv)
         textdomain (GETTEXT_PACKAGE);
 
         gtk_init_with_args (&argc, &argv,
-                            _(" — MATE Volume Control Applet"),
+                            _(" — UKUI Volume Control Applet"),
                             entries, GETTEXT_PACKAGE,
                             &error);
 
@@ -80,8 +80,8 @@ main (int argc, char **argv)
                 g_warning ("Applet is already running, exiting");
                 return 0;
         }
-        if (mate_mixer_init () == FALSE) {
-                g_warning ("libmatemixer initialization failed, exiting");
+        if (ukui_mixer_init () == FALSE) {
+                g_warning ("libukuimixer initialization failed, exiting");
                 return 1;
         }
 

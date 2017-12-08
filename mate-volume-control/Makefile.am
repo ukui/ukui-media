@@ -1,8 +1,8 @@
 NULL =
 
 bin_PROGRAMS = 						\
-	mate-volume-control-applet			\
-	mate-volume-control				\
+	ukui-volume-control-applet			\
+	ukui-volume-control				\
 	$(NULL)
 
 AM_CPPFLAGS =						\
@@ -14,19 +14,19 @@ AM_CPPFLAGS =						\
 	-DSOUND_SET_DIR="\"$(pkgdatadir)/sounds\""	\
 	$(NULL)
 
-noinst_LTLIBRARIES = libmatevolumecontrol.la
-libmatevolumecontrol_la_SOURCES =			\
+noinst_LTLIBRARIES = libukuivolumecontrol.la
+libukuivolumecontrol_la_SOURCES =			\
 	gvc-channel-bar.h				\
 	gvc-channel-bar.c				\
 	$(NULL)
 
-mate_volume_control_applet_LDADD =			\
+ukui_volume_control_applet_LDADD =			\
 	-lm						\
-	libmatevolumecontrol.la				\
+	libukuivolumecontrol.la				\
 	$(VOLUME_CONTROL_LIBS)				\
 	$(NULL)
 
-mate_volume_control_applet_SOURCES =			\
+ukui_volume_control_applet_SOURCES =			\
 	gvc-stream-status-icon.h			\
 	gvc-stream-status-icon.c			\
 	gvc-applet.h					\
@@ -34,13 +34,13 @@ mate_volume_control_applet_SOURCES =			\
 	applet-main.c					\
 	$(NULL)
 
-mate_volume_control_LDADD =				\
+ukui_volume_control_LDADD =				\
 	-lm						\
-	libmatevolumecontrol.la				\
+	libukuivolumecontrol.la				\
 	$(VOLUME_CONTROL_LIBS)				\
 	$(NULL)
 
-mate_volume_control_SOURCES =				\
+ukui_volume_control_SOURCES =				\
 	gvc-balance-bar.h				\
 	gvc-balance-bar.c				\
 	gvc-level-bar.h					\

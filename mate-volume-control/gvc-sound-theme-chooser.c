@@ -56,7 +56,7 @@ static void     gvc_sound_theme_chooser_dispose   (GObject            *object);
 
 G_DEFINE_TYPE (GvcSoundThemeChooser, gvc_sound_theme_chooser, GTK_TYPE_BOX)
 
-#define KEY_SOUNDS_SCHEMA          "org.mate.sound"
+#define KEY_SOUNDS_SCHEMA          "org.ukui.sound"
 #define EVENT_SOUNDS_KEY           "event-sounds"
 #define INPUT_SOUNDS_KEY           "input-feedback-sounds"
 #define SOUND_THEME_KEY            "theme-name"
@@ -734,7 +734,7 @@ play_preview_for_path (GvcSoundThemeChooser *chooser, GtkTreePath *path)
                                                 CA_PROP_CANBERRA_XDG_THEME_NAME, parent_theme,
                                                 CA_PROP_EVENT_DESCRIPTION, _("Testing event sound"),
                                                 CA_PROP_CANBERRA_CACHE_CONTROL, "never",
-                                                CA_PROP_APPLICATION_ID, "org.mate.VolumeControl",
+                                                CA_PROP_APPLICATION_ID, "org.ukui.VolumeControl",
 #ifdef CA_PROP_CANBERRA_ENABLE
                                                 CA_PROP_CANBERRA_ENABLE, "1",
 #endif
@@ -745,7 +745,7 @@ play_preview_for_path (GvcSoundThemeChooser *chooser, GtkTreePath *path)
                                                 CA_PROP_EVENT_ID, "bell-window-system",
                                                 CA_PROP_EVENT_DESCRIPTION, _("Testing event sound"),
                                                 CA_PROP_CANBERRA_CACHE_CONTROL, "never",
-                                                CA_PROP_APPLICATION_ID, "org.mate.VolumeControl",
+                                                CA_PROP_APPLICATION_ID, "org.ukui.VolumeControl",
 #ifdef CA_PROP_CANBERRA_ENABLE
                                                 CA_PROP_CANBERRA_ENABLE, "1",
 #endif
@@ -757,7 +757,7 @@ play_preview_for_path (GvcSoundThemeChooser *chooser, GtkTreePath *path)
                                         CA_PROP_MEDIA_FILENAME, id,
                                         CA_PROP_EVENT_DESCRIPTION, _("Testing event sound"),
                                         CA_PROP_CANBERRA_CACHE_CONTROL, "never",
-                                        CA_PROP_APPLICATION_ID, "org.mate.VolumeControl",
+                                        CA_PROP_APPLICATION_ID, "org.ukui.VolumeControl",
 #ifdef CA_PROP_CANBERRA_ENABLE
                                         CA_PROP_CANBERRA_ENABLE, "1",
 #endif

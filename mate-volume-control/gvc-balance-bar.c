@@ -25,7 +25,7 @@
 #include <gtk/gtk.h>
 
 #include <canberra-gtk.h>
-#include <libmatemixer/matemixer.h>
+#include <libukuimixer/ukuimixer.h>
 
 #include "gvc-balance-bar.h"
 
@@ -49,7 +49,7 @@ struct _GvcBalanceBarPrivate
         GtkAdjustment   *adjustment;
         GtkSizeGroup    *size_group;
         gboolean         symmetric;
-        MateMixerStreamControl *control;
+        UkuiMixerStreamControl *control;
         gint             lfe_channel;
 };
 
@@ -199,15 +199,15 @@ update_balance_value (GvcBalanceBar *bar)
 
         switch (bar->priv->btype) {
         case BALANCE_TYPE_RL:
-                value = mate_mixer_stream_control_get_balance (bar->priv->control);
+                value = ukui_mixer_stream_control_get_balance (bar->priv->control);
                 g_debug ("Balance value changed to %.2f", value);
                 break;
         case BALANCE_TYPE_FR:
-                value = mate_mixer_stream_control_get_fade (bar->priv->control);
+                value = ukui_mixer_stream_control_get_fade (bar->priv->control);
                 g_debug ("Fade value changed to %.2f", value);
                 break;
         case BALANCE_TYPE_LFE:
-                value = mate_mixer_stream_control_get_channel_volume (bar->priv->control,
+                value = ukui_mixer_stream_control_get_channel_volume (bar->priv->control,
                                                                       bar->priv->lfe_channel);
 
                 g_debug ("Subwoofer volume changed to %.0f", value);
@@ -218,7 +218,7 @@ update_balance_value (GvcBalanceBar *bar)
 }
 
 static void
-on_balance_value_changed (MateMixerStream *stream,
+on_balance_value_changed (UkuiMixerStream *stream,
                           GParamSpec      *pspec,
                           GvcBalanceBar   *bar)
 {
@@ -226,15 +226,15 @@ on_balance_value_changed (MateMixerStream *stream,
 }
 
 static gint
-find_stream_lfe_channel (MateMixerStreamControl *control)
+find_stream_lfe_channel (UkuiMixerStreamControl *control)
 {
         guint i;
 
-        for (i = 0; i < mate_mixer_stream_control_get_num_channels (control); i++) {
-                MateMixerChannelPosition position;
+        for (i = 0; i < ukui_mixer_stream_control_get_num_channels (control); i++) {
+                UkuiMixerChannelPosition position;
 
-                position = mate_mixer_stream_control_get_channel_position (control, i);
-                if (position == MATE_MIXER_CHANNEL_LFE)
+                position = ukui_mixer_stream_control_get_channel_position (control, i);
+                if (position == UKUI_MIXER_CHANNEL_LFE)
                         return i;
         }
 
@@ -242,10 +242,10 @@ find_stream_lfe_channel (MateMixerStreamControl *control)
 }
 
 static void
-gvc_balance_bar_set_control (GvcBalanceBar *bar, MateMixerStreamControl *control)
+gvc_balance_bar_set_control (GvcBalanceBar *bar, UkuiMixerStreamControl *control)
 {
         g_return_if_fail (GVC_BALANCE_BAR (bar));
-        g_return_if_fail (MATE_MIXER_IS_STREAM_CONTROL (control));
+        g_return_if_fail (UKUI_MIXER_IS_STREAM_CONTROL (control));
 
         if (bar->priv->control != NULL) {
                 g_signal_handlers_disconnect_by_func (G_OBJECT (bar->priv->control),
@@ -260,8 +260,8 @@ gvc_balance_bar_set_control (GvcBalanceBar *bar, MateMixerStreamControl *control
                 gdouble minimum;
                 gdouble maximum;
 
-                minimum = mate_mixer_stream_control_get_min_volume (bar->priv->control);
-                maximum = mate_mixer_stream_control_get_normal_volume (bar->priv->control);
+                minimum = ukui_mixer_stream_control_get_min_volume (bar->priv->control);
+                maximum = ukui_mixer_stream_control_get_normal_volume (bar->priv->control);
 
                 /* Configure the adjustment for the volume limits of the current
                  * stream.
@@ -420,8 +420,8 @@ gvc_balance_bar_class_init (GvcBalanceBarClass *klass)
         properties[PROP_CONTROL] =
                 g_param_spec_object ("control",
                                      "Control",
-                                     "MateMixer stream control",
-                                     MATE_MIXER_TYPE_STREAM_CONTROL,
+                                     "UkuiMixer stream control",
+                                     UKUI_MIXER_TYPE_STREAM_CONTROL,
                                      G_PARAM_READWRITE |
                                      G_PARAM_STATIC_STRINGS);
 
@@ -490,13 +490,13 @@ on_adjustment_value_changed (GtkAdjustment *adjustment, GvcBalanceBar *bar)
 
         switch (bar->priv->btype) {
         case BALANCE_TYPE_RL:
-                mate_mixer_stream_control_set_balance (bar->priv->control, value);
+                ukui_mixer_stream_control_set_balance (bar->priv->control, value);
                 break;
         case BALANCE_TYPE_FR:
-                mate_mixer_stream_control_set_fade (bar->priv->control, value);
+                ukui_mixer_stream_control_set_fade (bar->priv->control, value);
                 break;
         case BALANCE_TYPE_LFE:
-                mate_mixer_stream_control_set_channel_volume (bar->priv->control,
+                ukui_mixer_stream_control_set_channel_volume (bar->priv->control,
                                                       bar->priv->lfe_channel,
                                                       value);
                 break;
@@ -527,7 +527,7 @@ gvc_balance_bar_dispose (GObject *object)
 }
 
 GtkWidget *
-gvc_balance_bar_new (MateMixerStreamControl *control, GvcBalanceType btype)
+gvc_balance_bar_new (UkuiMixerStreamControl *control, GvcBalanceType btype)
 {
         return g_object_new (GVC_TYPE_BALANCE_BAR,
                             "balance-type", btype,

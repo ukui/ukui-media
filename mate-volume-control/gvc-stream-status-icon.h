@@ -24,7 +24,7 @@
 
 #include <glib.h>
 #include <glib-object.h>
-#include <libmatemixer/matemixer.h>
+#include <libukuimixer/ukuimixer.h>
 
 G_BEGIN_DECLS
 
@@ -52,7 +52,7 @@ struct _GvcStreamStatusIconClass
 
 GType                 gvc_stream_status_icon_get_type         (void) G_GNUC_CONST;
 
-GvcStreamStatusIcon * gvc_stream_status_icon_new              (MateMixerStreamControl *control,
+GvcStreamStatusIcon * gvc_stream_status_icon_new              (UkuiMixerStreamControl *control,
                                                                const gchar           **icon_names);
 
 void                  gvc_stream_status_icon_set_icon_names   (GvcStreamStatusIcon    *icon,
@@ -61,7 +61,7 @@ void                  gvc_stream_status_icon_set_display_name (GvcStreamStatusIc
                                                                   const gchar         *display_name);
 
 void                  gvc_stream_status_icon_set_control      (GvcStreamStatusIcon    *icon,
-                                                               MateMixerStreamControl *control);
+                                                               UkuiMixerStreamControl *control);
 
 G_END_DECLS
 

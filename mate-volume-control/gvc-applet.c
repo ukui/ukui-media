@@ -27,7 +27,7 @@
 #include <glib-object.h>
 #include <gtk/gtk.h>
 
-#include <libmatemixer/matemixer.h>
+#include <libukuimixer/ukuimixer.h>
 
 #include "gvc-applet.h"
 #include "gvc-stream-status-icon.h"
@@ -55,8 +55,8 @@ struct _GvcAppletPrivate
         GvcStreamStatusIcon *icon_input;
         GvcStreamStatusIcon *icon_output;
         gboolean             running;
-        MateMixerContext    *context;
-        MateMixerStream     *input;
+        UkuiMixerContext    *context;
+        UkuiMixerStream     *input;
 };
 
 static void gvc_applet_class_init (GvcAppletClass *klass);
@@ -67,7 +67,7 @@ G_DEFINE_TYPE (GvcApplet, gvc_applet, G_TYPE_OBJECT)
 static void
 update_icon_input (GvcApplet *applet)
 {
-        MateMixerStreamControl *control = NULL;
+        UkuiMixerStreamControl *control = NULL;
         gboolean                show = FALSE;
 
         /* Enable the input icon in case there is an input stream present and there
@@ -75,26 +75,26 @@ update_icon_input (GvcApplet *applet)
         if (applet->priv->input != NULL) {
                 const gchar *app_id;
                 const GList *inputs =
-                        mate_mixer_stream_list_controls (applet->priv->input);
+                        ukui_mixer_stream_list_controls (applet->priv->input);
 
-                control = mate_mixer_stream_get_default_control (applet->priv->input);
+                control = ukui_mixer_stream_get_default_control (applet->priv->input);
 
                 while (inputs != NULL) {
-                        MateMixerStreamControl    *input =
-                                MATE_MIXER_STREAM_CONTROL (inputs->data);
-                        MateMixerStreamControlRole role =
-                                mate_mixer_stream_control_get_role (input);
+                        UkuiMixerStreamControl    *input =
+                                UKUI_MIXER_STREAM_CONTROL (inputs->data);
+                        UkuiMixerStreamControlRole role =
+                                ukui_mixer_stream_control_get_role (input);
 
-                        if (role == MATE_MIXER_STREAM_CONTROL_ROLE_APPLICATION) {
-                                MateMixerAppInfo *app_info =
-                                        mate_mixer_stream_control_get_app_info (input);
+                        if (role == UKUI_MIXER_STREAM_CONTROL_ROLE_APPLICATION) {
+                                UkuiMixerAppInfo *app_info =
+                                        ukui_mixer_stream_control_get_app_info (input);
 
-                                app_id = mate_mixer_app_info_get_id (app_info);
+                                app_id = ukui_mixer_app_info_get_id (app_info);
                                 if (app_id == NULL) {
                                         /* A recording application which has no
                                          * identifier set */
                                         g_debug ("Found a recording application control %s",
-                                                 mate_mixer_stream_control_get_label (input));
+                                                 ukui_mixer_stream_control_get_label (input));
 
                                         if G_UNLIKELY (control == NULL) {
                                                 /* In the unlikely case when there is no
@@ -106,7 +106,7 @@ update_icon_input (GvcApplet *applet)
                                         break;
                                 }
 
-                                if (strcmp (app_id, "org.mate.VolumeControl") != 0 &&
+                                if (strcmp (app_id, "org.ukui.VolumeControl") != 0 &&
                                     strcmp (app_id, "org.gnome.VolumeControl") != 0 &&
                                     strcmp (app_id, "org.PulseAudio.pavucontrol") != 0) {
                                         g_debug ("Found a recording application %s", app_id);
@@ -135,12 +135,12 @@ update_icon_input (GvcApplet *applet)
 static void
 update_icon_output (GvcApplet *applet)
 {
-        MateMixerStream        *stream;
-        MateMixerStreamControl *control = NULL;
+        UkuiMixerStream        *stream;
+        UkuiMixerStreamControl *control = NULL;
 
-        stream = mate_mixer_context_get_default_output_stream (applet->priv->context);
+        stream = ukui_mixer_context_get_default_output_stream (applet->priv->context);
         if (stream != NULL)
-                control = mate_mixer_stream_get_default_control (stream);
+                control = ukui_mixer_stream_get_default_control (stream);
 
         gvc_stream_status_icon_set_control (applet->priv->icon_output, control);
 
@@ -157,19 +157,19 @@ update_icon_output (GvcApplet *applet)
 }
 
 static void
-on_input_stream_control_added (MateMixerStream *stream,
+on_input_stream_control_added (UkuiMixerStream *stream,
                                const gchar     *name,
                                GvcApplet       *applet)
 {
-        MateMixerStreamControl *control;
+        UkuiMixerStreamControl *control;
 
-        control = mate_mixer_stream_get_control (stream, name);
+        control = ukui_mixer_stream_get_control (stream, name);
         if G_LIKELY (control != NULL) {
-                MateMixerStreamControlRole role =
-                        mate_mixer_stream_control_get_role (control);
+                UkuiMixerStreamControlRole role =
+                        ukui_mixer_stream_control_get_role (control);
 
                 /* Non-application input control doesn't affect the icon */
-                if (role != MATE_MIXER_STREAM_CONTROL_ROLE_APPLICATION)
+                if (role != UKUI_MIXER_STREAM_CONTROL_ROLE_APPLICATION)
                         return;
         }
 
@@ -180,7 +180,7 @@ on_input_stream_control_added (MateMixerStream *stream,
 }
 
 static void
-on_input_stream_control_removed (MateMixerStream *stream,
+on_input_stream_control_removed (UkuiMixerStream *stream,
                                  const gchar     *name,
                                  GvcApplet       *applet)
 {
@@ -192,9 +192,9 @@ on_input_stream_control_removed (MateMixerStream *stream,
 static gboolean
 update_default_input_stream (GvcApplet *applet)
 {
-        MateMixerStream *stream;
+        UkuiMixerStream *stream;
 
-        stream = mate_mixer_context_get_default_input_stream (applet->priv->context);
+        stream = ukui_mixer_context_get_default_input_stream (applet->priv->context);
         if (stream == applet->priv->input)
                 return FALSE;
 
@@ -222,18 +222,18 @@ update_default_input_stream (GvcApplet *applet)
 }
 
 static void
-on_context_state_notify (MateMixerContext *context,
+on_context_state_notify (UkuiMixerContext *context,
                          GParamSpec       *pspec,
                          GvcApplet        *applet)
 {
-        MateMixerState state = mate_mixer_context_get_state (context);
+        UkuiMixerState state = ukui_mixer_context_get_state (context);
 
         switch (state) {
-        case MATE_MIXER_STATE_FAILED:
+        case UKUI_MIXER_STATE_FAILED:
                 g_warning ("Failed to connect to a sound system");
                 break;
 
-        case MATE_MIXER_STATE_READY:
+        case UKUI_MIXER_STATE_READY:
                 update_default_input_stream (applet);
 
                 /* Each status change may affect the visibility of the icons */
@@ -246,7 +246,7 @@ on_context_state_notify (MateMixerContext *context,
 }
 
 static void
-on_context_default_input_stream_notify (MateMixerContext *context,
+on_context_default_input_stream_notify (UkuiMixerContext *context,
                                         GParamSpec       *pspec,
                                         GvcApplet        *applet)
 {
@@ -257,7 +257,7 @@ on_context_default_input_stream_notify (MateMixerContext *context,
 }
 
 static void
-on_context_default_output_stream_notify (MateMixerContext *control,
+on_context_default_output_stream_notify (UkuiMixerContext *control,
                                          GParamSpec       *pspec,
                                          GvcApplet        *applet)
 {
@@ -272,7 +272,7 @@ gvc_applet_start (GvcApplet *applet)
         if G_UNLIKELY (applet->priv->running == TRUE)
                 return;
 
-        if G_UNLIKELY (mate_mixer_context_open (applet->priv->context) == FALSE) {
+        if G_UNLIKELY (ukui_mixer_context_open (applet->priv->context) == FALSE) {
                 /* Normally this should never happen, in the worst case we
                  * should end up with the Null module */
                 g_warning ("Failed to connect to a sound system");
@@ -327,14 +327,14 @@ gvc_applet_init (GvcApplet *applet)
         gtk_status_icon_set_title (GTK_STATUS_ICON (applet->priv->icon_output),
                                    _("Sound Output Volume"));
 
-        applet->priv->context = mate_mixer_context_new ();
+        applet->priv->context = ukui_mixer_context_new ();
 
-        mate_mixer_context_set_app_name (applet->priv->context,
-                                         _("MATE Volume Control Applet"));
+        ukui_mixer_context_set_app_name (applet->priv->context,
+                                         _("UKUI Volume Control Applet"));
 
-        mate_mixer_context_set_app_id (applet->priv->context, GVC_APPLET_DBUS_NAME);
-        mate_mixer_context_set_app_version (applet->priv->context, VERSION);
-        mate_mixer_context_set_app_icon (applet->priv->context, "multimedia-volume-control");
+        ukui_mixer_context_set_app_id (applet->priv->context, GVC_APPLET_DBUS_NAME);
+        ukui_mixer_context_set_app_version (applet->priv->context, VERSION);
+        ukui_mixer_context_set_app_icon (applet->priv->context, "multimedia-volume-control");
 
         g_signal_connect (G_OBJECT (applet->priv->context),
                           "notify::state",

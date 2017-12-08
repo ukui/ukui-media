@@ -25,11 +25,11 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include <libmatemixer/matemixer.h>
+#include <libukuimixer/ukuimixer.h>
 
 G_BEGIN_DECLS
 
-#define GVC_DIALOG_DBUS_NAME          "org.mate.VolumeControl"
+#define GVC_DIALOG_DBUS_NAME          "org.ukui.VolumeControl"
 
 #define GVC_TYPE_MIXER_DIALOG         (gvc_mixer_dialog_get_type ())
 #define GVC_MIXER_DIALOG(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GVC_TYPE_MIXER_DIALOG, GvcMixerDialog))
@@ -55,7 +55,7 @@ struct _GvcMixerDialogClass
 
 GType               gvc_mixer_dialog_get_type            (void) G_GNUC_CONST;
 
-GvcMixerDialog *    gvc_mixer_dialog_new                 (MateMixerContext *context);
+GvcMixerDialog *    gvc_mixer_dialog_new                 (UkuiMixerContext *context);
 
 gboolean            gvc_mixer_dialog_set_page            (GvcMixerDialog   *dialog,
                                                           const gchar      *page);

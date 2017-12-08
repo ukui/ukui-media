@@ -24,7 +24,7 @@
 #include <glib-object.h>
 #include <gtk/gtk.h>
 
-#include <libmatemixer/matemixer.h>
+#include <libukuimixer/ukuimixer.h>
 
 #include "gvc-combo-box.h"
 
@@ -39,7 +39,7 @@ struct _GvcComboBoxPrivate
         GtkWidget       *button;
         GtkTreeModel    *model;
         GtkWidget       *combobox;
-        MateMixerSwitch *swtch;
+        UkuiMixerSwitch *swtch;
 };
 
 enum {
@@ -73,7 +73,7 @@ static void gvc_combo_box_dispose    (GObject          *object);
 
 G_DEFINE_TYPE (GvcComboBox, gvc_combo_box, GTK_TYPE_BOX)
 
-MateMixerSwitch *
+UkuiMixerSwitch *
 gvc_combo_box_get_switch (GvcComboBox *combobox)
 {
         g_return_val_if_fail (GVC_IS_COMBO_BOX (combobox), NULL);
@@ -98,23 +98,23 @@ gvc_combo_box_set_size_group (GvcComboBox  *combobox,
 }
 
 static void
-on_switch_active_option_notify (MateMixerSwitch *swtch,
+on_switch_active_option_notify (UkuiMixerSwitch *swtch,
                                 GParamSpec      *pspec,
                                 GvcComboBox     *combobox)
 {
         GtkTreeIter            iter;
-        MateMixerSwitchOption *active;
+        UkuiMixerSwitchOption *active;
         gboolean               cont;
         const gchar           *name;
 
-        active = mate_mixer_switch_get_active_option (swtch);
+        active = ukui_mixer_switch_get_active_option (swtch);
         if G_UNLIKELY (active == NULL) {
                 g_warn_if_reached ();
                 return;
         }
 
         /* Select the newly activated switch option in the combo box */
-        name = mate_mixer_switch_option_get_name (active);
+        name = ukui_mixer_switch_option_get_name (active);
         cont = gtk_tree_model_get_iter_first (combobox->priv->model, &iter);
         while (cont == TRUE) {
                 gchar *current;
@@ -135,29 +135,29 @@ on_switch_active_option_notify (MateMixerSwitch *swtch,
 }
 
 static void
-gvc_combo_box_set_switch (GvcComboBox *combobox, MateMixerSwitch *swtch)
+gvc_combo_box_set_switch (GvcComboBox *combobox, UkuiMixerSwitch *swtch)
 {
-        MateMixerSwitchOption *active;
+        UkuiMixerSwitchOption *active;
         const GList           *options;
 
         g_return_if_fail (GVC_IS_COMBO_BOX (combobox));
-        g_return_if_fail (MATE_MIXER_IS_SWITCH (swtch));
+        g_return_if_fail (UKUI_MIXER_IS_SWITCH (swtch));
 
         combobox->priv->swtch = g_object_ref (swtch);
 
-        active  = mate_mixer_switch_get_active_option (swtch);
-        options = mate_mixer_switch_list_options (swtch);
+        active  = ukui_mixer_switch_get_active_option (swtch);
+        options = ukui_mixer_switch_list_options (swtch);
         while (options != NULL) {
                 GtkTreeIter            iter;
-                MateMixerSwitchOption *option = MATE_MIXER_SWITCH_OPTION (options->data);
+                UkuiMixerSwitchOption *option = UKUI_MIXER_SWITCH_OPTION (options->data);
 
                 gtk_list_store_insert_with_values (GTK_LIST_STORE (combobox->priv->model),
                                                    &iter,
                                                    G_MAXINT,
                                                    COL_NAME,
-                                                   mate_mixer_switch_option_get_name (option),
+                                                   ukui_mixer_switch_option_get_name (option),
                                                    COL_HUMAN_NAME,
-                                                   mate_mixer_switch_option_get_label (option),
+                                                   ukui_mixer_switch_option_get_label (option),
                                                    -1);
 
                 /* Select the currently active option of the switch */
@@ -240,8 +240,8 @@ gvc_combo_box_class_init (GvcComboBoxClass *klass)
         properties[PROP_SWITCH] =
                 g_param_spec_object ("switch",
                                      "switch",
-                                     "The MateMixerSwitch",
-                                     MATE_MIXER_TYPE_SWITCH,
+                                     "The UkuiMixerSwitch",
+                                     UKUI_MIXER_TYPE_SWITCH,
                                      G_PARAM_READWRITE |
                                      G_PARAM_CONSTRUCT_ONLY |
                                      G_PARAM_STATIC_STRINGS);
@@ -284,7 +284,7 @@ gvc_combo_box_class_init (GvcComboBoxClass *klass)
                               g_cclosure_marshal_VOID__VOID,
                               G_TYPE_NONE,
                               1,
-                              MATE_MIXER_TYPE_SWITCH_OPTION);
+                              UKUI_MIXER_TYPE_SWITCH_OPTION);
 
         signals[BUTTON_CLICKED] =
                 g_signal_new ("button-clicked",
@@ -305,7 +305,7 @@ on_combo_box_changed (GtkComboBox *widget, GvcComboBox *combobox)
 {
         GtkTreeIter            iter;
         gchar                 *name;
-        MateMixerSwitchOption *option;
+        UkuiMixerSwitchOption *option;
 
         if G_UNLIKELY (gtk_combo_box_get_active_iter (GTK_COMBO_BOX (widget), &iter) == FALSE)
                 return;
@@ -314,7 +314,7 @@ on_combo_box_changed (GtkComboBox *widget, GvcComboBox *combobox)
                             COL_NAME, &name,
                             -1);
 
-        option = mate_mixer_switch_get_option (combobox->priv->swtch, name);
+        option = ukui_mixer_switch_get_option (combobox->priv->swtch, name);
         if G_UNLIKELY (option == NULL) {
                 g_warn_if_reached ();
                 g_free (name);
@@ -324,7 +324,7 @@ on_combo_box_changed (GtkComboBox *widget, GvcComboBox *combobox)
         /* Inform that we are about to change the active option of the switch */
         g_signal_emit (combobox, signals[CHANGING], 0, option);
 
-        mate_mixer_switch_set_active_option (combobox->priv->swtch, option);
+        ukui_mixer_switch_set_active_option (combobox->priv->swtch, option);
         g_free (name);
 }
 
@@ -443,7 +443,7 @@ gvc_combo_box_dispose (GObject *object)
 }
 
 GtkWidget *
-gvc_combo_box_new (MateMixerSwitch *swtch, const gchar *label)
+gvc_combo_box_new (UkuiMixerSwitch *swtch, const gchar *label)
 {
         return g_object_new (GVC_TYPE_COMBO_BOX,
                              "switch", swtch,
