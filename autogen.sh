@@ -16,9 +16,9 @@ USE_COMMON_DOC_BUILD=yes
     exit 1
 }
 
-which ukui-autogen || {
-    echo "You need to install ukui-common 1.2.1 or higher"
+which mate-autogen || {
+    echo "You need to install mate-common 1.2.1 or higher"
     exit 1
 }
 
-. ukui-autogen "$@"
+. mate-autogen "$@"
