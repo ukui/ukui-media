@@ -1,18 +1,18 @@
 # List of source files containing translatable strings.
 # Please keep this file sorted alphabetically.
 [encoding: UTF-8]
-data/mate-volume-control.desktop.in.in
-data/mate-volume-control-applet.desktop.in
-data/sounds/mate-sounds-default.xml.in.in
-mate-volume-control/applet-main.c
-mate-volume-control/dialog-main.c
-mate-volume-control/gvc-applet.c
-mate-volume-control/gvc-balance-bar.c
-mate-volume-control/gvc-channel-bar.c
-mate-volume-control/gvc-combo-box.c
-mate-volume-control/gvc-mixer-dialog.c
-mate-volume-control/gvc-sound-theme-chooser.c
-mate-volume-control/gvc-speaker-test.c
-mate-volume-control/gvc-stream-status-icon.c
-mate-volume-control/gvc-utils.c
-mate-volume-control/sound-theme-file-utils.c
+data/ukui-volume-control.desktop.in.in
+data/ukui-volume-control-applet.desktop.in
+data/sounds/ukui-sounds-default.xml.in.in
+ukui-volume-control/applet-main.c
+ukui-volume-control/dialog-main.c
+ukui-volume-control/gvc-applet.c
+ukui-volume-control/gvc-balance-bar.c
+ukui-volume-control/gvc-channel-bar.c
+ukui-volume-control/gvc-combo-box.c
+ukui-volume-control/gvc-mixer-dialog.c
+ukui-volume-control/gvc-sound-theme-chooser.c
+ukui-volume-control/gvc-speaker-test.c
+ukui-volume-control/gvc-stream-status-icon.c
+ukui-volume-control/gvc-utils.c
+ukui-volume-control/sound-theme-file-utils.c
