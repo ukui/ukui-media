@@ -1,8 +1,8 @@
 AC_PREREQ(2.60)
 
-AC_INIT([mate-media],
+AC_INIT([ukui-media],
         [1.19.1],
-        [http://www.mate-desktop.org/])
+        [http://www.ukui-desktop.org/])
 
 AC_CONFIG_AUX_DIR([build-aux])
 
@@ -36,8 +36,8 @@ GLIB_REQUIRED_VERSION=2.36.0
 GIO_REQUIRED_VERSION=2.36.0
 GTK_REQUIRED_VERSION=3.14.0
 CANBERRA_REQUIRED_VERSION=0.13
-MATE_MIXER_REQUIRED_VERSION=1.10.0
-MATE_DESKTOP_REQUIRED_VERSION=1.17.0
+UKUI_MIXER_REQUIRED_VERSION=1.10.0
+UKUI_DESKTOP_REQUIRED_VERSION=1.17.0
 
 dnl=======================================================================
 dnl Check for the volume control modules
@@ -49,8 +49,8 @@ PKG_CHECK_MODULES(VOLUME_CONTROL,
                   gio-2.0 >= $GIO_REQUIRED_VERSION
                   libcanberra-gtk3 >= $CANBERRA_REQUIRED_VERSION
                   libxml-2.0
-                  mate-desktop-2.0 >= $MATE_DESKTOP_REQUIRED_VERSION
-                  libmatemixer >= $MATE_MIXER_REQUIRED_VERSION
+                  ukui-desktop-2.0 >= $UKUI_DESKTOP_REQUIRED_VERSION
+                  libukuimixer >= $UKUI_MIXER_REQUIRED_VERSION
 )
 
 AC_SUBST(VOLUME_CONTROL_CFLAGS)
@@ -66,7 +66,7 @@ dnl=======================================================================
 dnl i18n
 dnl=======================================================================
 
-GETTEXT_PACKAGE=mate-media
+GETTEXT_PACKAGE=ukui-media
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [Define to the Gettext package name])
 AM_GLIB_GNU_GETTEXT
@@ -77,9 +77,9 @@ dnl ---------------------------------------------------------------------------
 
 m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
 
-MATE_MAINTAINER_MODE_DEFINES
-MATE_COMPILE_WARNINGS([maximum])
-MATE_CXX_WARNINGS
+UKUI_MAINTAINER_MODE_DEFINES
+UKUI_COMPILE_WARNINGS([maximum])
+UKUI_CXX_WARNINGS
 
 AC_ARG_ENABLE(deprecated,
         [AS_HELP_STRING([--enable-deprecated],
@@ -136,7 +136,7 @@ AC_SUBST(CFLAGS)
 AC_CONFIG_FILES([
 Makefile
 data/Makefile
-data/mate-volume-control.desktop.in
+data/ukui-volume-control.desktop.in
 data/icons/Makefile
 data/icons/16x16/Makefile
 data/icons/16x16/status/Makefile
@@ -152,7 +152,7 @@ data/icons/scalable/status/Makefile
 data/sounds/Makefile
 man/Makefile
 po/Makefile.in
-mate-volume-control/Makefile
+ukui-volume-control/Makefile
 ])
 
 AC_OUTPUT

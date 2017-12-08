@@ -1,6 +1,6 @@
 NULL =
 
-SUBDIRS = data po man mate-volume-control
+SUBDIRS = data po man ukui-volume-control
 
 DISTCHECK_CONFIGURE_FLAGS =			\
 	--enable-more-warnings			\
@@ -11,7 +11,7 @@ DIST_SUBDIRS =					\
 	data					\
 	po 					\
 	man					\
-	mate-volume-control			\
+	ukui-volume-control			\
 	$(NULL)
 
 EXTRA_DIST =					\

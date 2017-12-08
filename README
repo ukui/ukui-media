@@ -1,11 +1,11 @@
-These are the MATE media tools for MATE:
+These are the UKUI media tools for UKUI:
 
-mate-volume-control  - MATE volume control application and applet
+ukui-volume-control  - UKUI volume control application and applet
 
 Refer to the following files for license information for each sub-component
-of mate-media:
+of ukui-media:
 
-mate-volume-control  - COPYING
+ukui-volume-control  - COPYING
 documentation        - COPYING-DOCS
 
-MATE-Media is a fork of GNOME-Media.
+UKUI-Media is a fork of GNOME-Media.
