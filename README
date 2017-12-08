@@ -1,0 +1,11 @@
+These are the MATE media tools for MATE:
+
+mate-volume-control  - MATE volume control application and applet
+
+Refer to the following files for license information for each sub-component
+of mate-media:
+
+mate-volume-control  - COPYING
+documentation        - COPYING-DOCS
+
+MATE-Media is a fork of GNOME-Media.

@@ -1,0 +1,464 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# 
+# Translators:
+# Rahul Bhalerao <b.rahul.pm@gmail.com>, 2006
+# Sandeep Shedmake <sandeep.shedmake@gmail.com>, 2008, 2009
+# sandeeps <sshedmak@redhat.com>, 2009, 2010
+# Vaibhav S Dalvi <vaibhav.dlv@gmail.com>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: MATE Desktop Environment\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-06-17 13:33+0300\n"
+"PO-Revision-Date: 2017-09-19 11:49+0000\n"
+"Last-Translator: monsta <monsta@inbox.ru>\n"
+"Language-Team: Marathi (http://www.transifex.com/mate/MATE/language/mr/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: mr\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../data/mate-volume-control.desktop.in.in.h:1
+msgid "Sound"
+msgstr "आवाज"
+
+#: ../data/mate-volume-control.desktop.in.in.h:2
+msgid "Change sound volume and sound events"
+msgstr "आवाज ध्वनिमान व आवाज घटना बदलवा"
+
+#: ../data/mate-volume-control-applet.desktop.in.h:1
+#: ../mate-volume-control/dialog-main.c:255
+#: ../mate-volume-control/gvc-channel-bar.c:487
+#: ../mate-volume-control/gvc-speaker-test.c:434
+msgid "Volume Control"
+msgstr "ध्वनिमान नियंत्रण"
+
+#: ../data/mate-volume-control-applet.desktop.in.h:2
+msgid "Show desktop volume control"
+msgstr "डेस्कटॉप ध्वनिमान नियंत्रण दाखवा"
+
+#. Translators: This is the name of an audio file that sounds like the bark of
+#. a dog.
+#. You might want to translate it into the equivalent words of your language.
+#: ../data/sounds/mate-sounds-default.xml.in.in.h:3
+msgid "Bark"
+msgstr "बार्क"
+
+#. Translators: This is the name of an audio file that sounds like a water
+#. drip.
+#. You might want to translate it into the equivalent words of your language.
+#: ../data/sounds/mate-sounds-default.xml.in.in.h:6
+msgid "Drip"
+msgstr "ड्रिप"
+
+#. Translators: This is the name of an audio file that sounds like tapping
+#. glass.
+#. You might want to translate it into the equivalent words of your language.
+#: ../data/sounds/mate-sounds-default.xml.in.in.h:9
+msgid "Glass"
+msgstr "ग्लास्"
+
+#. Translators: This is the name of an audio file that sounds sort of like a
+#. submarine sonar ping.
+#. You might want to translate it into the equivalent words of your language.
+#: ../data/sounds/mate-sounds-default.xml.in.in.h:12
+msgid "Sonar"
+msgstr "सोनार"
+
+#: ../mate-volume-control/applet-main.c:45
+#: ../mate-volume-control/dialog-main.c:193
+msgid "Version of this application"
+msgstr "या अनुप्रयोगची आवृत्ती"
+
+#: ../mate-volume-control/applet-main.c:46
+#: ../mate-volume-control/dialog-main.c:191
+msgid "Enable debug"
+msgstr ""
+
+#: ../mate-volume-control/applet-main.c:55
+msgid " — MATE Volume Control Applet"
+msgstr "— MATE ध्वनिमान नियंत्रण ॲप्लेट"
+
+#: ../mate-volume-control/dialog-main.c:143
+msgid "Sound system is not available"
+msgstr ""
+
+#: ../mate-volume-control/dialog-main.c:165
+msgid "Waiting for sound system to respond"
+msgstr "आवाज प्रणालीच्या प्रतिसाद करीता प्रतिक्षा करत आहे"
+
+#: ../mate-volume-control/dialog-main.c:190
+msgid "Sound system backend"
+msgstr ""
+
+#: ../mate-volume-control/dialog-main.c:192
+msgid "Startup page"
+msgstr "प्रारंभ पान"
+
+#: ../mate-volume-control/dialog-main.c:202
+msgid " — MATE Volume Control"
+msgstr "— MATE ध्वनिमान नियंत्रण"
+
+#: ../mate-volume-control/gvc-applet.c:322
+#: ../mate-volume-control/gvc-mixer-dialog.c:1999
+msgid "Input"
+msgstr "इंपुट"
+
+#: ../mate-volume-control/gvc-applet.c:323
+#: ../mate-volume-control/gvc-mixer-dialog.c:2086
+msgid "Output"
+msgstr "आउटपुट"
+
+#: ../mate-volume-control/gvc-applet.c:326
+msgid "Microphone Volume"
+msgstr "ध्वनीविस्तारक पातळी"
+
+#: ../mate-volume-control/gvc-applet.c:328
+msgid "Sound Output Volume"
+msgstr "ध्वनी पातळी"
+
+#: ../mate-volume-control/gvc-applet.c:333
+msgid "MATE Volume Control Applet"
+msgstr ""
+
+#: ../mate-volume-control/gvc-balance-bar.c:140
+msgctxt "balance"
+msgid "Left"
+msgstr "डावा"
+
+#: ../mate-volume-control/gvc-balance-bar.c:141
+msgctxt "balance"
+msgid "Right"
+msgstr "उजवा"
+
+#: ../mate-volume-control/gvc-balance-bar.c:144
+msgctxt "balance"
+msgid "Rear"
+msgstr "पाठीमागचे"
+
+#: ../mate-volume-control/gvc-balance-bar.c:145
+msgctxt "balance"
+msgid "Front"
+msgstr "समारचे"
+
+#: ../mate-volume-control/gvc-balance-bar.c:148
+msgctxt "balance"
+msgid "Minimum"
+msgstr "किमान"
+
+#: ../mate-volume-control/gvc-balance-bar.c:149
+msgctxt "balance"
+msgid "Maximum"
+msgstr "कमाल"
+
+#: ../mate-volume-control/gvc-balance-bar.c:337
+msgid "_Balance:"
+msgstr "समतोल (_B):"
+
+#: ../mate-volume-control/gvc-balance-bar.c:340
+msgid "_Fade:"
+msgstr "फुसट (_F):"
+
+#: ../mate-volume-control/gvc-balance-bar.c:343
+msgid "_Subwoofer:"
+msgstr "सबवूफर (_S):"
+
+#: ../mate-volume-control/gvc-channel-bar.c:312
+msgctxt "volume"
+msgid "Unamplified"
+msgstr "विनऍप्लिफाइड्"
+
+#: ../mate-volume-control/gvc-channel-bar.c:325
+msgctxt "volume"
+msgid "100%"
+msgstr "100%"
+
+#. Mute button
+#: ../mate-volume-control/gvc-channel-bar.c:1086
+msgid "Mute"
+msgstr "मंद"
+
+#: ../mate-volume-control/gvc-combo-box.c:253
+#: ../mate-volume-control/gvc-mixer-dialog.c:1613
+msgid "_Profile:"
+msgstr "प्रोफाइल (_P):"
+
+#: ../mate-volume-control/gvc-mixer-dialog.c:355
+#: ../mate-volume-control/gvc-mixer-dialog.c:504
+msgid "Co_nnector:"
+msgstr "कनेक्टर (_n):"
+
+#. translators:
+#. * The device has been disabled
+#: ../mate-volume-control/gvc-mixer-dialog.c:1126
+msgid "Disabled"
+msgstr "अकार्यान्वीत"
+
+#. translators:
+#. * The number of sound outputs on a particular device
+#: ../mate-volume-control/gvc-mixer-dialog.c:1132
+#, c-format
+msgid "%u Output"
+msgid_plural "%u Outputs"
+msgstr[0] "%u आऊटपुट"
+msgstr[1] "%u आऊटपुटस्"
+
+#. translators:
+#. * The number of sound inputs on a particular device
+#: ../mate-volume-control/gvc-mixer-dialog.c:1141
+#, c-format
+msgid "%u Input"
+msgid_plural "%u Inputs"
+msgstr[0] "%u इंपुट"
+msgstr[1] "%u इंपुटस्"
+
+#: ../mate-volume-control/gvc-mixer-dialog.c:1504
+#: ../mate-volume-control/gvc-mixer-dialog.c:1773
+#: ../mate-volume-control/gvc-sound-theme-chooser.c:868
+msgid "Name"
+msgstr "नाव"
+
+#: ../mate-volume-control/gvc-mixer-dialog.c:1552
+#, c-format
+msgid "Speaker Testing for %s"
+msgstr "%s साठी ध्वनिक्षेपक तपासणी"
+
+#: ../mate-volume-control/gvc-mixer-dialog.c:1616
+msgid "Test Speakers"
+msgstr "चाचणी ध्वनिक्षेपक"
+
+#: ../mate-volume-control/gvc-mixer-dialog.c:1821
+msgid "Sound Effects"
+msgstr "आवाज प्रभाव"
+
+#: ../mate-volume-control/gvc-mixer-dialog.c:1844
+msgid "_Alert volume: "
+msgstr "सतर्कता ध्वनिमान (_A): "
+
+#: ../mate-volume-control/gvc-mixer-dialog.c:1913
+msgid "_Output volume: "
+msgstr "आउटपुट ध्वनिमान (_O): "
+
+#: ../mate-volume-control/gvc-mixer-dialog.c:1956
+msgid "Hardware"
+msgstr "हार्डवेअर"
+
+#: ../mate-volume-control/gvc-mixer-dialog.c:1961
+msgid "C_hoose a device to configure:"
+msgstr "संरचना करीता उपकरन नीवडा (_h):"
+
+#: ../mate-volume-control/gvc-mixer-dialog.c:1985
+#: ../mate-volume-control/gvc-mixer-dialog.c:2115
+msgid "Settings for the selected device:"
+msgstr "निवडलेल्या साधन करीता संयोजना:"
+
+#: ../mate-volume-control/gvc-mixer-dialog.c:2008
+msgid "_Input volume: "
+msgstr "इंपुट ध्वनिमान (_I): "
+
+#: ../mate-volume-control/gvc-mixer-dialog.c:2033
+msgid "Input level:"
+msgstr "इंपुट स्तर:"
+
+#: ../mate-volume-control/gvc-mixer-dialog.c:2058
+msgid "C_hoose a device for sound input:"
+msgstr "आवाज इंपुट करीता उपकरन नीवडा (_h):"
+
+#: ../mate-volume-control/gvc-mixer-dialog.c:2091
+msgid "C_hoose a device for sound output:"
+msgstr "आवाज आउटपुट करीता उपकरन निवडा (_h):"
+
+#: ../mate-volume-control/gvc-mixer-dialog.c:2140
+msgid "Applications"
+msgstr "अनुप्रयोग"
+
+#: ../mate-volume-control/gvc-mixer-dialog.c:2145
+msgid "No application is currently playing or recording audio."
+msgstr "अनुप्रयोग वर्तमानक्षणी ऑडिओ चालवत किंवा रेकॉर्ड करत आहे."
+
+#: ../mate-volume-control/gvc-mixer-dialog.c:2337
+#: ../mate-volume-control/gvc-sound-theme-chooser.c:732
+#: ../mate-volume-control/gvc-sound-theme-chooser.c:744
+#: ../mate-volume-control/gvc-sound-theme-chooser.c:756
+msgid "Sound Preferences"
+msgstr "आवाज आवड निवड"
+
+#: ../mate-volume-control/gvc-sound-theme-chooser.c:320
+msgid "No sounds"
+msgstr "आवाज नाही"
+
+#: ../mate-volume-control/gvc-sound-theme-chooser.c:441
+msgid "Built-in"
+msgstr "अंतर्भूतीत"
+
+#: ../mate-volume-control/gvc-sound-theme-chooser.c:628
+#: ../mate-volume-control/sound-theme-file-utils.c:292
+msgid "Custom"
+msgstr "स्वपसंत"
+
+#: ../mate-volume-control/gvc-sound-theme-chooser.c:735
+#: ../mate-volume-control/gvc-sound-theme-chooser.c:746
+#: ../mate-volume-control/gvc-sound-theme-chooser.c:758
+msgid "Testing event sound"
+msgstr "घटना आवाजची चाचणी करत आहे"
+
+#: ../mate-volume-control/gvc-sound-theme-chooser.c:844
+msgid "Default"
+msgstr "पूर्वनिर्धारीत"
+
+#: ../mate-volume-control/gvc-sound-theme-chooser.c:845
+msgid "From theme"
+msgstr "दृष्य कल्पना पासून"
+
+#: ../mate-volume-control/gvc-sound-theme-chooser.c:875
+msgid "Type"
+msgstr "प्रकार"
+
+#: ../mate-volume-control/gvc-sound-theme-chooser.c:1030
+msgid "Sound _theme:"
+msgstr "आवाज योजना (_t):"
+
+#: ../mate-volume-control/gvc-sound-theme-chooser.c:1043
+msgid "C_hoose an alert sound:"
+msgstr "सतर्कता आवाज नीवडा (_h):"
+
+#: ../mate-volume-control/gvc-sound-theme-chooser.c:1071
+msgid "Enable _window and button sounds"
+msgstr "पटल व बटन आवाज कार्यक्षम करा (_w)"
+
+#: ../mate-volume-control/gvc-speaker-test.c:258
+msgid "Stop"
+msgstr "बंद"
+
+#: ../mate-volume-control/gvc-speaker-test.c:258
+#: ../mate-volume-control/gvc-speaker-test.c:372
+msgid "Test"
+msgstr "चाचणी"
+
+#: ../mate-volume-control/gvc-stream-status-icon.c:205
+#, c-format
+msgid "Failed to start Sound Preferences: %s"
+msgstr "आवाज आवड निवड सुरू करण्यास अपयशी: %s"
+
+#: ../mate-volume-control/gvc-stream-status-icon.c:239
+msgid "_Mute"
+msgstr "मंद करा (_M)"
+
+#. FIXME: we lost an icon with migrating from
+#. gtk_image_menu_item_new_with_mnemonic
+#: ../mate-volume-control/gvc-stream-status-icon.c:250
+msgid "_Sound Preferences"
+msgstr "आवाज आवड निवड (_S)"
+
+#: ../mate-volume-control/gvc-stream-status-icon.c:422
+msgid "Muted at"
+msgstr ""
+
+#: ../mate-volume-control/gvc-utils.c:58
+msgid "Unknown"
+msgstr ""
+
+#. Speaker channel names
+#: ../mate-volume-control/gvc-utils.c:60
+#: ../mate-volume-control/gvc-utils.c:108
+msgid "Mono"
+msgstr ""
+
+#: ../mate-volume-control/gvc-utils.c:61
+msgid "Front Left"
+msgstr ""
+
+#: ../mate-volume-control/gvc-utils.c:62
+msgid "Front Right"
+msgstr ""
+
+#: ../mate-volume-control/gvc-utils.c:63
+msgid "Front Center"
+msgstr ""
+
+#: ../mate-volume-control/gvc-utils.c:64
+msgid "LFE"
+msgstr ""
+
+#: ../mate-volume-control/gvc-utils.c:65
+msgid "Rear Left"
+msgstr ""
+
+#: ../mate-volume-control/gvc-utils.c:66
+msgid "Rear Right"
+msgstr ""
+
+#: ../mate-volume-control/gvc-utils.c:67
+msgid "Rear Center"
+msgstr ""
+
+#: ../mate-volume-control/gvc-utils.c:68
+msgid "Front Left of Center"
+msgstr ""
+
+#: ../mate-volume-control/gvc-utils.c:69
+msgid "Front Right of Center"
+msgstr ""
+
+#: ../mate-volume-control/gvc-utils.c:70
+msgid "Side Left"
+msgstr ""
+
+#: ../mate-volume-control/gvc-utils.c:71
+msgid "Side Right"
+msgstr ""
+
+#: ../mate-volume-control/gvc-utils.c:72
+msgid "Top Front Left"
+msgstr ""
+
+#: ../mate-volume-control/gvc-utils.c:73
+msgid "Top Front Right"
+msgstr ""
+
+#: ../mate-volume-control/gvc-utils.c:74
+msgid "Top Front Center"
+msgstr ""
+
+#: ../mate-volume-control/gvc-utils.c:75
+msgid "Top Center"
+msgstr ""
+
+#: ../mate-volume-control/gvc-utils.c:76
+msgid "Top Rear Left"
+msgstr ""
+
+#: ../mate-volume-control/gvc-utils.c:77
+msgid "Top Rear Right"
+msgstr ""
+
+#: ../mate-volume-control/gvc-utils.c:78
+msgid "Top Rear Center"
+msgstr ""
+
+#: ../mate-volume-control/gvc-utils.c:113
+msgid "Stereo"
+msgstr ""
+
+#: ../mate-volume-control/gvc-utils.c:120
+msgid "Surround 4.0"
+msgstr ""
+
+#: ../mate-volume-control/gvc-utils.c:128
+msgid "Surround 4.1"
+msgstr ""
+
+#: ../mate-volume-control/gvc-utils.c:130
+msgid "Surround 5.0"
+msgstr ""
+
+#: ../mate-volume-control/gvc-utils.c:140
+msgid "Surround 5.1"
+msgstr ""
+
+#: ../mate-volume-control/gvc-utils.c:151
+msgid "Surround 7.1"
+msgstr ""
