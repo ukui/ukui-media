@@ -8,7 +8,7 @@ SUBDIRS = 		\
 	32x32 		\
 	$(NULL)
 
-gtk_update_icon_cache = gtk-update-icon-cache -f -t $(datadir)/icons/mate
+gtk_update_icon_cache = gtk-update-icon-cache -f -t $(datadir)/icons/ukui
 
 install-data-hook: update-icon-cache
 uninstall-hook: update-icon-cache
