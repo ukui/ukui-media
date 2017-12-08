@@ -10,7 +10,7 @@
 # Robert Brady <rwb197@ecs.soton.ac.uk>, 1999
 msgid ""
 msgstr ""
-"Project-Id-Version: MATE Desktop Environment\n"
+"Project-Id-Version: UKUI Desktop Environment\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-06-17 13:33+0300\n"
 "PO-Revision-Date: 2017-09-23 18:10+0000\n"

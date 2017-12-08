@@ -6,7 +6,7 @@
 # Randy Ichinose <randyichinose@gmail.com>, 2016
 msgid ""
 msgstr ""
-"Project-Id-Version: MATE Desktop Environment\n"
+"Project-Id-Version: UKUI Desktop Environment\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-06-17 13:33+0300\n"
 "PO-Revision-Date: 2017-09-23 22:29+0000\n"

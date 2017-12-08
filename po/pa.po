@@ -8,7 +8,7 @@
 # A S Alam <aalam@users.sf.net>, 2005, 2006, 2007, 2009, 2010
 msgid ""
 msgstr ""
-"Project-Id-Version: MATE Desktop Environment\n"
+"Project-Id-Version: UKUI Desktop Environment\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-06-17 13:33+0300\n"
 "PO-Revision-Date: 2017-09-19 11:49+0000\n"
