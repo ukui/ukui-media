@@ -23,13 +23,13 @@
 
 #include <glib.h>
 
-#include <libukuimixer/ukuimixer.h>
+#include <libmatemixer/matemixer.h>
 
 G_BEGIN_DECLS
 
-const gchar *gvc_channel_position_to_pulse_string  (UkuiMixerChannelPosition position);
-const gchar *gvc_channel_position_to_pretty_string (UkuiMixerChannelPosition position);
-const gchar *gvc_channel_map_to_pretty_string      (UkuiMixerStreamControl  *control);
+const gchar *gvc_channel_position_to_pulse_string  (MateMixerChannelPosition position);
+const gchar *gvc_channel_position_to_pretty_string (MateMixerChannelPosition position);
+const gchar *gvc_channel_map_to_pretty_string      (MateMixerStreamControl  *control);
 
 G_END_DECLS
 

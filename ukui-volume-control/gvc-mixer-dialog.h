@@ -25,7 +25,7 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include <libukuimixer/ukuimixer.h>
+#include <libmatemixer/matemixer.h>
 
 G_BEGIN_DECLS
 
@@ -55,7 +55,7 @@ struct _GvcMixerDialogClass
 
 GType               gvc_mixer_dialog_get_type            (void) G_GNUC_CONST;
 
-GvcMixerDialog *    gvc_mixer_dialog_new                 (UkuiMixerContext *context);
+GvcMixerDialog *    gvc_mixer_dialog_new                 (MateMixerContext *context);
 
 gboolean            gvc_mixer_dialog_set_page            (GvcMixerDialog   *dialog,
                                                           const gchar      *page);

@@ -25,8 +25,8 @@
 #include <glib-object.h>
 #include <gtk/gtk.h>
 
-#define UKUI_DESKTOP_USE_UNSTABLE_API
-#include <libukui-desktop/ukui-desktop-utils.h>
+#define MATE_DESKTOP_USE_UNSTABLE_API
+#include <libmate-desktop/mate-desktop-utils.h>
 
 #include "gvc-level-bar.h"
 #include "gvc-utils.h"
@@ -166,7 +166,7 @@ bar_calc_layout (GvcLevelBar *bar)
         gtk_style_context_get_background_color (context,
                                                 gtk_style_context_get_state (context),
                                                 &bar->priv->layout.color_bg);
-        ukui_desktop_gtk_style_get_dark_color (context,
+        mate_desktop_gtk_style_get_dark_color (context,
                                                gtk_style_context_get_state (context),
                                                &bar->priv->layout.color_dark);
 

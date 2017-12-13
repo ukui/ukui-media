@@ -28,7 +28,7 @@
 
 #include <libintl.h>
 #include <gio/gio.h>
-#include <libukuimixer/ukuimixer.h>
+#include <libmatemixer/matemixer.h>
 
 #include "gvc-applet.h"
 
@@ -80,8 +80,8 @@ main (int argc, char **argv)
                 g_warning ("Applet is already running, exiting");
                 return 0;
         }
-        if (ukui_mixer_init () == FALSE) {
-                g_warning ("libukuimixer initialization failed, exiting");
+        if (mate_mixer_init () == FALSE) {
+                g_warning ("libmatemixer initialization failed, exiting");
                 return 1;
         }
 

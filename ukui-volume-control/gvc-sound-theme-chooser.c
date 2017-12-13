@@ -56,7 +56,7 @@ static void     gvc_sound_theme_chooser_dispose   (GObject            *object);
 
 G_DEFINE_TYPE (GvcSoundThemeChooser, gvc_sound_theme_chooser, GTK_TYPE_BOX)
 
-#define KEY_SOUNDS_SCHEMA          "org.ukui.sound"
+#define KEY_SOUNDS_SCHEMA          "org.mate.sound"
 #define EVENT_SOUNDS_KEY           "event-sounds"
 #define INPUT_SOUNDS_KEY           "input-feedback-sounds"
 #define SOUND_THEME_KEY            "theme-name"

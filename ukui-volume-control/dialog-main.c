@@ -27,7 +27,7 @@
 
 #include <libintl.h>
 #include <gio/gio.h>
-#include <libukuimixer/ukuimixer.h>
+#include <libmatemixer/matemixer.h>
 
 #include "gvc-mixer-dialog.h"
 
@@ -75,7 +75,7 @@ remove_warning_dialog (void)
 }
 
 static void
-context_ready (UkuiMixerContext *context, GtkApplication *application)
+context_ready (MateMixerContext *context, GtkApplication *application)
 {
         /* The dialog might be already created, e.g. when reconnected
          * to a sound server */
@@ -121,17 +121,17 @@ context_ready (UkuiMixerContext *context, GtkApplication *application)
 }
 
 static void
-on_context_state_notify (UkuiMixerContext *context,
+on_context_state_notify (MateMixerContext *context,
                          GParamSpec       *pspec,
                          GtkApplication	  *app)
 {
-        UkuiMixerState state = ukui_mixer_context_get_state (context);
+        MateMixerState state = mate_mixer_context_get_state (context);
 
-        if (state == UKUI_MIXER_STATE_READY) {
+        if (state == MATE_MIXER_STATE_READY) {
                 remove_warning_dialog ();
                 context_ready (context, app);
         }
-        else if (state == UKUI_MIXER_STATE_FAILED) {
+        else if (state == MATE_MIXER_STATE_FAILED) {
                 GtkWidget *dialog;
 
                 remove_warning_dialog ();
@@ -183,7 +183,7 @@ main (int argc, char **argv)
 {
         GError           *error = NULL;
         gchar            *backend = NULL;
-        UkuiMixerContext *context;
+        MateMixerContext *context;
         GApplication	 *app;
 
         GOptionEntry      entries[] = {
@@ -225,22 +225,22 @@ main (int argc, char **argv)
                 return 1;
         }
 
-        if (ukui_mixer_init () == FALSE) {
-                g_warning ("libukuimixer initialization failed, exiting");
+        if (mate_mixer_init () == FALSE) {
+                g_warning ("libmatemixer initialization failed, exiting");
                 return 1;
         }
 
-        context = ukui_mixer_context_new ();
+        context = mate_mixer_context_new ();
 
         if (backend != NULL) {
                 if (strcmp (backend, "pulse") == 0)
-                        ukui_mixer_context_set_backend_type (context, UKUI_MIXER_BACKEND_PULSEAUDIO);
+                        mate_mixer_context_set_backend_type (context, MATE_MIXER_BACKEND_PULSEAUDIO);
                 else if (strcmp (backend, "alsa") == 0)
-                        ukui_mixer_context_set_backend_type (context, UKUI_MIXER_BACKEND_ALSA);
+                        mate_mixer_context_set_backend_type (context, MATE_MIXER_BACKEND_ALSA);
                 else if (strcmp (backend, "oss") == 0)
-                        ukui_mixer_context_set_backend_type (context, UKUI_MIXER_BACKEND_OSS);
+                        mate_mixer_context_set_backend_type (context, MATE_MIXER_BACKEND_OSS);
                 else if (strcmp (backend, "null") == 0)
-                        ukui_mixer_context_set_backend_type (context, UKUI_MIXER_BACKEND_NULL);
+                        mate_mixer_context_set_backend_type (context, MATE_MIXER_BACKEND_NULL);
                 else {
                         g_warning ("Invalid backend: %s", backend);
                         g_object_unref (context);
@@ -252,19 +252,19 @@ main (int argc, char **argv)
                 g_free (backend);
         }
 
-        ukui_mixer_context_set_app_name (context, _("Volume Control"));
-        ukui_mixer_context_set_app_id (context, GVC_DIALOG_DBUS_NAME);
-        ukui_mixer_context_set_app_version (context, VERSION);
-        ukui_mixer_context_set_app_icon (context, "multimedia-volume-control");
+        mate_mixer_context_set_app_name (context, _("Volume Control"));
+        mate_mixer_context_set_app_id (context, GVC_DIALOG_DBUS_NAME);
+        mate_mixer_context_set_app_version (context, VERSION);
+        mate_mixer_context_set_app_icon (context, "multimedia-volume-control");
 
         g_signal_connect (G_OBJECT (context),
                           "notify::state",
                           G_CALLBACK (on_context_state_notify),
                           app);
 
-        ukui_mixer_context_open (context);
+        mate_mixer_context_open (context);
 
-        if (ukui_mixer_context_get_state (context) == UKUI_MIXER_STATE_CONNECTING) {
+        if (mate_mixer_context_get_state (context) == MATE_MIXER_STATE_CONNECTING) {
                 popup_id = g_timeout_add_seconds (DIALOG_POPUP_TIMEOUT,
                                                   dialog_popup_timeout,
                                                   NULL);

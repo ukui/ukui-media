@@ -24,10 +24,10 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 
-#include <libukuimixer/ukuimixer.h>
+#include <libmatemixer/matemixer.h>
 
-#define UKUI_DESKTOP_USE_UNSTABLE_API
-#include <libukui-desktop/ukui-desktop-utils.h>
+#define MATE_DESKTOP_USE_UNSTABLE_API
+#include <libmate-desktop/mate-desktop-utils.h>
 
 #include "gvc-channel-bar.h"
 #include "gvc-stream-status-icon.h"
@@ -41,7 +41,7 @@ struct _GvcStreamStatusIconPrivate
         GtkWidget       *bar;
         guint            current_icon;
         gchar           *display_name;
-        UkuiMixerStreamControl *control;
+        MateMixerStreamControl *control;
 };
 
 enum
@@ -211,9 +211,9 @@ on_status_icon_button_press (GtkStatusIcon       *status_icon,
 {
         /* Middle click acts as mute/unmute */
         if (event->button == 2) {
-                gboolean is_muted = ukui_mixer_stream_control_get_mute (icon->priv->control);
+                gboolean is_muted = mate_mixer_stream_control_get_mute (icon->priv->control);
 
-                ukui_mixer_stream_control_set_mute (icon->priv->control, !is_muted);
+                mate_mixer_stream_control_set_mute (icon->priv->control, !is_muted);
                 return TRUE;
         }
         return FALSE;
@@ -226,7 +226,7 @@ on_menu_mute_toggled (GtkMenuItem *item, GvcStreamStatusIcon *icon)
 
         is_muted = gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (item));
 
-        ukui_mixer_stream_control_set_mute (icon->priv->control, is_muted);
+        mate_mixer_stream_control_set_mute (icon->priv->control, is_muted);
 }
 
 static void
@@ -235,7 +235,7 @@ on_menu_activate_open_volume_control (GtkMenuItem         *item,
 {
         GError *error = NULL;
 
-        ukui_gdk_spawn_command_line_on_screen (gtk_widget_get_screen (icon->priv->dock),
+        mate_gdk_spawn_command_line_on_screen (gtk_widget_get_screen (icon->priv->dock),
                                                "ukui-volume-control",
                                                &error);
 
@@ -283,7 +283,7 @@ on_status_icon_popup_menu (GtkStatusIcon       *status_icon,
 
         item = gtk_check_menu_item_new_with_mnemonic (_("_Mute"));
         gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item),
-                                        ukui_mixer_stream_control_get_mute (icon->priv->control));
+                                        mate_mixer_stream_control_get_mute (icon->priv->control));
         g_signal_connect (G_OBJECT (item),
                           "toggled",
                           G_CALLBACK (on_menu_mute_toggled),
@@ -435,7 +435,7 @@ update_icon (GvcStreamStatusIcon *icon)
         guint                n = 0;
         gchar               *markup;
         const gchar         *description;
-        UkuiMixerStreamControlFlags flags;
+        MateMixerStreamControlFlags flags;
 
         if (icon->priv->control == NULL) {
                 /* Do not bother creating a tooltip for an unusable icon as it
@@ -445,14 +445,14 @@ update_icon (GvcStreamStatusIcon *icon)
         } else
                 gtk_status_icon_set_has_tooltip (GTK_STATUS_ICON (icon), TRUE);
 
-        flags = ukui_mixer_stream_control_get_flags (icon->priv->control);
+        flags = mate_mixer_stream_control_get_flags (icon->priv->control);
 
-        if (flags & UKUI_MIXER_STREAM_CONTROL_MUTE_READABLE)
-                muted = ukui_mixer_stream_control_get_mute (icon->priv->control);
+        if (flags & MATE_MIXER_STREAM_CONTROL_MUTE_READABLE)
+                muted = mate_mixer_stream_control_get_mute (icon->priv->control);
 
-        if (flags & UKUI_MIXER_STREAM_CONTROL_VOLUME_READABLE) {
-                volume = ukui_mixer_stream_control_get_volume (icon->priv->control);
-                normal = ukui_mixer_stream_control_get_normal_volume (icon->priv->control);
+        if (flags & MATE_MIXER_STREAM_CONTROL_VOLUME_READABLE) {
+                volume = mate_mixer_stream_control_get_volume (icon->priv->control);
+                normal = mate_mixer_stream_control_get_normal_volume (icon->priv->control);
 
                 /* Select an icon, they are expected to be sorted, the lowest index being
                  * the mute icon and the rest being volume increments */
@@ -461,8 +461,8 @@ update_icon (GvcStreamStatusIcon *icon)
                 else
                         n = CLAMP (3 * volume / normal + 1, 1, 3);
         }
-        if (flags & UKUI_MIXER_STREAM_CONTROL_HAS_DECIBEL)
-                decibel = ukui_mixer_stream_control_get_decibel (icon->priv->control);
+        if (flags & MATE_MIXER_STREAM_CONTROL_HAS_DECIBEL)
+                decibel = mate_mixer_stream_control_get_decibel (icon->priv->control);
 
         /* Apparently status icon will reset icon even if it doesn't change */
         if (icon->priv->current_icon != n) {
@@ -471,7 +471,7 @@ update_icon (GvcStreamStatusIcon *icon)
                 icon->priv->current_icon = n;
         }
 
-        description = ukui_mixer_stream_control_get_label (icon->priv->control);
+        description = mate_mixer_stream_control_get_label (icon->priv->control);
 
         guint volume_percent = (guint) round (100.0 * volume / normal);
         if (muted) {
@@ -480,9 +480,9 @@ update_icon (GvcStreamStatusIcon *icon)
                                           _("Muted at"),
                                           volume_percent,
                                           description);
-        } else if (flags & UKUI_MIXER_STREAM_CONTROL_VOLUME_READABLE) {
-                if (flags & UKUI_MIXER_STREAM_CONTROL_HAS_DECIBEL) {
-                        if (decibel > -UKUI_MIXER_INFINITY) {
+        } else if (flags & MATE_MIXER_STREAM_CONTROL_VOLUME_READABLE) {
+                if (flags & MATE_MIXER_STREAM_CONTROL_HAS_DECIBEL) {
+                        if (decibel > -MATE_MIXER_INFINITY) {
                                 markup = g_strdup_printf ("<b>%s: %u%%</b>\n"
                                                           "<small>%0.2f dB\n%s</small>",
                                                           icon->priv->display_name,
@@ -538,7 +538,7 @@ gvc_stream_status_icon_set_icon_names (GvcStreamStatusIcon  *icon,
 }
 
 static void
-on_stream_control_volume_notify (UkuiMixerStreamControl     *control,
+on_stream_control_volume_notify (MateMixerStreamControl     *control,
                          GParamSpec          *pspec,
                          GvcStreamStatusIcon *icon)
 {
@@ -546,7 +546,7 @@ on_stream_control_volume_notify (UkuiMixerStreamControl     *control,
 }
 
 static void
-on_stream_control_mute_notify (UkuiMixerStreamControl     *control,
+on_stream_control_mute_notify (MateMixerStreamControl     *control,
                        GParamSpec          *pspec,
                        GvcStreamStatusIcon *icon)
 {
@@ -569,7 +569,7 @@ gvc_stream_status_icon_set_display_name (GvcStreamStatusIcon *icon,
 
 void
 gvc_stream_status_icon_set_control (GvcStreamStatusIcon    *icon,
-                                    UkuiMixerStreamControl *control)
+                                    MateMixerStreamControl *control)
 {
         g_return_if_fail (GVC_STREAM_STATUS_ICON (icon));
 
@@ -687,8 +687,8 @@ gvc_stream_status_icon_class_init (GvcStreamStatusIconClass *klass)
         properties[PROP_CONTROL] =
                 g_param_spec_object ("control",
                                      "Control",
-                                     "UkuiMixer stream control",
-                                     UKUI_MIXER_TYPE_STREAM_CONTROL,
+                                     "MateMixer stream control",
+                                     MATE_MIXER_TYPE_STREAM_CONTROL,
                                      G_PARAM_READWRITE |
                                      G_PARAM_CONSTRUCT |
                                      G_PARAM_STATIC_STRINGS);
@@ -795,7 +795,7 @@ gvc_stream_status_icon_init (GvcStreamStatusIcon *icon)
 
         gvc_channel_bar_set_orientation (GVC_CHANNEL_BAR (icon->priv->bar),
                                          GTK_ORIENTATION_VERTICAL);
-                                         
+
        	/* Set volume control frame, slider and toplevel window to follow panel theme */
         GtkWidget *toplevel = gtk_widget_get_toplevel (icon->priv->dock);
         GtkStyleContext *context;
@@ -836,7 +836,7 @@ gvc_stream_status_icon_finalize (GObject *object)
 }
 
 GvcStreamStatusIcon *
-gvc_stream_status_icon_new (UkuiMixerStreamControl *control,
+gvc_stream_status_icon_new (MateMixerStreamControl *control,
                             const gchar           **icon_names)
 {
         return g_object_new (GVC_TYPE_STREAM_STATUS_ICON,

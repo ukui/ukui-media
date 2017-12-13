@@ -26,7 +26,7 @@
 #include <glib-object.h>
 #include <gtk/gtk.h>
 
-#include <libukuimixer/ukuimixer.h>
+#include <libmatemixer/matemixer.h>
 
 G_BEGIN_DECLS
 
@@ -52,16 +52,16 @@ struct _GvcComboBoxClass
         GtkBoxClass             parent_class;
 
         void (* changing)       (GvcComboBox           *combobox,
-                                 UkuiMixerSwitchOption *option);
+                                 MateMixerSwitchOption *option);
         void (* button_clicked) (GvcComboBox           *combobox);
 };
 
 GType               gvc_combo_box_get_type            (void) G_GNUC_CONST;
 
-GtkWidget *         gvc_combo_box_new                 (UkuiMixerSwitch *swtch,
+GtkWidget *         gvc_combo_box_new                 (MateMixerSwitch *swtch,
                                                        const gchar     *label);
 
-UkuiMixerSwitch *   gvc_combo_box_get_switch          (GvcComboBox     *combobox);
+MateMixerSwitch *   gvc_combo_box_get_switch          (GvcComboBox     *combobox);
 
 void                gvc_combo_box_set_size_group      (GvcComboBox     *combobox,
                                                        GtkSizeGroup    *group,
