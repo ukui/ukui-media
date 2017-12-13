@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # Ankit Patel <ankit@redhat.com>, 2009
 # Milan Savaliya <milansavaliyaz@gmail.com>, 2016
@@ -10,195 +10,194 @@ msgid ""
 msgstr ""
 "Project-Id-Version: UKUI Desktop Environment\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-17 13:33+0300\n"
+"POT-Creation-Date: 2017-12-13 14:32+0800\n"
 "PO-Revision-Date: 2017-09-19 11:49+0000\n"
 "Last-Translator: monsta <monsta@inbox.ru>\n"
 "Language-Team: Gujarati (http://wiki.ukui.org/trans/gu/)\n"
+"Language: gu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: gu\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../data/mate-volume-control.desktop.in.in.h:1
+#: ../data/ukui-volume-control.desktop.in.in.h:1
 msgid "Sound"
 msgstr "સાઉન્ડ"
 
-#: ../data/mate-volume-control.desktop.in.in.h:2
+#: ../data/ukui-volume-control.desktop.in.in.h:2
 msgid "Change sound volume and sound events"
 msgstr "સાઉન્ડ વોલ્યુમ અને સાઉન્ડ ઘટનાઓને બદલો"
 
-#: ../data/mate-volume-control-applet.desktop.in.h:1
-#: ../mate-volume-control/dialog-main.c:255
-#: ../mate-volume-control/gvc-channel-bar.c:487
-#: ../mate-volume-control/gvc-speaker-test.c:434
+#: ../data/ukui-volume-control-applet.desktop.in.h:1
+#: ../ukui-volume-control/dialog-main.c:255
+#: ../ukui-volume-control/gvc-channel-bar.c:487
+#: ../ukui-volume-control/gvc-speaker-test.c:434
 msgid "Volume Control"
 msgstr "અવાજનું પ્રમાણ નિયંત્રક"
 
-#: ../data/mate-volume-control-applet.desktop.in.h:2
+#: ../data/ukui-volume-control-applet.desktop.in.h:2
 msgid "Show desktop volume control"
 msgstr "ડેસ્કટોપ વોલ્યુમ નિયંત્રણ ને બતાવો"
 
-#. Translators: This is the name of an audio file that sounds like the bark of
-#. a dog.
+#. Translators: This is the name of an audio file that sounds like the bark of a dog.
 #. You might want to translate it into the equivalent words of your language.
-#: ../data/sounds/mate-sounds-default.xml.in.in.h:3
+#: ../data/sounds/ukui-sounds-default.xml.in.in.h:3
 msgid "Bark"
 msgstr "Bark"
 
-#. Translators: This is the name of an audio file that sounds like a water
-#. drip.
+#. Translators: This is the name of an audio file that sounds like a water drip.
 #. You might want to translate it into the equivalent words of your language.
-#: ../data/sounds/mate-sounds-default.xml.in.in.h:6
+#: ../data/sounds/ukui-sounds-default.xml.in.in.h:6
 msgid "Drip"
 msgstr "Drip"
 
-#. Translators: This is the name of an audio file that sounds like tapping
-#. glass.
+#. Translators: This is the name of an audio file that sounds like tapping glass.
 #. You might want to translate it into the equivalent words of your language.
-#: ../data/sounds/mate-sounds-default.xml.in.in.h:9
+#: ../data/sounds/ukui-sounds-default.xml.in.in.h:9
 msgid "Glass"
 msgstr "Glass"
 
-#. Translators: This is the name of an audio file that sounds sort of like a
-#. submarine sonar ping.
+#. Translators: This is the name of an audio file that sounds sort of like a submarine sonar ping.
 #. You might want to translate it into the equivalent words of your language.
-#: ../data/sounds/mate-sounds-default.xml.in.in.h:12
+#: ../data/sounds/ukui-sounds-default.xml.in.in.h:12
 msgid "Sonar"
 msgstr "Sonar"
 
-#: ../mate-volume-control/applet-main.c:45
-#: ../mate-volume-control/dialog-main.c:193
+#: ../ukui-volume-control/applet-main.c:45
+#: ../ukui-volume-control/dialog-main.c:193
 msgid "Version of this application"
 msgstr "આ કાર્યક્રમ ની આવૃત્તિ"
 
-#: ../mate-volume-control/applet-main.c:46
-#: ../mate-volume-control/dialog-main.c:191
+#: ../ukui-volume-control/applet-main.c:46
+#: ../ukui-volume-control/dialog-main.c:191
 msgid "Enable debug"
 msgstr "ડિબગ ઍનેબલ કરો"
 
-#: ../mate-volume-control/applet-main.c:55
-msgid " — MATE Volume Control Applet"
-msgstr ""
+#: ../ukui-volume-control/applet-main.c:55
+#, fuzzy
+msgid " — UKUI Volume Control Applet"
+msgstr "અવાજનું પ્રમાણ નિયંત્રક"
 
-#: ../mate-volume-control/dialog-main.c:143
+#: ../ukui-volume-control/dialog-main.c:143
 msgid "Sound system is not available"
 msgstr ""
 
-#: ../mate-volume-control/dialog-main.c:165
+#: ../ukui-volume-control/dialog-main.c:165
 msgid "Waiting for sound system to respond"
 msgstr "જવાબ આપવા સાઉન્ડ સિસ્ટમ માટે રાહ જોઇ રહ્યા છે"
 
-#: ../mate-volume-control/dialog-main.c:190
+#: ../ukui-volume-control/dialog-main.c:190
 msgid "Sound system backend"
 msgstr ""
 
-#: ../mate-volume-control/dialog-main.c:192
+#: ../ukui-volume-control/dialog-main.c:192
 msgid "Startup page"
 msgstr "શરૂઆતી પાંનુ"
 
-#: ../mate-volume-control/dialog-main.c:202
-msgid " — MATE Volume Control"
-msgstr ""
+#: ../ukui-volume-control/dialog-main.c:202
+#, fuzzy
+msgid " — UKUI Volume Control"
+msgstr "અવાજનું પ્રમાણ નિયંત્રક"
 
-#: ../mate-volume-control/gvc-applet.c:322
-#: ../mate-volume-control/gvc-mixer-dialog.c:1999
+#: ../ukui-volume-control/gvc-applet.c:322
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1999
 msgid "Input"
 msgstr "ઈનપુટ"
 
-#: ../mate-volume-control/gvc-applet.c:323
-#: ../mate-volume-control/gvc-mixer-dialog.c:2086
+#: ../ukui-volume-control/gvc-applet.c:323
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2086
 msgid "Output"
 msgstr "આઉટપુટ"
 
-#: ../mate-volume-control/gvc-applet.c:326
+#: ../ukui-volume-control/gvc-applet.c:326
 msgid "Microphone Volume"
 msgstr "માઇક્રોફોન નો અવાજ"
 
-#: ../mate-volume-control/gvc-applet.c:328
+#: ../ukui-volume-control/gvc-applet.c:328
 msgid "Sound Output Volume"
 msgstr ""
 
-#: ../mate-volume-control/gvc-applet.c:333
-msgid "MATE Volume Control Applet"
-msgstr ""
+#: ../ukui-volume-control/gvc-applet.c:333
+#, fuzzy
+msgid "UKUI Volume Control Applet"
+msgstr "અવાજનું પ્રમાણ નિયંત્રક"
 
-#: ../mate-volume-control/gvc-balance-bar.c:140
+#: ../ukui-volume-control/gvc-balance-bar.c:140
 msgctxt "balance"
 msgid "Left"
 msgstr "ડાબું"
 
-#: ../mate-volume-control/gvc-balance-bar.c:141
+#: ../ukui-volume-control/gvc-balance-bar.c:141
 msgctxt "balance"
 msgid "Right"
 msgstr "જમણું"
 
-#: ../mate-volume-control/gvc-balance-bar.c:144
+#: ../ukui-volume-control/gvc-balance-bar.c:144
 msgctxt "balance"
 msgid "Rear"
 msgstr "રિઅર"
 
-#: ../mate-volume-control/gvc-balance-bar.c:145
+#: ../ukui-volume-control/gvc-balance-bar.c:145
 msgctxt "balance"
 msgid "Front"
 msgstr "આગળ"
 
-#: ../mate-volume-control/gvc-balance-bar.c:148
+#: ../ukui-volume-control/gvc-balance-bar.c:148
 msgctxt "balance"
 msgid "Minimum"
 msgstr "ન્યૂનત્તમ"
 
-#: ../mate-volume-control/gvc-balance-bar.c:149
+#: ../ukui-volume-control/gvc-balance-bar.c:149
 msgctxt "balance"
 msgid "Maximum"
 msgstr "મહત્તમ"
 
-#: ../mate-volume-control/gvc-balance-bar.c:337
+#: ../ukui-volume-control/gvc-balance-bar.c:337
 msgid "_Balance:"
 msgstr "સંતુલન (_B):"
 
-#: ../mate-volume-control/gvc-balance-bar.c:340
+#: ../ukui-volume-control/gvc-balance-bar.c:340
 msgid "_Fade:"
 msgstr "ફાડે (_F):"
 
-#: ../mate-volume-control/gvc-balance-bar.c:343
+#: ../ukui-volume-control/gvc-balance-bar.c:343
 msgid "_Subwoofer:"
 msgstr "ઉપવુફર (_S):"
 
-#: ../mate-volume-control/gvc-channel-bar.c:312
+#: ../ukui-volume-control/gvc-channel-bar.c:312
 msgctxt "volume"
 msgid "Unamplified"
 msgstr "Unamplified"
 
-#: ../mate-volume-control/gvc-channel-bar.c:325
+#: ../ukui-volume-control/gvc-channel-bar.c:325
 msgctxt "volume"
 msgid "100%"
 msgstr "૧૦૦%"
 
 #. Mute button
-#: ../mate-volume-control/gvc-channel-bar.c:1086
+#: ../ukui-volume-control/gvc-channel-bar.c:1086
 msgid "Mute"
 msgstr "મૂંગુ"
 
-#: ../mate-volume-control/gvc-combo-box.c:253
-#: ../mate-volume-control/gvc-mixer-dialog.c:1613
+#: ../ukui-volume-control/gvc-combo-box.c:253
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1613
 msgid "_Profile:"
 msgstr "રૂપરેખા (_P):"
 
-#: ../mate-volume-control/gvc-mixer-dialog.c:355
-#: ../mate-volume-control/gvc-mixer-dialog.c:504
+#: ../ukui-volume-control/gvc-mixer-dialog.c:355
+#: ../ukui-volume-control/gvc-mixer-dialog.c:504
 msgid "Co_nnector:"
 msgstr "જોડનાર (_n):"
 
 #. translators:
 #. * The device has been disabled
-#: ../mate-volume-control/gvc-mixer-dialog.c:1126
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1126
 msgid "Disabled"
 msgstr "નિષ્ક્રિય થયેલ છે"
 
 #. translators:
 #. * The number of sound outputs on a particular device
-#: ../mate-volume-control/gvc-mixer-dialog.c:1132
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1132
 #, c-format
 msgid "%u Output"
 msgid_plural "%u Outputs"
@@ -207,257 +206,254 @@ msgstr[1] "%u આઉટપુટો"
 
 #. translators:
 #. * The number of sound inputs on a particular device
-#: ../mate-volume-control/gvc-mixer-dialog.c:1141
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1141
 #, c-format
 msgid "%u Input"
 msgid_plural "%u Inputs"
 msgstr[0] "%u ઈનપુટ"
 msgstr[1] "%u ઈનપુટો"
 
-#: ../mate-volume-control/gvc-mixer-dialog.c:1504
-#: ../mate-volume-control/gvc-mixer-dialog.c:1773
-#: ../mate-volume-control/gvc-sound-theme-chooser.c:868
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1504
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1773
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:868
 msgid "Name"
 msgstr "નામ"
 
-#: ../mate-volume-control/gvc-mixer-dialog.c:1552
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1552
 #, c-format
 msgid "Speaker Testing for %s"
 msgstr ""
 
-#: ../mate-volume-control/gvc-mixer-dialog.c:1616
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1616
 msgid "Test Speakers"
 msgstr ""
 
-#: ../mate-volume-control/gvc-mixer-dialog.c:1821
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1821
 msgid "Sound Effects"
 msgstr "સાઉન્ડ ની અસરો"
 
-#: ../mate-volume-control/gvc-mixer-dialog.c:1844
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1844
 msgid "_Alert volume: "
 msgstr "સચેત વોલ્યુમ (_A): "
 
-#: ../mate-volume-control/gvc-mixer-dialog.c:1913
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1913
 msgid "_Output volume: "
 msgstr "આઉટપુટ વોલ્યુમ (_O): "
 
-#: ../mate-volume-control/gvc-mixer-dialog.c:1956
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1956
 msgid "Hardware"
 msgstr "હાર્ડવેર"
 
-#: ../mate-volume-control/gvc-mixer-dialog.c:1961
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1961
 msgid "C_hoose a device to configure:"
 msgstr "રૂપરેખાંકિત કરવા માટે ઉપકરણને પસંદ કરો (_h):"
 
-#: ../mate-volume-control/gvc-mixer-dialog.c:1985
-#: ../mate-volume-control/gvc-mixer-dialog.c:2115
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1985
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2115
 msgid "Settings for the selected device:"
 msgstr "પસંદ થયેલ ઉપકરણ માટે સુયોજનો:"
 
-#: ../mate-volume-control/gvc-mixer-dialog.c:2008
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2008
 msgid "_Input volume: "
 msgstr "ઇનપુટ વોલ્યુમ (_I): "
 
-#: ../mate-volume-control/gvc-mixer-dialog.c:2033
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2033
 msgid "Input level:"
 msgstr "ઇનપુટ સ્તર:"
 
-#: ../mate-volume-control/gvc-mixer-dialog.c:2058
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2058
 msgid "C_hoose a device for sound input:"
 msgstr "સાઉન્ડ ઇનપુટ માટે ઉપકરણ ને પસંદ કરો (_h):"
 
-#: ../mate-volume-control/gvc-mixer-dialog.c:2091
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2091
 msgid "C_hoose a device for sound output:"
 msgstr "સાઉન્ડ આઉટપુટ માટે ઉપકરણ ને પસંદ કરો (_h):"
 
-#: ../mate-volume-control/gvc-mixer-dialog.c:2140
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2140
 msgid "Applications"
 msgstr "કાર્યક્રમો"
 
-#: ../mate-volume-control/gvc-mixer-dialog.c:2145
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2145
 msgid "No application is currently playing or recording audio."
 msgstr "કાર્યક્રમ અત્યારે ઓડિયો ને ચલાવતુ અથવા રેકોર્ડ કરતુ નથી."
 
-#: ../mate-volume-control/gvc-mixer-dialog.c:2337
-#: ../mate-volume-control/gvc-sound-theme-chooser.c:732
-#: ../mate-volume-control/gvc-sound-theme-chooser.c:744
-#: ../mate-volume-control/gvc-sound-theme-chooser.c:756
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2337
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:732
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:744
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:756
 msgid "Sound Preferences"
 msgstr "સાઉન્ડ પસંદગીઓ"
 
-#: ../mate-volume-control/gvc-sound-theme-chooser.c:320
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:320
 msgid "No sounds"
 msgstr "સાઉન્ડ નથી"
 
-#: ../mate-volume-control/gvc-sound-theme-chooser.c:441
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:441
 msgid "Built-in"
 msgstr "બિલ્ટ-ઇન"
 
-#: ../mate-volume-control/gvc-sound-theme-chooser.c:628
-#: ../mate-volume-control/sound-theme-file-utils.c:292
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:628
+#: ../ukui-volume-control/sound-theme-file-utils.c:292
 msgid "Custom"
 msgstr "કસ્ટમ"
 
-#: ../mate-volume-control/gvc-sound-theme-chooser.c:735
-#: ../mate-volume-control/gvc-sound-theme-chooser.c:746
-#: ../mate-volume-control/gvc-sound-theme-chooser.c:758
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:735
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:746
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:758
 msgid "Testing event sound"
 msgstr "ઘટના સાઉન્ડની ચકાસણી કરી રહ્યા છે"
 
-#: ../mate-volume-control/gvc-sound-theme-chooser.c:844
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:844
 msgid "Default"
 msgstr "મૂળભૂત"
 
-#: ../mate-volume-control/gvc-sound-theme-chooser.c:845
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:845
 msgid "From theme"
 msgstr "થીમ માંથી"
 
-#: ../mate-volume-control/gvc-sound-theme-chooser.c:875
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:875
 msgid "Type"
 msgstr "પ્રકાર"
 
-#: ../mate-volume-control/gvc-sound-theme-chooser.c:1030
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:1034
 msgid "Sound _theme:"
 msgstr "સાઉન્ડ થીમ (_t):"
 
-#: ../mate-volume-control/gvc-sound-theme-chooser.c:1043
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:1047
 msgid "C_hoose an alert sound:"
 msgstr "સચેત સાઉન્ડ ને પસંદ કરો (_h):"
 
-#: ../mate-volume-control/gvc-sound-theme-chooser.c:1071
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:1075
 msgid "Enable _window and button sounds"
 msgstr "વિન્ડો અને બટન સાઉન્ડો ને સક્રિય કરો (_w)"
 
-#: ../mate-volume-control/gvc-speaker-test.c:258
+#: ../ukui-volume-control/gvc-speaker-test.c:258
 msgid "Stop"
 msgstr ""
 
-#: ../mate-volume-control/gvc-speaker-test.c:258
-#: ../mate-volume-control/gvc-speaker-test.c:372
+#: ../ukui-volume-control/gvc-speaker-test.c:258
+#: ../ukui-volume-control/gvc-speaker-test.c:372
 msgid "Test"
 msgstr ""
 
-#: ../mate-volume-control/gvc-stream-status-icon.c:205
+#: ../ukui-volume-control/gvc-stream-status-icon.c:249
 #, c-format
 msgid "Failed to start Sound Preferences: %s"
 msgstr "સાઉન્ડ પસંદગીઓ ને શરૂ કરવામાં નિષ્ફળ: %s"
 
-#: ../mate-volume-control/gvc-stream-status-icon.c:239
+#: ../ukui-volume-control/gvc-stream-status-icon.c:284
 msgid "_Mute"
 msgstr "મૂંગુ (_M)"
 
-#. FIXME: we lost an icon with migrating from
-#. gtk_image_menu_item_new_with_mnemonic
-#: ../mate-volume-control/gvc-stream-status-icon.c:250
+#: ../ukui-volume-control/gvc-stream-status-icon.c:294
 msgid "_Sound Preferences"
 msgstr "સાઉન્ડ પસંદગીઓ (_S)"
 
-#: ../mate-volume-control/gvc-stream-status-icon.c:422
+#: ../ukui-volume-control/gvc-stream-status-icon.c:480
 msgid "Muted at"
 msgstr ""
 
-#: ../mate-volume-control/gvc-utils.c:58
+#: ../ukui-volume-control/gvc-utils.c:58
 msgid "Unknown"
 msgstr ""
 
 #. Speaker channel names
-#: ../mate-volume-control/gvc-utils.c:60
-#: ../mate-volume-control/gvc-utils.c:108
+#: ../ukui-volume-control/gvc-utils.c:60 ../ukui-volume-control/gvc-utils.c:108
 msgid "Mono"
 msgstr ""
 
-#: ../mate-volume-control/gvc-utils.c:61
+#: ../ukui-volume-control/gvc-utils.c:61
 msgid "Front Left"
 msgstr ""
 
-#: ../mate-volume-control/gvc-utils.c:62
+#: ../ukui-volume-control/gvc-utils.c:62
 msgid "Front Right"
 msgstr ""
 
-#: ../mate-volume-control/gvc-utils.c:63
+#: ../ukui-volume-control/gvc-utils.c:63
 msgid "Front Center"
 msgstr ""
 
-#: ../mate-volume-control/gvc-utils.c:64
+#: ../ukui-volume-control/gvc-utils.c:64
 msgid "LFE"
 msgstr ""
 
-#: ../mate-volume-control/gvc-utils.c:65
+#: ../ukui-volume-control/gvc-utils.c:65
 msgid "Rear Left"
 msgstr ""
 
-#: ../mate-volume-control/gvc-utils.c:66
+#: ../ukui-volume-control/gvc-utils.c:66
 msgid "Rear Right"
 msgstr ""
 
-#: ../mate-volume-control/gvc-utils.c:67
+#: ../ukui-volume-control/gvc-utils.c:67
 msgid "Rear Center"
 msgstr ""
 
-#: ../mate-volume-control/gvc-utils.c:68
+#: ../ukui-volume-control/gvc-utils.c:68
 msgid "Front Left of Center"
 msgstr ""
 
-#: ../mate-volume-control/gvc-utils.c:69
+#: ../ukui-volume-control/gvc-utils.c:69
 msgid "Front Right of Center"
 msgstr ""
 
-#: ../mate-volume-control/gvc-utils.c:70
+#: ../ukui-volume-control/gvc-utils.c:70
 msgid "Side Left"
 msgstr ""
 
-#: ../mate-volume-control/gvc-utils.c:71
+#: ../ukui-volume-control/gvc-utils.c:71
 msgid "Side Right"
 msgstr ""
 
-#: ../mate-volume-control/gvc-utils.c:72
+#: ../ukui-volume-control/gvc-utils.c:72
 msgid "Top Front Left"
 msgstr ""
 
-#: ../mate-volume-control/gvc-utils.c:73
+#: ../ukui-volume-control/gvc-utils.c:73
 msgid "Top Front Right"
 msgstr ""
 
-#: ../mate-volume-control/gvc-utils.c:74
+#: ../ukui-volume-control/gvc-utils.c:74
 msgid "Top Front Center"
 msgstr ""
 
-#: ../mate-volume-control/gvc-utils.c:75
+#: ../ukui-volume-control/gvc-utils.c:75
 msgid "Top Center"
 msgstr ""
 
-#: ../mate-volume-control/gvc-utils.c:76
+#: ../ukui-volume-control/gvc-utils.c:76
 msgid "Top Rear Left"
 msgstr ""
 
-#: ../mate-volume-control/gvc-utils.c:77
+#: ../ukui-volume-control/gvc-utils.c:77
 msgid "Top Rear Right"
 msgstr ""
 
-#: ../mate-volume-control/gvc-utils.c:78
+#: ../ukui-volume-control/gvc-utils.c:78
 msgid "Top Rear Center"
 msgstr ""
 
-#: ../mate-volume-control/gvc-utils.c:113
+#: ../ukui-volume-control/gvc-utils.c:113
 msgid "Stereo"
 msgstr ""
 
-#: ../mate-volume-control/gvc-utils.c:120
+#: ../ukui-volume-control/gvc-utils.c:120
 msgid "Surround 4.0"
 msgstr ""
 
-#: ../mate-volume-control/gvc-utils.c:128
+#: ../ukui-volume-control/gvc-utils.c:128
 msgid "Surround 4.1"
 msgstr ""
 
-#: ../mate-volume-control/gvc-utils.c:130
+#: ../ukui-volume-control/gvc-utils.c:130
 msgid "Surround 5.0"
 msgstr ""
 
-#: ../mate-volume-control/gvc-utils.c:140
+#: ../ukui-volume-control/gvc-utils.c:140
 msgid "Surround 5.1"
 msgstr ""
 
-#: ../mate-volume-control/gvc-utils.c:151
+#: ../ukui-volume-control/gvc-utils.c:151
 msgid "Surround 7.1"
 msgstr ""
