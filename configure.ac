@@ -36,8 +36,8 @@ GLIB_REQUIRED_VERSION=2.36.0
 GIO_REQUIRED_VERSION=2.36.0
 GTK_REQUIRED_VERSION=3.14.0
 CANBERRA_REQUIRED_VERSION=0.13
-UKUI_MIXER_REQUIRED_VERSION=1.10.0
-UKUI_DESKTOP_REQUIRED_VERSION=1.17.0
+MATE_MIXER_REQUIRED_VERSION=1.10.0
+MATE_DESKTOP_REQUIRED_VERSION=1.17.0
 
 dnl=======================================================================
 dnl Check for the volume control modules
@@ -49,8 +49,8 @@ PKG_CHECK_MODULES(VOLUME_CONTROL,
                   gio-2.0 >= $GIO_REQUIRED_VERSION
                   libcanberra-gtk3 >= $CANBERRA_REQUIRED_VERSION
                   libxml-2.0
-                  ukui-desktop-2.0 >= $UKUI_DESKTOP_REQUIRED_VERSION
-                  libukuimixer >= $UKUI_MIXER_REQUIRED_VERSION
+                  mate-desktop-2.0 >= $MATE_DESKTOP_REQUIRED_VERSION
+                  libmatemixer >= $MATE_MIXER_REQUIRED_VERSION
 )
 
 AC_SUBST(VOLUME_CONTROL_CFLAGS)
@@ -77,8 +77,8 @@ dnl ---------------------------------------------------------------------------
 
 m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
 
-UKUI_MAINTAINER_MODE_DEFINES
-UKUI_COMPILE_WARNINGS([maximum])
+MATE_MAINTAINER_MODE_DEFINES
+MATE_COMPILE_WARNINGS([maximum])
 UKUI_CXX_WARNINGS
 
 AC_ARG_ENABLE(deprecated,
