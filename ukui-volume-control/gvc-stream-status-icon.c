@@ -41,6 +41,7 @@ struct _GvcStreamStatusIconPrivate
         GtkWidget       *bar;
         guint            current_icon;
         gchar           *display_name;
+	GtkOrientation orientation;
         MateMixerStreamControl *control;
 };
 
@@ -50,6 +51,7 @@ enum
         PROP_CONTROL,
         PROP_DISPLAY_NAME,
         PROP_ICON_NAMES,
+        PROP_ORIENTATION,
         N_PROPERTIES
 };
 
@@ -64,8 +66,8 @@ G_DEFINE_TYPE (GvcStreamStatusIcon, gvc_stream_status_icon, GTK_TYPE_STATUS_ICON
 static gboolean
 popup_dock (GvcStreamStatusIcon *icon, guint time)
 {
-        GdkRectangle   area;
-        GtkOrientation orientation;
+        GdkRectangle   icon_area;
+        GtkOrientation icon_orientation;
         GdkDisplay    *display;
         GdkScreen     *screen;
         int            x;
@@ -82,22 +84,20 @@ popup_dock (GvcStreamStatusIcon *icon, guint time)
 
         if (gtk_status_icon_get_geometry (GTK_STATUS_ICON (icon),
                                           &screen,
-                                          &area,
-                                          &orientation) == FALSE) {
+                                          &icon_area,
+                                          &icon_orientation) == FALSE) {
                 g_warning ("Unable to determine geometry of status icon");
                 return FALSE;
         }
 
         /* position roughly */
         gtk_window_set_screen (GTK_WINDOW (icon->priv->dock), screen);
-        gvc_channel_bar_set_orientation (GVC_CHANNEL_BAR (icon->priv->bar),
-                                         1 - orientation);
 
 #if GTK_CHECK_VERSION (3, 22, 0)
-        monitor_num = gdk_display_get_monitor_at_point (gdk_screen_get_display (screen), area.x, area.y);
+        monitor_num = gdk_display_get_monitor_at_point (gdk_screen_get_display (screen), icon_area.x, icon_area.y);
         gdk_monitor_get_geometry (monitor_num, &monitor);
 #else
-        monitor_num = gdk_screen_get_monitor_at_point (screen, area.x, area.y);
+        monitor_num = gdk_screen_get_monitor_at_point (screen, icon_area.x, icon_area.y);
         gdk_screen_get_monitor_geometry (screen, monitor_num, &monitor);
 #endif
 
@@ -105,27 +105,17 @@ popup_dock (GvcStreamStatusIcon *icon, guint time)
                                (GtkCallback) gtk_widget_show_all, NULL);
         gtk_widget_get_preferred_size (icon->priv->dock, &dock_req, NULL);
 
-        if (orientation == GTK_ORIENTATION_VERTICAL) {
-                if (area.x + area.width + dock_req.width <= monitor.x + monitor.width)
-                        x = area.x + area.width;
-                else
-                        x = area.x - dock_req.width;
+	GSettings *gsettings = g_settings_new_with_path("org.ukui.panel.toplevel", "/org/ukui/panel/toplevels/bottom/");
+	char *panel_position = g_settings_get_string(gsettings, "orientation");
+	int panel_size = g_settings_get_int(gsettings, "size");
 
-                if (area.y + dock_req.height <= monitor.y + monitor.height)
-                        y = area.y;
-                else
-                        y = monitor.y + monitor.height - dock_req.height;
-        } else {
-                if (area.y + area.height + dock_req.height <= monitor.y + monitor.height)
-                        y = area.y + area.height;
-                else
-                        y = area.y - dock_req.height;
-
-                if (area.x + dock_req.width <= monitor.x + monitor.width)
-                        x = area.x;
-                else
-                        x = monitor.x + monitor.width - dock_req.width;
-        }
+	if (strcmp(panel_position, "top") == 0) {
+		x = icon_area.x + icon_area.width / 2 - dock_req.width / 2;
+		y = panel_size;
+	} else if (strcmp(panel_position, "bottom") == 0){
+		x = icon_area.x + icon_area.width / 2 - dock_req.width / 2;
+		y = monitor.height - panel_size - dock_req.height;
+	}
 
         gtk_window_move (GTK_WINDOW (icon->priv->dock), x, y);
 
@@ -257,6 +247,24 @@ on_menu_activate_open_volume_control (GtkMenuItem         *item,
         }
 }
 
+/* Triggered when the "Horizontal" item is clicked */
+static void on_menu_orientation_toggled (GtkMenuItem *item, GvcStreamStatusIcon *icon)
+{
+	gboolean toggled;
+	toggled = gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (item));
+	GSettings *gsettings = g_settings_new("org.ukui.media");
+	/* If the menu item is toggled, the orientation is horizontal. */
+	if (toggled) {
+		gvc_stream_status_icon_set_orientation(icon, GTK_ORIENTATION_HORIZONTAL);
+		gvc_channel_bar_set_orientation(GVC_CHANNEL_BAR(icon->priv->bar), GTK_ORIENTATION_HORIZONTAL);
+		g_settings_set_enum(gsettings, "channel-bar-orientation", GTK_ORIENTATION_HORIZONTAL);
+	} else {
+		gvc_stream_status_icon_set_orientation(icon, GTK_ORIENTATION_VERTICAL);
+		gvc_channel_bar_set_orientation(GVC_CHANNEL_BAR(icon->priv->bar), GTK_ORIENTATION_VERTICAL);
+		g_settings_set_enum(gsettings, "channel-bar-orientation", GTK_ORIENTATION_VERTICAL);
+	}
+}
+
 static void
 on_status_icon_popup_menu (GtkStatusIcon       *status_icon,
                            guint                button,
@@ -288,6 +296,15 @@ on_status_icon_popup_menu (GtkStatusIcon       *status_icon,
                           "toggled",
                           G_CALLBACK (on_menu_mute_toggled),
                           icon);
+
+        gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+
+	item = gtk_check_menu_item_new_with_mnemonic (_("_Horizontal"));
+	if (icon->priv->orientation == GTK_ORIENTATION_HORIZONTAL)
+		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item), TRUE);
+	else
+		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item), FALSE);
+	g_signal_connect (G_OBJECT (item), "toggled", G_CALLBACK (on_menu_orientation_toggled), icon);
 
         gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 
@@ -568,6 +585,18 @@ gvc_stream_status_icon_set_display_name (GvcStreamStatusIcon *icon,
 }
 
 void
+gvc_stream_status_icon_set_orientation (GvcStreamStatusIcon *icon,
+                                         const GtkOrientation         orientation)
+{
+        g_return_if_fail (GVC_STREAM_STATUS_ICON (icon));
+
+        icon->priv->orientation = orientation;
+        update_icon (icon);
+
+        g_object_notify_by_pspec (G_OBJECT (icon), properties[PROP_ORIENTATION]);
+}
+
+void
 gvc_stream_status_icon_set_control (GvcStreamStatusIcon    *icon,
                                     MateMixerStreamControl *control)
 {
@@ -629,6 +658,9 @@ gvc_stream_status_icon_set_property (GObject       *object,
         case PROP_ICON_NAMES:
                 gvc_stream_status_icon_set_icon_names (self, g_value_get_boxed (value));
                 break;
+        case PROP_ORIENTATION:
+                gvc_stream_status_icon_set_orientation (self, g_value_get_enum (value));
+                break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
                 break;
@@ -652,6 +684,9 @@ gvc_stream_status_icon_get_property (GObject     *object,
                 break;
         case PROP_ICON_NAMES:
                 g_value_set_boxed (value, self->priv->icon_names);
+                break;
+        case PROP_ORIENTATION:
+                g_value_set_enum (value, self->priv->orientation);
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -710,6 +745,16 @@ gvc_stream_status_icon_class_init (GvcStreamStatusIconClass *klass)
                                     G_PARAM_READWRITE |
                                     G_PARAM_CONSTRUCT |
                                     G_PARAM_STATIC_STRINGS);
+
+	properties[PROP_ORIENTATION] =
+		g_param_spec_enum ("orientation",
+					"Orientation",
+					"Dock orientation",
+					GTK_TYPE_ORIENTATION,
+					GTK_ORIENTATION_VERTICAL,
+					G_PARAM_READWRITE |
+					G_PARAM_CONSTRUCT |
+					G_PARAM_STATIC_STRINGS);
 
         g_object_class_install_properties (object_class, N_PROPERTIES, properties);
 
@@ -793,10 +838,11 @@ gvc_stream_status_icon_init (GvcStreamStatusIcon *icon)
 
         icon->priv->bar = gvc_channel_bar_new (NULL);
 
-        gvc_channel_bar_set_orientation (GVC_CHANNEL_BAR (icon->priv->bar),
-                                         GTK_ORIENTATION_VERTICAL);
+	GSettings *gsettings = g_settings_new("org.ukui.media");
+	GtkOrientation channel_bar_orientation = g_settings_get_enum(gsettings, "channel-bar-orientation");
+	gvc_channel_bar_set_orientation (GVC_CHANNEL_BAR (icon->priv->bar), channel_bar_orientation);
 
-       	/* Set volume control frame, slider and toplevel window to follow panel theme */
+	/* Set volume control frame, slider and toplevel window to follow panel theme */
         GtkWidget *toplevel = gtk_widget_get_toplevel (icon->priv->dock);
         GtkStyleContext *context;
         context = gtk_widget_get_style_context (GTK_WIDGET(toplevel));
@@ -808,7 +854,7 @@ gvc_stream_status_icon_init (GvcStreamStatusIcon *icon)
 
         box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
 
-        gtk_container_set_border_width (GTK_CONTAINER (box), 2);
+        gtk_container_set_border_width (GTK_CONTAINER (box), 3);
         gtk_container_add (GTK_CONTAINER (frame), box);
 
         gtk_box_pack_start (GTK_BOX (box), icon->priv->bar, TRUE, FALSE, 0);
