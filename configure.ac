@@ -1,8 +1,8 @@
 AC_PREREQ(2.60)
 
 AC_INIT([ukui-media],
-        [1.19.1],
-        [http://www.ukui-desktop.org/])
+        [1.1.0],
+        [http://www.ukui.org/])
 
 AC_CONFIG_AUX_DIR([build-aux])
 
