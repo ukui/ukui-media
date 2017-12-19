@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: UKUI Desktop Environment\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-13 14:32+0800\n"
+"POT-Creation-Date: 2017-12-20 11:02+0800\n"
 "PO-Revision-Date: 2017-09-19 11:49+0000\n"
 "Last-Translator: debianer82 <debianer82@gmail.com>\n"
 "Language-Team: German (http://wiki.ukui.org/trans/de/)\n"
@@ -341,20 +341,24 @@ msgstr "Stopp"
 msgid "Test"
 msgstr "Testen"
 
-#: ../ukui-volume-control/gvc-stream-status-icon.c:249
+#: ../ukui-volume-control/gvc-stream-status-icon.c:240
 #, c-format
 msgid "Failed to start Sound Preferences: %s"
 msgstr "Das Starten der Klangeinstellungen schlug fehl: %s"
 
-#: ../ukui-volume-control/gvc-stream-status-icon.c:284
+#: ../ukui-volume-control/gvc-stream-status-icon.c:291
 msgid "_Mute"
 msgstr "_Stumm"
 
-#: ../ukui-volume-control/gvc-stream-status-icon.c:294
+#: ../ukui-volume-control/gvc-stream-status-icon.c:301
+msgid "_Horizontal"
+msgstr ""
+
+#: ../ukui-volume-control/gvc-stream-status-icon.c:310
 msgid "_Sound Preferences"
 msgstr "_Klangeinstellungen"
 
-#: ../ukui-volume-control/gvc-stream-status-icon.c:480
+#: ../ukui-volume-control/gvc-stream-status-icon.c:496
 msgid "Muted at"
 msgstr "Stumm geschaltet"
 

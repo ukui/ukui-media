@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: UKUI Desktop Environment\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-13 14:32+0800\n"
+"POT-Creation-Date: 2017-12-20 11:02+0800\n"
 "PO-Revision-Date: 2017-09-19 11:49+0000\n"
 "Last-Translator: monsta <monsta@inbox.ru>\n"
 "Language-Team: Mongolian (http://wiki.ukui.org/trans/mn/)\n"
@@ -337,20 +337,24 @@ msgstr "Зогс"
 msgid "Test"
 msgstr ""
 
-#: ../ukui-volume-control/gvc-stream-status-icon.c:249
+#: ../ukui-volume-control/gvc-stream-status-icon.c:240
 #, c-format
 msgid "Failed to start Sound Preferences: %s"
 msgstr ""
 
-#: ../ukui-volume-control/gvc-stream-status-icon.c:284
+#: ../ukui-volume-control/gvc-stream-status-icon.c:291
 msgid "_Mute"
 msgstr ""
 
-#: ../ukui-volume-control/gvc-stream-status-icon.c:294
+#: ../ukui-volume-control/gvc-stream-status-icon.c:301
+msgid "_Horizontal"
+msgstr ""
+
+#: ../ukui-volume-control/gvc-stream-status-icon.c:310
 msgid "_Sound Preferences"
 msgstr ""
 
-#: ../ukui-volume-control/gvc-stream-status-icon.c:480
+#: ../ukui-volume-control/gvc-stream-status-icon.c:496
 msgid "Muted at"
 msgstr ""
 
