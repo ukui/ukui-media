@@ -62,7 +62,6 @@ void                  gvc_stream_status_icon_set_display_name (GvcStreamStatusIc
 
 void                  gvc_stream_status_icon_set_control      (GvcStreamStatusIcon    *icon,
                                                                MateMixerStreamControl *control);
-void gvc_stream_status_icon_set_orientation (GvcStreamStatusIcon *icon, const GtkOrientation orientation);
 
 G_END_DECLS
 

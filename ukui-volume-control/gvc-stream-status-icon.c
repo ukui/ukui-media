@@ -51,7 +51,6 @@ enum
         PROP_CONTROL,
         PROP_DISPLAY_NAME,
         PROP_ICON_NAMES,
-        PROP_ORIENTATION,
         N_PROPERTIES
 };
 
@@ -255,11 +254,11 @@ static void on_menu_orientation_toggled (GtkMenuItem *item, GvcStreamStatusIcon 
 	GSettings *gsettings = g_settings_new("org.ukui.media");
 	/* If the menu item is toggled, the orientation is horizontal. */
 	if (toggled) {
-		gvc_stream_status_icon_set_orientation(icon, GTK_ORIENTATION_HORIZONTAL);
+		icon->priv->orientation = GTK_ORIENTATION_HORIZONTAL;
 		gvc_channel_bar_set_orientation(GVC_CHANNEL_BAR(icon->priv->bar), GTK_ORIENTATION_HORIZONTAL);
 		g_settings_set_enum(gsettings, "channel-bar-orientation", GTK_ORIENTATION_HORIZONTAL);
 	} else {
-		gvc_stream_status_icon_set_orientation(icon, GTK_ORIENTATION_VERTICAL);
+		icon->priv->orientation = GTK_ORIENTATION_VERTICAL;
 		gvc_channel_bar_set_orientation(GVC_CHANNEL_BAR(icon->priv->bar), GTK_ORIENTATION_VERTICAL);
 		g_settings_set_enum(gsettings, "channel-bar-orientation", GTK_ORIENTATION_VERTICAL);
 	}
@@ -585,18 +584,6 @@ gvc_stream_status_icon_set_display_name (GvcStreamStatusIcon *icon,
 }
 
 void
-gvc_stream_status_icon_set_orientation (GvcStreamStatusIcon *icon,
-                                         const GtkOrientation         orientation)
-{
-        g_return_if_fail (GVC_STREAM_STATUS_ICON (icon));
-
-        icon->priv->orientation = orientation;
-        update_icon (icon);
-
-        g_object_notify_by_pspec (G_OBJECT (icon), properties[PROP_ORIENTATION]);
-}
-
-void
 gvc_stream_status_icon_set_control (GvcStreamStatusIcon    *icon,
                                     MateMixerStreamControl *control)
 {
@@ -658,9 +645,6 @@ gvc_stream_status_icon_set_property (GObject       *object,
         case PROP_ICON_NAMES:
                 gvc_stream_status_icon_set_icon_names (self, g_value_get_boxed (value));
                 break;
-        case PROP_ORIENTATION:
-                gvc_stream_status_icon_set_orientation (self, g_value_get_enum (value));
-                break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
                 break;
@@ -684,9 +668,6 @@ gvc_stream_status_icon_get_property (GObject     *object,
                 break;
         case PROP_ICON_NAMES:
                 g_value_set_boxed (value, self->priv->icon_names);
-                break;
-        case PROP_ORIENTATION:
-                g_value_set_enum (value, self->priv->orientation);
                 break;
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -745,16 +726,6 @@ gvc_stream_status_icon_class_init (GvcStreamStatusIconClass *klass)
                                     G_PARAM_READWRITE |
                                     G_PARAM_CONSTRUCT |
                                     G_PARAM_STATIC_STRINGS);
-
-	properties[PROP_ORIENTATION] =
-		g_param_spec_enum ("orientation",
-					"Orientation",
-					"Dock orientation",
-					GTK_TYPE_ORIENTATION,
-					GTK_ORIENTATION_VERTICAL,
-					G_PARAM_READWRITE |
-					G_PARAM_CONSTRUCT |
-					G_PARAM_STATIC_STRINGS);
 
         g_object_class_install_properties (object_class, N_PROPERTIES, properties);
 
@@ -839,8 +810,8 @@ gvc_stream_status_icon_init (GvcStreamStatusIcon *icon)
         icon->priv->bar = gvc_channel_bar_new (NULL);
 
 	GSettings *gsettings = g_settings_new("org.ukui.media");
-	GtkOrientation channel_bar_orientation = g_settings_get_enum(gsettings, "channel-bar-orientation");
-	gvc_channel_bar_set_orientation (GVC_CHANNEL_BAR (icon->priv->bar), channel_bar_orientation);
+	icon->priv->orientation = g_settings_get_enum(gsettings, "channel-bar-orientation");
+	gvc_channel_bar_set_orientation(GVC_CHANNEL_BAR(icon->priv->bar), icon->priv->orientation);
 
 	/* Set volume control frame, slider and toplevel window to follow panel theme */
         GtkWidget *toplevel = gtk_widget_get_toplevel (icon->priv->dock);
