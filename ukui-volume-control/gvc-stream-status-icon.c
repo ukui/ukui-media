@@ -92,6 +92,17 @@ popup_dock (GvcStreamStatusIcon *icon, guint time)
         /* position roughly */
         gtk_window_set_screen (GTK_WINDOW (icon->priv->dock), screen);
 
+	/*
+	 * When the dock pops up, a initial icon should be set. Otherwise,
+	 * this icon won't display until the volume is changed.
+	 * NOTE: Only after orientation is set and before the dock is moved,
+	 * should the icon be set. Otherwise, this icon may be removed
+	 * during gvc_channel_bar_set_orientation or make the dock bottom edge
+	 * can't be aligned to the panel because of dock moving.
+	 */
+	gvc_channel_bar_set_image_name(GVC_CHANNEL_BAR(icon->priv->bar),
+				icon->priv->icon_names[icon->priv->current_icon]);
+
 #if GTK_CHECK_VERSION (3, 22, 0)
         monitor_num = gdk_display_get_monitor_at_point (gdk_screen_get_display (screen), icon_area.x, icon_area.y);
         gdk_monitor_get_geometry (monitor_num, &monitor);
@@ -484,6 +495,8 @@ update_icon (GvcStreamStatusIcon *icon)
         if (icon->priv->current_icon != n) {
                 gtk_status_icon_set_from_icon_name (GTK_STATUS_ICON (icon),
                                                     icon->priv->icon_names[n]);
+		gvc_channel_bar_set_image_name(GVC_CHANNEL_BAR(icon->priv->bar),
+							icon->priv->icon_names[n]);
                 icon->priv->current_icon = n;
         }
 
@@ -548,6 +561,7 @@ gvc_stream_status_icon_set_icon_names (GvcStreamStatusIcon  *icon,
         /* Set the first icon as the initial one, the icon may be immediately
          * updated or not depending on whether a stream is available */
         gtk_status_icon_set_from_icon_name (GTK_STATUS_ICON (icon), names[0]);
+	gvc_channel_bar_set_image_name(GVC_CHANNEL_BAR(icon->priv->bar), names[0]);
         update_icon (icon);
 
         g_object_notify_by_pspec (G_OBJECT (icon), properties[PROP_ICON_NAMES]);
@@ -746,6 +760,8 @@ on_icon_theme_change (GtkSettings         *settings,
 {
         gtk_status_icon_set_from_icon_name (GTK_STATUS_ICON (icon),
                                             icon->priv->icon_names[icon->priv->current_icon]);
+	gvc_channel_bar_set_image_name(GVC_CHANNEL_BAR(icon->priv->bar),
+				icon->priv->icon_names[icon->priv->current_icon]);
 }
 
 static void
