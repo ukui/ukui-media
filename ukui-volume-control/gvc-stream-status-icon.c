@@ -538,6 +538,8 @@ update_icon (GvcStreamStatusIcon *icon)
         }
 
         gtk_status_icon_set_tooltip_markup (GTK_STATUS_ICON (icon), markup);
+	/* Set volume_percent at the right/bottom of the scale */
+	gvc_channel_bar_set_label_percentage (GVC_CHANNEL_BAR(icon->priv->bar), volume_percent);
 
         g_free (markup);
 }

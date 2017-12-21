@@ -57,6 +57,7 @@ struct _GvcChannelBarPrivate
         gboolean                    click_lock;
         MateMixerStreamControl     *control;
         MateMixerStreamControlFlags control_flags;
+	GtkWidget                  *label_percentage;
 };
 
 enum {
@@ -71,6 +72,7 @@ enum {
         PROP_ICON_NAME,
         PROP_LOW_ICON_NAME,
         PROP_HIGH_ICON_NAME,
+	PROP_LABEL_PERCENTAGE,
         N_PROPERTIES
 };
 
@@ -129,6 +131,9 @@ create_scale_box (GvcChannelBar *bar)
                                     bar->priv->low_image,
                                     FALSE, FALSE, 0);
                 gtk_box_pack_start (GTK_BOX (bar->priv->end_box),
+                                    bar->priv->label_percentage,
+                                    FALSE, FALSE, 0);
+                gtk_box_pack_start (GTK_BOX (bar->priv->end_box),
                                     bar->priv->mute_button,
                                     FALSE, FALSE, 0);
         } else {
@@ -158,6 +163,9 @@ create_scale_box (GvcChannelBar *bar)
 
                 gtk_box_pack_start (GTK_BOX (bar->priv->end_box),
                                     bar->priv->high_image,
+                                    FALSE, FALSE, 0);
+                gtk_box_pack_start (GTK_BOX (bar->priv->end_box),
+                                    bar->priv->label_percentage,
                                     FALSE, FALSE, 0);
                 gtk_box_pack_start (GTK_BOX (bar->priv->end_box),
                                     bar->priv->mute_button,
@@ -243,6 +251,7 @@ update_layout (GvcChannelBar *bar)
 
         g_object_ref (bar->priv->image);
         g_object_ref (bar->priv->label);
+        g_object_ref (bar->priv->label_percentage);
         g_object_ref (bar->priv->mute_button);
         g_object_ref (bar->priv->low_image);
         g_object_ref (bar->priv->high_image);
@@ -252,6 +261,8 @@ update_layout (GvcChannelBar *bar)
                               bar->priv->image);
         gtk_container_remove (GTK_CONTAINER (bar->priv->start_box),
                               bar->priv->label);
+        gtk_container_remove (GTK_CONTAINER (bar->priv->end_box),
+                              bar->priv->label_percentage);
         gtk_container_remove (GTK_CONTAINER (bar->priv->end_box),
                               bar->priv->mute_button);
 
@@ -281,6 +292,7 @@ update_layout (GvcChannelBar *bar)
 
         g_object_unref (bar->priv->image);
         g_object_unref (bar->priv->label);
+        g_object_unref (bar->priv->label_percentage);
         g_object_unref (bar->priv->mute_button);
         g_object_unref (bar->priv->low_image);
         g_object_unref (bar->priv->high_image);
@@ -818,6 +830,16 @@ gvc_channel_bar_set_high_icon_name (GvcChannelBar *bar, const gchar *name)
         g_object_notify_by_pspec (G_OBJECT (bar), properties[PROP_HIGH_ICON_NAME]);
 }
 
+void gvc_channel_bar_set_label_percentage (GvcChannelBar *bar, int percentage)
+{
+	char percentage_text[10] = {0};
+	sprintf(percentage_text, " %d%%", percentage);
+	gtk_label_set_width_chars(bar->priv->label_percentage, 6);
+	gtk_label_set_text (GTK_LABEL(bar->priv->label_percentage), percentage_text);
+	gtk_widget_show(bar->priv->label_percentage);
+        g_object_notify_by_pspec (G_OBJECT (bar), properties[PROP_LABEL_PERCENTAGE]);
+}
+
 gboolean
 gvc_channel_bar_scroll (GvcChannelBar *bar, GdkScrollDirection direction)
 {
@@ -931,6 +953,8 @@ gvc_channel_bar_set_property (GObject       *object,
         case PROP_HIGH_ICON_NAME:
                 gvc_channel_bar_set_high_icon_name (self, g_value_get_string (value));
                 break;
+	case PROP_LABEL_PERCENTAGE:
+		gvc_channel_bar_set_label_percentage(self, g_value_get_int (value));
         default:
                 G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
                 break;
@@ -1070,6 +1094,17 @@ gvc_channel_bar_class_init (GvcChannelBarClass *klass)
                                      G_PARAM_CONSTRUCT |
                                      G_PARAM_STATIC_STRINGS);
 
+        properties[PROP_LABEL_PERCENTAGE] =
+                g_param_spec_int ("label-perentage",
+                                      "Label Percentage",
+                                      "Allow the scale to be extended above normal volume",
+                                      0,
+				      100,
+				      0,
+                                      G_PARAM_READWRITE |
+                                      G_PARAM_STATIC_STRINGS);
+
+
         g_object_class_install_properties (object_class, N_PROPERTIES, properties);
 
         g_type_class_add_private (klass, sizeof (GvcChannelBarPrivate));
@@ -1102,6 +1137,7 @@ gvc_channel_bar_init (GvcChannelBar *bar)
         gtk_widget_set_no_show_all (bar->priv->high_image, TRUE);
 
         bar->priv->label = gtk_label_new (NULL);
+        bar->priv->label_percentage = gtk_label_new (NULL);
 #if GTK_CHECK_VERSION (3, 16, 0)
         gtk_label_set_xalign (GTK_LABEL (bar->priv->label), 0.0);
         gtk_label_set_yalign (GTK_LABEL (bar->priv->label), 0.5);
@@ -1109,6 +1145,7 @@ gvc_channel_bar_init (GvcChannelBar *bar)
         gtk_misc_set_alignment (GTK_MISC (bar->priv->label), 0.0, 0.5);
 #endif
         gtk_widget_set_no_show_all (bar->priv->label, TRUE);
+        gtk_widget_set_no_show_all (bar->priv->label_percentage, TRUE);
 
         /* Frame */
         frame = gtk_frame_new (NULL);

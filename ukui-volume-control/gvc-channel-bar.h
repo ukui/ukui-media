@@ -102,6 +102,8 @@ void                gvc_channel_bar_set_size_group      (GvcChannelBar      *bar
                                                          GtkSizeGroup       *group,
                                                          gboolean            symmetric);
 
+void gvc_channel_bar_set_label_percentage (GvcChannelBar *bar, int percentage);
+
 gboolean            gvc_channel_bar_scroll              (GvcChannelBar      *bar,
                                                          GdkScrollDirection  direction);
 
