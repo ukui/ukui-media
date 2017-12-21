@@ -768,7 +768,7 @@ add_application_control (GvcMixerDialog *dialog, MateMixerStreamControl *control
         }
 
         gvc_channel_bar_set_name (GVC_CHANNEL_BAR (bar), app_name);
-        gvc_channel_bar_set_icon_name (GVC_CHANNEL_BAR (bar), app_icon);
+        gvc_channel_bar_set_image_name (GVC_CHANNEL_BAR (bar), app_icon);
 
         gtk_box_pack_start (GTK_BOX (dialog->priv->applications_box),
                             bar,

@@ -66,8 +66,8 @@ const gchar *       gvc_channel_bar_get_name            (GvcChannelBar      *bar
 void                gvc_channel_bar_set_name            (GvcChannelBar      *bar,
                                                          const gchar        *name);
 
-const gchar *       gvc_channel_bar_get_icon_name       (GvcChannelBar      *bar);
-void                gvc_channel_bar_set_icon_name       (GvcChannelBar      *bar,
+const gchar *       gvc_channel_bar_get_image_name       (GvcChannelBar      *bar);
+void                gvc_channel_bar_set_image_name       (GvcChannelBar      *bar,
                                                          const gchar        *icon_name);
 
 const gchar *       gvc_channel_bar_get_low_icon_name   (GvcChannelBar      *bar);

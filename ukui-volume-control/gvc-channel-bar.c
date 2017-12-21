@@ -746,7 +746,7 @@ gvc_channel_bar_set_name (GvcChannelBar *bar, const gchar *name)
 }
 
 const gchar *
-gvc_channel_bar_get_icon_name (GvcChannelBar *bar)
+gvc_channel_bar_get_image_name (GvcChannelBar *bar)
 {
         const gchar *name = NULL;
 
@@ -757,7 +757,7 @@ gvc_channel_bar_get_icon_name (GvcChannelBar *bar)
 }
 
 void
-gvc_channel_bar_set_icon_name (GvcChannelBar *bar, const gchar *name)
+gvc_channel_bar_set_image_name (GvcChannelBar *bar, const gchar *name)
 {
         g_return_if_fail (GVC_IS_CHANNEL_BAR (bar));
 
@@ -923,7 +923,7 @@ gvc_channel_bar_set_property (GObject       *object,
                 gvc_channel_bar_set_name (self, g_value_get_string (value));
                 break;
         case PROP_ICON_NAME:
-                gvc_channel_bar_set_icon_name (self, g_value_get_string (value));
+                gvc_channel_bar_set_image_name (self, g_value_get_string (value));
                 break;
         case PROP_LOW_ICON_NAME:
                 gvc_channel_bar_set_low_icon_name (self, g_value_get_string (value));
