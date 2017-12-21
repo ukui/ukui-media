@@ -1140,6 +1140,6 @@ gvc_channel_bar_new (MateMixerStreamControl *control)
 {
         return g_object_new (GVC_TYPE_CHANNEL_BAR,
                              "control", control,
-                             "orientation", GTK_ORIENTATION_HORIZONTAL,
+                             "orientation", GTK_ORIENTATION_VERTICAL,
                              NULL);
 }
