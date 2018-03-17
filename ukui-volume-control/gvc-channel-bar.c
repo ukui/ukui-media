@@ -776,7 +776,7 @@ gvc_channel_bar_set_image_name (GvcChannelBar *bar, const gchar *name)
 
         gtk_image_set_from_icon_name (GTK_IMAGE (bar->priv->image),
                                       name,
-                                      GTK_ICON_SIZE_DIALOG);
+                                      GTK_ICON_SIZE_SMALL_TOOLBAR);
         if (name != NULL)
                 gtk_widget_show (bar->priv->image);
         else
