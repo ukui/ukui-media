@@ -18,7 +18,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: UKUI Desktop Environment\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-20 11:02+0800\n"
+"POT-Creation-Date: 2019-12-14 11:47+0800\n"
 "PO-Revision-Date: 2017-09-23 18:10+0000\n"
 "Last-Translator: monsta <monsta@inbox.ru>\n"
 "Language-Team: Arabic (http://wiki.ukui.org/trans/ar/)\n"
@@ -39,7 +39,7 @@ msgstr "غيّر شدة الصوت و أصوات الأحداث"
 
 #: ../data/ukui-volume-control-applet.desktop.in.h:1
 #: ../ukui-volume-control/dialog-main.c:255
-#: ../ukui-volume-control/gvc-channel-bar.c:487
+#: ../ukui-volume-control/gvc-channel-bar.c:500
 #: ../ukui-volume-control/gvc-speaker-test.c:434
 msgid "Volume Control"
 msgstr "التحكم في حجم الصوت"
@@ -109,12 +109,12 @@ msgid " — UKUI Volume Control"
 msgstr " — تحكم متّة في شدة الصوت"
 
 #: ../ukui-volume-control/gvc-applet.c:322
-#: ../ukui-volume-control/gvc-mixer-dialog.c:1999
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2000
 msgid "Input"
 msgstr "الإدخال"
 
 #: ../ukui-volume-control/gvc-applet.c:323
-#: ../ukui-volume-control/gvc-mixer-dialog.c:2086
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2087
 msgid "Output"
 msgstr "الإخراج"
 
@@ -173,40 +173,40 @@ msgstr "ال_تلاشي:"
 msgid "_Subwoofer:"
 msgstr "_مضخم الصوت:"
 
-#: ../ukui-volume-control/gvc-channel-bar.c:312
+#: ../ukui-volume-control/gvc-channel-bar.c:325
 msgctxt "volume"
 msgid "Unamplified"
 msgstr "غير مكبّر"
 
-#: ../ukui-volume-control/gvc-channel-bar.c:325
+#: ../ukui-volume-control/gvc-channel-bar.c:338
 msgctxt "volume"
 msgid "100%"
 msgstr "100%"
 
 #. Mute button
-#: ../ukui-volume-control/gvc-channel-bar.c:1086
+#: ../ukui-volume-control/gvc-channel-bar.c:1122
 msgid "Mute"
 msgstr "كتم"
 
 #: ../ukui-volume-control/gvc-combo-box.c:253
-#: ../ukui-volume-control/gvc-mixer-dialog.c:1613
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1614
 msgid "_Profile:"
 msgstr "ال_طور:"
 
-#: ../ukui-volume-control/gvc-mixer-dialog.c:355
-#: ../ukui-volume-control/gvc-mixer-dialog.c:504
+#: ../ukui-volume-control/gvc-mixer-dialog.c:356
+#: ../ukui-volume-control/gvc-mixer-dialog.c:505
 msgid "Co_nnector:"
 msgstr "المو_صّل:"
 
 #. translators:
 #. * The device has been disabled
-#: ../ukui-volume-control/gvc-mixer-dialog.c:1126
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1127
 msgid "Disabled"
 msgstr "معطّل"
 
 #. translators:
 #. * The number of sound outputs on a particular device
-#: ../ukui-volume-control/gvc-mixer-dialog.c:1132
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1133
 #, c-format
 msgid "%u Output"
 msgid_plural "%u Outputs"
@@ -219,7 +219,7 @@ msgstr[5] "%u مخرجا"
 
 #. translators:
 #. * The number of sound inputs on a particular device
-#: ../ukui-volume-control/gvc-mixer-dialog.c:1141
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1142
 #, c-format
 msgid "%u Input"
 msgid_plural "%u Inputs"
@@ -230,71 +230,71 @@ msgstr[3] "%u مداخل"
 msgstr[4] "%u مدخلا"
 msgstr[5] "%u مدخلا"
 
-#: ../ukui-volume-control/gvc-mixer-dialog.c:1504
-#: ../ukui-volume-control/gvc-mixer-dialog.c:1773
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1505
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1774
 #: ../ukui-volume-control/gvc-sound-theme-chooser.c:868
 msgid "Name"
 msgstr "الاسم"
 
-#: ../ukui-volume-control/gvc-mixer-dialog.c:1552
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1553
 #, c-format
 msgid "Speaker Testing for %s"
 msgstr "اختبار سماعات %s"
 
-#: ../ukui-volume-control/gvc-mixer-dialog.c:1616
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1617
 msgid "Test Speakers"
 msgstr "اختبر السماعات"
 
-#: ../ukui-volume-control/gvc-mixer-dialog.c:1821
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1822
 msgid "Sound Effects"
 msgstr "المؤثرات الصوتية"
 
-#: ../ukui-volume-control/gvc-mixer-dialog.c:1844
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1845
 msgid "_Alert volume: "
 msgstr "شدة صوت التنبي_ه:"
 
-#: ../ukui-volume-control/gvc-mixer-dialog.c:1913
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1914
 msgid "_Output volume: "
 msgstr "حجم صوت ال_إخراج:"
 
-#: ../ukui-volume-control/gvc-mixer-dialog.c:1956
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1957
 msgid "Hardware"
 msgstr "العتاد"
 
-#: ../ukui-volume-control/gvc-mixer-dialog.c:1961
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1962
 msgid "C_hoose a device to configure:"
 msgstr "ا_ختر جهازا لضبطه:"
 
-#: ../ukui-volume-control/gvc-mixer-dialog.c:1985
-#: ../ukui-volume-control/gvc-mixer-dialog.c:2115
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1986
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2116
 msgid "Settings for the selected device:"
 msgstr "إعدادات الجهاز المختار:"
 
-#: ../ukui-volume-control/gvc-mixer-dialog.c:2008
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2009
 msgid "_Input volume: "
 msgstr "حجم صوت ال_إدخال:"
 
-#: ../ukui-volume-control/gvc-mixer-dialog.c:2033
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2034
 msgid "Input level:"
 msgstr "مستوى الإدخال:"
 
-#: ../ukui-volume-control/gvc-mixer-dialog.c:2058
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2059
 msgid "C_hoose a device for sound input:"
 msgstr "اخ_تر جهازا لإدخال الصوت:"
 
-#: ../ukui-volume-control/gvc-mixer-dialog.c:2091
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2092
 msgid "C_hoose a device for sound output:"
 msgstr "اخ_تر جهازا لإخراج الصوت:"
 
-#: ../ukui-volume-control/gvc-mixer-dialog.c:2140
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2141
 msgid "Applications"
 msgstr "التطبيقات"
 
-#: ../ukui-volume-control/gvc-mixer-dialog.c:2145
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2146
 msgid "No application is currently playing or recording audio."
 msgstr "لا تطبيقات تشغل أو تسجل الصوت حاليا."
 
-#: ../ukui-volume-control/gvc-mixer-dialog.c:2337
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2338
 #: ../ukui-volume-control/gvc-sound-theme-chooser.c:732
 #: ../ukui-volume-control/gvc-sound-theme-chooser.c:744
 #: ../ukui-volume-control/gvc-sound-theme-chooser.c:756
@@ -353,24 +353,24 @@ msgstr "أوقف"
 msgid "Test"
 msgstr "اختبِر"
 
-#: ../ukui-volume-control/gvc-stream-status-icon.c:240
+#: ../ukui-volume-control/gvc-stream-status-icon.c:250
 #, c-format
 msgid "Failed to start Sound Preferences: %s"
 msgstr "فشل بدء تفضيلات الصوت: %s"
 
-#: ../ukui-volume-control/gvc-stream-status-icon.c:291
+#: ../ukui-volume-control/gvc-stream-status-icon.c:303
 msgid "_Mute"
 msgstr "_كتم"
 
-#: ../ukui-volume-control/gvc-stream-status-icon.c:301
+#: ../ukui-volume-control/gvc-stream-status-icon.c:313
 msgid "_Horizontal"
 msgstr ""
 
-#: ../ukui-volume-control/gvc-stream-status-icon.c:310
+#: ../ukui-volume-control/gvc-stream-status-icon.c:322
 msgid "_Sound Preferences"
 msgstr "_تفضيلات الصوت"
 
-#: ../ukui-volume-control/gvc-stream-status-icon.c:496
+#: ../ukui-volume-control/gvc-stream-status-icon.c:510
 msgid "Muted at"
 msgstr ""
 

@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: UKUI Desktop Environment\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-20 11:02+0800\n"
+"POT-Creation-Date: 2019-12-14 11:47+0800\n"
 "PO-Revision-Date: 2017-09-19 11:49+0000\n"
 "Last-Translator: monsta <monsta@inbox.ru>\n"
 "Language-Team: Bengali (India) (http://wiki.ukui.org/trans/bn_IN/)\n"
@@ -32,7 +32,7 @@ msgstr "শব্দের মাত্রা o নির্দিষ্ট ঘ�
 
 #: ../data/ukui-volume-control-applet.desktop.in.h:1
 #: ../ukui-volume-control/dialog-main.c:255
-#: ../ukui-volume-control/gvc-channel-bar.c:487
+#: ../ukui-volume-control/gvc-channel-bar.c:500
 #: ../ukui-volume-control/gvc-speaker-test.c:434
 msgid "Volume Control"
 msgstr "শব্দের মাত্রা নিয়ন্ত্রণকারী"
@@ -102,12 +102,12 @@ msgid " — UKUI Volume Control"
 msgstr "শব্দের মাত্রা নিয়ন্ত্রণকারী"
 
 #: ../ukui-volume-control/gvc-applet.c:322
-#: ../ukui-volume-control/gvc-mixer-dialog.c:1999
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2000
 msgid "Input"
 msgstr "ইনপুট"
 
 #: ../ukui-volume-control/gvc-applet.c:323
-#: ../ukui-volume-control/gvc-mixer-dialog.c:2086
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2087
 msgid "Output"
 msgstr "আউটপুট"
 
@@ -166,40 +166,40 @@ msgstr "নিষ্প্রভ: (_F)"
 msgid "_Subwoofer:"
 msgstr "সাব-উফার: (_S)"
 
-#: ../ukui-volume-control/gvc-channel-bar.c:312
+#: ../ukui-volume-control/gvc-channel-bar.c:325
 msgctxt "volume"
 msgid "Unamplified"
 msgstr "অ্যামপ্লফাই না করা"
 
-#: ../ukui-volume-control/gvc-channel-bar.c:325
+#: ../ukui-volume-control/gvc-channel-bar.c:338
 msgctxt "volume"
 msgid "100%"
 msgstr "১০০%"
 
 #. Mute button
-#: ../ukui-volume-control/gvc-channel-bar.c:1086
+#: ../ukui-volume-control/gvc-channel-bar.c:1122
 msgid "Mute"
 msgstr "নিঃশব্দ"
 
 #: ../ukui-volume-control/gvc-combo-box.c:253
-#: ../ukui-volume-control/gvc-mixer-dialog.c:1613
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1614
 msgid "_Profile:"
 msgstr "প্রোফাইল: (_P)"
 
-#: ../ukui-volume-control/gvc-mixer-dialog.c:355
-#: ../ukui-volume-control/gvc-mixer-dialog.c:504
+#: ../ukui-volume-control/gvc-mixer-dialog.c:356
+#: ../ukui-volume-control/gvc-mixer-dialog.c:505
 msgid "Co_nnector:"
 msgstr "সংযোগকারী: (_n)"
 
 #. translators:
 #. * The device has been disabled
-#: ../ukui-volume-control/gvc-mixer-dialog.c:1126
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1127
 msgid "Disabled"
 msgstr "নিষ্ক্রিয়"
 
 #. translators:
 #. * The number of sound outputs on a particular device
-#: ../ukui-volume-control/gvc-mixer-dialog.c:1132
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1133
 #, c-format
 msgid "%u Output"
 msgid_plural "%u Outputs"
@@ -208,78 +208,78 @@ msgstr[1] "%u-টি আউটপুট"
 
 #. translators:
 #. * The number of sound inputs on a particular device
-#: ../ukui-volume-control/gvc-mixer-dialog.c:1141
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1142
 #, c-format
 msgid "%u Input"
 msgid_plural "%u Inputs"
 msgstr[0] "%u-টি ইনপুট"
 msgstr[1] "%u-টি ইনপুট"
 
-#: ../ukui-volume-control/gvc-mixer-dialog.c:1504
-#: ../ukui-volume-control/gvc-mixer-dialog.c:1773
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1505
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1774
 #: ../ukui-volume-control/gvc-sound-theme-chooser.c:868
 msgid "Name"
 msgstr "নাম"
 
-#: ../ukui-volume-control/gvc-mixer-dialog.c:1552
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1553
 #, c-format
 msgid "Speaker Testing for %s"
 msgstr ""
 
-#: ../ukui-volume-control/gvc-mixer-dialog.c:1616
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1617
 msgid "Test Speakers"
 msgstr ""
 
-#: ../ukui-volume-control/gvc-mixer-dialog.c:1821
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1822
 msgid "Sound Effects"
 msgstr "শব্দের ইফেক্ট"
 
-#: ../ukui-volume-control/gvc-mixer-dialog.c:1844
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1845
 msgid "_Alert volume: "
 msgstr "সতর্কবার্তার শব্দের মাত্রা: (_A)"
 
-#: ../ukui-volume-control/gvc-mixer-dialog.c:1913
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1914
 msgid "_Output volume: "
 msgstr "আউটপুটের শব্দের মাত্রা: (_O)"
 
-#: ../ukui-volume-control/gvc-mixer-dialog.c:1956
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1957
 msgid "Hardware"
 msgstr "হার্ডওয়্যার"
 
-#: ../ukui-volume-control/gvc-mixer-dialog.c:1961
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1962
 msgid "C_hoose a device to configure:"
 msgstr "কনফিগার করার উদ্দেশ্যে একটি ডিভাইস নির্বাচন করুন (_h)"
 
-#: ../ukui-volume-control/gvc-mixer-dialog.c:1985
-#: ../ukui-volume-control/gvc-mixer-dialog.c:2115
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1986
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2116
 msgid "Settings for the selected device:"
 msgstr "নির্বাচিত ডিভাইসের বৈশিষ্ট্য:"
 
-#: ../ukui-volume-control/gvc-mixer-dialog.c:2008
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2009
 msgid "_Input volume: "
 msgstr "ইনপুটের শব্দের মাত্রা: (_I)"
 
-#: ../ukui-volume-control/gvc-mixer-dialog.c:2033
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2034
 msgid "Input level:"
 msgstr "ইনপুটের মাত্রা:"
 
-#: ../ukui-volume-control/gvc-mixer-dialog.c:2058
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2059
 msgid "C_hoose a device for sound input:"
 msgstr "শব্দ ইনপুটের জন্য একটি ডিভাইস নির্বাচন করুন: (_h)"
 
-#: ../ukui-volume-control/gvc-mixer-dialog.c:2091
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2092
 msgid "C_hoose a device for sound output:"
 msgstr "শব্দ আউটপুটের জন্য একটি ডিভাইস নির্বাচন করুন: (_h)"
 
-#: ../ukui-volume-control/gvc-mixer-dialog.c:2140
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2141
 msgid "Applications"
 msgstr "অ্যাপ্লিকেশন"
 
-#: ../ukui-volume-control/gvc-mixer-dialog.c:2145
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2146
 msgid "No application is currently playing or recording audio."
 msgstr "কোনো অ্যাপ্লিকেশন দ্বারা বর্তমানে অডিও বাজানো অথবা রেকর্ড করা হচ্ছে না।"
 
-#: ../ukui-volume-control/gvc-mixer-dialog.c:2337
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2338
 #: ../ukui-volume-control/gvc-sound-theme-chooser.c:732
 #: ../ukui-volume-control/gvc-sound-theme-chooser.c:744
 #: ../ukui-volume-control/gvc-sound-theme-chooser.c:756
@@ -338,24 +338,24 @@ msgstr ""
 msgid "Test"
 msgstr ""
 
-#: ../ukui-volume-control/gvc-stream-status-icon.c:240
+#: ../ukui-volume-control/gvc-stream-status-icon.c:250
 #, c-format
 msgid "Failed to start Sound Preferences: %s"
 msgstr "শব্দ সংক্রান্ত পছন্দের মান আরম্ভ করতে ব্যর্থ: %s"
 
-#: ../ukui-volume-control/gvc-stream-status-icon.c:291
+#: ../ukui-volume-control/gvc-stream-status-icon.c:303
 msgid "_Mute"
 msgstr "নিঃশব্দ: (_M)"
 
-#: ../ukui-volume-control/gvc-stream-status-icon.c:301
+#: ../ukui-volume-control/gvc-stream-status-icon.c:313
 msgid "_Horizontal"
 msgstr ""
 
-#: ../ukui-volume-control/gvc-stream-status-icon.c:310
+#: ../ukui-volume-control/gvc-stream-status-icon.c:322
 msgid "_Sound Preferences"
 msgstr "শব্দ সংক্রান্ত পছন্দ (_S)"
 
-#: ../ukui-volume-control/gvc-stream-status-icon.c:496
+#: ../ukui-volume-control/gvc-stream-status-icon.c:510
 msgid "Muted at"
 msgstr ""
 
