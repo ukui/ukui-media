@@ -1,0 +1,462 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Translators:
+# Amitakhya Phukan <amitakhya@svn.mate.org>, 2008
+# Amitakhya Phukan <aphukan@fedoraproject.org>, 2009
+msgid ""
+msgstr ""
+"Project-Id-Version: UKUI Desktop Environment\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-12-20 11:02+0800\n"
+"PO-Revision-Date: 2017-09-19 11:49+0000\n"
+"Last-Translator: monsta <monsta@inbox.ru>\n"
+"Language-Team: Assamese (http://wiki.ukui.org/trans/as/)\n"
+"Language: as\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../data/ukui-volume-control.desktop.in.in.h:1
+msgid "Sound"
+msgstr "ধ্বনি "
+
+#: ../data/ukui-volume-control.desktop.in.in.h:2
+msgid "Change sound volume and sound events"
+msgstr "শব্দৰ মাত্ৰা o নিৰ্দিষ্ট ঘটনাৰ সৈতে যুক্ত শব্দ পৰিবৰ্তন কৰক"
+
+#: ../data/ukui-volume-control-applet.desktop.in.h:1
+#: ../ukui-volume-control/dialog-main.c:255
+#: ../ukui-volume-control/gvc-channel-bar.c:487
+#: ../ukui-volume-control/gvc-speaker-test.c:434
+msgid "Volume Control"
+msgstr "শব্দৰ মাত্ৰা নিয়ন্ত্ৰণকৰ্তা"
+
+#: ../data/ukui-volume-control-applet.desktop.in.h:2
+msgid "Show desktop volume control"
+msgstr "ডেস্কটপত শব্দৰ মাত্ৰা নিয়ন্ত্ৰণ ব্যৱস্থা প্ৰদৰ্শন কৰা হ'ব"
+
+#. Translators: This is the name of an audio file that sounds like the bark of a dog.
+#. You might want to translate it into the equivalent words of your language.
+#: ../data/sounds/ukui-sounds-default.xml.in.in.h:3
+msgid "Bark"
+msgstr "সাৰমেয়ৰ-ধ্বনি"
+
+#. Translators: This is the name of an audio file that sounds like a water drip.
+#. You might want to translate it into the equivalent words of your language.
+#: ../data/sounds/ukui-sounds-default.xml.in.in.h:6
+msgid "Drip"
+msgstr "টিপটিপ"
+
+#. Translators: This is the name of an audio file that sounds like tapping glass.
+#. You might want to translate it into the equivalent words of your language.
+#: ../data/sounds/ukui-sounds-default.xml.in.in.h:9
+msgid "Glass"
+msgstr "কাঁচ"
+
+#. Translators: This is the name of an audio file that sounds sort of like a submarine sonar ping.
+#. You might want to translate it into the equivalent words of your language.
+#: ../data/sounds/ukui-sounds-default.xml.in.in.h:12
+msgid "Sonar"
+msgstr "সোনাৰ"
+
+#: ../ukui-volume-control/applet-main.c:45
+#: ../ukui-volume-control/dialog-main.c:193
+msgid "Version of this application"
+msgstr "এপ্লিকেশনৰ সংস্কৰণ সংখ্যা"
+
+#: ../ukui-volume-control/applet-main.c:46
+#: ../ukui-volume-control/dialog-main.c:191
+msgid "Enable debug"
+msgstr ""
+
+#: ../ukui-volume-control/applet-main.c:55
+#, fuzzy
+msgid " — UKUI Volume Control Applet"
+msgstr "শব্দৰ মাত্ৰা নিয়ন্ত্ৰণকৰ্তা"
+
+#: ../ukui-volume-control/dialog-main.c:143
+msgid "Sound system is not available"
+msgstr ""
+
+#: ../ukui-volume-control/dialog-main.c:165
+msgid "Waiting for sound system to respond"
+msgstr "শব্দৰ ব্যৱস্থাপ্ৰণালীৰ পৰা প্ৰতিক্ৰিয়া প্ৰাপ্তিৰ অপেক্ষা কৰা হচ্ছে"
+
+#: ../ukui-volume-control/dialog-main.c:190
+msgid "Sound system backend"
+msgstr ""
+
+#: ../ukui-volume-control/dialog-main.c:192
+msgid "Startup page"
+msgstr "প্ৰাৰম্ভিক পৃষ্ঠা"
+
+#: ../ukui-volume-control/dialog-main.c:202
+#, fuzzy
+msgid " — UKUI Volume Control"
+msgstr "শব্দৰ মাত্ৰা নিয়ন্ত্ৰণকৰ্তা"
+
+#: ../ukui-volume-control/gvc-applet.c:322
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1999
+msgid "Input"
+msgstr "নিবেশ"
+
+#: ../ukui-volume-control/gvc-applet.c:323
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2086
+msgid "Output"
+msgstr "নিৰ্গম"
+
+#: ../ukui-volume-control/gvc-applet.c:326
+msgid "Microphone Volume"
+msgstr ""
+
+#: ../ukui-volume-control/gvc-applet.c:328
+msgid "Sound Output Volume"
+msgstr ""
+
+#: ../ukui-volume-control/gvc-applet.c:333
+#, fuzzy
+msgid "UKUI Volume Control Applet"
+msgstr "শব্দৰ মাত্ৰা নিয়ন্ত্ৰণকৰ্তা"
+
+#: ../ukui-volume-control/gvc-balance-bar.c:140
+msgctxt "balance"
+msgid "Left"
+msgstr "বাওঁফালে"
+
+#: ../ukui-volume-control/gvc-balance-bar.c:141
+msgctxt "balance"
+msgid "Right"
+msgstr "সোঁফালে"
+
+#: ../ukui-volume-control/gvc-balance-bar.c:144
+msgctxt "balance"
+msgid "Rear"
+msgstr "পশ্চাৎস্থিত"
+
+#: ../ukui-volume-control/gvc-balance-bar.c:145
+msgctxt "balance"
+msgid "Front"
+msgstr "সম্মুখস্থিত"
+
+#: ../ukui-volume-control/gvc-balance-bar.c:148
+msgctxt "balance"
+msgid "Minimum"
+msgstr "সৰ্বনিম্ন"
+
+#: ../ukui-volume-control/gvc-balance-bar.c:149
+msgctxt "balance"
+msgid "Maximum"
+msgstr "সৰ্বোচ্চ"
+
+#: ../ukui-volume-control/gvc-balance-bar.c:337
+msgid "_Balance:"
+msgstr "ভাৰসাম্য: (_B)"
+
+#: ../ukui-volume-control/gvc-balance-bar.c:340
+msgid "_Fade:"
+msgstr "নিষ্প্ৰভ: (_F)"
+
+#: ../ukui-volume-control/gvc-balance-bar.c:343
+msgid "_Subwoofer:"
+msgstr "ছাবউফাৰ: (_S)"
+
+#: ../ukui-volume-control/gvc-channel-bar.c:312
+msgctxt "volume"
+msgid "Unamplified"
+msgstr "এমপ্লিফাই নকৰা"
+
+#: ../ukui-volume-control/gvc-channel-bar.c:325
+msgctxt "volume"
+msgid "100%"
+msgstr "100%"
+
+#. Mute button
+#: ../ukui-volume-control/gvc-channel-bar.c:1086
+msgid "Mute"
+msgstr "নিঃশব্দ"
+
+#: ../ukui-volume-control/gvc-combo-box.c:253
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1613
+msgid "_Profile:"
+msgstr "প্ৰোফাইল:(_P)"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:355
+#: ../ukui-volume-control/gvc-mixer-dialog.c:504
+msgid "Co_nnector:"
+msgstr "সংযোগকৰ্তা: (_n)"
+
+#. translators:
+#. * The device has been disabled
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1126
+msgid "Disabled"
+msgstr "নিষ্ক্ৰিয়"
+
+#. translators:
+#. * The number of sound outputs on a particular device
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1132
+#, c-format
+msgid "%u Output"
+msgid_plural "%u Outputs"
+msgstr[0] "%u নিৰ্গম"
+msgstr[1] "%u নিৰ্গম"
+
+#. translators:
+#. * The number of sound inputs on a particular device
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1141
+#, c-format
+msgid "%u Input"
+msgid_plural "%u Inputs"
+msgstr[0] "%u নিবেশ"
+msgstr[1] "%u নিবেশ"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1504
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1773
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:868
+msgid "Name"
+msgstr "নাম"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1552
+#, c-format
+msgid "Speaker Testing for %s"
+msgstr ""
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1616
+msgid "Test Speakers"
+msgstr ""
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1821
+msgid "Sound Effects"
+msgstr "শব্দৰ ইফেক্ট"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1844
+msgid "_Alert volume: "
+msgstr "সতৰ্কবাৰ্তাৰ শব্দৰ মাত্ৰা: (_A)"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1913
+msgid "_Output volume: "
+msgstr "নিৰ্গমৰ শব্দৰ মাত্ৰা: (_O)"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1956
+msgid "Hardware"
+msgstr "হাৰ্ডৱেৰ"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1961
+msgid "C_hoose a device to configure:"
+msgstr "বিন্যাস কৰাৰ উদ্দেশ্যে এটা যন্ত্ৰ নিৰ্বাচন কৰক (_h)"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1985
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2115
+msgid "Settings for the selected device:"
+msgstr "নিৰ্বাচিত যন্ত্ৰেৰ বৈশিষ্ট্য:"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2008
+msgid "_Input volume: "
+msgstr "নিবেশৰ শব্দৰ মাত্ৰা: (_I)"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2033
+msgid "Input level:"
+msgstr "নিবেশ স্তৰ:"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2058
+msgid "C_hoose a device for sound input:"
+msgstr "শব্দ নিবেশৰ বাবে এটা যন্ত্ৰ নিৰ্বাচন কৰক: (_h)"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2091
+msgid "C_hoose a device for sound output:"
+msgstr "শব্দ নিৰ্গমৰ বাবে এটা যন্ত্ৰ নিৰ্বাচন কৰক: (_h)"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2140
+msgid "Applications"
+msgstr "অনুপ্ৰয়োগ"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2145
+msgid "No application is currently playing or recording audio."
+msgstr "কোনো এপ্লিকেশন দ্বাৰা বৰ্তমানে অডিও বাজানো অথবা ৰেকৰ্ড কৰা হচ্ছে না।"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2337
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:732
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:744
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:756
+msgid "Sound Preferences"
+msgstr "শব্দ সংক্ৰান্ত পছন্দ"
+
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:320
+msgid "No sounds"
+msgstr "কোনো ধ্বনি নাই"
+
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:441
+msgid "Built-in"
+msgstr "বিল্ট-ইন"
+
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:628
+#: ../ukui-volume-control/sound-theme-file-utils.c:292
+msgid "Custom"
+msgstr "নিজস্ব"
+
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:735
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:746
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:758
+msgid "Testing event sound"
+msgstr "ঘটনাৰ বাবে চিহ্নিত শব্দ পৰীক্ষা কৰা হচ্ছে"
+
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:844
+msgid "Default"
+msgstr "অবিকল্পিত"
+
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:845
+msgid "From theme"
+msgstr "থিমৰ পৰা"
+
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:875
+msgid "Type"
+msgstr "প্ৰকাৰ"
+
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:1034
+msgid "Sound _theme:"
+msgstr "শব্দৰ থিম: (_t)"
+
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:1047
+msgid "C_hoose an alert sound:"
+msgstr "সতৰ্কতামূলক এটা শব্দ নিৰ্বাচন কৰক: (_h)"
+
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:1075
+msgid "Enable _window and button sounds"
+msgstr "উইন্ডো আৰু বুটামৰ শব্দ সক্ৰিয় কৰক (_w)"
+
+#: ../ukui-volume-control/gvc-speaker-test.c:258
+msgid "Stop"
+msgstr ""
+
+#: ../ukui-volume-control/gvc-speaker-test.c:258
+#: ../ukui-volume-control/gvc-speaker-test.c:372
+msgid "Test"
+msgstr ""
+
+#: ../ukui-volume-control/gvc-stream-status-icon.c:240
+#, c-format
+msgid "Failed to start Sound Preferences: %s"
+msgstr "শব্দ সংক্ৰান্ত পছন্দেৰ মান আৰম্ভ কৰিবলৈ ব্যৰ্থ: %s"
+
+#: ../ukui-volume-control/gvc-stream-status-icon.c:291
+msgid "_Mute"
+msgstr "নিঃশব্দ: (_M)"
+
+#: ../ukui-volume-control/gvc-stream-status-icon.c:301
+msgid "_Horizontal"
+msgstr ""
+
+#: ../ukui-volume-control/gvc-stream-status-icon.c:310
+msgid "_Sound Preferences"
+msgstr "শব্দ সংক্ৰান্ত পছন্দ (_S)"
+
+#: ../ukui-volume-control/gvc-stream-status-icon.c:496
+msgid "Muted at"
+msgstr ""
+
+#: ../ukui-volume-control/gvc-utils.c:58
+msgid "Unknown"
+msgstr ""
+
+#. Speaker channel names
+#: ../ukui-volume-control/gvc-utils.c:60 ../ukui-volume-control/gvc-utils.c:108
+msgid "Mono"
+msgstr ""
+
+#: ../ukui-volume-control/gvc-utils.c:61
+msgid "Front Left"
+msgstr ""
+
+#: ../ukui-volume-control/gvc-utils.c:62
+msgid "Front Right"
+msgstr ""
+
+#: ../ukui-volume-control/gvc-utils.c:63
+msgid "Front Center"
+msgstr ""
+
+#: ../ukui-volume-control/gvc-utils.c:64
+msgid "LFE"
+msgstr ""
+
+#: ../ukui-volume-control/gvc-utils.c:65
+msgid "Rear Left"
+msgstr ""
+
+#: ../ukui-volume-control/gvc-utils.c:66
+msgid "Rear Right"
+msgstr ""
+
+#: ../ukui-volume-control/gvc-utils.c:67
+msgid "Rear Center"
+msgstr ""
+
+#: ../ukui-volume-control/gvc-utils.c:68
+msgid "Front Left of Center"
+msgstr ""
+
+#: ../ukui-volume-control/gvc-utils.c:69
+msgid "Front Right of Center"
+msgstr ""
+
+#: ../ukui-volume-control/gvc-utils.c:70
+msgid "Side Left"
+msgstr ""
+
+#: ../ukui-volume-control/gvc-utils.c:71
+msgid "Side Right"
+msgstr ""
+
+#: ../ukui-volume-control/gvc-utils.c:72
+msgid "Top Front Left"
+msgstr ""
+
+#: ../ukui-volume-control/gvc-utils.c:73
+msgid "Top Front Right"
+msgstr ""
+
+#: ../ukui-volume-control/gvc-utils.c:74
+msgid "Top Front Center"
+msgstr ""
+
+#: ../ukui-volume-control/gvc-utils.c:75
+msgid "Top Center"
+msgstr ""
+
+#: ../ukui-volume-control/gvc-utils.c:76
+msgid "Top Rear Left"
+msgstr ""
+
+#: ../ukui-volume-control/gvc-utils.c:77
+msgid "Top Rear Right"
+msgstr ""
+
+#: ../ukui-volume-control/gvc-utils.c:78
+msgid "Top Rear Center"
+msgstr ""
+
+#: ../ukui-volume-control/gvc-utils.c:113
+msgid "Stereo"
+msgstr ""
+
+#: ../ukui-volume-control/gvc-utils.c:120
+msgid "Surround 4.0"
+msgstr ""
+
+#: ../ukui-volume-control/gvc-utils.c:128
+msgid "Surround 4.1"
+msgstr ""
+
+#: ../ukui-volume-control/gvc-utils.c:130
+msgid "Surround 5.0"
+msgstr ""
+
+#: ../ukui-volume-control/gvc-utils.c:140
+msgid "Surround 5.1"
+msgstr ""
+
+#: ../ukui-volume-control/gvc-utils.c:151
+msgid "Surround 7.1"
+msgstr ""

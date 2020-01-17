@@ -1,0 +1,19 @@
+# List of source files containing translatable strings.
+# Please keep this file sorted alphabetically.
+[encoding: UTF-8]
+data/ukui-volume-control.desktop.in.in
+data/ukui-volume-control-applet.desktop.in
+data/sounds/ukui-sounds-default.xml.in.in
+ukui-volume-control/applet-main.c
+ukui-volume-control/dialog-main.c
+ukui-volume-control/gvc-applet.c
+ukui-volume-control/gvc-balance-bar.c
+ukui-volume-control/gvc-channel-bar.c
+ukui-volume-control/gvc-combo-box.c
+ukui-volume-control/gvc-mixer-dialog.c
+ukui-volume-control/gvc-sound-theme-chooser.c
+ukui-volume-control/gvc-speaker-test.c
+ukui-volume-control/gvc-stream-status-icon.c
+ukui-volume-control/gvc-utils.c
+ukui-volume-control/sound-theme-file-utils.c
+#ukui-volume-control/ukui-volume-control-applet-qt/ukmedia_control_widget.cpp

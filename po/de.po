@@ -1,0 +1,468 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Translators:
+# Christian <Christian.Kirbach@googlemail.com>, 2009
+# debianer82 <debianer82@gmail.com>, 2017
+# Ettore Atalan <atalanttore@googlemail.com>, 2015
+# Hendrik Richter <hendrikr@gnome.org>, 2004, 2005, 2006, 2008, 2009
+# Karl Eichwalder <ke@suse.de>, 1999, 2000
+# Mario Blättermann <mariobl@gnome.org>, 2010
+# Matthias Warkus <mawa@iname.com>, 1999
+# Tobias Bannert <tobannert@gmail.com>, 2014-2015
+msgid ""
+msgstr ""
+"Project-Id-Version: UKUI Desktop Environment\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-12-20 11:02+0800\n"
+"PO-Revision-Date: 2017-09-19 11:49+0000\n"
+"Last-Translator: debianer82 <debianer82@gmail.com>\n"
+"Language-Team: German (http://wiki.ukui.org/trans/de/)\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../data/ukui-volume-control.desktop.in.in.h:1
+msgid "Sound"
+msgstr "Klang"
+
+#: ../data/ukui-volume-control.desktop.in.in.h:2
+msgid "Change sound volume and sound events"
+msgstr "Lautstärke und Ereignissenklänge ändern"
+
+#: ../data/ukui-volume-control-applet.desktop.in.h:1
+#: ../ukui-volume-control/dialog-main.c:255
+#: ../ukui-volume-control/gvc-channel-bar.c:487
+#: ../ukui-volume-control/gvc-speaker-test.c:434
+msgid "Volume Control"
+msgstr "Lautstärkeregler"
+
+#: ../data/ukui-volume-control-applet.desktop.in.h:2
+msgid "Show desktop volume control"
+msgstr "Lautstärkeregler anzeigen"
+
+#. Translators: This is the name of an audio file that sounds like the bark of a dog.
+#. You might want to translate it into the equivalent words of your language.
+#: ../data/sounds/ukui-sounds-default.xml.in.in.h:3
+msgid "Bark"
+msgstr "Bellen"
+
+#. Translators: This is the name of an audio file that sounds like a water drip.
+#. You might want to translate it into the equivalent words of your language.
+#: ../data/sounds/ukui-sounds-default.xml.in.in.h:6
+msgid "Drip"
+msgstr "Tropfen"
+
+#. Translators: This is the name of an audio file that sounds like tapping glass.
+#. You might want to translate it into the equivalent words of your language.
+#: ../data/sounds/ukui-sounds-default.xml.in.in.h:9
+msgid "Glass"
+msgstr "Glas"
+
+#. Translators: This is the name of an audio file that sounds sort of like a submarine sonar ping.
+#. You might want to translate it into the equivalent words of your language.
+#: ../data/sounds/ukui-sounds-default.xml.in.in.h:12
+msgid "Sonar"
+msgstr "Sonar"
+
+#: ../ukui-volume-control/applet-main.c:45
+#: ../ukui-volume-control/dialog-main.c:193
+msgid "Version of this application"
+msgstr "Version dieser Anwendung"
+
+#: ../ukui-volume-control/applet-main.c:46
+#: ../ukui-volume-control/dialog-main.c:191
+msgid "Enable debug"
+msgstr "Fehlerdiagnose aktivieren"
+
+#: ../ukui-volume-control/applet-main.c:55
+#, fuzzy
+msgid " — UKUI Volume Control Applet"
+msgstr " — MATE-Lautstärkeregleranzeige"
+
+#: ../ukui-volume-control/dialog-main.c:143
+msgid "Sound system is not available"
+msgstr "Klangsystem ist nicht verfügbar"
+
+#: ../ukui-volume-control/dialog-main.c:165
+msgid "Waiting for sound system to respond"
+msgstr "Es wird auf eine Antwort des Klangsystems gewartet"
+
+#: ../ukui-volume-control/dialog-main.c:190
+msgid "Sound system backend"
+msgstr "Klangsystemhintergrundprogramm"
+
+#: ../ukui-volume-control/dialog-main.c:192
+msgid "Startup page"
+msgstr "Startseite"
+
+#: ../ukui-volume-control/dialog-main.c:202
+#, fuzzy
+msgid " — UKUI Volume Control"
+msgstr " — MATE-Lautstärkeregler"
+
+#: ../ukui-volume-control/gvc-applet.c:322
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1999
+msgid "Input"
+msgstr "Eingang"
+
+#: ../ukui-volume-control/gvc-applet.c:323
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2086
+msgid "Output"
+msgstr "Ausgang"
+
+#: ../ukui-volume-control/gvc-applet.c:326
+msgid "Microphone Volume"
+msgstr "Mikrofonlautstärke"
+
+#: ../ukui-volume-control/gvc-applet.c:328
+msgid "Sound Output Volume"
+msgstr "Ausgangslautstärke"
+
+#: ../ukui-volume-control/gvc-applet.c:333
+#, fuzzy
+msgid "UKUI Volume Control Applet"
+msgstr "MATE-Lautstärkeregleranzeige"
+
+#: ../ukui-volume-control/gvc-balance-bar.c:140
+msgctxt "balance"
+msgid "Left"
+msgstr "Links"
+
+#: ../ukui-volume-control/gvc-balance-bar.c:141
+msgctxt "balance"
+msgid "Right"
+msgstr "Rechts"
+
+#: ../ukui-volume-control/gvc-balance-bar.c:144
+msgctxt "balance"
+msgid "Rear"
+msgstr "Hinten"
+
+#: ../ukui-volume-control/gvc-balance-bar.c:145
+msgctxt "balance"
+msgid "Front"
+msgstr "Vorn"
+
+#: ../ukui-volume-control/gvc-balance-bar.c:148
+msgctxt "balance"
+msgid "Minimum"
+msgstr "Minimum"
+
+#: ../ukui-volume-control/gvc-balance-bar.c:149
+msgctxt "balance"
+msgid "Maximum"
+msgstr "Maximum"
+
+#: ../ukui-volume-control/gvc-balance-bar.c:337
+msgid "_Balance:"
+msgstr "_Balance:"
+
+#: ../ukui-volume-control/gvc-balance-bar.c:340
+msgid "_Fade:"
+msgstr "_Ein-/Ausblenden:"
+
+#: ../ukui-volume-control/gvc-balance-bar.c:343
+msgid "_Subwoofer:"
+msgstr "_Subwoofer:"
+
+#: ../ukui-volume-control/gvc-channel-bar.c:312
+msgctxt "volume"
+msgid "Unamplified"
+msgstr "Nicht verstärkt"
+
+#: ../ukui-volume-control/gvc-channel-bar.c:325
+msgctxt "volume"
+msgid "100%"
+msgstr "100%"
+
+#. Mute button
+#: ../ukui-volume-control/gvc-channel-bar.c:1086
+msgid "Mute"
+msgstr "Stumm"
+
+#: ../ukui-volume-control/gvc-combo-box.c:253
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1613
+msgid "_Profile:"
+msgstr "_Profil:"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:355
+#: ../ukui-volume-control/gvc-mixer-dialog.c:504
+msgid "Co_nnector:"
+msgstr "_Verbindungsglied:"
+
+#. translators:
+#. * The device has been disabled
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1126
+msgid "Disabled"
+msgstr "Deaktiviert"
+
+#. translators:
+#. * The number of sound outputs on a particular device
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1132
+#, c-format
+msgid "%u Output"
+msgid_plural "%u Outputs"
+msgstr[0] "%u Ausgang"
+msgstr[1] "%u Ausgänge"
+
+#. translators:
+#. * The number of sound inputs on a particular device
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1141
+#, c-format
+msgid "%u Input"
+msgid_plural "%u Inputs"
+msgstr[0] "%u Eingang"
+msgstr[1] "%u Eingänge"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1504
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1773
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:868
+msgid "Name"
+msgstr "Name"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1552
+#, c-format
+msgid "Speaker Testing for %s"
+msgstr "Lautsprecher werden für %s getestet"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1616
+msgid "Test Speakers"
+msgstr "Lautsprechertest"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1821
+msgid "Sound Effects"
+msgstr "Klangeffekte"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1844
+msgid "_Alert volume: "
+msgstr "_Warnlautstärke: "
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1913
+msgid "_Output volume: "
+msgstr "_Ausgangslautstärke: "
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1956
+msgid "Hardware"
+msgstr "Geräte"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1961
+msgid "C_hoose a device to configure:"
+msgstr "_Ein Gerät zum Konfigurieren auswählen:"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1985
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2115
+msgid "Settings for the selected device:"
+msgstr "Einstellungen für das gewählte Gerät:"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2008
+msgid "_Input volume: "
+msgstr "_Eingangslautstärke: "
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2033
+msgid "Input level:"
+msgstr "Eingangsniveau:"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2058
+msgid "C_hoose a device for sound input:"
+msgstr "_Ein Gerät für den Toneingang auswählen:"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2091
+msgid "C_hoose a device for sound output:"
+msgstr "_Ein Gerät für den Tonausgang auswählen:"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2140
+msgid "Applications"
+msgstr "Anwendungen"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2145
+msgid "No application is currently playing or recording audio."
+msgstr "Derzeit wird von keiner Tonanwendung aufgenommen oder wiedergegeben."
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2337
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:732
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:744
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:756
+msgid "Sound Preferences"
+msgstr "Klangeinstellungen"
+
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:320
+msgid "No sounds"
+msgstr "Keine Klänge"
+
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:441
+msgid "Built-in"
+msgstr "Eingebaut"
+
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:628
+#: ../ukui-volume-control/sound-theme-file-utils.c:292
+msgid "Custom"
+msgstr "Angepasst"
+
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:735
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:746
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:758
+msgid "Testing event sound"
+msgstr "Ereignisklang wird getestet"
+
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:844
+msgid "Default"
+msgstr "Vorgabe"
+
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:845
+msgid "From theme"
+msgstr "Von Thema"
+
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:875
+msgid "Type"
+msgstr "Art"
+
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:1034
+msgid "Sound _theme:"
+msgstr "_Klangthema:"
+
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:1047
+msgid "C_hoose an alert sound:"
+msgstr "_Einen Warnklang auswählen:"
+
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:1075
+msgid "Enable _window and button sounds"
+msgstr "_Fenster- und Knopfklänge einschalten"
+
+#: ../ukui-volume-control/gvc-speaker-test.c:258
+msgid "Stop"
+msgstr "Stopp"
+
+#: ../ukui-volume-control/gvc-speaker-test.c:258
+#: ../ukui-volume-control/gvc-speaker-test.c:372
+msgid "Test"
+msgstr "Testen"
+
+#: ../ukui-volume-control/gvc-stream-status-icon.c:240
+#, c-format
+msgid "Failed to start Sound Preferences: %s"
+msgstr "Das Starten der Klangeinstellungen schlug fehl: %s"
+
+#: ../ukui-volume-control/gvc-stream-status-icon.c:291
+msgid "_Mute"
+msgstr "_Stumm"
+
+#: ../ukui-volume-control/gvc-stream-status-icon.c:301
+msgid "_Horizontal"
+msgstr ""
+
+#: ../ukui-volume-control/gvc-stream-status-icon.c:310
+msgid "_Sound Preferences"
+msgstr "_Klangeinstellungen"
+
+#: ../ukui-volume-control/gvc-stream-status-icon.c:496
+msgid "Muted at"
+msgstr "Stumm geschaltet"
+
+#: ../ukui-volume-control/gvc-utils.c:58
+msgid "Unknown"
+msgstr "Unbekannt"
+
+#. Speaker channel names
+#: ../ukui-volume-control/gvc-utils.c:60 ../ukui-volume-control/gvc-utils.c:108
+msgid "Mono"
+msgstr "Mono"
+
+#: ../ukui-volume-control/gvc-utils.c:61
+msgid "Front Left"
+msgstr "Vorne links"
+
+#: ../ukui-volume-control/gvc-utils.c:62
+msgid "Front Right"
+msgstr "Vorne rechts"
+
+#: ../ukui-volume-control/gvc-utils.c:63
+msgid "Front Center"
+msgstr "Vorne Mitte"
+
+#: ../ukui-volume-control/gvc-utils.c:64
+msgid "LFE"
+msgstr "LFE"
+
+#: ../ukui-volume-control/gvc-utils.c:65
+msgid "Rear Left"
+msgstr "Hinten links"
+
+#: ../ukui-volume-control/gvc-utils.c:66
+msgid "Rear Right"
+msgstr "Hinten rechts"
+
+#: ../ukui-volume-control/gvc-utils.c:67
+msgid "Rear Center"
+msgstr "Hinten Mitte"
+
+#: ../ukui-volume-control/gvc-utils.c:68
+msgid "Front Left of Center"
+msgstr "Vorne links von der Mitte"
+
+#: ../ukui-volume-control/gvc-utils.c:69
+msgid "Front Right of Center"
+msgstr "Vorne rechts von der Mitte"
+
+#: ../ukui-volume-control/gvc-utils.c:70
+msgid "Side Left"
+msgstr "Seite links"
+
+#: ../ukui-volume-control/gvc-utils.c:71
+msgid "Side Right"
+msgstr "Seite rechts"
+
+#: ../ukui-volume-control/gvc-utils.c:72
+msgid "Top Front Left"
+msgstr "Oben vorne links"
+
+#: ../ukui-volume-control/gvc-utils.c:73
+msgid "Top Front Right"
+msgstr "Oben vorne rechts"
+
+#: ../ukui-volume-control/gvc-utils.c:74
+msgid "Top Front Center"
+msgstr "Oben vorne Mitte"
+
+#: ../ukui-volume-control/gvc-utils.c:75
+msgid "Top Center"
+msgstr "Oben Mitte"
+
+#: ../ukui-volume-control/gvc-utils.c:76
+msgid "Top Rear Left"
+msgstr "Oben hinten links"
+
+#: ../ukui-volume-control/gvc-utils.c:77
+msgid "Top Rear Right"
+msgstr "Oben hinten rechts"
+
+#: ../ukui-volume-control/gvc-utils.c:78
+msgid "Top Rear Center"
+msgstr "Oben hinten Mitte"
+
+#: ../ukui-volume-control/gvc-utils.c:113
+msgid "Stereo"
+msgstr "Stereo"
+
+#: ../ukui-volume-control/gvc-utils.c:120
+msgid "Surround 4.0"
+msgstr "Surround 4.0"
+
+#: ../ukui-volume-control/gvc-utils.c:128
+msgid "Surround 4.1"
+msgstr "Surround 4.1"
+
+#: ../ukui-volume-control/gvc-utils.c:130
+msgid "Surround 5.0"
+msgstr "Surround 5.0"
+
+#: ../ukui-volume-control/gvc-utils.c:140
+msgid "Surround 5.1"
+msgstr "Surround 5.1"
+
+#: ../ukui-volume-control/gvc-utils.c:151
+msgid "Surround 7.1"
+msgstr "Surround 7.1"

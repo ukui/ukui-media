@@ -1,0 +1,462 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Translators:
+# Ge'ez Frontier Foundation <locales@geez.org>, 2002
+# samson <sambelet@yahoo.com>, 2013,2015,2017
+msgid ""
+msgstr ""
+"Project-Id-Version: UKUI Desktop Environment\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-12-20 11:02+0800\n"
+"PO-Revision-Date: 2017-09-19 11:49+0000\n"
+"Last-Translator: monsta <monsta@inbox.ru>\n"
+"Language-Team: Amharic (http://wiki.ukui.org/trans/am/)\n"
+"Language: am\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: ../data/ukui-volume-control.desktop.in.in.h:1
+msgid "Sound"
+msgstr "ድምፅ "
+
+#: ../data/ukui-volume-control.desktop.in.in.h:2
+msgid "Change sound volume and sound events"
+msgstr "የድምፅ መጠን እና የድምፅ ሁኔታዎችን መቀየሪያ"
+
+#: ../data/ukui-volume-control-applet.desktop.in.h:1
+#: ../ukui-volume-control/dialog-main.c:255
+#: ../ukui-volume-control/gvc-channel-bar.c:487
+#: ../ukui-volume-control/gvc-speaker-test.c:434
+msgid "Volume Control"
+msgstr "መጠን መቆጣጠሪያ "
+
+#: ../data/ukui-volume-control-applet.desktop.in.h:2
+msgid "Show desktop volume control"
+msgstr "የዴስክቶፕ መጠን መቆጣጠሪያ ማሳያ "
+
+#. Translators: This is the name of an audio file that sounds like the bark of a dog.
+#. You might want to translate it into the equivalent words of your language.
+#: ../data/sounds/ukui-sounds-default.xml.in.in.h:3
+msgid "Bark"
+msgstr "ቅርፊት"
+
+#. Translators: This is the name of an audio file that sounds like a water drip.
+#. You might want to translate it into the equivalent words of your language.
+#: ../data/sounds/ukui-sounds-default.xml.in.in.h:6
+msgid "Drip"
+msgstr "ጠብታ "
+
+#. Translators: This is the name of an audio file that sounds like tapping glass.
+#. You might want to translate it into the equivalent words of your language.
+#: ../data/sounds/ukui-sounds-default.xml.in.in.h:9
+msgid "Glass"
+msgstr "መስታወት"
+
+#. Translators: This is the name of an audio file that sounds sort of like a submarine sonar ping.
+#. You might want to translate it into the equivalent words of your language.
+#: ../data/sounds/ukui-sounds-default.xml.in.in.h:12
+msgid "Sonar"
+msgstr "ሶናር "
+
+#: ../ukui-volume-control/applet-main.c:45
+#: ../ukui-volume-control/dialog-main.c:193
+msgid "Version of this application"
+msgstr "የመተግበሪያው እትም "
+
+#: ../ukui-volume-control/applet-main.c:46
+#: ../ukui-volume-control/dialog-main.c:191
+msgid "Enable debug"
+msgstr "debug ማስቻያ"
+
+#: ../ukui-volume-control/applet-main.c:55
+#, fuzzy
+msgid " — UKUI Volume Control Applet"
+msgstr " — የሜት ድምፅ መቆጣጠሪያ ክፍል"
+
+#: ../ukui-volume-control/dialog-main.c:143
+msgid "Sound system is not available"
+msgstr "የ ድምፅ ስርአት ዝግጁ አይደለም"
+
+#: ../ukui-volume-control/dialog-main.c:165
+msgid "Waiting for sound system to respond"
+msgstr "የድምፅ ስርአት እስኪመልስ በመጠበቅ ላይ"
+
+#: ../ukui-volume-control/dialog-main.c:190
+msgid "Sound system backend"
+msgstr "የ ድምፅ ስርአት ተተኪ ተፈጥሯል"
+
+#: ../ukui-volume-control/dialog-main.c:192
+msgid "Startup page"
+msgstr "ገጹን በማስጀመር ላይ"
+
+#: ../ukui-volume-control/dialog-main.c:202
+#, fuzzy
+msgid " — UKUI Volume Control"
+msgstr " —  የሜት ድምፅ መቆጣጠሪያ ክፍል"
+
+#: ../ukui-volume-control/gvc-applet.c:322
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1999
+msgid "Input"
+msgstr "ማስገቢያ "
+
+#: ../ukui-volume-control/gvc-applet.c:323
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2086
+msgid "Output"
+msgstr "ውጤት "
+
+#: ../ukui-volume-control/gvc-applet.c:326
+msgid "Microphone Volume"
+msgstr "የማይክሮን መጠን "
+
+#: ../ukui-volume-control/gvc-applet.c:328
+msgid "Sound Output Volume"
+msgstr "የድምፅ ውጤት መጠን "
+
+#: ../ukui-volume-control/gvc-applet.c:333
+#, fuzzy
+msgid "UKUI Volume Control Applet"
+msgstr " የ ሜት ድምፅ መቆጣጠሪያ ክፍል"
+
+#: ../ukui-volume-control/gvc-balance-bar.c:140
+msgctxt "balance"
+msgid "Left"
+msgstr "የ ግራ "
+
+#: ../ukui-volume-control/gvc-balance-bar.c:141
+msgctxt "balance"
+msgid "Right"
+msgstr "የ ቀኝ "
+
+#: ../ukui-volume-control/gvc-balance-bar.c:144
+msgctxt "balance"
+msgid "Rear"
+msgstr "የ ኋላ "
+
+#: ../ukui-volume-control/gvc-balance-bar.c:145
+msgctxt "balance"
+msgid "Front"
+msgstr "የ ፊት "
+
+#: ../ukui-volume-control/gvc-balance-bar.c:148
+msgctxt "balance"
+msgid "Minimum"
+msgstr "አነስተኛ "
+
+#: ../ukui-volume-control/gvc-balance-bar.c:149
+msgctxt "balance"
+msgid "Maximum"
+msgstr "ከፍተኛ "
+
+#: ../ukui-volume-control/gvc-balance-bar.c:337
+msgid "_Balance:"
+msgstr "_እኩል:"
+
+#: ../ukui-volume-control/gvc-balance-bar.c:340
+msgid "_Fade:"
+msgstr "_ማፍዘዣ:"
+
+#: ../ukui-volume-control/gvc-balance-bar.c:343
+msgid "_Subwoofer:"
+msgstr "_ሰብዉፈር:"
+
+#: ../ukui-volume-control/gvc-channel-bar.c:312
+msgctxt "volume"
+msgid "Unamplified"
+msgstr "ያልጎላ"
+
+#: ../ukui-volume-control/gvc-channel-bar.c:325
+msgctxt "volume"
+msgid "100%"
+msgstr "100%"
+
+#. Mute button
+#: ../ukui-volume-control/gvc-channel-bar.c:1086
+msgid "Mute"
+msgstr "መቀነሻ"
+
+#: ../ukui-volume-control/gvc-combo-box.c:253
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1613
+msgid "_Profile:"
+msgstr "_ገጽታ:"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:355
+#: ../ukui-volume-control/gvc-mixer-dialog.c:504
+msgid "Co_nnector:"
+msgstr "አገ_ናኝ:"
+
+#. translators:
+#. * The device has been disabled
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1126
+msgid "Disabled"
+msgstr "ተሰናክሏል"
+
+#. translators:
+#. * The number of sound outputs on a particular device
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1132
+#, c-format
+msgid "%u Output"
+msgid_plural "%u Outputs"
+msgstr[0] "%u ውጤት "
+msgstr[1] "%u ውጤቶች "
+
+#. translators:
+#. * The number of sound inputs on a particular device
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1141
+#, c-format
+msgid "%u Input"
+msgid_plural "%u Inputs"
+msgstr[0] "%u ማስገቢያ "
+msgstr[1] "%u ማስገቢያዎች "
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1504
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1773
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:868
+msgid "Name"
+msgstr "ስም "
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1552
+#, c-format
+msgid "Speaker Testing for %s"
+msgstr "ስፒከር በመሞከር ላይ ለ %s"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1616
+msgid "Test Speakers"
+msgstr "ስፒከር መሞከሪያ"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1821
+msgid "Sound Effects"
+msgstr "የድምፅ ተጽእኖ "
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1844
+msgid "_Alert volume: "
+msgstr "_የማስጠንቀቂያ መጠን: "
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1913
+msgid "_Output volume: "
+msgstr "_የ ውጤት መጠን: "
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1956
+msgid "Hardware"
+msgstr "ጠንካራ አካል "
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1961
+msgid "C_hoose a device to configure:"
+msgstr "አካል ይ_ምረጡ ለማዋቀር:"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1985
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2115
+msgid "Settings for the selected device:"
+msgstr "ለተመረጠው አካል ማሰናጃ:"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2008
+msgid "_Input volume: "
+msgstr "_የማስገቢያ መጠን: "
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2033
+msgid "Input level:"
+msgstr "የማስገቢያ መጠን:"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2058
+msgid "C_hoose a device for sound input:"
+msgstr "ለ ድምጽ ማስገቢያ አካል ይ_ምረጡ:"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2091
+msgid "C_hoose a device for sound output:"
+msgstr "ለ ድምጽ ማውጫ አካል ይ_ምረጡ:"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2140
+msgid "Applications"
+msgstr "መተግበሪያዎች "
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2145
+msgid "No application is currently playing or recording audio."
+msgstr "ምንም መተገበሪያ አይጫወትም ወይንም ድምጽ አይቀርጽም"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2337
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:732
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:744
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:756
+msgid "Sound Preferences"
+msgstr "የድምፅ ምርጫዎች "
+
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:320
+msgid "No sounds"
+msgstr "ድምፅ የለም"
+
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:441
+msgid "Built-in"
+msgstr "አብሮ-የተገነባ"
+
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:628
+#: ../ukui-volume-control/sound-theme-file-utils.c:292
+msgid "Custom"
+msgstr "ማስተካከያ:"
+
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:735
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:746
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:758
+msgid "Testing event sound"
+msgstr "የ ሁኔታዎች ድምፅ መሞከሪያ"
+
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:844
+msgid "Default"
+msgstr "ነባር "
+
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:845
+msgid "From theme"
+msgstr "ከ ገጽታ"
+
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:875
+msgid "Type"
+msgstr "አይነት"
+
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:1034
+msgid "Sound _theme:"
+msgstr "የ ድምፅ  _ገጽታ:"
+
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:1047
+msgid "C_hoose an alert sound:"
+msgstr "የ ማስጠንቀቂያ ድምጽ ይ_ምረጡ:"
+
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:1075
+msgid "Enable _window and button sounds"
+msgstr "የ _መስኮት እና ቁልፎች ድምጽ ማስቻያ"
+
+#: ../ukui-volume-control/gvc-speaker-test.c:258
+msgid "Stop"
+msgstr "ማስቆሚያ"
+
+#: ../ukui-volume-control/gvc-speaker-test.c:258
+#: ../ukui-volume-control/gvc-speaker-test.c:372
+msgid "Test"
+msgstr "መሞከሪያ"
+
+#: ../ukui-volume-control/gvc-stream-status-icon.c:240
+#, c-format
+msgid "Failed to start Sound Preferences: %s"
+msgstr "የ ድምጽ ምርጫዎችን ማስጀመር አልተቻለም: %s"
+
+#: ../ukui-volume-control/gvc-stream-status-icon.c:291
+msgid "_Mute"
+msgstr "_መቀነሻ "
+
+#: ../ukui-volume-control/gvc-stream-status-icon.c:301
+msgid "_Horizontal"
+msgstr ""
+
+#: ../ukui-volume-control/gvc-stream-status-icon.c:310
+msgid "_Sound Preferences"
+msgstr "_የ ድምፅ ምርጫዎች"
+
+#: ../ukui-volume-control/gvc-stream-status-icon.c:496
+msgid "Muted at"
+msgstr ""
+
+#: ../ukui-volume-control/gvc-utils.c:58
+msgid "Unknown"
+msgstr "ያልታወቀ"
+
+#. Speaker channel names
+#: ../ukui-volume-control/gvc-utils.c:60 ../ukui-volume-control/gvc-utils.c:108
+msgid "Mono"
+msgstr "ሞኖ"
+
+#: ../ukui-volume-control/gvc-utils.c:61
+msgid "Front Left"
+msgstr "በ ግራ "
+
+#: ../ukui-volume-control/gvc-utils.c:62
+msgid "Front Right"
+msgstr "በ ቀኝ "
+
+#: ../ukui-volume-control/gvc-utils.c:63
+msgid "Front Center"
+msgstr "ፊት ለፊት መሀከል "
+
+#: ../ukui-volume-control/gvc-utils.c:64
+msgid "LFE"
+msgstr "ዝቅተኛ ድግግሞሽ"
+
+#: ../ukui-volume-control/gvc-utils.c:65
+msgid "Rear Left"
+msgstr "ከኋላ በ ግራ "
+
+#: ../ukui-volume-control/gvc-utils.c:66
+msgid "Rear Right"
+msgstr "ከኋላ በ ቀኝ"
+
+#: ../ukui-volume-control/gvc-utils.c:67
+msgid "Rear Center"
+msgstr "ከኋላ መሀከል"
+
+#: ../ukui-volume-control/gvc-utils.c:68
+msgid "Front Left of Center"
+msgstr "ፊት ለፊት በ ግራ መሀከል "
+
+#: ../ukui-volume-control/gvc-utils.c:69
+msgid "Front Right of Center"
+msgstr "ፊት ለፊት በ ቀኝ መሀከል "
+
+#: ../ukui-volume-control/gvc-utils.c:70
+msgid "Side Left"
+msgstr "በ ግራ ጎን "
+
+#: ../ukui-volume-control/gvc-utils.c:71
+msgid "Side Right"
+msgstr "በ ቀኝ ጎን"
+
+#: ../ukui-volume-control/gvc-utils.c:72
+msgid "Top Front Left"
+msgstr "ከ ላይ ፊት ለፊት በ ግራ "
+
+#: ../ukui-volume-control/gvc-utils.c:73
+msgid "Top Front Right"
+msgstr "ከ ላይ ፊት ለፊት በ ቀኝ"
+
+#: ../ukui-volume-control/gvc-utils.c:74
+msgid "Top Front Center"
+msgstr "ከ ላይ ፊት ለፊት መሀከል"
+
+#: ../ukui-volume-control/gvc-utils.c:75
+msgid "Top Center"
+msgstr "ከ ላይ መሀከል "
+
+#: ../ukui-volume-control/gvc-utils.c:76
+msgid "Top Rear Left"
+msgstr "ከ ላይ ከኋላ በ ግራ "
+
+#: ../ukui-volume-control/gvc-utils.c:77
+msgid "Top Rear Right"
+msgstr "ከ ላይ ከኋላ በ ቀኝ "
+
+#: ../ukui-volume-control/gvc-utils.c:78
+msgid "Top Rear Center"
+msgstr "ከ ላይ ከኋላ መሀከል"
+
+#: ../ukui-volume-control/gvc-utils.c:113
+msgid "Stereo"
+msgstr "ስቴሪዮ"
+
+#: ../ukui-volume-control/gvc-utils.c:120
+msgid "Surround 4.0"
+msgstr "ዙሪያ 4.0"
+
+#: ../ukui-volume-control/gvc-utils.c:128
+msgid "Surround 4.1"
+msgstr "ዙሪያ 4.1"
+
+#: ../ukui-volume-control/gvc-utils.c:130
+msgid "Surround 5.0"
+msgstr "ዙሪያ 5.0"
+
+#: ../ukui-volume-control/gvc-utils.c:140
+msgid "Surround 5.1"
+msgstr "ዙሪያ 5.1"
+
+#: ../ukui-volume-control/gvc-utils.c:151
+msgid "Surround 7.1"
+msgstr "ዙሪያ 7.1"

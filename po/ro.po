@@ -1,0 +1,469 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Translators:
+# Adi Roiban https://launchpad.net/~adiroiban, 2008, 2009
+# Daniel <danny3@tutanota.com>, 2015
+# Daniel <danny3@tutanota.com>, 2017
+# Lucian Adrian Grijincu <lucian.grijincu@gmail.com>, 2010
+# Mugurel Tudor <mugurelu@mate.ro>, 2002-2003, 2004, 2005, 2006, 2007
+# Octi <octi@writeme.com>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: UKUI Desktop Environment\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-12-20 11:02+0800\n"
+"PO-Revision-Date: 2017-09-19 11:49+0000\n"
+"Last-Translator: Daniel <danny3@tutanota.com>\n"
+"Language-Team: Romanian (http://wiki.ukui.org/trans/ro/)\n"
+"Language: ro\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?"
+"2:1));\n"
+
+#: ../data/ukui-volume-control.desktop.in.in.h:1
+msgid "Sound"
+msgstr "Sunet"
+
+#: ../data/ukui-volume-control.desktop.in.in.h:2
+msgid "Change sound volume and sound events"
+msgstr "Schimbă volumul sunetului și sunetele evenimentelor"
+
+#: ../data/ukui-volume-control-applet.desktop.in.h:1
+#: ../ukui-volume-control/dialog-main.c:255
+#: ../ukui-volume-control/gvc-channel-bar.c:487
+#: ../ukui-volume-control/gvc-speaker-test.c:434
+msgid "Volume Control"
+msgstr "Control volum"
+
+#: ../data/ukui-volume-control-applet.desktop.in.h:2
+msgid "Show desktop volume control"
+msgstr "Afișare control volum desktop"
+
+#. Translators: This is the name of an audio file that sounds like the bark of a dog.
+#. You might want to translate it into the equivalent words of your language.
+#: ../data/sounds/ukui-sounds-default.xml.in.in.h:3
+msgid "Bark"
+msgstr "Lătrat"
+
+#. Translators: This is the name of an audio file that sounds like a water drip.
+#. You might want to translate it into the equivalent words of your language.
+#: ../data/sounds/ukui-sounds-default.xml.in.in.h:6
+msgid "Drip"
+msgstr "Sursur"
+
+#. Translators: This is the name of an audio file that sounds like tapping glass.
+#. You might want to translate it into the equivalent words of your language.
+#: ../data/sounds/ukui-sounds-default.xml.in.in.h:9
+msgid "Glass"
+msgstr "Sticlă"
+
+#. Translators: This is the name of an audio file that sounds sort of like a submarine sonar ping.
+#. You might want to translate it into the equivalent words of your language.
+#: ../data/sounds/ukui-sounds-default.xml.in.in.h:12
+msgid "Sonar"
+msgstr "Sonar"
+
+#: ../ukui-volume-control/applet-main.c:45
+#: ../ukui-volume-control/dialog-main.c:193
+msgid "Version of this application"
+msgstr "Versiunea aceastei aplicații"
+
+#: ../ukui-volume-control/applet-main.c:46
+#: ../ukui-volume-control/dialog-main.c:191
+msgid "Enable debug"
+msgstr "Activează depanare"
+
+#: ../ukui-volume-control/applet-main.c:55
+#, fuzzy
+msgid " — UKUI Volume Control Applet"
+msgstr " — Miniaplicație control volum MATE"
+
+#: ../ukui-volume-control/dialog-main.c:143
+msgid "Sound system is not available"
+msgstr "Sistemul de sunet nu este disponibil"
+
+#: ../ukui-volume-control/dialog-main.c:165
+msgid "Waiting for sound system to respond"
+msgstr "Se așteatpă răspuns de la sistemul de sunet"
+
+#: ../ukui-volume-control/dialog-main.c:190
+msgid "Sound system backend"
+msgstr "Furnizor din spate pentru sistemul de sunet"
+
+#: ../ukui-volume-control/dialog-main.c:192
+msgid "Startup page"
+msgstr "Pagină pornire"
+
+#: ../ukui-volume-control/dialog-main.c:202
+#, fuzzy
+msgid " — UKUI Volume Control"
+msgstr " — Control volum MATE"
+
+#: ../ukui-volume-control/gvc-applet.c:322
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1999
+msgid "Input"
+msgstr "Intrare"
+
+#: ../ukui-volume-control/gvc-applet.c:323
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2086
+msgid "Output"
+msgstr "Ieșire"
+
+#: ../ukui-volume-control/gvc-applet.c:326
+msgid "Microphone Volume"
+msgstr "Volum microfon"
+
+#: ../ukui-volume-control/gvc-applet.c:328
+msgid "Sound Output Volume"
+msgstr "Volum sunet ieșire"
+
+#: ../ukui-volume-control/gvc-applet.c:333
+#, fuzzy
+msgid "UKUI Volume Control Applet"
+msgstr "Control volum MATE"
+
+#: ../ukui-volume-control/gvc-balance-bar.c:140
+msgctxt "balance"
+msgid "Left"
+msgstr "Stânga"
+
+#: ../ukui-volume-control/gvc-balance-bar.c:141
+msgctxt "balance"
+msgid "Right"
+msgstr "Dreapta"
+
+#: ../ukui-volume-control/gvc-balance-bar.c:144
+msgctxt "balance"
+msgid "Rear"
+msgstr "Spate"
+
+#: ../ukui-volume-control/gvc-balance-bar.c:145
+msgctxt "balance"
+msgid "Front"
+msgstr "Față"
+
+#: ../ukui-volume-control/gvc-balance-bar.c:148
+msgctxt "balance"
+msgid "Minimum"
+msgstr "Minim"
+
+#: ../ukui-volume-control/gvc-balance-bar.c:149
+msgctxt "balance"
+msgid "Maximum"
+msgstr "Maxim"
+
+#: ../ukui-volume-control/gvc-balance-bar.c:337
+msgid "_Balance:"
+msgstr "_Balanță:"
+
+#: ../ukui-volume-control/gvc-balance-bar.c:340
+msgid "_Fade:"
+msgstr "_Estompare:"
+
+#: ../ukui-volume-control/gvc-balance-bar.c:343
+msgid "_Subwoofer:"
+msgstr "_Subwoofer:"
+
+#: ../ukui-volume-control/gvc-channel-bar.c:312
+msgctxt "volume"
+msgid "Unamplified"
+msgstr "Neamplificat"
+
+#: ../ukui-volume-control/gvc-channel-bar.c:325
+msgctxt "volume"
+msgid "100%"
+msgstr "100%"
+
+#. Mute button
+#: ../ukui-volume-control/gvc-channel-bar.c:1086
+msgid "Mute"
+msgstr "Tăcut"
+
+#: ../ukui-volume-control/gvc-combo-box.c:253
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1613
+msgid "_Profile:"
+msgstr "_Profil:"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:355
+#: ../ukui-volume-control/gvc-mixer-dialog.c:504
+msgid "Co_nnector:"
+msgstr "Co_nector:"
+
+#. translators:
+#. * The device has been disabled
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1126
+msgid "Disabled"
+msgstr "Dezactivat"
+
+#. translators:
+#. * The number of sound outputs on a particular device
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1132
+#, c-format
+msgid "%u Output"
+msgid_plural "%u Outputs"
+msgstr[0] "%u ieșire"
+msgstr[1] "%u ieșiri"
+msgstr[2] "%u de ieșiri"
+
+#. translators:
+#. * The number of sound inputs on a particular device
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1141
+#, c-format
+msgid "%u Input"
+msgid_plural "%u Inputs"
+msgstr[0] "%u intrare"
+msgstr[1] "%u intrări"
+msgstr[2] "%u de intrări"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1504
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1773
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:868
+msgid "Name"
+msgstr "Nume"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1552
+#, c-format
+msgid "Speaker Testing for %s"
+msgstr "Testare difuzoare pentru %s"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1616
+msgid "Test Speakers"
+msgstr "Testează difuzoarele"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1821
+msgid "Sound Effects"
+msgstr "Efecte sunet"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1844
+msgid "_Alert volume: "
+msgstr "Volum _alertă:"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1913
+msgid "_Output volume: "
+msgstr "V_olum ieșire:"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1956
+msgid "Hardware"
+msgstr "Hardware"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1961
+msgid "C_hoose a device to configure:"
+msgstr "Ale_geți un dispozitiv pentru configurare:"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:1985
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2115
+msgid "Settings for the selected device:"
+msgstr "Configurări pentru dispozitivul ales:"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2008
+msgid "_Input volume: "
+msgstr "Volum _intrare:"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2033
+msgid "Input level:"
+msgstr "Nivel intrare:"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2058
+msgid "C_hoose a device for sound input:"
+msgstr "Ale_geți un dispozitiv pentru intrare sunet:"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2091
+msgid "C_hoose a device for sound output:"
+msgstr "Ale_geți un dispozitiv pentru ieșire sunet:"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2140
+msgid "Applications"
+msgstr "Aplicații"
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2145
+msgid "No application is currently playing or recording audio."
+msgstr "Nicio aplicație nu redă sau înregistrează sunete în acest moment."
+
+#: ../ukui-volume-control/gvc-mixer-dialog.c:2337
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:732
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:744
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:756
+msgid "Sound Preferences"
+msgstr "Preferințe sunet"
+
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:320
+msgid "No sounds"
+msgstr "Niciun sunet"
+
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:441
+msgid "Built-in"
+msgstr "Integrat"
+
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:628
+#: ../ukui-volume-control/sound-theme-file-utils.c:292
+msgid "Custom"
+msgstr "Personalizat"
+
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:735
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:746
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:758
+msgid "Testing event sound"
+msgstr "Testare eveniment sunet"
+
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:844
+msgid "Default"
+msgstr "Implicit"
+
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:845
+msgid "From theme"
+msgstr "Din temă"
+
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:875
+msgid "Type"
+msgstr "Tip"
+
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:1034
+msgid "Sound _theme:"
+msgstr "_Temă sunet:"
+
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:1047
+msgid "C_hoose an alert sound:"
+msgstr "Ale_geți un sunet de alertă:"
+
+#: ../ukui-volume-control/gvc-sound-theme-chooser.c:1075
+msgid "Enable _window and button sounds"
+msgstr "Acti_vare sunete pentru fereastră și butoane"
+
+#: ../ukui-volume-control/gvc-speaker-test.c:258
+msgid "Stop"
+msgstr "Stop"
+
+#: ../ukui-volume-control/gvc-speaker-test.c:258
+#: ../ukui-volume-control/gvc-speaker-test.c:372
+msgid "Test"
+msgstr "Testează"
+
+#: ../ukui-volume-control/gvc-stream-status-icon.c:240
+#, c-format
+msgid "Failed to start Sound Preferences: %s"
+msgstr "Pornirea preferințelor sunet a eșuat: %s"
+
+#: ../ukui-volume-control/gvc-stream-status-icon.c:291
+msgid "_Mute"
+msgstr "_Tăcut"
+
+#: ../ukui-volume-control/gvc-stream-status-icon.c:301
+msgid "_Horizontal"
+msgstr ""
+
+#: ../ukui-volume-control/gvc-stream-status-icon.c:310
+msgid "_Sound Preferences"
+msgstr "Preferințe _sunet"
+
+#: ../ukui-volume-control/gvc-stream-status-icon.c:496
+msgid "Muted at"
+msgstr "Tăcut la"
+
+#: ../ukui-volume-control/gvc-utils.c:58
+msgid "Unknown"
+msgstr "Necunoscut"
+
+#. Speaker channel names
+#: ../ukui-volume-control/gvc-utils.c:60 ../ukui-volume-control/gvc-utils.c:108
+msgid "Mono"
+msgstr "Mono"
+
+#: ../ukui-volume-control/gvc-utils.c:61
+msgid "Front Left"
+msgstr "Stânga față"
+
+#: ../ukui-volume-control/gvc-utils.c:62
+msgid "Front Right"
+msgstr "Dreapta față"
+
+#: ../ukui-volume-control/gvc-utils.c:63
+msgid "Front Center"
+msgstr "Centru față"
+
+#: ../ukui-volume-control/gvc-utils.c:64
+msgid "LFE"
+msgstr "Efecte de frecvență joasă"
+
+#: ../ukui-volume-control/gvc-utils.c:65
+msgid "Rear Left"
+msgstr "Stânga spate"
+
+#: ../ukui-volume-control/gvc-utils.c:66
+msgid "Rear Right"
+msgstr "Dreapta spate"
+
+#: ../ukui-volume-control/gvc-utils.c:67
+msgid "Rear Center"
+msgstr "Centru spate"
+
+#: ../ukui-volume-control/gvc-utils.c:68
+msgid "Front Left of Center"
+msgstr "La stânga de centru în față"
+
+#: ../ukui-volume-control/gvc-utils.c:69
+msgid "Front Right of Center"
+msgstr "La dreapta de centru în față"
+
+#: ../ukui-volume-control/gvc-utils.c:70
+msgid "Side Left"
+msgstr "Stânga lateral"
+
+#: ../ukui-volume-control/gvc-utils.c:71
+msgid "Side Right"
+msgstr "Dreapta lateral"
+
+#: ../ukui-volume-control/gvc-utils.c:72
+msgid "Top Front Left"
+msgstr "Stânga față sus"
+
+#: ../ukui-volume-control/gvc-utils.c:73
+msgid "Top Front Right"
+msgstr "Dreapta față sus"
+
+#: ../ukui-volume-control/gvc-utils.c:74
+msgid "Top Front Center"
+msgstr "Centru față sus"
+
+#: ../ukui-volume-control/gvc-utils.c:75
+msgid "Top Center"
+msgstr "Centru sus"
+
+#: ../ukui-volume-control/gvc-utils.c:76
+msgid "Top Rear Left"
+msgstr "Stânga spate sus"
+
+#: ../ukui-volume-control/gvc-utils.c:77
+msgid "Top Rear Right"
+msgstr "Dreapta spate sus"
+
+#: ../ukui-volume-control/gvc-utils.c:78
+msgid "Top Rear Center"
+msgstr "Centru spate sus"
+
+#: ../ukui-volume-control/gvc-utils.c:113
+msgid "Stereo"
+msgstr "Stereo"
+
+#: ../ukui-volume-control/gvc-utils.c:120
+msgid "Surround 4.0"
+msgstr "Sunet înconjurător 4.0"
+
+#: ../ukui-volume-control/gvc-utils.c:128
+msgid "Surround 4.1"
+msgstr "Sunet înconjurător 4.1"
+
+#: ../ukui-volume-control/gvc-utils.c:130
+msgid "Surround 5.0"
+msgstr "Sunet înconjurător 5.0"
+
+#: ../ukui-volume-control/gvc-utils.c:140
+msgid "Surround 5.1"
+msgstr "Sunet înconjurător 5.1"
+
+#: ../ukui-volume-control/gvc-utils.c:151
+msgid "Surround 7.1"
+msgstr "Sunet înconjurător 7.1"

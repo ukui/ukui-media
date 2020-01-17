@@ -1,0 +1,13 @@
+<schemalist gettext-domain="@GETTEXT_PACKAGE@">
+  <enum id="org.ukui.media.ChannelBarOrientation">
+    <value nick="horizontal" value="0"/>
+    <value nick="vertical" value="1"/>
+  </enum>
+  <schema id="org.ukui.media" path="/org/ukui/media/">
+    <key name="channel-bar-orientation" enum="org.ukui.media.ChannelBarOrientation">
+      <default>'vertical'</default>
+      <summary>ukui-volume-control-applet orientation</summary>
+      <description>Used to set the orientation of ukui-volume-control-applet</description>
+    </key>
+  </schema>
+</schemalist>

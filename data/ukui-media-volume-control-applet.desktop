@@ -1,0 +1,21 @@
+[Desktop Entry]
+Name=Volume Control
+Name[zh_CN]=声音控制
+Comment=Show desktop volume control
+Icon=multimedia-volume-control
+Exec=ukui-media-volume-control-applet-qt
+Terminal=false
+Type=Application
+Categories=AudioVideo;Mixer;Settings;HardwareSettings;
+Keywords=UKUI;volume;control;mixer;settings;sound;
+NoDisplay=true
+OnlyShowIn=UKUI;
+X-GNOME-Autostart-Phase=Applications
+X-UKUI-Bugzilla-Bugzilla=UKUI
+X-UKUI-Bugzilla-Product=ukui-media
+X-UKUI-Bugzilla-Component=ukui-volume-control
+# See http://bugzilla.ukui.org/show_bug.cgi?id=568320#
+#X-UKUI-Autostart-Phase=Panel
+X-MATE-Autostart-Phase=Applications
+X-KDE-autostart-after=panel
+X-UKUI-Autostart-Notify=true
