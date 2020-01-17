@@ -1,6 +1,6 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: ukui-media
-Upstream-Contact: Hao Lee <lihao@kylinos.cn>
+Upstream-Contact: fengzhaoxiang <fengzhaoxiang@kylinos.cn>
 Source: http://github.com/ukui/ukui-media/
 
 Files: ukui-volume-control/ukui-volume-control-applet-qt/main.cpp
