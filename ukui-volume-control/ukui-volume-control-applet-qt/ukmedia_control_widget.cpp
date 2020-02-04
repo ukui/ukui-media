@@ -255,7 +255,8 @@ void UkmediaControlWidget::outputVolumeChanged()
 */
 void UkmediaControlWidget::dockWidgetInit()
 {
-    const QSize iconSize = QSize(24,24);
+    //按钮大小
+    const QSize iconSize = QSize(30,30);
     m_displayVolumeValue = new QLabel(this);
     m_muteButton = new QPushButton(this);
     m_volumeSlider = new UkmediaSlider(this);

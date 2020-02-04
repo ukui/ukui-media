@@ -20,7 +20,10 @@
 #include <QShortcut>
 #include <QTranslator>
 #include <QtSingleApplication>
-#include "ukmedia_systemtray_widget.h"
+#include <QFile>
+#include "deiceswitchwidget.h"
+//#include "ukmediadevicewidget.h"
+//#include "ukmedia_systemtray_widget.h"
 #include <QObject>
 int main(int argc, char *argv[])
 {
@@ -54,7 +57,10 @@ int main(int argc, char *argv[])
     qApp->setStyleSheet(qss.readAll());
     qss.close();
 
-    UkmediaSystemTrayWidget w;
+//    UkmediaSystemTrayWidget w;
+
+    DeviceSwitchWidget w;
+    w.show();
 
 //    QShortcut *shortCut = new QShortcut("F10",&w);
 //    shortCut->setKey(tr("F10"));
@@ -62,7 +68,6 @@ int main(int argc, char *argv[])
 
 //    connect(shortCut,SIGNAL(activated()),w,SLOT(keyControlVolume()));
 //    app.setActivationWindow(&w);
-//       w.show();
 //       w.raise();
 //       w.activateWindow();
 

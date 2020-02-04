@@ -43,7 +43,9 @@ PKGCONFIG += \
     glib-2.0 \
     libmatemixer \
     gsettings-qt \
-    Qt5Svg
+    Qt5Svg  \
+    gio-2.0 \
+    Qt5Xdg
 #    mate-desktop-2.0 \
 #    unique-1.0 \
 #    libcanberra \
@@ -55,6 +57,9 @@ HEADERS += \
 #    ukmediakeybordcontrolwidget.h \
 #    GlobalShortCut/EventFilter.h \
 #    GlobalShortCut/GlobalShortCut.h
+    ukmediadevicewidget.h \
+    deiceswitchwidget.h \
+    applicationvolumewidget.h
 
 SOURCES += \
     ukmedia_control_widget.cpp \
@@ -63,6 +68,9 @@ SOURCES += \
 #    ukmediakeybordcontrolwidget.cpp \
 #    GlobalShortCut/EventFilter.cpp \
 #    GlobalShortCut/GlobalShortCut.cpp
+    ukmediadevicewidget.cpp \
+    deiceswitchwidget.cpp \
+    applicationvolumewidget.cpp
 
 RESOURCES += \
     res.qrc
