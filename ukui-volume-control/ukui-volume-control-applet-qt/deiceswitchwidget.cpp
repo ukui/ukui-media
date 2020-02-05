@@ -32,6 +32,7 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     input_stream_list = new QStringList;
     device_name_list = new QStringList;
     device_display_name_list = new QStringList;
+    stream_control_list = new QStringList;
     //初始化matemixer
     if (mate_mixer_init() == FALSE) {
         qDebug() << "libmatemixer initialization failed, exiting";
@@ -375,7 +376,6 @@ void DeviceSwitchWidget::add_application_control (DeviceSwitchWidget *w, MateMix
     }
 
     bar_set_stream_control (w, control);
-    qDebug() << 371;
 }
 
 void DeviceSwitchWidget::on_stream_control_added (MateMixerStream *stream,const gchar *name,DeviceSwitchWidget *w)
@@ -402,8 +402,7 @@ void DeviceSwitchWidget::on_stream_control_removed (MateMixerStream *stream,cons
 {
     MateMixerStreamControl *control;
     qDebug() << "stream control remove" << name;
-     int i = w->stream_control_list->indexOf(name);
-
+    int i = w->stream_control_list->indexOf(name);
     /* No way to be sure that it is an application control, but we don't have
      * any other than application bars that could match the name */
     remove_application_control (w, name);
@@ -420,19 +419,22 @@ void DeviceSwitchWidget::remove_application_control (DeviceSwitchWidget *w,const
     w->stream_control_list->removeAt(i);
     qDebug() << "xiabiaowei" << i << "double " << w->stream_control_list->indexOf(name) << "size" << w->stream_control_list->size();
 
-//    w->standItemModel->removeRow(i);
+    //当播放音乐的应用程序退出后删除该项
+    QLayoutItem *item = w->appWidget->gridlayout->takeAt(i);
+    item->widget()->setParent(0);
+    delete  item;
 
+    w->appWidget->gridlayout->update();
+//    w->standItemModel->removeRow(i);
     if (appnum <= 0) {
         g_warn_if_reached ();
         appnum = 1;
     }
     appnum--;
     if (appnum <= 0)
-        qDebug() << "no application play ";
-//        w->app_display_label->show();
+        w->appWidget->noAppLabel->show();
     else
-        qDebug() << "application";
-//        w->app_display_label->hide();
+        w->appWidget->noAppLabel->hide();
 
 }
 
@@ -468,8 +470,11 @@ void DeviceSwitchWidget::add_app_to_tableview(DeviceSwitchWidget *w,int appnum, 
 
     //widget显示应用音量
     QWidget *app_widget = new QWidget(w->appWidget);
-    app_widget->setFixedSize(360,50);
-    QHBoxLayout *hlayout = new QHBoxLayout(app_widget);
+    app_widget->setFixedSize(360,40);
+    QHBoxLayout *hlayout1 = new QHBoxLayout(app_widget);
+    QHBoxLayout *hlayout2 = new QHBoxLayout();
+    QVBoxLayout *vlayout = new QVBoxLayout();
+
     w->appWidget->appLabel = new QLabel(app_widget);
     w->appWidget->appIconBtn = new QPushButton(app_widget);
     w->appWidget->appIconLabel = new QLabel(app_widget);
@@ -477,34 +482,38 @@ void DeviceSwitchWidget::add_app_to_tableview(DeviceSwitchWidget *w,int appnum, 
     w->appWidget->appSlider = new UkmediaDeviceSlider(app_widget);
     w->appWidget->appSlider->setOrientation(Qt::Horizontal);
 
+    QWidget *wid1 = new QWidget(app_widget);
+    QWidget *wid2 = new QWidget(app_widget);
+
     QSpacerItem *item1 = new QSpacerItem(2,20);
     QSpacerItem *item2 = new QSpacerItem(2,20);
     QSpacerItem *item3 = new QSpacerItem(2,20);
     QSpacerItem *item4 = new QSpacerItem(2,20);
     QSpacerItem *item5 = new QSpacerItem(2,20);
     QSpacerItem *item6 = new QSpacerItem(2,20);
-    hlayout->addItem(item1);
-    hlayout->addWidget(w->appWidget->appIconBtn);
-    hlayout->addItem(item2);
-    hlayout->addWidget(w->appWidget->appLabel);
-    hlayout->addItem(item3);
-//    hlayout->addWidget(w->appIconLabel);
-//    hlayout->addItem(item4);
-    hlayout->addWidget(w->appWidget->appSlider);
-    hlayout->addItem(item5);
-    hlayout->addWidget(w->appWidget->appVolumeLabel);
-    hlayout->addItem(item6);
-    app_widget->setLayout(hlayout);
-    app_widget->layout()->setSpacing(0);
-    app_widget->move(0,80+(appnum-1)*50);
-    app_widget->show();
 
-//    w->appLabel = new QLabel(w->ui->appVolumeTableView);
-//    w->appIconBtn = new QPushButton(w->ui->appVolumeTableView);
-//    w->appIconLabel = new QLabel(w->ui->appVolumeTableView);
-//    w->appVolumeLabel = new QLabel(w->ui->appVolumeTableView);
-//    w->appSlider = new AudioSlider(w->ui->appVolumeTableView);
-//    w->appSlider->setOrientation(Qt::Horizontal);
+    hlayout1->addWidget(w->appWidget->appSlider);
+    hlayout1->addWidget(w->appWidget->appVolumeLabel);
+    hlayout1->setSpacing(10);
+    wid1->setLayout(hlayout1);
+    hlayout1->setMargin(0);
+
+    vlayout->addWidget(w->appWidget->appLabel);
+    vlayout->addWidget(wid1);
+    vlayout->setSpacing(6);
+    wid2->setLayout(vlayout);
+    vlayout->setMargin(0);
+
+    hlayout2->addWidget(w->appWidget->appIconBtn);
+    hlayout2->addWidget(wid2);
+    hlayout2->setSpacing(0);
+    app_widget->setLayout(hlayout2);
+    hlayout2->setMargin(0);
+    app_widget->layout()->setSpacing(0);
+    //添加widget到gridlayout中
+    w->appWidget->gridlayout->addWidget(app_widget);
+
+    app_widget->move(0,50+(appnum-1)*50);
 
     //设置每项的固定大小
     w->appWidget->appLabel->setFixedSize(88,14);
@@ -522,12 +531,6 @@ void DeviceSwitchWidget::add_app_to_tableview(DeviceSwitchWidget *w,int appnum, 
 
     w->appWidget->appSlider->setMaximum(100);
     w->appWidget->appSlider->setMinimumSize(178,20);
-    w->appWidget->appSlider->setMaximumSize(800,20);
-//    w->ui->appVolumeTableView->setIndexWidget(standItemModel->index(appnum-1,0),w->appIconBtn);
-//    w->ui->appVolumeTableView->setIndexWidget(standItemModel->index(appnum-1,1),w->appLabel);
-//    w->ui->appVolumeTableView->setIndexWidget(standItemModel->index(appnum-1,2),w->appIconLabel);
-//    w->ui->appVolumeTableView->setIndexWidget(standItemModel->index(appnum-1,3),w->appSlider);
-//    w->ui->appVolumeTableView->setIndexWidget(standItemModel->index(appnum-1,4),w->appVolumeLabel);
 
     QString appSliderStr = app_name;
     QString appLabelStr = app_name;
@@ -541,7 +544,7 @@ void DeviceSwitchWidget::add_app_to_tableview(DeviceSwitchWidget *w,int appnum, 
     w->appWidget->appVolumeLabel->setObjectName(appVolumeLabelStr);
 //    //设置label 和滑动条的值
     w->appWidget->appLabel->setText(app_name);
-
+    w->appWidget->appSlider->setValue(display_volume);
     w->appWidget->appVolumeLabel->setNum(display_volume);
 //    connect(w->appSlider,SIGNAL(valueChanged(int)),w,SLOT(app_slider_changed_slot(int)));
     /*滑动条控制应用音量*/
@@ -569,11 +572,15 @@ void DeviceSwitchWidget::add_app_to_tableview(DeviceSwitchWidget *w,int appnum, 
     });
 
     if (appnum <= 0)
-        qDebug() << "app display show";
-//        w->app_display_label->show();
+        w->appWidget->noAppLabel->show();
     else
-        qDebug() << "app display hide";
-//        w->app_display_label->hide();
+        w->appWidget->noAppLabel->hide();
+    //设在样式
+    w->appWidget->appLabel->setStyleSheet("QLabel{background:transparent;"
+                                          "border:0px;"
+                                          "color:#ffffff;"
+                                          "font-size:14px;}");
+
 }
 
 /*

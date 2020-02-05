@@ -4,6 +4,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QSlider>
+#include <QGridLayout>
 class ApplicationVolumeWidget : public QWidget
 {
     Q_OBJECT
@@ -21,6 +22,8 @@ private:
     QPushButton *appIconBtn;
     QLabel *appVolumeLabel;
     QSlider *appSlider;
+    QGridLayout *gridlayout;
+
 };
 
 #endif // APPLICATIONVOLUMEWIDGET_H

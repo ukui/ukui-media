@@ -7,7 +7,9 @@ ApplicationVolumeWidget::ApplicationVolumeWidget(QWidget *parent) : QWidget (par
     applicationLabel = new QLabel(tr("Application Volume"),this);
     noAppLabel = new QLabel(tr("No application is currently playing or recording audio"),this);
 //    qDebug() << 10;
+    gridlayout = new QGridLayout(this);
     app_volume_list = new QStringList;
+    noAppLabel->setFixedSize(210,14);
     applicationLabel->move(20,23);
     noAppLabel->move(60,123);
 }
