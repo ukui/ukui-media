@@ -59,7 +59,8 @@ HEADERS += \
 #    GlobalShortCut/GlobalShortCut.h
     ukmediadevicewidget.h \
     deiceswitchwidget.h \
-    applicationvolumewidget.h
+    applicationvolumewidget.h \
+    scrollwitget.h
 
 SOURCES += \
     ukmedia_control_widget.cpp \
@@ -70,7 +71,8 @@ SOURCES += \
 #    GlobalShortCut/GlobalShortCut.cpp
     ukmediadevicewidget.cpp \
     deiceswitchwidget.cpp \
-    applicationvolumewidget.cpp
+    applicationvolumewidget.cpp \
+    scrollwitget.cpp
 
 RESOURCES += \
     res.qrc

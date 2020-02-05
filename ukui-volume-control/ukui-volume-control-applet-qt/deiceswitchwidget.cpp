@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2019 Tianjin KYLIN Information Technology Co., Ltd.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, see <http://www.gnu.org/licenses/&gt;.
+ *
+ */
 #include "deiceswitchwidget.h"
 extern "C" {
 #include <gdk/gdk.h>
@@ -15,7 +32,6 @@ extern "C" {
 #include <XdgIcon>
 #include <XdgDesktopFile>
 #include <QHBoxLayout>
-#include <QScrollArea>
 #include <QHeaderView>
 #include <QStringList>
 #include <QSpacerItem>
@@ -26,7 +42,7 @@ guint appnum = 0;
 DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
 {
     devWidget = new UkmediaDeviceWidget(this);
-
+    scrollWidget = new ScrollWitget(this);
     appWidget = new ApplicationVolumeWidget(this);
     output_stream_list = new QStringList;
     input_stream_list = new QStringList;
@@ -54,20 +70,24 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
                      G_CALLBACK (on_context_state_notify),
                      this);
 
-
     deviceSwitchWidgetInit();
     connect(deviceBtn,SIGNAL(clicked()),this,SLOT(device_button_clicked_slot()));
     connect(appVolumeBtn,SIGNAL(clicked()),this,SLOT(appvolume_button_clicked_slot()));
+
     this->setFixedSize(400,260);
     this->move(1507,775);
     devWidget->move(40,0);
     appWidget->move(40,0);
+    scrollWidget->move(340,0);
+    appWidget->hide();
     this->setStyleSheet("QWidget{width:400px;"
                         "height:260px;"
                         "background:rgba(14,19,22,1);"
                         "opacity:0.95;"
                         "border-radius:3px 3px 0px 0px;}");
-//    this->move(0,0);
+    //    this->move(0,0);
+//    appWidget->gridlayout->addWidget(appWidget->applicationLabel);
+
 }
 
 /*初始化主界面*/
@@ -163,7 +183,6 @@ void DeviceSwitchWidget::on_context_stored_control_added (MateMixerContext *cont
 
     if (media_role == MATE_MIXER_STREAM_CONTROL_MEDIA_ROLE_EVENT)
         bar_set_stream_control (w, control);
-    qDebug() << 161;
 }
 
 
@@ -470,10 +489,13 @@ void DeviceSwitchWidget::add_app_to_tableview(DeviceSwitchWidget *w,int appnum, 
 
     //widget显示应用音量
     QWidget *app_widget = new QWidget(w->appWidget);
-    app_widget->setFixedSize(360,40);
+    app_widget->setFixedSize(340,40);
     QHBoxLayout *hlayout1 = new QHBoxLayout(app_widget);
     QHBoxLayout *hlayout2 = new QHBoxLayout();
     QVBoxLayout *vlayout = new QVBoxLayout();
+
+    QWidget *wid1 = new QWidget(app_widget);
+    QWidget *wid2 = new QWidget(app_widget);
 
     w->appWidget->appLabel = new QLabel(app_widget);
     w->appWidget->appIconBtn = new QPushButton(app_widget);
@@ -482,10 +504,7 @@ void DeviceSwitchWidget::add_app_to_tableview(DeviceSwitchWidget *w,int appnum, 
     w->appWidget->appSlider = new UkmediaDeviceSlider(app_widget);
     w->appWidget->appSlider->setOrientation(Qt::Horizontal);
 
-    QWidget *wid1 = new QWidget(app_widget);
-    QWidget *wid2 = new QWidget(app_widget);
-
-    QSpacerItem *item1 = new QSpacerItem(2,20);
+    QSpacerItem *item1 = new QSpacerItem(16,20);
     QSpacerItem *item2 = new QSpacerItem(2,20);
     QSpacerItem *item3 = new QSpacerItem(2,20);
     QSpacerItem *item4 = new QSpacerItem(2,20);
@@ -505,13 +524,16 @@ void DeviceSwitchWidget::add_app_to_tableview(DeviceSwitchWidget *w,int appnum, 
     vlayout->setMargin(0);
 
     hlayout2->addWidget(w->appWidget->appIconBtn);
+    hlayout2->addItem(item1);
     hlayout2->addWidget(wid2);
     hlayout2->setSpacing(0);
     app_widget->setLayout(hlayout2);
     hlayout2->setMargin(0);
     app_widget->layout()->setSpacing(0);
     //添加widget到gridlayout中
+
     w->appWidget->gridlayout->addWidget(app_widget);
+    w->appWidget->gridlayout->setMargin(0);
 
     app_widget->move(0,50+(appnum-1)*50);
 
@@ -530,7 +552,7 @@ void DeviceSwitchWidget::add_app_to_tableview(DeviceSwitchWidget *w,int appnum, 
     w->appWidget->appIconBtn->setEnabled(true);
 
     w->appWidget->appSlider->setMaximum(100);
-    w->appWidget->appSlider->setMinimumSize(178,20);
+    w->appWidget->appSlider->setFixedSize(220,20);
 
     QString appSliderStr = app_name;
     QString appLabelStr = app_name;
@@ -542,11 +564,11 @@ void DeviceSwitchWidget::add_app_to_tableview(DeviceSwitchWidget *w,int appnum, 
     w->appWidget->appSlider->setObjectName(appSliderStr);
     w->appWidget->appLabel->setObjectName(appLabelStr);
     w->appWidget->appVolumeLabel->setObjectName(appVolumeLabelStr);
-//    //设置label 和滑动条的值
+    //设置label 和滑动条的值
     w->appWidget->appLabel->setText(app_name);
     w->appWidget->appSlider->setValue(display_volume);
     w->appWidget->appVolumeLabel->setNum(display_volume);
-//    connect(w->appSlider,SIGNAL(valueChanged(int)),w,SLOT(app_slider_changed_slot(int)));
+
     /*滑动条控制应用音量*/
     connect(w->appWidget->appSlider,&QSlider::valueChanged,[=](int value){
         QSlider *s = w->findChild<QSlider*>(appSliderStr);
@@ -575,7 +597,15 @@ void DeviceSwitchWidget::add_app_to_tableview(DeviceSwitchWidget *w,int appnum, 
         w->appWidget->noAppLabel->show();
     else
         w->appWidget->noAppLabel->hide();
-    //设在样式
+
+    w->appWidget->gridlayout->setMargin(0);
+    w->appWidget->gridlayout->setSpacing(0);
+    w->appWidget->gridlayout->setAlignment(app_widget,Qt::AlignCenter);
+
+    //设置布局的垂直间距以及设置gridlayout四周的间距
+    w->appWidget->gridlayout->setVerticalSpacing(60);
+    w->appWidget->gridlayout->setContentsMargins(20,60,20,200);
+
     w->appWidget->appLabel->setStyleSheet("QLabel{background:transparent;"
                                           "border:0px;"
                                           "color:#ffffff;"

@@ -15,26 +15,19 @@
  * along with this program; if not, see <http://www.gnu.org/licenses/&gt;.
  *
  */
-#include "applicationvolumewidget.h"
-#include <QDebug>
+#ifndef SCROLLWITGET_H
+#define SCROLLWITGET_H
+#include <QWidget>
 #include <QScrollBar>
-ApplicationVolumeWidget::ApplicationVolumeWidget(QWidget *parent) : QWidget (parent)
+
+class ScrollWitget:public QWidget
 {
-    applicationLabel = new QLabel(tr("Application Volume"),this);
-    noAppLabel = new QLabel(tr("No application is currently playing or recording audio"),this);
-//    qDebug() << 10;
-    gridlayout = new QGridLayout(this);
-    app_volume_list = new QStringList;
-    noAppLabel->setFixedSize(210,14);
-    applicationLabel->move(20,23);
-    noAppLabel->move(60,123);
-    qDebug() << "0000000000000000000" << gridlayout->geometry();
+    Q_OBJECT
+public:
+    ScrollWitget(QWidget *parent = nullptr);
+    ~ScrollWitget();
+private:
+    QScrollBar *scrollBar;
+};
 
-    this->setFixedSize(340,500);
-
-}
-
-ApplicationVolumeWidget::~ApplicationVolumeWidget()
-{
-    delete  app_volume_list;
-}
+#endif // SCROLLWITGET_H
