@@ -78,7 +78,8 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     this->move(1507,775);
     devWidget->move(40,0);
     appWidget->move(40,0);
-    scrollWidget->move(340,0);
+    scrollWidget->move(380,0);
+    scrollWidget->show();
     appWidget->hide();
     this->setStyleSheet("QWidget{width:400px;"
                         "height:260px;"

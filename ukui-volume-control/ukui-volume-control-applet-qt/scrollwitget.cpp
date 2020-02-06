@@ -16,15 +16,21 @@
  *
  */
 #include "scrollwitget.h"
-
+#include <QVBoxLayout>
 ScrollWitget::ScrollWitget(QWidget *parent) : QWidget (parent)
 {
+    area = new QScrollArea(this);
     scrollBar = new QScrollBar;
+    area->setFixedSize(20,260);
     scrollBar->setFixedSize(20,260);
+    area->move(0,0);
     this->setFixedSize(20,260);
+//    QVBoxLayout *layout = new QVBoxLayout(this);
+//    layout->addWidget(scrollBar);
+//    this->setLayout(layout);
 }
 
 ScrollWitget::~ScrollWitget()
 {
-
+    delete scrollBar;
 }

@@ -25,13 +25,21 @@ ApplicationVolumeWidget::ApplicationVolumeWidget(QWidget *parent) : QWidget (par
 //    qDebug() << 10;
     gridlayout = new QGridLayout(this);
     app_volume_list = new QStringList;
-    noAppLabel->setFixedSize(210,14);
+    applicationLabel->setFixedSize(160,16);
+    noAppLabel->setFixedSize(300,14);
     applicationLabel->move(20,23);
     noAppLabel->move(60,123);
     qDebug() << "0000000000000000000" << gridlayout->geometry();
-
     this->setFixedSize(340,500);
-
+    //设置样式
+    applicationLabel->setStyleSheet("QLabel{background:transparent;"
+                                          "border:0px;"
+                                          "color:#ffffff;"
+                                          "font-size:18px;}");
+    noAppLabel->setStyleSheet("QLabel{background:transparent;"
+                                "border:0px;"
+                                "color:#ffffff;"
+                                "font-size:14px;}");
 }
 
 ApplicationVolumeWidget::~ApplicationVolumeWidget()

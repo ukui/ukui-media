@@ -19,6 +19,7 @@
 #define SCROLLWITGET_H
 #include <QWidget>
 #include <QScrollBar>
+#include <QScrollArea>
 
 class ScrollWitget:public QWidget
 {
@@ -28,6 +29,7 @@ public:
     ~ScrollWitget();
 private:
     QScrollBar *scrollBar;
+    QScrollArea *area;
 };
 
 #endif // SCROLLWITGET_H

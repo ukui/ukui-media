@@ -116,3 +116,39 @@ QCheckBox::indicator:unchecked {
 QCheckBox::indicator:checked {
    image:url(/usr/share/ukui-media/img/tick.svg);
 }
+
+QScrollBar:vertical {
+        border:2px solid red;
+        background:#32CC99;
+        width:15px;
+        margin:0 0 0 0px;
+}
+
+/* 滑块设置 */
+QScrollBar::handle:vertical {
+        background:white;
+        height:100px;
+}
+
+/* 底部控制块 */
+QScrollBar::add-line:vertical {
+        border:2px solid grey;
+        background:#453D89;
+        height:20px;
+        subcontrol-position:bottom;
+        subcontrol-origin:margin;
+}
+
+
+
+/* 滑块上边区域 */
+QScrollBar::add-page:vertical {
+        background:#E5D812;
+}
+
+/* 滑块下边区域 */
+QScrollBar::sub-page:vertical {
+        background:#47F8A96;
+}
+
+
