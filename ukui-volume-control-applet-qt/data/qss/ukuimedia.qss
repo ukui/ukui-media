@@ -148,7 +148,7 @@ QScrollBar::add-page:vertical {
 
 /* 滑块下边区域 */
 QScrollBar::sub-page:vertical {
-        background:#47F8A96;
+        background:#47F8A9;
 }
 
 

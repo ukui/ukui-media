@@ -105,7 +105,7 @@ private:
     QPushButton *deviceBtn;
     QPushButton *appVolumeBtn;
 
-    ScrollWitget *scrollWidget;
+    ScrollWitget *scrollWid;
     UkmediaDeviceWidget *devWidget;
     ApplicationVolumeWidget *appWidget;
     MateMixerStream *stream;

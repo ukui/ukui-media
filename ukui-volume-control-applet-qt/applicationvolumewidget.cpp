@@ -30,7 +30,8 @@ ApplicationVolumeWidget::ApplicationVolumeWidget(QWidget *parent) : QWidget (par
     applicationLabel->move(20,23);
     noAppLabel->move(60,123);
     qDebug() << "0000000000000000000" << gridlayout->geometry();
-    this->setFixedSize(340,500);
+    this->setMinimumSize(340,260);
+    this->setMaximumSize(340,500);
     //设置样式
     applicationLabel->setStyleSheet("QLabel{background:transparent;"
                                           "border:0px;"

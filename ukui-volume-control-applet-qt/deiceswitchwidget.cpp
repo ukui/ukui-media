@@ -42,8 +42,9 @@ guint appnum = 0;
 DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
 {
     devWidget = new UkmediaDeviceWidget(this);
-    scrollWidget = new ScrollWitget(this);
+    scrollWid = new ScrollWitget(this);
     appWidget = new ApplicationVolumeWidget(this);
+    scrollWid->area->setWidget(devWidget);
     output_stream_list = new QStringList;
     input_stream_list = new QStringList;
     device_name_list = new QStringList;
@@ -69,26 +70,26 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
                      "notify::state",
                      G_CALLBACK (on_context_state_notify),
                      this);
-
     deviceSwitchWidgetInit();
     connect(deviceBtn,SIGNAL(clicked()),this,SLOT(device_button_clicked_slot()));
     connect(appVolumeBtn,SIGNAL(clicked()),this,SLOT(appvolume_button_clicked_slot()));
 
-    this->setFixedSize(400,260);
+    this->setMinimumSize(400,260);
+    this->setMaximumSize(400,500);
     this->move(1507,775);
     devWidget->move(40,0);
     appWidget->move(40,0);
-    scrollWidget->move(380,0);
-    scrollWidget->show();
+    scrollWid->move(40,0);
+    scrollWid->show();
     appWidget->hide();
     this->setStyleSheet("QWidget{width:400px;"
                         "height:260px;"
                         "background:rgba(14,19,22,1);"
                         "opacity:0.95;"
-                        "border-radius:3px 3px 0px 0px;}");
+                       "border-radius:3px 3px 0px 0px;}");
     //    this->move(0,0);
 //    appWidget->gridlayout->addWidget(appWidget->applicationLabel);
-
+    qDebug() << 92;
 }
 
 /*初始化主界面*/
@@ -114,13 +115,10 @@ void DeviceSwitchWidget::deviceSwitchWidgetInit()
     deviceBtn->move(2,10);
     appVolumeBtn->move(2,50);
 
-    //切换按钮样式
     deviceBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
-                             "padding-left:0px;}"
-                             "QPushButton::hover{background:rgba(61,107,229,1);"
-                             "border-radius:4px;}"
-                             "QPushButton::pressed{background:rgba(61,107,229,1);"
-                             "border-radius:4px;}");
+                                "padding-left:0px;}"
+                                "QPushButton::pressed{background:rgba(61,107,229,1);"
+                                "border-radius:4px;}");
     appVolumeBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
                                 "padding-left:0px;}"
                                 "QPushButton::hover{background:rgba(61,107,229,1);"
@@ -134,6 +132,10 @@ void DeviceSwitchWidget::device_button_clicked_slot()
 {
     appWidget->hide();
     devWidget->show();
+    appVolumeBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
+                                "padding-left:0px;}");
+    deviceBtn->setStyleSheet("QPushButton{background:rgba(61,107,229,1);"
+                                 "border-radius:4px;}");
 }
 
 /*点击切换应用音量按钮对应的槽函数*/
@@ -143,6 +145,11 @@ void DeviceSwitchWidget::appvolume_button_clicked_slot()
 //    appWidget->noAppLabel->move(60,123);
     appWidget->show();
     devWidget->hide();
+    //切换按钮样式
+    deviceBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
+                                "padding-left:0px;}");
+    appVolumeBtn->setStyleSheet("QPushButton{background:rgba(61,107,229,1);"
+                             "border-radius:4px;}");
 }
 
 /*

@@ -17,17 +17,34 @@
  */
 #include "scrollwitget.h"
 #include <QVBoxLayout>
+#include <QDebug>
 ScrollWitget::ScrollWitget(QWidget *parent) : QWidget (parent)
 {
     area = new QScrollArea(this);
-    scrollBar = new QScrollBar;
-    area->setFixedSize(20,260);
-    scrollBar->setFixedSize(20,260);
+
+    area->setFixedSize(360,260);
+
     area->move(0,0);
-    this->setFixedSize(20,260);
+    this->setFixedSize(360,300);
 //    QVBoxLayout *layout = new QVBoxLayout(this);
 //    layout->addWidget(scrollBar);
 //    this->setLayout(layout);
+    area->setStyleSheet("QScrollArea{border:none;}");
+    area->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    area->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    area->viewport()->setStyleSheet("background-color:transparent;");
+    area->verticalScrollBar()->setStyleSheet("QScrollBar:vertical{margin:0px 0px 0px 0px;background:transparent;border:0px;width:2px;height:100px;}"
+                                                    "QScrollBar::up-arrow:vertical{height:0px;}"
+                                                    "QScrollBar::sub-line:vertical{border:0px solid;height:0px}"
+                                                    "QScrollBar::sub-page:vertical{background:transparent;height:20px;}"
+                                                    "QScrollBar::handle:vertical{background-color:rgba(255,255,255,0.25);"
+                                                    "opacity:0.25;border-radius:1px;width:2px;}"
+                                                    "QScrollBar::handle:vertical:hover{background-color:#3593b5;}"
+                                                    "QScrollBar::handle:vertical:pressed{background-color:#3593b5;}"
+                                                    "QScrollBar::add-page:vertical{background:transparent;height:20px;}"
+                                                    "QScrollBar::add-line:vertical{border:0px solid;height:0px}"
+                                                    "QScrollBar::down-arrow:vertical{height:0px;}");
+
 }
 
 ScrollWitget::~ScrollWitget()

@@ -20,13 +20,13 @@
 #include <QWidget>
 #include <QScrollBar>
 #include <QScrollArea>
-
 class ScrollWitget:public QWidget
 {
     Q_OBJECT
 public:
     ScrollWitget(QWidget *parent = nullptr);
     ~ScrollWitget();
+    friend class DeviceSwitchWidget;
 private:
     QScrollBar *scrollBar;
     QScrollArea *area;

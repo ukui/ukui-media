@@ -380,6 +380,7 @@ void UkmediaSystemTrayWidget::inputSystemTrayMenuInit()
     inputMenu->setWindowOpacity(0.95);
     widget->inputVolumeChanged();
 
+
     //点击静音复选框设置静音模式
     connect(ipMuteCheckBox,SIGNAL(released()),this,SLOT(ipMuteCheckBoxReleasedSlot()));
 }
