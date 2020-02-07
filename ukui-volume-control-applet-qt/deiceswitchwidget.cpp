@@ -38,13 +38,26 @@ extern "C" {
 #include <QListView>
 #include <QDebug>
 
+typedef enum {
+    DEVICE_VOLUME_BUTTON,  //未知的托盘图标类型
+    APP_VOLUME_BUTTON
+}ButtonType;
+
+ButtonType btnType = DEVICE_VOLUME_BUTTON;
 guint appnum = 0;
+bool show = false;
 DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
 {
+//    scrollWid = new ScrollWitget(this);
+
+    appScrollWidget = new ScrollWitget(this);
+    devScrollWidget = new ScrollWitget(this);
     devWidget = new UkmediaDeviceWidget(this);
-    scrollWid = new ScrollWitget(this);
     appWidget = new ApplicationVolumeWidget(this);
-    scrollWid->area->setWidget(devWidget);
+
+    devScrollWidget->area->setWidget(devWidget);
+    appScrollWidget->area->setWidget(appWidget);
+
     output_stream_list = new QStringList;
     input_stream_list = new QStringList;
     device_name_list = new QStringList;
@@ -71,25 +84,31 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
                      G_CALLBACK (on_context_state_notify),
                      this);
     deviceSwitchWidgetInit();
+    inputDeviceVisiable();
     connect(deviceBtn,SIGNAL(clicked()),this,SLOT(device_button_clicked_slot()));
     connect(appVolumeBtn,SIGNAL(clicked()),this,SLOT(appvolume_button_clicked_slot()));
 
-    this->setMinimumSize(400,260);
-    this->setMaximumSize(400,500);
+    appWidget->setFixedSize(360,500);
+    this->setMinimumSize(400,320);
+    this->setMaximumSize(400,320);
     this->move(1507,775);
     devWidget->move(40,0);
     appWidget->move(40,0);
-    scrollWid->move(40,0);
-    scrollWid->show();
+    appScrollWidget->move(40,0);
+    devScrollWidget->move(40,0);
+    devWidget->show();
     appWidget->hide();
+
     this->setStyleSheet("QWidget{width:400px;"
-                        "height:260px;"
+                        "height:320px;"
                         "background:rgba(14,19,22,1);"
                         "opacity:0.95;"
                        "border-radius:3px 3px 0px 0px;}");
     //    this->move(0,0);
 //    appWidget->gridlayout->addWidget(appWidget->applicationLabel);
     qDebug() << 92;
+    appScrollWidget->area->widget()->adjustSize();
+    devScrollWidget->area->widget()->adjustSize();
 }
 
 /*初始化主界面*/
@@ -97,7 +116,7 @@ void DeviceSwitchWidget::deviceSwitchWidgetInit()
 {
     const QSize iconSize(16,16);
     QWidget *deviceWidget = new QWidget(this);
-    deviceWidget->setFixedSize(40,260);
+    deviceWidget->setFixedSize(40,320);
 
     deviceBtn = new QPushButton(deviceWidget);
     appVolumeBtn = new QPushButton(deviceWidget);
@@ -113,7 +132,7 @@ void DeviceSwitchWidget::deviceSwitchWidgetInit()
     appVolumeBtn->setIcon(QIcon("/usr/share/ukui-media/img/application.svg"));
 
     deviceBtn->move(2,10);
-    appVolumeBtn->move(2,50);
+    appVolumeBtn->move(2,57);
 
     deviceBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
                                 "padding-left:0px;}"
@@ -131,7 +150,10 @@ void DeviceSwitchWidget::deviceSwitchWidgetInit()
 void DeviceSwitchWidget::device_button_clicked_slot()
 {
     appWidget->hide();
+    appScrollWidget->hide();
+    devScrollWidget->show();
     devWidget->show();
+
     appVolumeBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
                                 "padding-left:0px;}");
     deviceBtn->setStyleSheet("QPushButton{background:rgba(61,107,229,1);"
@@ -143,6 +165,8 @@ void DeviceSwitchWidget::appvolume_button_clicked_slot()
 {
 //    appWidget->appLabel->move(20,23);
 //    appWidget->noAppLabel->move(60,123);
+    appScrollWidget->show();
+    devScrollWidget->hide();
     appWidget->show();
     devWidget->hide();
     //切换按钮样式
@@ -611,8 +635,8 @@ void DeviceSwitchWidget::add_app_to_tableview(DeviceSwitchWidget *w,int appnum, 
     w->appWidget->gridlayout->setAlignment(app_widget,Qt::AlignCenter);
 
     //设置布局的垂直间距以及设置gridlayout四周的间距
-    w->appWidget->gridlayout->setVerticalSpacing(60);
-    w->appWidget->gridlayout->setContentsMargins(20,60,20,200);
+    w->appWidget->gridlayout->setVerticalSpacing(200);
+//    w->appWidget->gridlayout->setContentsMargins(20,60,20,200);
 
     w->appWidget->appLabel->setStyleSheet("QLabel{background:transparent;"
                                           "border:0px;"
@@ -1261,6 +1285,54 @@ void DeviceSwitchWidget::bar_set_stream_control (DeviceSwitchWidget *w,MateMixer
 
         } else
             qDebug() << "set true";
+}
+
+void DeviceSwitchWidget::inputDeviceVisiable()
+{
+    //设置麦克风托盘图标是否可见
+    MateMixerStreamControl *control;
+    const gchar *app_id;
+//    const GList *inputs = mate_mixer_stream_list_controls(widget->inputStream);
+//    control = mate_mixer_stream_get_default_control(widget->inputStream);
+
+//    while (inputs != NULL) {
+//        MateMixerStreamControl *input = MATE_MIXER_STREAM_CONTROL (inputs->data);
+//        MateMixerStreamControlRole role = mate_mixer_stream_control_get_role(input);
+
+//        if (role == MATE_MIXER_STREAM_CONTROL_ROLE_APPLICATION) {
+//            MateMixerAppInfo *app_info = mate_mixer_stream_control_get_app_info (input);
+//            app_id = mate_mixer_app_info_get_id (app_info);
+//            if (app_id == NULL) {
+//               /* A recording application which has no
+//                * identifier set */
+//                g_debug ("Found a recording application control %s",
+//                         mate_mixer_stream_control_get_label (input));
+//                if G_UNLIKELY (control == NULL) {
+//                       /* In the unlikely case when there is no
+//                        * default input control, use the application
+//                        * control for the icon */
+//                    control = input;
+//                }
+//                show = TRUE;
+//                break;
+//            }
+//            if (strcmp (app_id, "org.mate.VolumeControl") != 0 &&
+//                strcmp (app_id, "org.gnome.VolumeControl") != 0 &&
+//                strcmp (app_id, "org.PulseAudio.pavucontrol") != 0) {
+//                g_debug ("Found a recording application %s", app_id);
+//                if G_UNLIKELY (control == NULL)
+//                    control = input;
+//                show = TRUE;
+//                break;
+//            }
+//        }
+//        inputs = inputs->next;
+//    }
+//    if (show == TRUE)
+//        g_debug ("Input icon enabled");
+//    else
+        g_debug ("There is no recording application, input icon disabled");
+    this->devWidget->inputWidget->show();
 }
 
 DeviceSwitchWidget::~DeviceSwitchWidget()

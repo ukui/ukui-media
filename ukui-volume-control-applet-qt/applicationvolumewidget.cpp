@@ -28,19 +28,20 @@ ApplicationVolumeWidget::ApplicationVolumeWidget(QWidget *parent) : QWidget (par
     applicationLabel->setFixedSize(160,16);
     noAppLabel->setFixedSize(300,14);
     applicationLabel->move(20,23);
-    noAppLabel->move(60,123);
+    noAppLabel->move(62,153);
     qDebug() << "0000000000000000000" << gridlayout->geometry();
-    this->setMinimumSize(340,260);
+    this->setMinimumSize(340,320);
     this->setMaximumSize(340,500);
     //设置样式
     applicationLabel->setStyleSheet("QLabel{background:transparent;"
                                           "border:0px;"
                                           "color:#ffffff;"
                                           "font-size:18px;}");
-    noAppLabel->setStyleSheet("QLabel{background:transparent;"
-                                "border:0px;"
-                                "color:#ffffff;"
-                                "font-size:14px;}");
+    noAppLabel->setStyleSheet("QLabel{width:210px;"
+                              "height:14px;"
+                              "font-size:14px;"
+                              "color:rgba(255,255,255,0.57);"
+                              "line-height:28px;}");
 }
 
 ApplicationVolumeWidget::~ApplicationVolumeWidget()

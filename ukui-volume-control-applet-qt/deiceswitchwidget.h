@@ -41,6 +41,7 @@ public:
     DeviceSwitchWidget(QWidget *parent = nullptr);
     ~DeviceSwitchWidget();
     void deviceSwitchWidgetInit();
+    void inputDeviceVisiable();
     static void list_device(DeviceSwitchWidget *w,MateMixerContext *context);
 
     static void gvc_stream_status_icon_set_control (UkmediaDeviceWidget *w,MateMixerStreamControl *control);
@@ -105,7 +106,9 @@ private:
     QPushButton *deviceBtn;
     QPushButton *appVolumeBtn;
 
-    ScrollWitget *scrollWid;
+    ScrollWitget *devScrollWidget;
+    ScrollWitget *appScrollWidget;
+    QScrollArea *devArea;
     UkmediaDeviceWidget *devWidget;
     ApplicationVolumeWidget *appWidget;
     MateMixerStream *stream;
@@ -113,7 +116,6 @@ private:
     MateMixerStreamControl *control;
 
     QStringList *soundlist;
-
     QStringList *device_name_list;
     QStringList *device_display_name_list;
     QStringList *output_stream_list;

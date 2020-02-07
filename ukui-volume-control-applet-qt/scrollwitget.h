@@ -27,6 +27,8 @@ public:
     ScrollWitget(QWidget *parent = nullptr);
     ~ScrollWitget();
     friend class DeviceSwitchWidget;
+    friend class ApplicationVolumeWidget;
+    friend class UkmediaDeviceWidget;
 private:
     QScrollBar *scrollBar;
     QScrollArea *area;

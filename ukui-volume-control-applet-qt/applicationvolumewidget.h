@@ -22,6 +22,7 @@
 #include <QPushButton>
 #include <QSlider>
 #include <QGridLayout>
+
 class ApplicationVolumeWidget : public QWidget
 {
     Q_OBJECT

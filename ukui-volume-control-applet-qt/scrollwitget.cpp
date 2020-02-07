@@ -22,13 +22,13 @@ ScrollWitget::ScrollWitget(QWidget *parent) : QWidget (parent)
 {
     area = new QScrollArea(this);
 
-    area->setFixedSize(360,260);
-
+    area->setFixedSize(360,320);
     area->move(0,0);
-    this->setFixedSize(360,300);
+    this->setFixedSize(360,320);
 //    QVBoxLayout *layout = new QVBoxLayout(this);
 //    layout->addWidget(scrollBar);
 //    this->setLayout(layout);
+
     area->setStyleSheet("QScrollArea{border:none;}");
     area->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     area->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);

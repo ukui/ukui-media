@@ -53,7 +53,7 @@ public:
     UkmediaDeviceWidget(QWidget *parent = nullptr);
     ~UkmediaDeviceWidget();
     void deviceWidgetInit();
-
+    void noInputWidgetInit();
     friend class  DeviceSwitchWidget;
 private:
     QLabel *outputDeviceLabel;
@@ -61,10 +61,18 @@ private:
     QLabel *outputDeviceDisplayLabel;
     QPushButton *outputDeviceBtn;
     UkmediaDeviceSlider *outputDeviceSlider;
+    QWidget *inputWidget;
+    QWidget *deviceWidget;
+    QWidget *outputWidget;
+    QWidget *outputSliderWidget;
+    QWidget *outputDisplayWidget;
+    QWidget *inputSliderWidget;
+    QWidget *inputDisplayWidget;
 
     QLabel *inputDeviceLabel;
     QLabel *inputVolumeLabel;
     QLabel *inputDeviceDisplayLabel;
+    QLabel *noInputDeviceLabel;
     QPushButton *inputDeviceBtn;
     UkmediaDeviceSlider *inputDeviceSlider;
 };
