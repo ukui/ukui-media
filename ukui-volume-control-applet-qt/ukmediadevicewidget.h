@@ -54,6 +54,7 @@ public:
     ~UkmediaDeviceWidget();
     void deviceWidgetInit();
     void noInputWidgetInit();
+    void inputWidgetShow();
     friend class  DeviceSwitchWidget;
 private:
     QLabel *outputDeviceLabel;

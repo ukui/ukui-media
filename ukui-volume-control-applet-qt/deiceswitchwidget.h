@@ -41,7 +41,6 @@ public:
     DeviceSwitchWidget(QWidget *parent = nullptr);
     ~DeviceSwitchWidget();
     void deviceSwitchWidgetInit();
-    void inputDeviceVisiable();
     static void list_device(DeviceSwitchWidget *w,MateMixerContext *context);
 
     static void gvc_stream_status_icon_set_control (UkmediaDeviceWidget *w,MateMixerStreamControl *control);

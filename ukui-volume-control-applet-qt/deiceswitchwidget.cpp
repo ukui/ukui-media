@@ -77,27 +77,33 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     if G_UNLIKELY (mate_mixer_context_open(context) == FALSE) {
         g_warning ("Failed to connect to a sound system**********************");
     }
-
-    context_set_property(this);
-    g_signal_connect (G_OBJECT (context),
-                     "notify::state",
-                     G_CALLBACK (on_context_state_notify),
-                     this);
-    deviceSwitchWidgetInit();
-    inputDeviceVisiable();
-    connect(deviceBtn,SIGNAL(clicked()),this,SLOT(device_button_clicked_slot()));
-    connect(appVolumeBtn,SIGNAL(clicked()),this,SLOT(appvolume_button_clicked_slot()));
-
     appWidget->setFixedSize(360,500);
-    this->setMinimumSize(400,320);
-    this->setMaximumSize(400,320);
-    this->move(1507,775);
+    devWidget->setFixedSize(360,320);
+
     devWidget->move(40,0);
     appWidget->move(40,0);
     appScrollWidget->move(40,0);
     devScrollWidget->move(40,0);
+//    this->setStyleSheet("QWidget{background-color: rgba(21,26,30,90%);"
+//                        "height:320;width:360;border-radius: 2px;}");
+    this->setFixedSize(400,320);
+//    this->setMinimumSize(400,320);
+//    this->setMaximumSize(400,320);
+    this->move(1507,775);
+
     devWidget->show();
     appWidget->hide();
+
+    deviceSwitchWidgetInit();
+    context_set_property(this);
+    appScrollWidget->area->widget()->adjustSize();
+    devScrollWidget->area->widget()->adjustSize();
+    g_signal_connect (G_OBJECT (context),
+                     "notify::state",
+                     G_CALLBACK (on_context_state_notify),
+                     this);
+    connect(deviceBtn,SIGNAL(clicked()),this,SLOT(device_button_clicked_slot()));
+    connect(appVolumeBtn,SIGNAL(clicked()),this,SLOT(appvolume_button_clicked_slot()));
 
     this->setStyleSheet("QWidget{width:400px;"
                         "height:320px;"
@@ -107,8 +113,6 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     //    this->move(0,0);
 //    appWidget->gridlayout->addWidget(appWidget->applicationLabel);
     qDebug() << 92;
-    appScrollWidget->area->widget()->adjustSize();
-    devScrollWidget->area->widget()->adjustSize();
 }
 
 /*初始化主界面*/
@@ -537,11 +541,6 @@ void DeviceSwitchWidget::add_app_to_tableview(DeviceSwitchWidget *w,int appnum, 
     w->appWidget->appSlider->setOrientation(Qt::Horizontal);
 
     QSpacerItem *item1 = new QSpacerItem(16,20);
-    QSpacerItem *item2 = new QSpacerItem(2,20);
-    QSpacerItem *item3 = new QSpacerItem(2,20);
-    QSpacerItem *item4 = new QSpacerItem(2,20);
-    QSpacerItem *item5 = new QSpacerItem(2,20);
-    QSpacerItem *item6 = new QSpacerItem(2,20);
 
     hlayout1->addWidget(w->appWidget->appSlider);
     hlayout1->addWidget(w->appWidget->appVolumeLabel);
@@ -636,13 +635,10 @@ void DeviceSwitchWidget::add_app_to_tableview(DeviceSwitchWidget *w,int appnum, 
 
     //设置布局的垂直间距以及设置gridlayout四周的间距
     w->appWidget->gridlayout->setVerticalSpacing(200);
-//    w->appWidget->gridlayout->setContentsMargins(20,60,20,200);
-
     w->appWidget->appLabel->setStyleSheet("QLabel{background:transparent;"
                                           "border:0px;"
                                           "color:#ffffff;"
                                           "font-size:14px;}");
-
 }
 
 /*
@@ -1057,6 +1053,14 @@ void DeviceSwitchWidget::update_icon_input (UkmediaDeviceWidget *w,MateMixerCont
                 g_debug ("There is no output stream/control, output icon disabled");
                 qDebug() << "control is  null";
         }
+        if(show) {
+            qDebug() << "input and output ";
+            w->inputWidgetShow();
+        }
+        else {
+            qDebug() << "no input";
+            w->noInputWidgetInit();
+        }
 }
 
 /*
@@ -1285,54 +1289,6 @@ void DeviceSwitchWidget::bar_set_stream_control (DeviceSwitchWidget *w,MateMixer
 
         } else
             qDebug() << "set true";
-}
-
-void DeviceSwitchWidget::inputDeviceVisiable()
-{
-    //设置麦克风托盘图标是否可见
-    MateMixerStreamControl *control;
-    const gchar *app_id;
-//    const GList *inputs = mate_mixer_stream_list_controls(widget->inputStream);
-//    control = mate_mixer_stream_get_default_control(widget->inputStream);
-
-//    while (inputs != NULL) {
-//        MateMixerStreamControl *input = MATE_MIXER_STREAM_CONTROL (inputs->data);
-//        MateMixerStreamControlRole role = mate_mixer_stream_control_get_role(input);
-
-//        if (role == MATE_MIXER_STREAM_CONTROL_ROLE_APPLICATION) {
-//            MateMixerAppInfo *app_info = mate_mixer_stream_control_get_app_info (input);
-//            app_id = mate_mixer_app_info_get_id (app_info);
-//            if (app_id == NULL) {
-//               /* A recording application which has no
-//                * identifier set */
-//                g_debug ("Found a recording application control %s",
-//                         mate_mixer_stream_control_get_label (input));
-//                if G_UNLIKELY (control == NULL) {
-//                       /* In the unlikely case when there is no
-//                        * default input control, use the application
-//                        * control for the icon */
-//                    control = input;
-//                }
-//                show = TRUE;
-//                break;
-//            }
-//            if (strcmp (app_id, "org.mate.VolumeControl") != 0 &&
-//                strcmp (app_id, "org.gnome.VolumeControl") != 0 &&
-//                strcmp (app_id, "org.PulseAudio.pavucontrol") != 0) {
-//                g_debug ("Found a recording application %s", app_id);
-//                if G_UNLIKELY (control == NULL)
-//                    control = input;
-//                show = TRUE;
-//                break;
-//            }
-//        }
-//        inputs = inputs->next;
-//    }
-//    if (show == TRUE)
-//        g_debug ("Input icon enabled");
-//    else
-        g_debug ("There is no recording application, input icon disabled");
-    this->devWidget->inputWidget->show();
 }
 
 DeviceSwitchWidget::~DeviceSwitchWidget()

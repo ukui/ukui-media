@@ -59,13 +59,13 @@ UkmediaDeviceWidget::UkmediaDeviceWidget(QWidget *parent) : QWidget (parent)
     outputDeviceDisplayLabel = new QLabel(tr("Speaker Realtek Audio"),outputDisplayWidget);
     outputDeviceBtn = new QPushButton(outputWidget);
     outputDeviceSlider = new UkmediaDeviceSlider(outputSliderWidget);
-
-    deviceWidgetInit();
-//    noInputWidgetInit();
-//    this->setMinimumSize(360,500);
+    noInputDeviceLabel = new QLabel(tr("Input device can not be detected"),this);
+//    this->setFixedSize(360,320);
+//    deviceWidgetInit();
+    noInputWidgetInit();
+//    inputWidgetShow();
 //    this->setMaximumSize(360,500);
-    this->setStyleSheet("QWidget{background-color: rgba(21,26,30,90%);"
-                        "border-radius: 2px;}");
+
 
     outputVolumeLabel->setStyleSheet("QLabel{background:transparent;"
                                          "border:0px;color:#ffffff;"
@@ -99,15 +99,6 @@ UkmediaDeviceWidget::UkmediaDeviceWidget(QWidget *parent) : QWidget (parent)
 void UkmediaDeviceWidget::deviceWidgetInit()
 {
     const QSize iconSize(32,32);
-//    QWidget *deviceWidget = new QWidget(this);
-//    QWidget *outputWidget = new QWidget(deviceWidget);
-//    QWidget *outputSliderWidget = new QWidget(outputWidget);
-//    QWidget *outputDisplayWidget = new QWidget(outputWidget);
-
-
-//    outputWidget->setFixedSize(296,52);
-//    outputDisplayWidget->setFixedSize(246,46);
-//    outputSliderWidget->setFixedSize(246,32);
     inputWidget->setFixedSize(296,52);
     inputDisplayWidget->setFixedSize(246,46);
     inputSliderWidget->setFixedSize(246,32);
@@ -115,9 +106,9 @@ void UkmediaDeviceWidget::deviceWidgetInit()
     //设置输入输出音量图标
     outputDeviceBtn->setFixedSize(iconSize);
     outputDeviceBtn->setIconSize(iconSize);
+    outputDeviceBtn->setIcon(QIcon("/usr/share/ukui-media/img/audiocard.svg"));
     inputDeviceBtn->setFixedSize(iconSize);
     inputDeviceBtn->setIconSize(iconSize);
-    outputDeviceBtn->setIcon(QIcon("/usr/share/ukui-media/img/audiocard.svg"));
     inputDeviceBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-input-microphone.svg"));
     //设置滑动条的范围和取向
     inputDeviceLabel->setFixedSize(78,20);
@@ -179,13 +170,13 @@ void UkmediaDeviceWidget::deviceWidgetInit()
     inputDisplayWidget->move(50,0);
 
     //整体布局
-    vlayout3->addWidget(outputDeviceLabel);
-    vlayout3->addWidget(outputWidget);
-    vlayout3->addWidget(inputDeviceLabel);
-    vlayout3->addWidget(inputWidget);
-    deviceWidget->setLayout(vlayout3);
-    vlayout3->setSpacing(30);
-    deviceWidget->layout()->setContentsMargins(20,22,0,64);
+//    vlayout3->addWidget(outputDeviceLabel);
+//    vlayout3->addWidget(outputWidget);
+//    vlayout3->addWidget(inputDeviceLabel);
+//    vlayout3->addWidget(inputWidget);
+//    deviceWidget->setLayout(vlayout3);
+//    vlayout3->setSpacing(30);
+//    deviceWidget->layout()->setContentsMargins(20,22,0,64);
 //    deviceWidget->setMinimumSize(400,320);
     deviceWidget->setFixedSize(400,320);
 //    deviceWidget->setMaximumSize(400,500);
@@ -198,8 +189,7 @@ void UkmediaDeviceWidget::noInputWidgetInit()
     inputWidget->hide();
     inputSliderWidget->hide();
     inputDisplayWidget->hide();
-
-    noInputDeviceLabel = new QLabel(tr("Input device can not be detected"),this);
+    noInputDeviceLabel->show();
     QSize iconSize(32,32);
     //设置输入输出音量图标
     outputDeviceBtn->setFixedSize(iconSize);
@@ -213,6 +203,8 @@ void UkmediaDeviceWidget::noInputWidgetInit()
     outputDeviceSlider->setRange(0,100);
     outputDeviceSlider->setOrientation(Qt::Horizontal);
     outputDeviceSlider->setFixedSize(220,20);
+
+    deviceWidget->setFixedSize(360,320);
 
     QHBoxLayout *hlayout1 = new QHBoxLayout(outputSliderWidget);
     QHBoxLayout *hlayout2 = new QHBoxLayout;
@@ -244,7 +236,53 @@ void UkmediaDeviceWidget::noInputWidgetInit()
                                       "font-size:14px;"
                                       "color:rgba(255,255,255,0.57);"
                                       "line-height:28px;}");
+}
 
+void UkmediaDeviceWidget::inputWidgetShow()
+{
+    //设置noinputlabel隐藏
+    noInputDeviceLabel->hide();
+    const QSize iconSize(32,32);
+    inputWidget->setFixedSize(296,52);
+    inputDisplayWidget->setFixedSize(246,46);
+    inputSliderWidget->setFixedSize(246,32);
+
+    //设置输入输出音量图标
+    inputDeviceBtn->setFixedSize(iconSize);
+    inputDeviceBtn->setIconSize(iconSize);
+    inputDeviceBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-input-microphone.svg"));
+    //设置滑动条的范围和取向
+    inputDeviceLabel->setFixedSize(78,20);
+    inputDeviceDisplayLabel->setFixedSize(220,14);
+    inputVolumeLabel->setFixedHeight(16);
+
+    inputDeviceSlider->setRange(0,100);
+    inputDeviceSlider->setOrientation(Qt::Horizontal);
+    inputDeviceSlider->setFixedSize(220,20);
+    //布局
+    QHBoxLayout *hlayout = new QHBoxLayout;
+    QVBoxLayout *vlayout = new QVBoxLayout;
+
+    //输入设备布局 inputWidget
+    hlayout->addWidget(inputDeviceSlider);
+    hlayout->addWidget(inputVolumeLabel);
+    hlayout->setSpacing(10);
+    inputSliderWidget->setLayout(hlayout);
+    inputSliderWidget->layout()->setContentsMargins(0,0,0,0);
+
+    vlayout->addWidget(inputDeviceDisplayLabel);
+    vlayout->addWidget(inputSliderWidget);
+    vlayout->setContentsMargins(0,0,0,0);
+    vlayout->setSpacing(0);
+    inputDisplayWidget->setLayout(vlayout);
+
+    inputDeviceLabel->move(20,154);
+    inputWidget->move(20,204);
+    inputDisplayWidget->move(50,0);
+    inputDeviceLabel->show();
+    inputSliderWidget->show();
+    inputDisplayWidget->show();
+    inputWidget->show();
 }
 
 UkmediaDeviceWidget::~UkmediaDeviceWidget()
