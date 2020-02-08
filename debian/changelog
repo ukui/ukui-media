@@ -1,8 +1,9 @@
-ukui-media (1.1.2-1kord1) disco; urgency=medium
+ukui-media (2.0.0-1) unstable; urgency=medium
 
-  * Ukui-media for UKUI3.0
+  * New upstream release.
+    - Rewrite the UI using Qt.
 
- -- fengzhaoxiang <fengzhaoxiang@kylinos.cn>  Mon, 04 Nov 2019 11:22:45 +0800
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Sat, 08 Feb 2020 15:15:25 +0800
 
 ukui-media (1.1.2-1) unstable; urgency=medium
 
