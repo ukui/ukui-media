@@ -36,6 +36,10 @@ extern "C" {
 #include <QStringList>
 #include <QSpacerItem>
 #include <QListView>
+#include <QPainter>
+#include <QScreen>
+#include <QApplication>
+#include <QSvgRenderer>
 #include <QDebug>
 
 typedef enum {
@@ -45,15 +49,67 @@ typedef enum {
 
 ButtonType btnType = DEVICE_VOLUME_BUTTON;
 guint appnum = 0;
-bool show = false;
+bool isShow = true;
+
+UkmediaTrayIcon::UkmediaTrayIcon(QWidget *parent)
+{
+    Q_UNUSED(parent);
+}
+
+UkmediaTrayIcon::~UkmediaTrayIcon()
+{
+
+}
+
+/*
+    获取托盘图标的滚动事件
+*/
+bool UkmediaTrayIcon::event(QEvent *event)
+{
+    bool value = false;
+    QWheelEvent *e = static_cast<QWheelEvent *>(event);
+    if (event->type() == QEvent::Wheel) {
+        if (e->delta() > 0) {
+            value = true;
+        }
+        else if (e->delta() < 0) {
+            value = false;
+        }
+        Q_EMIT  wheelRollEventSignal(value);
+        qDebug() << "托盘滚动事件";
+    }
+    return QSystemTrayIcon::event(e);
+
+}
+
+/*
+    显示window
+*/
+void DeviceSwitchWidget::showWindow()
+{
+    this->show();
+    isShow = false;
+}
+
+/*
+    隐藏window
+*/
+void DeviceSwitchWidget::hideWindow()
+{
+    this->hide();
+    isShow = true;
+}
+
 DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
 {
-//    scrollWid = new ScrollWitget(this);
 
     appScrollWidget = new ScrollWitget(this);
     devScrollWidget = new ScrollWitget(this);
     devWidget = new UkmediaDeviceWidget(this);
     appWidget = new ApplicationVolumeWidget(this);
+
+    //添加托盘及菜单
+    systemTrayMenuInit();
 
     devScrollWidget->area->setWidget(devWidget);
     appScrollWidget->area->setWidget(appWidget);
@@ -84,12 +140,9 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     appWidget->move(40,0);
     appScrollWidget->move(40,0);
     devScrollWidget->move(40,0);
-//    this->setStyleSheet("QWidget{background-color: rgba(21,26,30,90%);"
-//                        "height:320;width:360;border-radius: 2px;}");
     this->setFixedSize(400,320);
 //    this->setMinimumSize(400,320);
 //    this->setMaximumSize(400,320);
-    this->move(1507,775);
 
     devWidget->show();
     appWidget->hide();
@@ -107,12 +160,205 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
 
     this->setStyleSheet("QWidget{width:400px;"
                         "height:320px;"
-                        "background:rgba(14,19,22,1);"
-                        "opacity:0.95;"
-                       "border-radius:3px 3px 0px 0px;}");
-    //    this->move(0,0);
-//    appWidget->gridlayout->addWidget(appWidget->applicationLabel);
-    qDebug() << 92;
+                        "background:rgba(14,19,22,0.95);"
+                        "border-radius:3px 3px 0px 0px;}");
+    setWindowFlags(Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint|Qt::Popup);
+    setWindowOpacity(0.95);
+}
+
+void DeviceSwitchWidget::systemTrayMenuInit()
+{
+    QIcon icon;
+    QString soundPreference;
+    menu = new QMenu(this);
+    soundSystemTrayIcon = new UkmediaTrayIcon(this);
+
+    //为系统托盘图标添加菜单静音和声音首选项
+    actionMute = new QWidgetAction(menu);
+//    outputActionMute = new QAction(tr("Mute(M)"));
+    actionMute->setCheckable(true);
+//    outputActionMute->setText();
+    soundSystemTrayIcon->setToolTip(tr("Output volume control"));
+    actionMute->setObjectName("outputActionMute");
+    actionSoundPreference = new QWidgetAction(menu);
+    actionSoundPreferenceWid = new QWidget();
+    actionMuteWid = new QWidget();
+
+    QHBoxLayout *hLayout;
+    hLayout = new QHBoxLayout();
+
+    muteCheckBox = new QCheckBox(actionMuteWid);
+    muteCheckBox->setFixedSize(16,16);
+    muteCheckBox->setFocusPolicy(Qt::NoFocus);
+    muteLabel = new QLabel(tr("Mute(M)"),actionMuteWid);
+
+    hLayout->addWidget(muteCheckBox);
+    hLayout->addWidget(muteLabel);
+    hLayout->setSpacing(10);
+
+    muteCheckBox->setStyleSheet("QCheckBox{background:transparent;border:0px;}");
+    muteLabel->setStyleSheet("QLabel{background:transparent;border:0px;}");
+    actionMuteWid->setLayout(hLayout);
+    actionMuteWid->setObjectName("muteWid");
+
+    actionSoundPreference->setDefaultWidget(actionSoundPreferenceWid);
+    actionMute->setDefaultWidget(actionMuteWid);
+    //设置右键菜单
+    menu->addAction(actionMute);
+
+    menu->addAction(actionSoundPreference);
+    menu->setFixedWidth(250);
+    menu->setFixedHeight(84);
+
+    init_widget_action(actionSoundPreferenceWid,"/usr/share/ukui-media/img/setting.svg",tr("Sound preference(S)"));
+    init_widget_action(actionMuteWid,"","");
+    menu->setObjectName("outputSoundMenu");
+    soundSystemTrayIcon->setContextMenu(menu);
+
+    menu->setWindowOpacity(0.95);
+//    widget->outputVolumeChanged();
+
+    soundSystemTrayIcon->setVisible(true);
+    soundSystemTrayIcon->setIcon(QIcon("/usr/share/ukui-media/img/setting.svg"));
+    //点击静音复选框设置静音模式
+    connect(muteCheckBox,SIGNAL(released()),this,SLOT(muteCheckBoxReleasedSlot()));
+    connect(soundSystemTrayIcon,SIGNAL(activated(QSystemTrayIcon::ActivationReason)),\
+            this,SLOT(activatedSystemTrayIconSlot(QSystemTrayIcon::ActivationReason)));
+}
+
+/*
+    激活麦克风托盘图标
+*/
+void DeviceSwitchWidget::activatedSystemTrayIconSlot(QSystemTrayIcon::ActivationReason reason)
+{
+    QRect rect;
+    int localX ,availableWidth,totalWidth;
+    int localY,availableHeight,totalHeight;
+
+    switch(reason) {
+    //鼠标中间键点击图标
+    case QSystemTrayIcon::MiddleClick: {
+        if (this->isHidden()) {
+            if (!actionMute->isChecked()) {
+                actionMute->setChecked(true);
+            }
+            else {
+                actionMute->setChecked(false);
+            }
+//            bool isMute = mate_mixer_stream_control_get_mute(widget->inputControl);
+//            int volume = mate_mixer_stream_control_get_volume(widget->inputControl);
+//            volume = int(volume*100/65536.0+0.5);
+//            updateInputSystemTrayIcon(volume,isMute);
+        }
+        else {
+            hideWindow();
+        }
+        break;
+    }
+    //鼠标左键点击图标
+    case QSystemTrayIcon::Trigger: {
+        rect = soundSystemTrayIcon->geometry();
+        qDebug() << "dainji";
+        //屏幕可用宽高
+        availableWidth = QGuiApplication::screens().at(0)->availableGeometry().width();
+        availableHeight = QGuiApplication::screens().at(0)->availableGeometry().height();
+        //总共宽高
+        totalWidth =  QGuiApplication::screens().at(0)->size().width();
+        totalHeight = QGuiApplication::screens().at(0)->size().height();
+
+        localY = availableHeight - this->height();
+        localX = rect.x() - (this->width()/2 - rect.size().height()/2) ;
+        if (isShow) {
+            if (rect.x() > availableWidth/2 && rect.x()< availableWidth  && rect.y() > availableHeight) {
+
+                this->setGeometry(localX,availableHeight-this->height(),400,320);
+            }
+            else if (rect.x() > availableWidth/2 && rect.x()< availableWidth && rect.y() < 40 ) {
+
+                this->setGeometry(localX,totalHeight-availableHeight,400,320);
+            }            else if (rect.x() < 40 && rect.y() > availableHeight/2 && rect.y()< availableHeight) {
+
+                this->setGeometry(totalWidth-availableWidth,localY,400,320);//左
+            }
+            else if (rect.x() > availableWidth && rect.y() > availableHeight/2 && rect.y() < availableHeight) {
+
+                this->setGeometry(localX,localY,400,320);
+            }
+            qDebug() << "this show";
+            showWindow();
+            break;
+        }
+        else {
+             qDebug() << "this hide";
+            hideWindow();
+            break;
+        }
+    }
+    //鼠标左键双击图标
+    case QSystemTrayIcon::DoubleClick: {
+        hideWindow();
+        break;
+    }
+    case QSystemTrayIcon::Context: {
+        if (!this->isHidden()) {
+            hideWindow();
+            menu->setVisible(false);
+        }
+        else {
+            menu->setVisible(true);
+        }
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+/*
+    QWidgetAction 初始化
+*/
+void DeviceSwitchWidget::init_widget_action(QWidget *wid, QString iconstr, QString textstr)
+{
+    QString style="QWidget{background:transparent;border:0px;}\
+            QWidget:hover{background-color:#34bed8ef;}\
+            QWidget:pressed{background-color:#3a123456;}";
+
+    QHBoxLayout* layout=new QHBoxLayout(wid);
+    wid->setLayout(layout);
+    wid->setFixedSize(244,34);
+    wid->setStyleSheet(style);
+    wid->setFocusPolicy(Qt::NoFocus);
+
+    if(!iconstr.isEmpty()) {
+        QLabel* labelicon=new QLabel(wid);
+        QSvgRenderer* svg=new QSvgRenderer(wid);
+        svg->load(iconstr);
+        QPixmap* pixmap=new QPixmap(16,16);
+        pixmap->fill(Qt::transparent);
+        QPainter p(pixmap);
+        svg->render(&p);
+        labelicon->setPixmap(*pixmap);
+        labelicon->setFixedSize(pixmap->size());
+        labelicon->setAlignment(Qt::AlignCenter);
+        labelicon->setStyleSheet("QLabel{background:transparent;border:0px;}");
+        layout->addWidget(labelicon);
+    }
+
+    QLabel* labeltext=new QLabel(wid);
+    labeltext->setStyleSheet("background:transparent;border:0px;color:#ffffff;font-size:14px;");
+    QByteArray textbyte=textstr.toLocal8Bit();
+    char* text=textbyte.data();
+    labeltext->setText(tr(text));
+    labeltext->adjustSize();
+    layout->addWidget(labeltext);
+
+    if(!iconstr.isEmpty()) {
+        layout->setContentsMargins(10,0,wid->width()-16-labeltext->width()-20,0);
+        layout->setSpacing(10);
+    }
+    else {
+        layout->setContentsMargins(36,0,0,0);
+    }
 }
 
 /*初始化主界面*/
@@ -126,6 +372,7 @@ void DeviceSwitchWidget::deviceSwitchWidgetInit()
     appVolumeBtn = new QPushButton(deviceWidget);
 
     deviceBtn->setFocusPolicy(Qt::NoFocus);
+    appVolumeBtn->setFocusPolicy(Qt::NoFocus);
     deviceBtn->setFixedSize(36,36);
     appVolumeBtn->setFixedSize(36,36);
 
@@ -148,6 +395,7 @@ void DeviceSwitchWidget::deviceSwitchWidgetInit()
                                 "border-radius:4px;}"
                                 "QPushButton::pressed{background:rgba(61,107,229,1);"
                                 "border-radius:4px;}");
+    deviceWidget->setStyleSheet("QWidget{ border-right: 1px solid rgba(255,255,255,0.08);}");
 }
 
 /*点击切换设备按钮对应的槽函数*/
@@ -189,7 +437,7 @@ void DeviceSwitchWidget::on_context_state_notify (MateMixerContext *context,GPar
     list_device(w,context);
     if (state == MATE_MIXER_STATE_READY) {
 
-        update_icon_output(w->devWidget,context);
+        update_icon_output(w,context);
         update_icon_input(w->devWidget,context);
     }
     else if (state == MATE_MIXER_STATE_FAILED) {
@@ -1059,14 +1307,13 @@ void DeviceSwitchWidget::update_icon_input (UkmediaDeviceWidget *w,MateMixerCont
         }
         else {
             qDebug() << "no input";
-            w->noInputWidgetInit();
         }
 }
 
 /*
     更新输出音量及图标
 */
-void DeviceSwitchWidget::update_icon_output (UkmediaDeviceWidget *w,MateMixerContext *context)
+void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerContext *context)
 {
     MateMixerStream        *stream;
     MateMixerStreamControl *control = nullptr;
@@ -1075,25 +1322,48 @@ void DeviceSwitchWidget::update_icon_output (UkmediaDeviceWidget *w,MateMixerCon
     if (stream != nullptr)
         control = mate_mixer_stream_get_default_control (stream);
 
-    gvc_stream_status_icon_set_control (w, control);
+    gvc_stream_status_icon_set_control (w->devWidget, control);
     //初始化滑动条的值
     int volume = mate_mixer_stream_control_get_volume(control);
     int value = volume *100 /65536.0+0.5;
-    w->outputDeviceSlider->setValue(value);
+    w->devWidget->outputDeviceSlider->setValue(value);
     QString percent = QString::number(value);
 
-    w->outputVolumeLabel->setText(percent);
+    QString systemTrayIcon;
+    QIcon icon;
+
+    if (value <= 0) {
+        systemTrayIcon = "audio-volume-muted";
+        icon = QIcon::fromTheme(systemTrayIcon);
+        w->soundSystemTrayIcon->setIcon(QIcon(icon));
+    }
+    else if (value > 0 && value <= 33) {
+        systemTrayIcon = "audio-volume-low";
+        icon = QIcon::fromTheme(systemTrayIcon);
+        w->soundSystemTrayIcon->setIcon(QIcon(icon));
+    }
+    else if(value > 33 && value <= 66) {
+        systemTrayIcon = "audio-volume-medium";
+        icon = QIcon::fromTheme(systemTrayIcon);
+        w->soundSystemTrayIcon->setIcon(QIcon(icon));
+    }
+    else if (value > 66) {
+        systemTrayIcon = "audio-volume-high";
+        icon = QIcon::fromTheme(systemTrayIcon);
+        w->soundSystemTrayIcon->setIcon(QIcon(icon));
+    }
+    w->devWidget->outputVolumeLabel->setText(percent);
 
     //输出音量控制
     //输出滑动条和音量控制
-    connect(w->outputDeviceSlider,&QSlider::valueChanged,[=](int value){
+    connect(w->devWidget->outputDeviceSlider,&QSlider::valueChanged,[=](int value){
         QString percent;
 
         percent = QString::number(value);
         mate_mixer_stream_control_set_mute(control,FALSE);
         int volume = value*65536/100;
         gboolean ok = mate_mixer_stream_control_set_volume(control,volume);
-        w->outputVolumeLabel->setText(percent);
+        w->devWidget->outputVolumeLabel->setText(percent);
     });
     if (control != nullptr) {
             g_debug ("Output icon enabled");
@@ -1289,6 +1559,69 @@ void DeviceSwitchWidget::bar_set_stream_control (DeviceSwitchWidget *w,MateMixer
 
         } else
             qDebug() << "set true";
+}
+
+/*
+    点击窗口之外的部分隐藏
+*/
+bool DeviceSwitchWidget::event(QEvent *event)
+{
+    if (event->type() == QEvent::ActivationChange) {
+        if (QApplication::activeWindow() != this) {
+            qDebug() << "active window change";
+            hideWindow();
+        }
+    }
+    return QWidget::event(event);
+}
+
+
+
+/*
+    滚轮滚动事件
+*/
+void DeviceSwitchWidget::wheelEvent(QWheelEvent *event)
+{
+    int volume;
+    int wheelStep = 65536/20;//滚动大小为5
+
+    if (event->delta() >0 ) {
+        volume = volume + wheelStep;
+        qDebug() << "滚轮上滚";
+    }
+    else if (event->delta() < 0 ) {
+       volume = volume - wheelStep;
+       qDebug() << "滚轮下滚";
+    }
+    if (volume < 0) {
+
+    }
+    else if (volume >= 0 && volume <= 65535) {
+
+    }
+    else if (volume > 65535) {
+
+    }
+    event->accept();
+}
+
+void DeviceSwitchWidget::contextMenuEvent(QContextMenuEvent *event)
+{
+    Q_UNUSED(event);
+    hideWindow();
+}
+
+/*
+    按键事件,控制系统音量
+*/
+void DeviceSwitchWidget::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Escape) {
+        qDebug() << "按下esc";
+            hideWindow();
+
+    }
+
 }
 
 DeviceSwitchWidget::~DeviceSwitchWidget()

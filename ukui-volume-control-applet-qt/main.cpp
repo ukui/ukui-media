@@ -60,13 +60,9 @@ int main(int argc, char *argv[])
 //    UkmediaSystemTrayWidget w;
 
     DeviceSwitchWidget w;
-    w.show();
+//    w.show();
 
-//    QShortcut *shortCut = new QShortcut("F10",&w);
-//    shortCut->setKey(tr("F10"));
-//    shortCut->setAutoRepeat(false);
 
-//    connect(shortCut,SIGNAL(activated()),w,SLOT(keyControlVolume()));
 //    app.setActivationWindow(&w);
 //       w.raise();
 //       w.activateWindow();

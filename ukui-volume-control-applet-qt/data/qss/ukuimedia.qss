@@ -84,15 +84,7 @@ QMainWindow{
     border: 1px solid #626c6e;
 }
 
-QWidget{
-    background-color: rgba(21,26,30,90%);
-    border-radius: 2px;
 
-}
-
-QWidget#muteWid{
-    background: transparent;
-}
 
 
 /*托盘图标*/

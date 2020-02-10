@@ -23,6 +23,10 @@
 #include "scrollwitget.h"
 #include "ukmediadevicewidget.h"
 #include "applicationvolumewidget.h"
+#include <QMenu>
+#include <QCheckBox>
+#include <QWidgetAction>
+#include <QSystemTrayIcon>
 extern "C" {
 #include <libmatemixer/matemixer.h>
 #include <gtk/gtk.h>
@@ -34,6 +38,20 @@ extern "C" {
 #define GVC_APPLET_DBUS_NAME    "org.mate.VolumeControlApplet"
 #define KEY_SOUNDS_SCHEMA   "org.mate.sound"
 
+class UkmediaTrayIcon : public QSystemTrayIcon
+{
+    Q_OBJECT
+public:
+    UkmediaTrayIcon(QWidget *parent = nullptr);
+    ~UkmediaTrayIcon();
+
+Q_SIGNALS:
+    void wheelRollEventSignal(bool);
+
+protected:
+    bool event(QEvent *e) ;
+};
+
 class DeviceSwitchWidget:public QWidget
 {
     Q_OBJECT
@@ -41,6 +59,9 @@ public:
     DeviceSwitchWidget(QWidget *parent = nullptr);
     ~DeviceSwitchWidget();
     void deviceSwitchWidgetInit();
+    void systemTrayMenuInit();
+    void showWindow();
+    void hideWindow();
     static void list_device(DeviceSwitchWidget *w,MateMixerContext *context);
 
     static void gvc_stream_status_icon_set_control (UkmediaDeviceWidget *w,MateMixerStreamControl *control);
@@ -75,19 +96,21 @@ public:
     static void set_context(DeviceSwitchWidget *w,MateMixerContext *context);
 
     static void update_icon_input (UkmediaDeviceWidget *w,MateMixerContext *context);
-    static void update_icon_output (UkmediaDeviceWidget *w,MateMixerContext *contetx);
+    static void update_icon_output (DeviceSwitchWidget *w,MateMixerContext *contetx);
     static void on_stream_control_volume_notify (MateMixerStreamControl *control,GParamSpec *pspec,UkmediaDeviceWidget *w);
 
     static void update_output_settings (DeviceSwitchWidget *w,MateMixerStreamControl *control);
 
     static void on_key_changed (GSettings *settings,gchar *key,DeviceSwitchWidget *w);
 
-
     static void set_output_stream (DeviceSwitchWidget *w, MateMixerStream *stream);
     static void update_output_stream_list(DeviceSwitchWidget *w,MateMixerStream *stream);
 
     static void bar_set_stream (DeviceSwitchWidget *w,MateMixerStream *stream);
     static void bar_set_stream_control (DeviceSwitchWidget *w,MateMixerStreamControl *control);
+
+    void init_widget_action(QWidget* wid, QString iconstr, QString textstr);
+    friend class UkmediaSystemTrayIcon;
 Q_SIGNALS:
     void app_volume_changed(bool is_mute,int volume,const gchar *app_name);
 
@@ -97,9 +120,9 @@ private Q_SLOTS:
     void output_volume_slider_changed_slot(int volume);
     void input_volume_slider_changed_slot(int volume);
 
-public Q_SLOTS:
     void device_button_clicked_slot();
     void appvolume_button_clicked_slot();
+    void activatedSystemTrayIconSlot(QSystemTrayIcon::ActivationReason reason);
 
 private:
     QPushButton *deviceBtn;
@@ -123,7 +146,21 @@ private:
     QStringList *stream_control_list;
 
     GSettings *sound_settings;
+    UkmediaTrayIcon *soundSystemTrayIcon;
+    QMenu *menu;
+    QWidget *actionMuteWid;
+    QWidget *actionSoundPreferenceWid;
+    QWidgetAction *actionMute;
+    QWidgetAction *actionSoundPreference;
+    QCheckBox *muteCheckBox;
+    QLabel *muteLabel;
 
+protected:
+    bool event(QEvent *event);//重写窗口事件
+//    void mousePressEvent(QMouseEvent *event);
+    virtual void wheelEvent(QWheelEvent *event);
+    void contextMenuEvent(QContextMenuEvent *event);
+    void keyPressEvent(QKeyEvent *event);
 };
 
 #endif // DEICESWITCHWIDGET_H

@@ -76,6 +76,7 @@ private:
     QLabel *noInputDeviceLabel;
     QPushButton *inputDeviceBtn;
     UkmediaDeviceSlider *inputDeviceSlider;
+
 };
 
 #endif // UKMEDIADEVICEWIDGET_H

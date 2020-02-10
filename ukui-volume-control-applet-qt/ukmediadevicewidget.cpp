@@ -60,12 +60,8 @@ UkmediaDeviceWidget::UkmediaDeviceWidget(QWidget *parent) : QWidget (parent)
     outputDeviceBtn = new QPushButton(outputWidget);
     outputDeviceSlider = new UkmediaDeviceSlider(outputSliderWidget);
     noInputDeviceLabel = new QLabel(tr("Input device can not be detected"),this);
-//    this->setFixedSize(360,320);
-//    deviceWidgetInit();
-    noInputWidgetInit();
-//    inputWidgetShow();
-//    this->setMaximumSize(360,500);
 
+    noInputWidgetInit();
 
     outputVolumeLabel->setStyleSheet("QLabel{background:transparent;"
                                          "border:0px;color:#ffffff;"
@@ -206,28 +202,24 @@ void UkmediaDeviceWidget::noInputWidgetInit()
 
     deviceWidget->setFixedSize(360,320);
 
-    QHBoxLayout *hlayout1 = new QHBoxLayout(outputSliderWidget);
-    QHBoxLayout *hlayout2 = new QHBoxLayout;
-
-    QVBoxLayout *vlayout1 = new QVBoxLayout;
-    QVBoxLayout *vlayout2 = new QVBoxLayout;
-    QVBoxLayout *vlayout3 = new QVBoxLayout;
+    QHBoxLayout *hlayout = new QHBoxLayout;
+    QVBoxLayout *vlayout = new QVBoxLayout;
 
     //输出设备布局outputWidget
-    hlayout1->addWidget(outputDeviceSlider);
-    hlayout1->addWidget(outputVolumeLabel);
-    hlayout1->setSpacing(10);
-    outputSliderWidget->setLayout(hlayout1);
+    hlayout->addWidget(outputDeviceSlider);
+    hlayout->addWidget(outputVolumeLabel);
+    hlayout->setSpacing(10);
+    outputSliderWidget->setLayout(hlayout);
     outputSliderWidget->layout()->setContentsMargins(0,0,0,0);
 
-    vlayout1->addWidget(outputDeviceDisplayLabel);
-    vlayout1->addWidget(outputSliderWidget);
-    vlayout1->setSpacing(0);
-    outputDisplayWidget->setLayout(vlayout1);
+    vlayout->addWidget(outputDeviceDisplayLabel);
+    vlayout->addWidget(outputSliderWidget);
+    vlayout->setSpacing(0);
+    outputDisplayWidget->setLayout(vlayout);
     outputDisplayWidget->layout()->setContentsMargins(0,0,0,0);
 
     outputDeviceLabel->move(20,22);
-//    outputDeviceBtn->move(20,72);
+
     outputWidget->move(20,72);
     outputDisplayWidget->move(50,0);
     noInputDeviceLabel->move(20,154);
