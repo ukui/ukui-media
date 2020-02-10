@@ -21,9 +21,9 @@
 #include <QTranslator>
 #include <QtSingleApplication>
 #include <QFile>
-#include "deiceswitchwidget.h"
+//#include "deiceswitchwidget.h"
 //#include "ukmediadevicewidget.h"
-//#include "ukmedia_systemtray_widget.h"
+#include "ukmedia_systemtray_widget.h"
 #include <QObject>
 int main(int argc, char *argv[])
 {
@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
 
 //    UkmediaSystemTrayWidget w;
 
-    DeviceSwitchWidget w;
+    UkmediaSystemTrayWidget w;
     w.show();
 
 //    QShortcut *shortCut = new QShortcut("F10",&w);
