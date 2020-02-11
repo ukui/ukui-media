@@ -76,9 +76,7 @@ bool UkmediaTrayIcon::event(QEvent *event)
             value = false;
         }
         Q_EMIT  wheelRollEventSignal(value);
-        qDebug() << "托盘滚动事件";
     }
-    qDebug() << "tary";
     return QSystemTrayIcon::event(e);
 
 }
@@ -139,8 +137,6 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     appScrollWidget->move(40,0);
     devScrollWidget->move(40,0);
     this->setFixedSize(400,320);
-//    this->setMinimumSize(400,320);
-//    this->setMaximumSize(400,320);
 
     devWidget->show();
     appWidget->hide();
@@ -175,9 +171,7 @@ void DeviceSwitchWidget::systemTrayMenuInit()
 
     //为系统托盘图标添加菜单静音和声音首选项
     actionMute = new QWidgetAction(menu);
-//    outputActionMute = new QAction(tr("Mute(M)"));
     actionMute->setCheckable(true);
-//    outputActionMute->setText();
     soundSystemTrayIcon->setToolTip(tr("Output volume control"));
     actionMute->setObjectName("outputActionMute");
     actionSoundPreference = new QWidgetAction(menu);
@@ -216,7 +210,6 @@ void DeviceSwitchWidget::systemTrayMenuInit()
     soundSystemTrayIcon->setContextMenu(menu);
 
     menu->setWindowOpacity(0.95);
-//    widget->outputVolumeChanged();
 
     soundSystemTrayIcon->setVisible(true);
     soundSystemTrayIcon->setIcon(QIcon("/usr/share/ukui-media/img/setting.svg"));
@@ -224,6 +217,11 @@ void DeviceSwitchWidget::systemTrayMenuInit()
     connect(muteCheckBox,SIGNAL(released()),this,SLOT(muteCheckBoxReleasedSlot()));
     connect(soundSystemTrayIcon,SIGNAL(activated(QSystemTrayIcon::ActivationReason)),\
             this,SLOT(activatedSystemTrayIconSlot(QSystemTrayIcon::ActivationReason)));
+
+    menu->setStyleSheet("QMenu {background-color: rgba(8,10,12,90%);"
+                        "border: 1px solid #626c6e;padding: 4px 2px 4px 2px;}"
+                        "QMenu::item {font-size: 14px;color: #ffffff;"
+                        "height: 36px;width: 246px;}");
 }
 
 /*
@@ -240,15 +238,12 @@ void DeviceSwitchWidget::activatedSystemTrayIconSlot(QSystemTrayIcon::Activation
         qDebug() << "鼠标中间健";
         if (this->isHidden()) {
             if (!actionMute->isChecked()) {
-                actionMute->setChecked(true);
+                muteCheckBox->setChecked(true);
             }
             else {
-                actionMute->setChecked(false);
+                muteCheckBox->setChecked(false);
             }
-//            bool isMute = mate_mixer_stream_control_get_mute(widget->inputControl);
-//            int volume = mate_mixer_stream_control_get_volume(widget->inputControl);
-//            volume = int(volume*100/65536.0+0.5);
-//            updateInputSystemTrayIcon(volume,isMute);
+            Q_EMIT mouse_middle_clicked_signal();
         }
         else {
             hideWindow();
@@ -258,7 +253,6 @@ void DeviceSwitchWidget::activatedSystemTrayIconSlot(QSystemTrayIcon::Activation
     //鼠标左键点击图标
     case QSystemTrayIcon::Trigger: {
         rect = soundSystemTrayIcon->geometry();
-        qDebug() << "dainji";
         //屏幕可用宽高
         availableWidth = QGuiApplication::screens().at(0)->availableGeometry().width();
         availableHeight = QGuiApplication::screens().at(0)->availableGeometry().height();
@@ -294,13 +288,11 @@ void DeviceSwitchWidget::activatedSystemTrayIconSlot(QSystemTrayIcon::Activation
     }
     //鼠标左键双击图标
     case QSystemTrayIcon::DoubleClick: {
-         qDebug() << 3;
         hideWindow();
         break;
     }
     case QSystemTrayIcon::Context: {
         if (!this->isHidden()) {
-            qDebug() << 4;
             hideWindow();
             menu->setVisible(false);
         }
@@ -325,7 +317,7 @@ void DeviceSwitchWidget::init_widget_action(QWidget *wid, QString iconstr, QStri
 
     QHBoxLayout* layout=new QHBoxLayout(wid);
     wid->setLayout(layout);
-    wid->setFixedSize(244,34);
+    wid->setFixedSize(244,36);
     wid->setStyleSheet(style);
     wid->setFocusPolicy(Qt::NoFocus);
 
@@ -385,8 +377,13 @@ void DeviceSwitchWidget::deviceSwitchWidgetInit()
     deviceBtn->move(2,10);
     appVolumeBtn->move(2,57);
 
+    //切换按钮设置tooltip
+    deviceBtn->setToolTip(tr("Device Volume"));
+    appVolumeBtn->setToolTip(tr("Application Volume"));
+
     deviceBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
                                 "padding-left:0px;}"
+
                                 "QPushButton::pressed{background:rgba(61,107,229,1);"
                                 "border-radius:4px;}");
     appVolumeBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
@@ -1226,12 +1223,10 @@ void DeviceSwitchWidget::update_icon_input (DeviceSwitchWidget *w,MateMixerConte
 
     //初始化滑动条的值
     int volume = mate_mixer_stream_control_get_volume(control);
-    int value = volume *100 /65536.0+0.5;
+    int value = int(volume *100 /65536.0+0.5);
     w->devWidget->inputDeviceSlider->setValue(value);
     QString percent = QString::number(value);
     w->devWidget->inputVolumeLabel->setText(percent);
-//    w->ui->input_icon_btn->setFocusPolicy(Qt::NoFocus);
-//    w->ui->input_icon_btn->setStyleSheet("QPushButton{background:transparent;border:0px;padding-left:0px;}");
 
     while (inputs != nullptr) {
         MateMixerStreamControl *input = MATE_MIXER_STREAM_CONTROL (inputs->data);
@@ -1308,7 +1303,7 @@ void DeviceSwitchWidget::update_icon_input (DeviceSwitchWidget *w,MateMixerConte
 */
 void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerContext *context)
 {
-    MateMixerStream        *stream;
+    MateMixerStream *stream;
     MateMixerStreamControl *control = nullptr;
 
     stream = mate_mixer_context_get_default_output_stream (context);
@@ -1317,33 +1312,37 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
 
     gvc_stream_status_icon_set_control (w, control);
     //初始化滑动条的值
+    bool state = mate_mixer_stream_control_get_mute(control);
     int volume = mate_mixer_stream_control_get_volume(control);
-    int value = volume *100 /65536.0+0.5;
+    int value = int(volume *100 /65536.0+0.5);
     w->devWidget->outputDeviceSlider->setValue(value);
     QString percent = QString::number(value);
 
     QString systemTrayIcon;
     QIcon icon;
-
-    if (value <= 0) {
+    if (state || value <= 0) {
         systemTrayIcon = "audio-volume-muted";
         icon = QIcon::fromTheme(systemTrayIcon);
         w->soundSystemTrayIcon->setIcon(QIcon(icon));
+        w->muteCheckBox->setChecked(true);
     }
     else if (value > 0 && value <= 33) {
         systemTrayIcon = "audio-volume-low";
         icon = QIcon::fromTheme(systemTrayIcon);
         w->soundSystemTrayIcon->setIcon(QIcon(icon));
+        w->muteCheckBox->setChecked(false);
     }
     else if(value > 33 && value <= 66) {
         systemTrayIcon = "audio-volume-medium";
         icon = QIcon::fromTheme(systemTrayIcon);
         w->soundSystemTrayIcon->setIcon(QIcon(icon));
+        w->muteCheckBox->setChecked(false);
     }
     else if (value > 66) {
         systemTrayIcon = "audio-volume-high";
         icon = QIcon::fromTheme(systemTrayIcon);
         w->soundSystemTrayIcon->setIcon(QIcon(icon));
+        w->muteCheckBox->setChecked(false);
     }
     w->devWidget->outputVolumeLabel->setText(percent);
 
@@ -1357,6 +1356,86 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
         int volume = value*65536/100;
         gboolean ok = mate_mixer_stream_control_set_volume(control,volume);
         w->devWidget->outputVolumeLabel->setText(percent);
+    });
+
+    connect(w->muteCheckBox,&QCheckBox::released,[=](){
+        int volume = mate_mixer_stream_control_get_volume(control);
+        volume = int(volume*100/65536.0 + 0.5);
+        bool status = mate_mixer_stream_control_get_mute(control);
+        if (status) {
+            status = false;
+            w->muteCheckBox->setChecked(status);
+            mate_mixer_stream_control_set_mute(control,status);
+            w->updateSystemTrayIcon(volume,status);
+        }
+        else {
+            status =true;
+            w->muteCheckBox->setChecked(status);
+            mate_mixer_stream_control_set_mute(control,status);
+            w->updateSystemTrayIcon(volume,status);
+        }
+        w->menu->hide();
+    });
+
+    //静音action点击
+    connect(w->actionMute,&QWidgetAction::triggered,[=](bool isMute){
+        isMute = mate_mixer_stream_control_get_mute(control);
+        int opVolume = mate_mixer_stream_control_get_volume(control);
+        opVolume = int(opVolume*100/65536.0 + 0.5);
+        if (isMute) {
+            w->devWidget->outputVolumeLabel->setNum(opVolume);
+            mate_mixer_stream_control_set_mute(control,FALSE);
+        }
+        else {
+            mate_mixer_stream_control_set_mute(control,TRUE);
+        }
+        isMute = mate_mixer_stream_control_get_mute(control);
+        int volume = mate_mixer_stream_control_get_volume(control);
+        volume = int(volume*100/65536.0+0.5);
+        w->updateSystemTrayIcon(volume,isMute);
+    });
+
+    //鼠标中间健点击托盘图标
+    connect(w,&DeviceSwitchWidget::mouse_middle_clicked_signal,[=](){
+        qDebug() << "鼠标中间健按下托盘";
+        bool isMute = mate_mixer_stream_control_get_mute(control);
+        int opVolume = mate_mixer_stream_control_get_volume(control);
+        opVolume = int(opVolume*100/65536.0 + 0.5);
+        if (isMute) {
+            w->devWidget->outputVolumeLabel->setNum(opVolume);
+            mate_mixer_stream_control_set_mute(control,FALSE);
+        }
+        else {
+            mate_mixer_stream_control_set_mute(control,TRUE);
+        }
+        isMute = mate_mixer_stream_control_get_mute(control);
+        int volume = mate_mixer_stream_control_get_volume(control);
+        volume = int(volume*100/65536.0+0.5);
+        w->updateSystemTrayIcon(volume,isMute);
+    });
+
+    //鼠标滚轮滚动托盘图标
+    connect(w->soundSystemTrayIcon,&UkmediaTrayIcon::wheelRollEventSignal,[=](bool step){
+        int volume = mate_mixer_stream_control_get_volume(control);
+        volume = int(volume*100/65536.0+0.5);
+        if (step) {
+            w->devWidget->outputDeviceSlider->setValue(volume+5);
+        }
+        else {
+            w->devWidget->outputDeviceSlider->setValue(volume-5);
+        }
+    });
+    //当widget显示时鼠标滚轮控制声音
+    connect(w,&DeviceSwitchWidget::mouse_wheel_signal,[=](bool step){
+        qDebug() << "滚动" << step;
+        int volume = mate_mixer_stream_control_get_volume(control);
+        volume = int(volume*100/65536.0+0.5);
+        if (step) {
+            w->devWidget->outputDeviceSlider->setValue(volume+5);
+        }
+        else {
+            w->devWidget->outputDeviceSlider->setValue(volume-5);
+        }
     });
     if (control != nullptr) {
             g_debug ("Output icon enabled");
@@ -1380,36 +1459,27 @@ void DeviceSwitchWidget::gvc_stream_status_icon_set_control (DeviceSwitchWidget 
     MateMixerDirection direction = mate_mixer_stored_control_get_direction((MateMixerStoredControl *)control);
     if (direction == MATE_MIXER_DIRECTION_OUTPUT)
         qDebug() << "output******************";
+        MateMixerStreamControlFlags flags = mate_mixer_stream_control_get_flags(control);
+        if (flags & MATE_MIXER_STREAM_CONTROL_MUTE_READABLE) {
+            g_signal_connect (G_OBJECT (control),
+                              "notify::mute",
+                              G_CALLBACK (on_control_mute_notify),
+                              w);
+        }
     else if (direction == MATE_MIXER_DIRECTION_INPUT) {
         qDebug() << "input*****************";
     }
-//    connect(w->ui->opVolumeSlider,SIGNAL(valueChanged(int)),w,SLOT(output_volume_slider_changed_slot(int)));
+}
 
-        if (control != nullptr)
-//                g_object_ref (control);
-
-        if (control != nullptr) {
-//                g_signal_handlers_disconnect_by_func (G_OBJECT (control),
-//                                                      G_CALLBACK (on_stream_control_volume_notify),
-//                                                     w);
-//                g_signal_handlers_disconnect_by_func (G_OBJECT (control),
-//                                                      G_CALLBACK (on_stream_control_mute_notify),
-//                                                      w);
-
-//                g_object_unref (control);
-        }
-
-//        icon->priv->control = control;
-
-//        if (icon->priv->control != nullptr) {
-
-                // XXX when no stream set some default icon and "unset" dock
-//                update_icon (icon);
-//        }
-
-//        gvc_channel_bar_set_control (GVC_CHANNEL_BAR (icon->priv->bar), icon->priv->control);
-
-//        g_object_notify_by_pspec (G_OBJECT (icon), properties[PROP_CONTROL]);
+/*
+    静音通知
+*/
+void DeviceSwitchWidget::on_control_mute_notify (MateMixerStreamControl *control,GParamSpec *pspec,DeviceSwitchWidget *w)
+{
+    gboolean mute = mate_mixer_stream_control_get_mute (control);
+    int volume = mate_mixer_stream_control_get_volume(control);
+    volume = int(volume*100/65536.0+0.5);
+    w->updateSystemTrayIcon(volume,mute);
 }
 
 /*
@@ -1530,7 +1600,6 @@ void DeviceSwitchWidget::bar_set_stream (DeviceSwitchWidget  *w,MateMixerStream 
                 control = mate_mixer_stream_get_default_control (stream);
 
         bar_set_stream_control (w, control);
-        qDebug() << 1201;
 }
 
 void DeviceSwitchWidget::bar_set_stream_control (DeviceSwitchWidget *w,MateMixerStreamControl *control)
@@ -1553,7 +1622,6 @@ bool DeviceSwitchWidget:: event(QEvent *event)
 {
     if (event->type() == QEvent::ActivationChange) {
         if (QApplication::activeWindow() != this) {
-             qDebug() << 5;
             hideWindow();
         }
     }
@@ -1567,33 +1635,22 @@ bool DeviceSwitchWidget:: event(QEvent *event)
 */
 void DeviceSwitchWidget::wheelEvent(QWheelEvent *event)
 {
-    int volume;
-    int wheelStep = 65536/20;//滚动大小为5
-
+    bool step;
     if (event->delta() >0 ) {
-        volume = volume + wheelStep;
+        step = true;
         qDebug() << "滚轮上滚";
     }
     else if (event->delta() < 0 ) {
-       volume = volume - wheelStep;
-       qDebug() << "滚轮下滚";
+        step = false;
+        qDebug() << "滚轮下滚";
     }
-    if (volume < 0) {
-
-    }
-    else if (volume >= 0 && volume <= 65535) {
-
-    }
-    else if (volume > 65535) {
-
-    }
+    Q_EMIT mouse_wheel_signal(step);
     event->accept();
 }
 
 void DeviceSwitchWidget::contextMenuEvent(QContextMenuEvent *event)
 {
     Q_UNUSED(event);
-    qDebug() << 6;
     hideWindow();
 }
 
@@ -1651,17 +1708,11 @@ void DeviceSwitchWidget::updateSystemTrayIcon(int volume,bool isMute)
 
     //设置声音菜单栏静音选项的勾选状态
     if (isMute) {
-        actionMute->setChecked(true);
+        muteCheckBox->setChecked(true);
     }
     else {
-        actionMute->setChecked(false);
+        muteCheckBox->setChecked(false);
     }
-}
-
-void DeviceSwitchWidget::mousePressEvent(QMouseEvent *event)
-{
-    Q_UNUSED(event);
-    hideWindow();
 }
 
 DeviceSwitchWidget::~DeviceSwitchWidget()

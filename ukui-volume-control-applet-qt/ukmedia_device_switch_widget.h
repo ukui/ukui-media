@@ -110,11 +110,13 @@ public:
     static void bar_set_stream (DeviceSwitchWidget *w,MateMixerStream *stream);
     static void bar_set_stream_control (DeviceSwitchWidget *w,MateMixerStreamControl *control);
 
+    static void on_control_mute_notify (MateMixerStreamControl *control,GParamSpec *pspec,DeviceSwitchWidget *w);
     void init_widget_action(QWidget* wid, QString iconstr, QString textstr);
     friend class UkmediaSystemTrayIcon;
 Q_SIGNALS:
     void app_volume_changed(bool is_mute,int volume,const gchar *app_name);
-
+    void mouse_middle_clicked_signal();
+    void mouse_wheel_signal(bool step);
 private Q_SLOTS:
     void app_slider_changed_slot(int volume);
     void app_volume_changed_slot(bool is_mute,int volume,const gchar *app_name);
@@ -124,7 +126,6 @@ private Q_SLOTS:
     void device_button_clicked_slot();
     void appvolume_button_clicked_slot();
     void activatedSystemTrayIconSlot(QSystemTrayIcon::ActivationReason reason);
-//    void actionMuteTriggeredSlot(bool);
 private:
     QPushButton *deviceBtn;
     QPushButton *appVolumeBtn;
@@ -143,7 +144,6 @@ private:
     QStringList *device_display_name_list;
     QStringList *output_stream_list;
     QStringList *input_stream_list;
-
     QStringList *stream_control_list;
 
     GSettings *sound_settings;
@@ -158,7 +158,7 @@ private:
 
 protected:
     bool event(QEvent *event);//重写窗口事件
-    void mousePressEvent(QMouseEvent *event);
+//    void mousePressEvent(QMouseEvent *event);
     virtual void wheelEvent(QWheelEvent *event);
     void contextMenuEvent(QContextMenuEvent *event);
     void keyPressEvent(QKeyEvent *event);

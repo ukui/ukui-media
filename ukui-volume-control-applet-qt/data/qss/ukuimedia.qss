@@ -59,15 +59,14 @@ QSlider::handle:horizontal {
 QMenu {
     background-color: rgba(8,10,12,90%);
     border: 1px solid #626c6e;
-    border-radius: 2px;
-    padding: 4px 2px 4px 2px;
+    padding: 6px 2px 6px 2px;
 }
 
 QMenu::item {
     font-size: 14px;
     color: #ffffff;
-    height: 34px;
-    width: 244px;
+    height: 36px;
+    width: 246px;
 }
 
 QMenu::item:selected{
@@ -131,8 +130,6 @@ QScrollBar::add-line:vertical {
         subcontrol-origin:margin;
 }
 
-
-
 /* 滑块上边区域 */
 QScrollBar::add-page:vertical {
         background:#E5D812;
@@ -143,4 +140,18 @@ QScrollBar::sub-page:vertical {
         background:#47F8A9;
 }
 
+QToolTip{
+
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    border-style: solid;
+    font-size:14px;
+    color:rgba(255,255,255,1);
+    background:rgba(26,26,26,1);
+
+    border:1px solid rgba(255, 255, 255, 0.45);
+    border-radius:3px;
+}
 
