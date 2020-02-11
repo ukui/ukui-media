@@ -15,7 +15,7 @@
  * along with this program; if not, see <http://www.gnu.org/licenses/&gt;.
  *
  */
-#include "ukmediadevicewidget.h"
+#include "ukmedia_device_volume_widget.h"
 #include <QWidget>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -166,16 +166,7 @@ void UkmediaDeviceWidget::deviceWidgetInit()
     inputDisplayWidget->move(50,0);
 
     //整体布局
-//    vlayout3->addWidget(outputDeviceLabel);
-//    vlayout3->addWidget(outputWidget);
-//    vlayout3->addWidget(inputDeviceLabel);
-//    vlayout3->addWidget(inputWidget);
-//    deviceWidget->setLayout(vlayout3);
-//    vlayout3->setSpacing(30);
-//    deviceWidget->layout()->setContentsMargins(20,22,0,64);
-//    deviceWidget->setMinimumSize(400,320);
     deviceWidget->setFixedSize(400,320);
-//    deviceWidget->setMaximumSize(400,500);
 }
 
 void UkmediaDeviceWidget::noInputWidgetInit()

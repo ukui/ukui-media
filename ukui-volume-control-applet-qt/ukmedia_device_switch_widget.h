@@ -20,9 +20,9 @@
 
 #include <QWidget>
 #include <QPushButton>
-#include "scrollwitget.h"
-#include "ukmediadevicewidget.h"
-#include "applicationvolumewidget.h"
+#include "ukmedia_scroll_widget.h"
+#include "ukmedia_device_volume_widget.h"
+#include "ukmedia_application_volume_widget.h"
 #include <QMenu>
 #include <QCheckBox>
 #include <QWidgetAction>
@@ -62,9 +62,10 @@ public:
     void systemTrayMenuInit();
     void showWindow();
     void hideWindow();
+    void updateSystemTrayIcon(int volume,bool status);
     static void list_device(DeviceSwitchWidget *w,MateMixerContext *context);
 
-    static void gvc_stream_status_icon_set_control (UkmediaDeviceWidget *w,MateMixerStreamControl *control);
+    static void gvc_stream_status_icon_set_control (DeviceSwitchWidget *w,MateMixerStreamControl *control);
     static void context_set_property(DeviceSwitchWidget *object);//guint prop_id,const GValue *value,GParamSpec *pspec);
     static void on_context_state_notify (MateMixerContext *context,GParamSpec *pspec,DeviceSwitchWidget *w);
 
@@ -95,9 +96,9 @@ public:
     static void on_context_stored_control_removed (MateMixerContext *context,const gchar *name,DeviceSwitchWidget *w);
     static void set_context(DeviceSwitchWidget *w,MateMixerContext *context);
 
-    static void update_icon_input (UkmediaDeviceWidget *w,MateMixerContext *context);
+    static void update_icon_input (DeviceSwitchWidget *w,MateMixerContext *context);
     static void update_icon_output (DeviceSwitchWidget *w,MateMixerContext *contetx);
-    static void on_stream_control_volume_notify (MateMixerStreamControl *control,GParamSpec *pspec,UkmediaDeviceWidget *w);
+    static void on_stream_control_volume_notify (MateMixerStreamControl *control,GParamSpec *pspec,DeviceSwitchWidget *w);
 
     static void update_output_settings (DeviceSwitchWidget *w,MateMixerStreamControl *control);
 
@@ -123,7 +124,7 @@ private Q_SLOTS:
     void device_button_clicked_slot();
     void appvolume_button_clicked_slot();
     void activatedSystemTrayIconSlot(QSystemTrayIcon::ActivationReason reason);
-
+//    void actionMuteTriggeredSlot(bool);
 private:
     QPushButton *deviceBtn;
     QPushButton *appVolumeBtn;
@@ -157,7 +158,7 @@ private:
 
 protected:
     bool event(QEvent *event);//重写窗口事件
-//    void mousePressEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent *event);
     virtual void wheelEvent(QWheelEvent *event);
     void contextMenuEvent(QContextMenuEvent *event);
     void keyPressEvent(QKeyEvent *event);

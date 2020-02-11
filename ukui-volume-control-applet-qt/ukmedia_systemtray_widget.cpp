@@ -478,6 +478,7 @@ void UkmediaSystemTrayWidget::activatedinputSystemTrayIcon(QSystemTrayIcon::Acti
     }
     //鼠标左键点击图标
     case QSystemTrayIcon::Trigger: {
+
         int volume = widget->getIpVolume();
         widget->setIpSystemTrayIconVolume();
         bool isMute = mate_mixer_stream_control_get_mute(widget->inputControl);
@@ -511,10 +512,12 @@ void UkmediaSystemTrayWidget::activatedinputSystemTrayIcon(QSystemTrayIcon::Acti
 
                 this->setGeometry(localWidth,localHeight,300,56);
             }
+            qDebug() << "dian ji show ";
             this->show();
             break;
         }
         else {
+            qDebug() << "dian ji hide ";
             this->hide();
             break;
         }

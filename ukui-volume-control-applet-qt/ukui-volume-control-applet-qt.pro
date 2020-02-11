@@ -46,21 +46,17 @@ PKGCONFIG += \
     Qt5Svg  \
     gio-2.0 \
     Qt5Xdg
-#    mate-desktop-2.0 \
-#    unique-1.0 \
-#    libcanberra \
+
 # Input
 
 HEADERS += \
     ukmedia_control_widget.h \
     ukmedia_systemtray_widget.h \
-#    ukmediakeybordcontrolwidget.h \
-#    GlobalShortCut/EventFilter.h \
-#    GlobalShortCut/GlobalShortCut.h
-    ukmediadevicewidget.h \
-    deiceswitchwidget.h \
-    applicationvolumewidget.h \
-    scrollwitget.h
+    ukmedia_device_switch_widget.h \
+    ukmedia_device_volume_widget.h \
+    ukmedia_scroll_widget.h \
+    ukmedia_application_volume_widget.h\
+
 
 SOURCES += \
     ukmedia_control_widget.cpp \
@@ -69,10 +65,10 @@ SOURCES += \
 #    ukmediakeybordcontrolwidget.cpp \
 #    GlobalShortCut/EventFilter.cpp \
 #    GlobalShortCut/GlobalShortCut.cpp
-    ukmediadevicewidget.cpp \
-    deiceswitchwidget.cpp \
-    applicationvolumewidget.cpp \
-    scrollwitget.cpp
+    ukmedia_device_switch_widget.cpp \
+    ukmedia_device_volume_widget.cpp\
+    ukmedia_application_volume_widget.cpp \
+    ukmedia_scroll_widget.cpp
 
 RESOURCES += \
     res.qrc

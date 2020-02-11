@@ -15,7 +15,7 @@
  * along with this program; if not, see <http://www.gnu.org/licenses/&gt;.
  *
  */
-#include "applicationvolumewidget.h"
+#include "ukmedia_application_volume_widget.h"
 #include <QDebug>
 #include <QScrollBar>
 ApplicationVolumeWidget::ApplicationVolumeWidget(QWidget *parent) : QWidget (parent)

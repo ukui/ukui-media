@@ -15,7 +15,7 @@
  * along with this program; if not, see <http://www.gnu.org/licenses/&gt;.
  *
  */
-#include "scrollwitget.h"
+#include "ukmedia_scroll_widget.h"
 #include <QVBoxLayout>
 #include <QDebug>
 ScrollWitget::ScrollWitget(QWidget *parent) : QWidget (parent)

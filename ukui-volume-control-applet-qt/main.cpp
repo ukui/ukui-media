@@ -21,9 +21,7 @@
 #include <QTranslator>
 #include <QtSingleApplication>
 #include <QFile>
-#include "deiceswitchwidget.h"
-#include "ukmediadevicewidget.h"
-#include "ukmedia_systemtray_widget.h"
+#include "ukmedia_device_switch_widget.h"
 #include <QObject>
 int main(int argc, char *argv[])
 {
@@ -48,7 +46,7 @@ int main(int argc, char *argv[])
         }
 
     }
-//    qDebug() << locale;
+
     //加载qss文件
     QFile qss(":/data/qss/ukuimedia.qss");
     bool ok = qss.open(QFile::ReadOnly);
@@ -57,9 +55,6 @@ int main(int argc, char *argv[])
     qApp->setStyleSheet(qss.readAll());
     qss.close();
 
-//    UkmediaSystemTrayWidget w;
-
-//    w.show();
     DeviceSwitchWidget w;
 //    w.show();
 

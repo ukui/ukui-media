@@ -28,7 +28,6 @@
 #include <QWidgetAction>
 #include <QCheckBox>
 #include "ukmedia_control_widget.h"
-//#include "ukmediakeybordcontrolwidget.h"
 
 #define TRANSLATIONS_DIR "/home/fzx/fzx/ukui-media/ukui-media/po"
 
