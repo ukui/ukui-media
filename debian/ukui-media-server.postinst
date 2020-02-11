@@ -2,6 +2,8 @@
 
 set -e
 
+#DEBHELPER#
+
 case "${1}" in
 	configure)
 		systemctl enable ukui-media-server.service
