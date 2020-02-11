@@ -2,8 +2,14 @@ ukui-media (2.0.0-1) unstable; urgency=medium
 
   * New upstream release.
     - Rewrite the UI using Qt.
+  * d/control:
+    - Bump standards-version to 4.5.0
+    - Bump compat level to 12.
+    - Set Rules-Requires-Root to no.
+    - Refresh the build-depends.
+    - Refresh the copyright entry.
 
- -- handsome_feng <jianfengli@ubuntukylin.com>  Sat, 08 Feb 2020 15:15:25 +0800
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Tue, 11 Feb 2020 22:48:25 +0800
 
 ukui-media (1.1.2-1) unstable; urgency=medium
 
