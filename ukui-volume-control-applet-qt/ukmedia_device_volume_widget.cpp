@@ -22,9 +22,9 @@
 #include <QSpacerItem>
 #include <QDebug>
 
-UkmediaDeviceSlider::UkmediaDeviceSlider(QWidget *panet)
+UkmediaDeviceSlider::UkmediaDeviceSlider(QWidget *parent)
 {
-
+    Q_UNUSED(parent);
 }
 
 UkmediaDeviceSlider::~UkmediaDeviceSlider()

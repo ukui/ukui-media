@@ -28,7 +28,6 @@ ApplicationVolumeWidget::ApplicationVolumeWidget(QWidget *parent) : QWidget (par
     noAppLabel->setFixedSize(300,14);
     applicationLabel->move(20,23);
     noAppLabel->move(62,153);
-    qDebug() << "0000000000000000000" << gridlayout->geometry();
     this->setMinimumSize(340,320);
     this->setMaximumSize(340,500);
     //设置样式

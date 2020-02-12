@@ -50,8 +50,6 @@ PKGCONFIG += \
 # Input
 
 HEADERS += \
-    ukmedia_control_widget.h \
-    ukmedia_systemtray_widget.h \
     ukmedia_device_switch_widget.h \
     ukmedia_device_volume_widget.h \
     ukmedia_scroll_widget.h \
@@ -59,12 +57,7 @@ HEADERS += \
 
 
 SOURCES += \
-    ukmedia_control_widget.cpp \
-    ukmedia_systemtray_widget.cpp\
     main.cpp \
-#    ukmediakeybordcontrolwidget.cpp \
-#    GlobalShortCut/EventFilter.cpp \
-#    GlobalShortCut/GlobalShortCut.cpp
     ukmedia_device_switch_widget.cpp \
     ukmedia_device_volume_widget.cpp\
     ukmedia_application_volume_widget.cpp \

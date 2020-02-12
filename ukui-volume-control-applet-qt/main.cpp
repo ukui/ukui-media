@@ -29,7 +29,6 @@ int main(int argc, char *argv[])
     QtSingleApplication app("ukui-volume-control-applet",argc,argv);
     if (app.isRunning()) {
        app.sendMessage("raise_window_noop");
-       qDebug() << "";
        return EXIT_SUCCESS;
     }
 
@@ -57,12 +56,6 @@ int main(int argc, char *argv[])
 
     DeviceSwitchWidget w;
 //    w.show();
-
-
-
-//    app.setActivationWindow(&w);
-//       w.raise();
-//       w.activateWindow();
 
     return app.exec();
 }

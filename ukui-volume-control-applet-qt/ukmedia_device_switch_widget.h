@@ -62,6 +62,7 @@ public:
     void systemTrayMenuInit();
     void showWindow();
     void hideWindow();
+    void showMenu(int x,int y);
     void updateSystemTrayIcon(int volume,bool status);
     static void list_device(DeviceSwitchWidget *w,MateMixerContext *context);
 
@@ -118,10 +119,6 @@ Q_SIGNALS:
     void mouse_middle_clicked_signal();
     void mouse_wheel_signal(bool step);
 private Q_SLOTS:
-    void app_slider_changed_slot(int volume);
-    void app_volume_changed_slot(bool is_mute,int volume,const gchar *app_name);
-    void output_volume_slider_changed_slot(int volume);
-    void input_volume_slider_changed_slot(int volume);
 
     void device_button_clicked_slot();
     void appvolume_button_clicked_slot();
