@@ -123,6 +123,7 @@ private Q_SLOTS:
     void device_button_clicked_slot();
     void appvolume_button_clicked_slot();
     void activatedSystemTrayIconSlot(QSystemTrayIcon::ActivationReason reason);
+    void jumpControlPanelSlot();
 private:
     QPushButton *deviceBtn;
     QPushButton *appVolumeBtn;

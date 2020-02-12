@@ -38,6 +38,7 @@ extern "C" {
 #include <QListView>
 #include <QPainter>
 #include <QScreen>
+#include <QProcess>
 #include <QApplication>
 #include <QSvgRenderer>
 #include <QDebug>
@@ -222,12 +223,22 @@ void DeviceSwitchWidget::systemTrayMenuInit()
 
     connect(soundSystemTrayIcon,SIGNAL(activated(QSystemTrayIcon::ActivationReason)),\
             this,SLOT(activatedSystemTrayIconSlot(QSystemTrayIcon::ActivationReason)));
-
+    connect(actionSoundPreference,SIGNAL(triggered()),this,SLOT(jumpControlPanelSlot()));
     menu->setStyleSheet("QMenu {background-color: rgba(8,10,12,90%);"
                         "border: 1px solid #626c6e;padding: 4px 2px 4px 2px;}"
                         "QMenu::item {font-size: 14px;color: #ffffff;"
                         "height: 36px;width: 246px;}");
 }
+
+/*
+    跳转到声音首选项
+*/
+void DeviceSwitchWidget::jumpControlPanelSlot()
+{
+    QProcess *m_process = new QProcess;
+    m_process->start("ukui-volume-control");
+}
+
 
 /*
     激活声音托盘图标
