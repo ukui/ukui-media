@@ -136,13 +136,13 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     if G_UNLIKELY (mate_mixer_context_open(context) == FALSE) {
         g_warning ("Failed to connect to a sound system**********************");
     }
-    appWidget->setFixedSize(360,500);
-    devWidget->setFixedSize(360,320);
+    appWidget->setFixedSize(358,500);
+    devWidget->setFixedSize(358,320);
 
-    devWidget->move(40,0);
-    appWidget->move(40,0);
-    appScrollWidget->move(40,0);
-    devScrollWidget->move(40,0);
+    devWidget->move(42,0);
+    appWidget->move(42,0);
+    appScrollWidget->move(42,0);
+    devScrollWidget->move(42,0);
     this->setFixedSize(400,320);
 
     devWidget->show();
@@ -219,7 +219,6 @@ void DeviceSwitchWidget::systemTrayMenuInit()
     menu->setWindowOpacity(0.95);
 
     soundSystemTrayIcon->setVisible(true);
-    soundSystemTrayIcon->setIcon(QIcon("/usr/share/ukui-media/img/setting.svg"));
 
     connect(soundSystemTrayIcon,SIGNAL(activated(QSystemTrayIcon::ActivationReason)),\
             this,SLOT(activatedSystemTrayIconSlot(QSystemTrayIcon::ActivationReason)));
@@ -359,11 +358,13 @@ void DeviceSwitchWidget::deviceSwitchWidgetInit()
 {
     const QSize iconSize(16,16);
     QWidget *deviceWidget = new QWidget(this);
-    deviceWidget->setFixedSize(40,320);
+    deviceWidget->setFixedSize(42,320);
 
     deviceBtn = new QPushButton(deviceWidget);
     appVolumeBtn = new QPushButton(deviceWidget);
 
+    deviceBtn->setFlat(true);
+    appVolumeBtn->setFlat(true);
     deviceBtn->setFocusPolicy(Qt::NoFocus);
     appVolumeBtn->setFocusPolicy(Qt::NoFocus);
     deviceBtn->setFixedSize(36,36);
@@ -387,17 +388,17 @@ void DeviceSwitchWidget::deviceSwitchWidgetInit()
         appVolumeBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
                                     "padding-left:0px;}"
                                     "QPushButton::pressed{background:rgba(61,107,229,1);"
-                                    "border-radius:4px;}");
+                                    "border-radius:4px;padding-left:0px;}");
         deviceBtn->setStyleSheet("QPushButton{background:rgba(61,107,229,1);"
-                                     "border-radius:4px;}");
+                                 "border-radius:4px;padding-left:0px;}");
         break;
     case APP_VOLUME_BUTTON:
         deviceBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
                                  "padding-left:0px;}"
                                  "QPushButton::pressed{background:rgba(61,107,229,1);"
-                                 "border-radius:4px;}");
+                                 "border-radius:4px;padding-left:0px;}");
         appVolumeBtn->setStyleSheet("QPushButton{background:rgba(61,107,229,1);"
-                                     "border-radius:4px;}");
+                                    "border-radius:4px;padding-left:0px;}");
         break;
     }
 
@@ -418,7 +419,7 @@ void DeviceSwitchWidget::device_button_clicked_slot()
                                 "QPushButton::pressed{background:rgba(61,107,229,1);"
                                 "border-radius:4px;}");
     deviceBtn->setStyleSheet("QPushButton{background:rgba(61,107,229,1);"
-                                 "border-radius:4px;}");
+                             "border-radius:4px;}");
 }
 
 /*点击切换应用音量按钮对应的槽函数*/
@@ -712,7 +713,6 @@ void DeviceSwitchWidget::add_app_to_tableview(DeviceSwitchWidget *w,int appnum, 
     is_mute = mate_mixer_stream_control_get_mute(control);
     volume = int(mate_mixer_stream_control_get_volume(control));
     normal = mate_mixer_stream_control_get_normal_volume(control);
-
     int display_volume = int(100 * volume / normal);
 
     //设置应用的图标
@@ -734,14 +734,15 @@ void DeviceSwitchWidget::add_app_to_tableview(DeviceSwitchWidget *w,int appnum, 
 
     //widget显示应用音量
     QWidget *app_widget = new QWidget(w->appWidget);
-    app_widget->setFixedSize(340,40);
+    app_widget->setFixedSize(304,52);
     QHBoxLayout *hlayout1 = new QHBoxLayout(app_widget);
-    QHBoxLayout *hlayout2 = new QHBoxLayout();
     QVBoxLayout *vlayout = new QVBoxLayout();
 
     QWidget *wid1 = new QWidget(app_widget);
     QWidget *wid2 = new QWidget(app_widget);
 
+    wid1->setFixedSize(254,22);
+    wid2->setFixedSize(254,52);
     w->appWidget->appLabel = new QLabel(app_widget);
     w->appWidget->appIconBtn = new QPushButton(app_widget);
     w->appWidget->appIconLabel = new QLabel(app_widget);
@@ -749,46 +750,36 @@ void DeviceSwitchWidget::add_app_to_tableview(DeviceSwitchWidget *w,int appnum, 
     w->appWidget->appSlider = new UkmediaDeviceSlider(app_widget);
     w->appWidget->appSlider->setOrientation(Qt::Horizontal);
 
-    QSpacerItem *item1 = new QSpacerItem(16,20);
-
+    w->appWidget->appVolumeLabel->setFixedHeight(16);
     hlayout1->addWidget(w->appWidget->appSlider);
     hlayout1->addWidget(w->appWidget->appVolumeLabel);
     hlayout1->setSpacing(10);
     wid1->setLayout(hlayout1);
-    hlayout1->setMargin(0);
+    wid1->layout()->setContentsMargins(0,0,0,0);
 
     vlayout->addWidget(w->appWidget->appLabel);
     vlayout->addWidget(wid1);
-    vlayout->setSpacing(6);
+    vlayout->setSpacing(10);
     wid2->setLayout(vlayout);
-    vlayout->setMargin(0);
+    wid2->layout()->setContentsMargins(0,0,0,6);
 
-    hlayout2->addWidget(w->appWidget->appIconBtn);
-    hlayout2->addItem(item1);
-    hlayout2->addWidget(wid2);
-    hlayout2->setSpacing(0);
-    app_widget->setLayout(hlayout2);
-    hlayout2->setMargin(0);
-    app_widget->layout()->setSpacing(0);
+    wid2->move(50,0);
     //添加widget到gridlayout中
-
     w->appWidget->gridlayout->addWidget(app_widget);
     w->appWidget->gridlayout->setMargin(0);
-
-    app_widget->move(0,50+(appnum-1)*50);
 
     //设置每项的固定大小
     w->appWidget->appLabel->setFixedSize(88,14);
     w->appWidget->appIconBtn->setFixedSize(32,32);
     w->appWidget->appIconLabel->setFixedSize(24,24);
-    w->appWidget->appVolumeLabel->setFixedSize(36,14);
+    w->appWidget->appVolumeLabel->setFixedSize(24,14);
 
     QSize icon_size(32,32);
     w->appWidget->appIconBtn->setIconSize(icon_size);
     w->appWidget->appIconBtn->setStyleSheet("QPushButton{background:transparent;border:0px;padding-left:0px;}");
     w->appWidget->appIconBtn->setIcon(icon);
-    w->appWidget->appIconBtn->setFlat(true);
-    w->appWidget->appIconBtn->setFocusPolicy(Qt::NoFocus);
+//    w->appWidget->appIconBtn->setFlat(true);
+//    w->appWidget->appIconBtn->setFocusPolicy(Qt::NoFocus);
     w->appWidget->appIconBtn->setEnabled(true);
 
     w->appWidget->appSlider->setMaximum(100);
@@ -838,16 +829,13 @@ void DeviceSwitchWidget::add_app_to_tableview(DeviceSwitchWidget *w,int appnum, 
     else
         w->appWidget->noAppLabel->hide();
 
-    w->appWidget->gridlayout->setMargin(0);
-    w->appWidget->gridlayout->setSpacing(0);
-    w->appWidget->gridlayout->setAlignment(app_widget,Qt::AlignCenter);
-
     //设置布局的垂直间距以及设置gridlayout四周的间距
-    w->appWidget->gridlayout->setVerticalSpacing(200);
-    w->appWidget->appLabel->setStyleSheet("QLabel{background:transparent;"
-                                          "border:0px;"
-                                          "color:#ffffff;"
-                                          "font-size:14px;}");
+    w->appWidget->gridlayout->setContentsMargins(0,44,30,w->appWidget->height() - 72 - appnum * 67);
+    w->appWidget->appLabel->setStyleSheet("QLabel{width:210px;"
+                                          "height:14px;"
+                                          "font-size:14px;"
+                                          "color:rgba(255,255,255,0.57);"
+                                          "line-height:28px;}");
 }
 
 /*
@@ -1137,31 +1125,32 @@ void DeviceSwitchWidget::update_icon_input (DeviceSwitchWidget *w,MateMixerConte
         inputs = inputs->next;
     }
 
-        if (show == TRUE)
-                g_debug ("Input icon enabled");
-        else
-                g_debug ("There is no recording application, input icon disabled");
+    if (show == TRUE)
+            g_debug ("Input icon enabled");
+    else
+            g_debug ("There is no recording application, input icon disabled");
 
-        connect(w->devWidget->inputDeviceSlider,&QSlider::valueChanged,[=](int value){
-            QString percent;
+    connect(w->devWidget->inputDeviceSlider,&QSlider::valueChanged,[=](int value){
+        QString percent;
 
-            percent = QString::number(value);
-            mate_mixer_stream_control_set_mute(control,FALSE);
-            int volume = value*65536/100;
-            gboolean ok = mate_mixer_stream_control_set_volume(control,volume);
-            w->devWidget->inputVolumeLabel->setText(percent);
-        });
-        gvc_stream_status_icon_set_control (w, control);
+        percent = QString::number(value);
+        mate_mixer_stream_control_set_mute(control,FALSE);
+        int volume = value*65536/100;
+        gboolean ok = mate_mixer_stream_control_set_volume(control,volume);
+        w->devWidget->inputVolumeLabel->setText(percent);
+    });
+    gvc_stream_status_icon_set_control (w, control);
 
-        if (control != nullptr) {
-                g_debug ("Output icon enabled");
-        }
-        else {
-                g_debug ("There is no output stream/control, output icon disabled");
-        }
-        if(show) {
-            w->devWidget->inputWidgetShow();
-        }
+    if (control != nullptr) {
+            g_debug ("Output icon enabled");
+    }
+    else {
+            g_debug ("There is no output stream/control, output icon disabled");
+    }
+    if(show) {
+        w->devWidget->inputWidgetShow();
+    }
+
 }
 
 /*

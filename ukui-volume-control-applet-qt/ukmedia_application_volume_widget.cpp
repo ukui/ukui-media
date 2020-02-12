@@ -26,10 +26,10 @@ ApplicationVolumeWidget::ApplicationVolumeWidget(QWidget *parent) : QWidget (par
     app_volume_list = new QStringList;
     applicationLabel->setFixedSize(160,16);
     noAppLabel->setFixedSize(300,14);
-    applicationLabel->move(20,23);
-    noAppLabel->move(62,153);
-    this->setMinimumSize(340,320);
-    this->setMaximumSize(340,500);
+    applicationLabel->move(18,23);
+    noAppLabel->move(60,153);
+    this->setMinimumSize(358,320);
+    this->setMaximumSize(358,500);
     //设置样式
     applicationLabel->setStyleSheet("QLabel{background:transparent;"
                                           "border:0px;"

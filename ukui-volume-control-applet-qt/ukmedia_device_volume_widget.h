@@ -52,7 +52,6 @@ class UkmediaDeviceWidget:public QWidget
 public:
     UkmediaDeviceWidget(QWidget *parent = nullptr);
     ~UkmediaDeviceWidget();
-    void deviceWidgetInit();
     void noInputWidgetInit();
     void inputWidgetShow();
     friend class  DeviceSwitchWidget;

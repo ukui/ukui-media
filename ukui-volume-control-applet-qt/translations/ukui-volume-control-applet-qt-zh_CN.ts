@@ -1,73 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1">
+<TS version="2.1" language="zh">
 <context>
     <name>ApplicationVolumeWidget</name>
     <message>
-        <location filename="../applicationvolumewidget.cpp" line="7"/>
+        <location filename="../ukmedia_application_volume_widget.cpp" line="23"/>
         <source>Application Volume</source>
-        <translation type="unfinished"></translation>
+        <translation>应用音量</translation>
     </message>
     <message>
-        <location filename="../applicationvolumewidget.cpp" line="8"/>
+        <location filename="../ukmedia_application_volume_widget.cpp" line="24"/>
         <source>No application is currently playing or recording audio</source>
-        <translation type="unfinished"></translation>
+        <translation>无应用程序播放声音或录制视频</translation>
+    </message>
+</context>
+<context>
+    <name>DeviceSwitchWidget</name>
+    <message>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="182"/>
+        <source>Output volume control</source>
+        <translation>输出音量控制</translation>
+    </message>
+    <message>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="194"/>
+        <source>Mute(M)</source>
+        <translation>静音(M)</translation>
+    </message>
+    <message>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="214"/>
+        <source>Sound preference(S)</source>
+        <translation>设置声音</translation>
+    </message>
+    <message>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="383"/>
+        <source>Device Volume</source>
+        <translation>设备音量</translation>
+    </message>
+    <message>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="384"/>
+        <source>Application Volume</source>
+        <translation>应用音量</translation>
     </message>
 </context>
 <context>
     <name>UkmediaDeviceWidget</name>
     <message>
-        <location filename="../ukmediadevicewidget.cpp" line="37"/>
+        <location filename="../ukmedia_device_volume_widget.cpp" line="57"/>
         <source>Output Device</source>
-        <translation type="unfinished"></translation>
+        <translation>输出设备</translation>
     </message>
     <message>
-        <location filename="../ukmediadevicewidget.cpp" line="39"/>
+        <location filename="../ukmedia_device_volume_widget.cpp" line="59"/>
         <source>Speaker Realtek Audio</source>
-        <translation type="unfinished"></translation>
+        <translation>扬声器(Realtek Audio)</translation>
     </message>
     <message>
-        <location filename="../ukmediadevicewidget.cpp" line="43"/>
+        <location filename="../ukmedia_device_volume_widget.cpp" line="62"/>
+        <source>Input device can not be detected</source>
+        <translation>无法检测到输入设备</translation>
+    </message>
+    <message>
+        <location filename="../ukmedia_device_volume_widget.cpp" line="47"/>
         <source>Input Device</source>
-        <translation type="unfinished"></translation>
+        <translation>输入设备</translation>
     </message>
     <message>
-        <location filename="../ukmediadevicewidget.cpp" line="45"/>
+        <location filename="../ukmedia_device_volume_widget.cpp" line="49"/>
         <source>Microphone</source>
-        <translation type="unfinished"></translation>
+        <translation>麦克风</translation>
     </message>
 </context>
 <context>
     <name>UkmediaSystemTrayWidget</name>
     <message>
-        <location filename="../ukmedia_systemtray_widget.cpp" line="96"/>
         <source>F10</source>
-        <translation type="unfinished"></translation>
+        <translation type="vanished">F10</translation>
     </message>
     <message>
-        <location filename="../ukmedia_systemtray_widget.cpp" line="333"/>
-        <location filename="../ukmedia_systemtray_widget.cpp" line="350"/>
-        <location filename="../ukmedia_systemtray_widget.cpp" line="411"/>
         <source>Mute(M)</source>
-        <translation type="unfinished"></translation>
+        <translation type="vanished">静音(M)</translation>
     </message>
     <message>
-        <location filename="../ukmedia_systemtray_widget.cpp" line="334"/>
         <source>Input volume control</source>
-        <translation type="unfinished"></translation>
+        <translation type="vanished">输入音量控制</translation>
     </message>
     <message>
-        <location filename="../ukmedia_systemtray_widget.cpp" line="340"/>
-        <location filename="../ukmedia_systemtray_widget.cpp" line="399"/>
         <source>Output volume control</source>
-        <translation type="unfinished"></translation>
+        <translation type="vanished">输出音量控制</translation>
     </message>
     <message>
-        <location filename="../ukmedia_systemtray_widget.cpp" line="369"/>
-        <location filename="../ukmedia_systemtray_widget.cpp" line="378"/>
-        <location filename="../ukmedia_systemtray_widget.cpp" line="431"/>
         <source>Sound preference(S)</source>
-        <translation type="unfinished"></translation>
+        <translation type="vanished">设置声音</translation>
     </message>
 </context>
 </TS>
