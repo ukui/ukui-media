@@ -10,13 +10,9 @@ TEMPLATE = app
 TARGET = ukui-volume-control-applet-qt
 INCLUDEPATH += .
 
-#include(qxtglobalshortcut5/qxt.pri)
 include(QtSingleApplication/qtsingleapplication.pri)
-# The following define makes your compiler warn you if you use any
-# feature of Qt which has been marked as deprecated (the exact warnings
-# depend on your compiler). Please consult the documentation of the
-# deprecated API in order to know how to port your code away from it.
-DEFINES += QT_DEPRECATED_WARNINGS \
+
+DEFINES += QT_DEPRECATED_WARNINGS
 
 # You can also make your code fail to compile if you use deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -31,12 +27,13 @@ target.path = /usr/bin
 #              translations/1
 
 INSTALLS += \
-    target \
-#    inst
+    target
 
 CONFIG += \
     c++11 \
-    no_keywords link_pkgconfig \
+    debug \
+    no_keywords \
+    link_pkgconfig \
 
 PKGCONFIG += \
     gtk+-3.0 \
@@ -46,8 +43,6 @@ PKGCONFIG += \
     Qt5Svg  \
     gio-2.0 \
     Qt5Xdg
-
-# Input
 
 HEADERS += \
     ukmedia_device_switch_widget.h \
@@ -67,5 +62,4 @@ RESOURCES += \
     res.qrc
 
 TRANSLATIONS += \
-    translations/ukui-volume-control-applet-qt-zh_CN.ts \
-
+    translations/ukui-volume-control-applet-qt-zh_CN.ts
