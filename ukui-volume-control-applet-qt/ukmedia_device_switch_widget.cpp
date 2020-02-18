@@ -491,7 +491,7 @@ void DeviceSwitchWidget::on_context_stream_added (MateMixerContext *context,cons
 {
     MateMixerStream *stream;
     MateMixerDirection direction;
-    qDebug() << "add stream";
+    qDebug() << "context stream 添加" << name;
     stream = mate_mixer_context_get_stream (context, name);
     if (G_UNLIKELY (stream == nullptr))
         return;
@@ -551,6 +551,8 @@ void DeviceSwitchWidget::add_stream (DeviceSwitchWidget *w, MateMixerStream *str
         input = mate_mixer_context_get_default_input_stream (context);
         if (stream == input) {
             bar_set_stream (w, stream);
+            MateMixerStreamControl *c = mate_mixer_stream_get_default_control(stream);
+            update_input_settings (w,c);
 //            is_default = TRUE;
         }
     }
@@ -918,8 +920,9 @@ void DeviceSwitchWidget::set_context(DeviceSwitchWidget *w,MateMixerContext *con
 void DeviceSwitchWidget::on_context_stream_removed (MateMixerContext *context,const gchar *name,DeviceSwitchWidget *w)
 {
     Q_UNUSED(context);
-    qDebug() << "context stream removed";
     remove_stream (w, name);
+    MateMixerStream *stream = mate_mixer_context_get_stream(w->context,name);
+    qDebug() << "context stream removed" << mate_mixer_stream_get_name(stream);
 }
 
 /*
@@ -928,6 +931,7 @@ void DeviceSwitchWidget::on_context_stream_removed (MateMixerContext *context,co
 void DeviceSwitchWidget::remove_stream (DeviceSwitchWidget *w, const gchar *name)
 {
     MateMixerStream *stream = mate_mixer_context_get_stream(w->context,name);
+    qDebug() << 934 << name << mate_mixer_stream_get_name(stream);
     MateMixerDirection direction = mate_mixer_stream_get_direction(stream);
     bool status;
     if (direction == MATE_MIXER_DIRECTION_INPUT) {
@@ -939,7 +943,8 @@ void DeviceSwitchWidget::remove_stream (DeviceSwitchWidget *w, const gchar *name
         status = w->output_stream_list->removeOne(name);
     }
     if (w->appWidget->app_volume_list != nullptr) {
-        bar_set_stream (w,nullptr);
+        qDebug() << "stream 不为null";
+        bar_set_stream(w,nullptr);
     }
 }
 
@@ -1003,18 +1008,15 @@ void DeviceSwitchWidget::on_context_default_input_stream_notify (MateMixerContex
 
 void DeviceSwitchWidget::set_input_stream (DeviceSwitchWidget *w, MateMixerStream *stream)
 {
-
     bar_set_stream (w, stream);
 
     if (stream != nullptr) {
         const GList *controls;
-
         controls = mate_mixer_context_list_stored_controls (w->context);
 
         /* Move all stored controls to the newly selected default stream */
         while (controls != nullptr) {
             MateMixerStream *parent;
-
             MateMixerStreamControl *control = MATE_MIXER_STREAM_CONTROL (controls->data);
             parent  = mate_mixer_stream_control_get_stream (control);
 
@@ -1035,7 +1037,8 @@ void DeviceSwitchWidget::set_input_stream (DeviceSwitchWidget *w, MateMixerStrea
                           G_CALLBACK (on_stream_control_mute_notify),
                           w);
     }
-
+    MateMixerStreamControl *c = mate_mixer_stream_get_default_control(stream);
+    update_input_settings (w,c);
 }
 
 /*
@@ -1059,7 +1062,7 @@ void DeviceSwitchWidget::on_context_default_output_stream_notify (MateMixerConte
 {
     MateMixerStream *stream;
     stream = mate_mixer_context_get_default_output_stream (context);
-//    update_icon_output(w,context);
+    update_icon_output(w,context);
     set_output_stream (w, stream);
 }
 
@@ -1088,7 +1091,7 @@ void DeviceSwitchWidget::context_set_property(DeviceSwitchWidget *w)
 */
 void DeviceSwitchWidget::update_icon_input (DeviceSwitchWidget *w,MateMixerContext *context)
 {
-    MateMixerStream        *stream;
+    MateMixerStream *stream;
     MateMixerStreamControl *control = nullptr;
     const gchar *app_id;
     gboolean show = FALSE;
@@ -1163,10 +1166,13 @@ void DeviceSwitchWidget::update_icon_input (DeviceSwitchWidget *w,MateMixerConte
     else {
             g_debug ("There is no output stream/control, output icon disabled");
     }
+    w->devWidget->noInputWidgetInit();
     if(show) {
         w->devWidget->inputWidgetShow();
     }
-
+    else {
+//        w->devWidget->noInputWidgetInit();
+    }
 }
 
 /*
@@ -1325,7 +1331,8 @@ void DeviceSwitchWidget::gvc_stream_status_icon_set_control (DeviceSwitchWidget 
                       G_CALLBACK (on_stream_control_mute_notify),
                       w);
 
-    MateMixerDirection direction = mate_mixer_stored_control_get_direction((MateMixerStoredControl *)control);
+    MateMixerDirection direction;
+    direction = mate_mixer_stored_control_get_direction((MateMixerStoredControl *)control);
     if (direction == MATE_MIXER_DIRECTION_OUTPUT) {
         MateMixerStreamControlFlags flags = mate_mixer_stream_control_get_flags(control);
         if (flags & MATE_MIXER_STREAM_CONTROL_MUTE_READABLE) {
@@ -1410,10 +1417,9 @@ void DeviceSwitchWidget::set_output_stream (DeviceSwitchWidget *w, MateMixerStre
 {
     MateMixerStreamControl *control;
     bar_set_stream (w,stream);
-
+    qDebug() << "set output stream";
     if (stream != nullptr) {
         const GList *controls;
-
         controls = mate_mixer_context_list_stored_controls (w->context);
 
         /* Move all stored controls to the newly selected default stream */
@@ -1451,6 +1457,7 @@ void DeviceSwitchWidget::update_output_stream_list(DeviceSwitchWidget *w,MateMix
     if (stream != nullptr) {
         name = mate_mixer_stream_get_name(stream);
         w->output_stream_list->append(name);
+        qDebug() << "更新输出stream名为" << name;
     }
 }
 
@@ -1575,33 +1582,27 @@ void DeviceSwitchWidget::updateSystemTrayIcon(int volume,bool isMute)
 */
 gboolean DeviceSwitchWidget::update_default_input_stream (DeviceSwitchWidget *w)
 {
-        MateMixerStream *stream;
-        qDebug() << "更新默认的输入stream";
-        stream = mate_mixer_context_get_default_input_stream (w->context);
-//        if (stream == w->stream)
-//                return FALSE;
+    MateMixerStream *stream;
+    qDebug() << "更新默认的输入stream";
+    stream = mate_mixer_context_get_default_input_stream (w->context);
 
-        /* The input stream has changed */
-        if (w->input != nullptr) {
-//                g_signal_handlers_disconnect_by_data (G_OBJECT (status_icon->priv->input),
-//                                                      status_icon);
-//                g_object_unref (status_icon->priv->input);
-        }
+    if (w->input != nullptr) {
+    }
 
-        w->input = (stream == nullptr) ? nullptr : stream;
-        if (w->input != nullptr) {
-            g_signal_connect (G_OBJECT (w->input),
-                              "control-added",
-                              G_CALLBACK (on_input_stream_control_added),
-                              w);
-            g_signal_connect (G_OBJECT (w->input),
-                              "control-removed",
-                              G_CALLBACK (on_input_stream_control_removed),
-                              w);
-        }
+    w->input = (stream == nullptr) ? nullptr : stream;
+    if (w->input != nullptr) {
+        g_signal_connect (G_OBJECT (w->input),
+                          "control-added",
+                          G_CALLBACK (on_input_stream_control_added),
+                          w);
+        g_signal_connect (G_OBJECT (w->input),
+                          "control-removed",
+                          G_CALLBACK (on_input_stream_control_removed),
+                          w);
+    }
 
-        /* Return TRUE if the default input stream has changed */
-        return TRUE;
+    /* Return TRUE if the default input stream has changed */
+    return TRUE;
 }
 
 /*
@@ -1610,7 +1611,7 @@ gboolean DeviceSwitchWidget::update_default_input_stream (DeviceSwitchWidget *w)
 void DeviceSwitchWidget::on_input_stream_control_added (MateMixerStream *stream,const gchar *name,DeviceSwitchWidget *w)
 {
     MateMixerStreamControl *control;
-    qDebug() << "control add";
+    qDebug() << "input stream control add";
     control = mate_mixer_stream_get_control (stream, name);
     if G_LIKELY (control != nullptr) {
         MateMixerStreamControlRole role = mate_mixer_stream_control_get_role (control);
@@ -1635,6 +1636,35 @@ void DeviceSwitchWidget::on_input_stream_control_removed (MateMixerStream *strea
      * the input status icon to disappear */
     qDebug() << "输入stream control removed";
     update_icon_input (w,w->context);
+}
+
+/*
+    更新输入设置w
+*/
+void DeviceSwitchWidget::update_input_settings (DeviceSwitchWidget *w,MateMixerStreamControl *control)
+{
+    MateMixerStream            *stream;
+    MateMixerStreamControlFlags flags;
+
+    qDebug() << "------update input settings control" << mate_mixer_stream_control_get_name(control) << endl << endl << endl;
+    g_debug ("Updating input settings");
+
+    /* Get the control currently associated with the input slider */
+//        control = gvc_channel_bar_get_control (GVC_CHANNEL_BAR (dialog->priv->input_bar));
+    if (control == nullptr)
+            return;
+
+    flags = mate_mixer_stream_control_get_flags (control);
+
+    /* Enable level bar only if supported by the control */
+    if (flags & MATE_MIXER_STREAM_CONTROL_HAS_MONITOR) {
+        qDebug() << "MATE_MIXER_STREAM_CONTROL_HAS_MONITOR";
+    }
+
+    /* Get owning stream of the control */
+    stream = mate_mixer_stream_control_get_stream (control);
+    if (G_UNLIKELY (stream == NULL))
+            return;
 }
 
 DeviceSwitchWidget::~DeviceSwitchWidget()

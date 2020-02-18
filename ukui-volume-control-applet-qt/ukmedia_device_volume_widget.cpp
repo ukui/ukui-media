@@ -68,7 +68,7 @@ UkmediaDeviceWidget::UkmediaDeviceWidget(QWidget *parent) : QWidget (parent)
     outputDeviceBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
                                  "padding-left:0px;}");
 
-    noInputWidgetInit();
+//    noInputWidgetInit();
 
     outputVolumeLabel->setStyleSheet("QLabel{background:transparent;"
                                          "border:0px;color:#ffffff;"

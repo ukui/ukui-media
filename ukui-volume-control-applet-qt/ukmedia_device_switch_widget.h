@@ -114,6 +114,7 @@ public:
     static void on_control_mute_notify (MateMixerStreamControl *control,GParamSpec *pspec,DeviceSwitchWidget *w);
     void init_widget_action(QWidget* wid, QString iconstr, QString textstr);
 
+    static void update_input_settings (DeviceSwitchWidget *w,MateMixerStreamControl *control);
     static void on_input_stream_control_added (MateMixerStream *stream,const gchar *name,DeviceSwitchWidget *w);
     static void on_input_stream_control_removed (MateMixerStream *stream,const gchar *name,DeviceSwitchWidget *w);
     static gboolean update_default_input_stream (DeviceSwitchWidget *w);
