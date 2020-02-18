@@ -459,6 +459,7 @@ void DeviceSwitchWidget::on_context_state_notify (MateMixerContext *context,GPar
     MateMixerState state = mate_mixer_context_get_state (context);
     list_device(w,context);
     if (state == MATE_MIXER_STATE_READY) {
+        update_default_input_stream (w);
         update_icon_output(w,context);
         update_icon_input(w,context);
     }
@@ -490,6 +491,7 @@ void DeviceSwitchWidget::on_context_stream_added (MateMixerContext *context,cons
 {
     MateMixerStream *stream;
     MateMixerDirection direction;
+    qDebug() << "add stream";
     stream = mate_mixer_context_get_stream (context, name);
     if (G_UNLIKELY (stream == nullptr))
         return;
@@ -916,6 +918,7 @@ void DeviceSwitchWidget::set_context(DeviceSwitchWidget *w,MateMixerContext *con
 void DeviceSwitchWidget::on_context_stream_removed (MateMixerContext *context,const gchar *name,DeviceSwitchWidget *w)
 {
     Q_UNUSED(context);
+    qDebug() << "context stream removed";
     remove_stream (w, name);
 }
 
@@ -928,9 +931,11 @@ void DeviceSwitchWidget::remove_stream (DeviceSwitchWidget *w, const gchar *name
     MateMixerDirection direction = mate_mixer_stream_get_direction(stream);
     bool status;
     if (direction == MATE_MIXER_DIRECTION_INPUT) {
+        qDebug() << "输入";
         status = w->input_stream_list->removeOne(name);
     }
     else if (direction == MATE_MIXER_DIRECTION_OUTPUT) {
+        qDebug() << "输出";
         status = w->output_stream_list->removeOne(name);
     }
     if (w->appWidget->app_volume_list != nullptr) {
@@ -1563,6 +1568,73 @@ void DeviceSwitchWidget::updateSystemTrayIcon(int volume,bool isMute)
     else {
         muteCheckBox->setChecked(false);
     }
+}
+
+/*
+    更新默认的输入stream
+*/
+gboolean DeviceSwitchWidget::update_default_input_stream (DeviceSwitchWidget *w)
+{
+        MateMixerStream *stream;
+        qDebug() << "更新默认的输入stream";
+        stream = mate_mixer_context_get_default_input_stream (w->context);
+//        if (stream == w->stream)
+//                return FALSE;
+
+        /* The input stream has changed */
+        if (w->input != nullptr) {
+//                g_signal_handlers_disconnect_by_data (G_OBJECT (status_icon->priv->input),
+//                                                      status_icon);
+//                g_object_unref (status_icon->priv->input);
+        }
+
+        w->input = (stream == nullptr) ? nullptr : stream;
+        if (w->input != nullptr) {
+            g_signal_connect (G_OBJECT (w->input),
+                              "control-added",
+                              G_CALLBACK (on_input_stream_control_added),
+                              w);
+            g_signal_connect (G_OBJECT (w->input),
+                              "control-removed",
+                              G_CALLBACK (on_input_stream_control_removed),
+                              w);
+        }
+
+        /* Return TRUE if the default input stream has changed */
+        return TRUE;
+}
+
+/*
+    输入stream control add
+*/
+void DeviceSwitchWidget::on_input_stream_control_added (MateMixerStream *stream,const gchar *name,DeviceSwitchWidget *w)
+{
+    MateMixerStreamControl *control;
+    qDebug() << "control add";
+    control = mate_mixer_stream_get_control (stream, name);
+    if G_LIKELY (control != nullptr) {
+        MateMixerStreamControlRole role = mate_mixer_stream_control_get_role (control);
+
+        /* Non-application input control doesn't affect the icon */
+        if (role != MATE_MIXER_STREAM_CONTROL_ROLE_APPLICATION)
+            return;
+    }
+
+    /* Either an application control has been added or we couldn't
+     * read the control, this shouldn't happen but let's revalidate the
+     * icon to be sure if it does */
+    update_icon_input (w,w->context);
+}
+
+/*
+    输入stream control removed
+*/
+void DeviceSwitchWidget::on_input_stream_control_removed (MateMixerStream *stream,const gchar *name,DeviceSwitchWidget *w)
+{
+    /* The removed stream could be an application input, which may cause
+     * the input status icon to disappear */
+    qDebug() << "输入stream control removed";
+    update_icon_input (w,w->context);
 }
 
 DeviceSwitchWidget::~DeviceSwitchWidget()

@@ -113,6 +113,10 @@ public:
 
     static void on_control_mute_notify (MateMixerStreamControl *control,GParamSpec *pspec,DeviceSwitchWidget *w);
     void init_widget_action(QWidget* wid, QString iconstr, QString textstr);
+
+    static void on_input_stream_control_added (MateMixerStream *stream,const gchar *name,DeviceSwitchWidget *w);
+    static void on_input_stream_control_removed (MateMixerStream *stream,const gchar *name,DeviceSwitchWidget *w);
+    static gboolean update_default_input_stream (DeviceSwitchWidget *w);
     friend class UkmediaSystemTrayIcon;
 Q_SIGNALS:
     void app_volume_changed(bool is_mute,int volume,const gchar *app_name);
@@ -134,6 +138,7 @@ private:
     UkmediaDeviceWidget *devWidget;
     ApplicationVolumeWidget *appWidget;
     MateMixerStream *stream;
+    MateMixerStream *input;
     MateMixerContext *context;
     MateMixerStreamControl *control;
 
