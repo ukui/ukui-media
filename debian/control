@@ -17,7 +17,8 @@ Build-Depends: debhelper-compat (= 12),
                libxml2-dev,
                mate-common (>= 1.18),
                libqt5svg5-dev,
-	       libqt5xdg-dev
+               libqt5xdg-dev,
+	       qt5-gtk2-platformtheme
 Standards-Version: 4.5.0
 Rules-Requires-Root: no
 Homepage: http://www.ukui.org/

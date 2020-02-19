@@ -16,4 +16,6 @@ ukui-volume-control/gvc-speaker-test.c
 ukui-volume-control/gvc-stream-status-icon.c
 ukui-volume-control/gvc-utils.c
 ukui-volume-control/sound-theme-file-utils.c
-#ukui-volume-control/ukui-volume-control-applet-qt/ukmedia_control_widget.cpp
+ukui-volume-control-applet-qt/main.cpp
+ukui-volume-control-applet-qt/ukmedia_device_switch_widget.h
+ukui-volume-control-applet-qt/ukmedia_device_switch_widget.cpp

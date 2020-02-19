@@ -15,19 +15,16 @@
  * along with this program; if not, see <http://www.gnu.org/licenses/&gt;.
  *
  */
-#include "scrollwitget.h"
+#include "ukmedia_scroll_widget.h"
 #include <QVBoxLayout>
 #include <QDebug>
 ScrollWitget::ScrollWitget(QWidget *parent) : QWidget (parent)
 {
     area = new QScrollArea(this);
 
-    area->setFixedSize(360,320);
+    area->setFixedSize(358,320);
     area->move(0,0);
-    this->setFixedSize(360,320);
-//    QVBoxLayout *layout = new QVBoxLayout(this);
-//    layout->addWidget(scrollBar);
-//    this->setLayout(layout);
+    this->setFixedSize(358,320);
 
     area->setStyleSheet("QScrollArea{border:none;}");
     area->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);

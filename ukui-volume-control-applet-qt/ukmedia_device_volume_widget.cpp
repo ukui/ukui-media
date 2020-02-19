@@ -15,16 +15,16 @@
  * along with this program; if not, see <http://www.gnu.org/licenses/&gt;.
  *
  */
-#include "ukmediadevicewidget.h"
+#include "ukmedia_device_volume_widget.h"
 #include <QWidget>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QSpacerItem>
 #include <QDebug>
 
-UkmediaDeviceSlider::UkmediaDeviceSlider(QWidget *panet)
+UkmediaDeviceSlider::UkmediaDeviceSlider(QWidget *parent)
 {
-
+    Q_UNUSED(parent);
 }
 
 UkmediaDeviceSlider::~UkmediaDeviceSlider()
@@ -50,9 +50,9 @@ UkmediaDeviceWidget::UkmediaDeviceWidget(QWidget *parent) : QWidget (parent)
     inputDeviceBtn = new QPushButton(inputWidget);
     inputDeviceSlider = new UkmediaDeviceSlider(inputSliderWidget);
 
-    outputWidget->setFixedSize(296,52);
-    outputDisplayWidget->setFixedSize(246,46);
-    outputSliderWidget->setFixedSize(246,32);
+    outputWidget->setFixedSize(304,52);
+    outputDisplayWidget->setFixedSize(252,52);
+    outputSliderWidget->setFixedSize(252,22);
 
     outputDeviceLabel = new QLabel(tr("Output Device"),this);
     outputVolumeLabel = new QLabel("0",outputSliderWidget);
@@ -60,12 +60,15 @@ UkmediaDeviceWidget::UkmediaDeviceWidget(QWidget *parent) : QWidget (parent)
     outputDeviceBtn = new QPushButton(outputWidget);
     outputDeviceSlider = new UkmediaDeviceSlider(outputSliderWidget);
     noInputDeviceLabel = new QLabel(tr("Input device can not be detected"),this);
-//    this->setFixedSize(360,320);
-//    deviceWidgetInit();
-    noInputWidgetInit();
-//    inputWidgetShow();
-//    this->setMaximumSize(360,500);
 
+    inputDeviceBtn->setFocusPolicy(Qt::NoFocus);
+    outputDeviceBtn->setFocusPolicy(Qt::NoFocus);
+    inputDeviceBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
+                                "padding-left:0px;}");
+    outputDeviceBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
+                                 "padding-left:0px;}");
+
+//    noInputWidgetInit();
 
     outputVolumeLabel->setStyleSheet("QLabel{background:transparent;"
                                          "border:0px;color:#ffffff;"
@@ -96,91 +99,7 @@ UkmediaDeviceWidget::UkmediaDeviceWidget(QWidget *parent) : QWidget (parent)
                                          "font-size:14px;}");
 }
 
-void UkmediaDeviceWidget::deviceWidgetInit()
-{
-    const QSize iconSize(32,32);
-    inputWidget->setFixedSize(296,52);
-    inputDisplayWidget->setFixedSize(246,46);
-    inputSliderWidget->setFixedSize(246,32);
 
-    //设置输入输出音量图标
-    outputDeviceBtn->setFixedSize(iconSize);
-    outputDeviceBtn->setIconSize(iconSize);
-    outputDeviceBtn->setIcon(QIcon("/usr/share/ukui-media/img/audiocard.svg"));
-    inputDeviceBtn->setFixedSize(iconSize);
-    inputDeviceBtn->setIconSize(iconSize);
-    inputDeviceBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-input-microphone.svg"));
-    //设置滑动条的范围和取向
-    inputDeviceLabel->setFixedSize(78,20);
-    inputDeviceDisplayLabel->setFixedSize(220,14);
-    inputVolumeLabel->setFixedHeight(16);
-
-    outputDeviceLabel->setFixedSize(78,20);
-    outputDeviceDisplayLabel->setFixedSize(220,14);
-    outputVolumeLabel->setFixedHeight(16);
-
-    outputDeviceSlider->setRange(0,100);
-    outputDeviceSlider->setOrientation(Qt::Horizontal);
-    outputDeviceSlider->setFixedSize(220,20);
-    inputDeviceSlider->setRange(0,100);
-    inputDeviceSlider->setOrientation(Qt::Horizontal);
-    inputDeviceSlider->setFixedSize(220,20);
-    //布局
-    QHBoxLayout *hlayout1 = new QHBoxLayout(outputSliderWidget);
-    QHBoxLayout *hlayout2 = new QHBoxLayout;
-
-    QVBoxLayout *vlayout1 = new QVBoxLayout;
-    QVBoxLayout *vlayout2 = new QVBoxLayout;
-    QVBoxLayout *vlayout3 = new QVBoxLayout;
-
-    //输出设备布局outputWidget
-    hlayout1->addWidget(outputDeviceSlider);
-    hlayout1->addWidget(outputVolumeLabel);
-    hlayout1->setSpacing(10);
-    outputSliderWidget->setLayout(hlayout1);
-    outputSliderWidget->layout()->setContentsMargins(0,0,0,0);
-
-    vlayout1->addWidget(outputDeviceDisplayLabel);
-    vlayout1->addWidget(outputSliderWidget);
-    vlayout1->setSpacing(0);
-//    vlayout1->setMargin(0);
-    vlayout1->setContentsMargins(0,0,0,0);
-    outputDisplayWidget->setLayout(vlayout1);
-    outputDisplayWidget->layout()->setContentsMargins(0,0,0,0);
-
-    outputDeviceLabel->move(20,23);
-    outputWidget->move(20,72);
-    outputDisplayWidget->move(50,0);
-
-    //输入设备布局 inputWidget
-    hlayout2->addWidget(inputDeviceSlider);
-    hlayout2->addWidget(inputVolumeLabel);
-    hlayout2->setSpacing(10);
-    inputSliderWidget->setLayout(hlayout2);
-    inputSliderWidget->layout()->setContentsMargins(0,0,0,0);
-
-    vlayout2->addWidget(inputDeviceDisplayLabel);
-    vlayout2->addWidget(inputSliderWidget);
-    vlayout2->setContentsMargins(0,0,0,0);
-    vlayout2->setSpacing(0);
-    inputDisplayWidget->setLayout(vlayout2);
-
-    inputDeviceLabel->move(20,154);
-    inputWidget->move(20,204);
-    inputDisplayWidget->move(50,0);
-
-    //整体布局
-//    vlayout3->addWidget(outputDeviceLabel);
-//    vlayout3->addWidget(outputWidget);
-//    vlayout3->addWidget(inputDeviceLabel);
-//    vlayout3->addWidget(inputWidget);
-//    deviceWidget->setLayout(vlayout3);
-//    vlayout3->setSpacing(30);
-//    deviceWidget->layout()->setContentsMargins(20,22,0,64);
-//    deviceWidget->setMinimumSize(400,320);
-    deviceWidget->setFixedSize(400,320);
-//    deviceWidget->setMaximumSize(400,500);
-}
 
 void UkmediaDeviceWidget::noInputWidgetInit()
 {
@@ -204,33 +123,29 @@ void UkmediaDeviceWidget::noInputWidgetInit()
     outputDeviceSlider->setOrientation(Qt::Horizontal);
     outputDeviceSlider->setFixedSize(220,20);
 
-    deviceWidget->setFixedSize(360,320);
+    deviceWidget->setFixedSize(358,320);
 
-    QHBoxLayout *hlayout1 = new QHBoxLayout(outputSliderWidget);
-    QHBoxLayout *hlayout2 = new QHBoxLayout;
-
-    QVBoxLayout *vlayout1 = new QVBoxLayout;
-    QVBoxLayout *vlayout2 = new QVBoxLayout;
-    QVBoxLayout *vlayout3 = new QVBoxLayout;
+    QHBoxLayout *hlayout = new QHBoxLayout;
+    QVBoxLayout *vlayout = new QVBoxLayout;
 
     //输出设备布局outputWidget
-    hlayout1->addWidget(outputDeviceSlider);
-    hlayout1->addWidget(outputVolumeLabel);
-    hlayout1->setSpacing(10);
-    outputSliderWidget->setLayout(hlayout1);
+    hlayout->addWidget(outputDeviceSlider);
+    hlayout->addWidget(outputVolumeLabel);
+    hlayout->setSpacing(10);
+    outputSliderWidget->setLayout(hlayout);
     outputSliderWidget->layout()->setContentsMargins(0,0,0,0);
 
-    vlayout1->addWidget(outputDeviceDisplayLabel);
-    vlayout1->addWidget(outputSliderWidget);
-    vlayout1->setSpacing(0);
-    outputDisplayWidget->setLayout(vlayout1);
-    outputDisplayWidget->layout()->setContentsMargins(0,0,0,0);
+    vlayout->addWidget(outputDeviceDisplayLabel);
+    vlayout->addWidget(outputSliderWidget);
+    vlayout->setSpacing(10);
+    outputDisplayWidget->setLayout(vlayout);
+    outputDisplayWidget->layout()->setContentsMargins(0,0,0,6);
 
-    outputDeviceLabel->move(20,22);
-//    outputDeviceBtn->move(20,72);
-    outputWidget->move(20,72);
+    outputDeviceLabel->move(18,22);
+
+    outputWidget->move(18,72);
     outputDisplayWidget->move(50,0);
-    noInputDeviceLabel->move(20,154);
+    noInputDeviceLabel->move(18,154);
     noInputDeviceLabel->setStyleSheet("QLabel{width:126px;"
                                       "height:14px;"
                                       "font-size:14px;"
@@ -243,9 +158,9 @@ void UkmediaDeviceWidget::inputWidgetShow()
     //设置noinputlabel隐藏
     noInputDeviceLabel->hide();
     const QSize iconSize(32,32);
-    inputWidget->setFixedSize(296,52);
-    inputDisplayWidget->setFixedSize(246,46);
-    inputSliderWidget->setFixedSize(246,32);
+    inputWidget->setFixedSize(304,52);
+    inputDisplayWidget->setFixedSize(252,52);
+    inputSliderWidget->setFixedSize(252,22);
 
     //设置输入输出音量图标
     inputDeviceBtn->setFixedSize(iconSize);
@@ -254,7 +169,7 @@ void UkmediaDeviceWidget::inputWidgetShow()
     //设置滑动条的范围和取向
     inputDeviceLabel->setFixedSize(78,20);
     inputDeviceDisplayLabel->setFixedSize(220,14);
-    inputVolumeLabel->setFixedHeight(16);
+    inputVolumeLabel->setFixedSize(24,14);
 
     inputDeviceSlider->setRange(0,100);
     inputDeviceSlider->setOrientation(Qt::Horizontal);
@@ -272,12 +187,12 @@ void UkmediaDeviceWidget::inputWidgetShow()
 
     vlayout->addWidget(inputDeviceDisplayLabel);
     vlayout->addWidget(inputSliderWidget);
-    vlayout->setContentsMargins(0,0,0,0);
-    vlayout->setSpacing(0);
+    vlayout->setSpacing(10);
+    vlayout->setContentsMargins(0,0,0,6);
     inputDisplayWidget->setLayout(vlayout);
 
-    inputDeviceLabel->move(20,154);
-    inputWidget->move(20,204);
+    inputDeviceLabel->move(18,154);
+    inputWidget->move(18,204);
     inputDisplayWidget->move(50,0);
     inputDeviceLabel->show();
     inputSliderWidget->show();

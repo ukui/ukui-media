@@ -52,7 +52,6 @@ class UkmediaDeviceWidget:public QWidget
 public:
     UkmediaDeviceWidget(QWidget *parent = nullptr);
     ~UkmediaDeviceWidget();
-    void deviceWidgetInit();
     void noInputWidgetInit();
     void inputWidgetShow();
     friend class  DeviceSwitchWidget;
@@ -76,6 +75,7 @@ private:
     QLabel *noInputDeviceLabel;
     QPushButton *inputDeviceBtn;
     UkmediaDeviceSlider *inputDeviceSlider;
+
 };
 
 #endif // UKMEDIADEVICEWIDGET_H
