@@ -711,6 +711,8 @@ void DeviceSwitchWidget::remove_application_control (DeviceSwitchWidget *w,const
         appnum = 1;
     }
     appnum--;
+    //设置布局的垂直间距以及设置gridlayout四周的间距
+    w->appWidget->gridlayout->setContentsMargins(0,44,30,w->appWidget->height() - 72 - appnum * 67);
     if (appnum <= 0)
         w->appWidget->noAppLabel->show();
     else
@@ -815,6 +817,7 @@ void DeviceSwitchWidget::add_app_to_tableview(DeviceSwitchWidget *w,int appnum, 
     w->appWidget->appSlider->setValue(display_volume);
     w->appWidget->appVolumeLabel->setNum(display_volume);
 
+    mate_mixer_stream_control_set_mute(control,is_mute);
     /*滑动条控制应用音量*/
     connect(w->appWidget->appSlider,&QSlider::valueChanged,[=](int value){
         QSlider *s = w->findChild<QSlider*>(appSliderStr);
@@ -1048,11 +1051,12 @@ void DeviceSwitchWidget::on_stream_control_mute_notify (MateMixerStreamControl *
 {
     Q_UNUSED(pspec);
     Q_UNUSED(w);
+//    update_icon_output(w,w->context);
     /* Stop monitoring the input stream when it gets muted */
-    if (mate_mixer_stream_control_get_mute (control) == TRUE)
-        mate_mixer_stream_control_set_monitor_enabled (control, FALSE);
-    else
-        mate_mixer_stream_control_set_monitor_enabled (control, TRUE);
+//    if (mate_mixer_stream_control_get_mute (control) == TRUE)
+//        mate_mixer_stream_control_set_monitor_enabled (control, FALSE);
+//    else
+//        mate_mixer_stream_control_set_monitor_enabled (control, TRUE);
 }
 
 /*
@@ -1330,17 +1334,12 @@ void DeviceSwitchWidget::gvc_stream_status_icon_set_control (DeviceSwitchWidget 
                       "notify::mute",
                       G_CALLBACK (on_stream_control_mute_notify),
                       w);
-
-    MateMixerDirection direction;
-    direction = mate_mixer_stored_control_get_direction((MateMixerStoredControl *)control);
-    if (direction == MATE_MIXER_DIRECTION_OUTPUT) {
-        MateMixerStreamControlFlags flags = mate_mixer_stream_control_get_flags(control);
-        if (flags & MATE_MIXER_STREAM_CONTROL_MUTE_READABLE) {
-            g_signal_connect (G_OBJECT (control),
-                              "notify::mute",
-                              G_CALLBACK (on_control_mute_notify),
-                              w);
-        }
+    MateMixerStreamControlFlags flags = mate_mixer_stream_control_get_flags(control);
+    if (flags & MATE_MIXER_STREAM_CONTROL_MUTE_READABLE) {
+        g_signal_connect (G_OBJECT (control),
+                          "notify::mute",
+                          G_CALLBACK (on_control_mute_notify),
+                          w);
     }
 }
 
