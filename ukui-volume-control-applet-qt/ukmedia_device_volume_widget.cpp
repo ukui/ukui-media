@@ -68,7 +68,7 @@ UkmediaDeviceWidget::UkmediaDeviceWidget(QWidget *parent) : QWidget (parent)
     outputDeviceBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
                                  "padding-left:0px;}");
 
-//    noInputWidgetInit();
+    noInputWidgetInit();
 
     outputVolumeLabel->setStyleSheet("QLabel{background:transparent;"
                                          "border:0px;color:#ffffff;"
@@ -121,7 +121,7 @@ void UkmediaDeviceWidget::noInputWidgetInit()
 
     outputDeviceSlider->setRange(0,100);
     outputDeviceSlider->setOrientation(Qt::Horizontal);
-    outputDeviceSlider->setFixedSize(220,20);
+    outputDeviceSlider->setFixedSize(220,22);
 
     deviceWidget->setFixedSize(358,320);
 
@@ -173,7 +173,7 @@ void UkmediaDeviceWidget::inputWidgetShow()
 
     inputDeviceSlider->setRange(0,100);
     inputDeviceSlider->setOrientation(Qt::Horizontal);
-    inputDeviceSlider->setFixedSize(220,20);
+    inputDeviceSlider->setFixedSize(220,22);
     //布局
     QHBoxLayout *hlayout = new QHBoxLayout;
     QVBoxLayout *vlayout = new QVBoxLayout;
@@ -198,6 +198,16 @@ void UkmediaDeviceWidget::inputWidgetShow()
     inputSliderWidget->show();
     inputDisplayWidget->show();
     inputWidget->show();
+}
+
+void UkmediaDeviceWidget::inputWidgetHide()
+{
+    //隐藏inputDeviceWidget
+    inputDeviceLabel->hide();
+    inputWidget->hide();
+    inputSliderWidget->hide();
+    inputDisplayWidget->hide();
+    noInputDeviceLabel->show();
 }
 
 UkmediaDeviceWidget::~UkmediaDeviceWidget()

@@ -46,7 +46,7 @@ HEADERS += \
     ukmedia_device_switch_widget.h \
     ukmedia_device_volume_widget.h \
     ukmedia_scroll_widget.h \
-    ukmedia_application_volume_widget.h\
+    ukmedia_application_volume_widget.h
 
 
 SOURCES += \

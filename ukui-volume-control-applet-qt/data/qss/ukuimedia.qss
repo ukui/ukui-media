@@ -19,6 +19,13 @@ QCheckBox
 
 }
 
+QWidget#mainWidget{
+    width:400px;
+    height:320px;
+    background:rgba(14,19,22,0.95);
+    border:1px solid rgba(255, 255, 255, 0.05);
+    border-radius:60px;}
+
 /*右击菜单*/
 QAction {
     font-color: rgb(255,255,255);
@@ -36,22 +43,22 @@ QSlider::groove:horizontal {
 
 }
 QSlider::sub-page:horizontal {
-    background: #2e8ad2;
+    background: rgb(107,142,235);
     border-radius: 2px;
-    margin-top:8px;
+    margin-top:9px;
     margin-bottom:9px;
 }
 QSlider::add-page:horizontal {
     background:  rgba(52,70,80,90%);
     border: 0px solid #777;
     border-radius: 2px;
-    margin-top:8px;
+    margin-top:9px;
     margin-bottom:9px;
 }
 QSlider::handle:horizontal {
     width: 20px;
     height: 20px;
-    background: rgb(0, 160, 230);
+    background: rgb(61,107,229);
     border-radius:10px;
 }
 
@@ -66,7 +73,7 @@ QMenu::item {
     font-size: 14px;
     color: #ffffff;
     height: 36px;
-    width: 246px;
+    width: 250px;
 }
 
 QMenu::item:selected{
@@ -76,15 +83,6 @@ QMenu::item:selected{
 QMenu::item:pressed{
     background-color: rgb(190,216,239);
 }
-
-/*弹出窗口*/
-QMainWindow{
-    background-color: rgba(21,26,30,90%);
-    border: 1px solid #626c6e;
-}
-
-
-
 
 /*托盘图标*/
 QSystemTrayIcon::hover{

@@ -53,7 +53,6 @@ int main(int argc, char *argv[])
         qDebug() << "加载失败";
     qApp->setStyleSheet(qss.readAll());
     qss.close();
-
     DeviceSwitchWidget w;
 //    w.show();
 

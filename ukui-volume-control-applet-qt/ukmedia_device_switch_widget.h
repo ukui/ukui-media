@@ -26,6 +26,7 @@
 #include <QMenu>
 #include <QCheckBox>
 #include <QWidgetAction>
+#include <QFrame>
 #include <QSystemTrayIcon>
 extern "C" {
 #include <libmatemixer/matemixer.h>
@@ -161,6 +162,7 @@ private:
     QLabel *muteLabel;
 
 protected:
+    void paintEvent(QPaintEvent *event);
     bool event(QEvent *event);//重写窗口事件
 //    void mousePressEvent(QMouseEvent *event);
     virtual void wheelEvent(QWheelEvent *event);

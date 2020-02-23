@@ -41,6 +41,7 @@ extern "C" {
 #include <QProcess>
 #include <QApplication>
 #include <QSvgRenderer>
+#include <QtCore/qmath.h>
 #include <QDebug>
 
 typedef enum {
@@ -82,6 +83,15 @@ bool UkmediaTrayIcon::event(QEvent *event)
 
 }
 
+void DeviceSwitchWidget::paintEvent(QPaintEvent *event)
+{
+    QStyleOption opt;
+    opt.init(this);
+    QPainter p(this);
+    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+    QWidget::paintEvent(event);
+}
+
 /*
     显示window
 */
@@ -105,11 +115,12 @@ void DeviceSwitchWidget::hideWindow()
 */
 void DeviceSwitchWidget::showMenu(int x,int y)
 {
-    menu->setGeometry(x,y,250,84);
+    menu->setGeometry(x,y,250,88);
 }
 
 DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
 {
+//    setAttribute(Qt::WA_TranslucentBackground);
     appScrollWidget = new ScrollWitget(this);
     devScrollWidget = new ScrollWitget(this);
     devWidget = new UkmediaDeviceWidget(this);
@@ -162,12 +173,22 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     connect(deviceBtn,SIGNAL(clicked()),this,SLOT(device_button_clicked_slot()));
     connect(appVolumeBtn,SIGNAL(clicked()),this,SLOT(appvolume_button_clicked_slot()));
 
-    this->setStyleSheet("QWidget{width:400px;"
+    setWindowFlags(Qt::WindowStaysOnTopHint|Qt::Popup);
+    setAttribute(Qt::WA_TranslucentBackground);
+    setWindowOpacity(0.95);
+
+    this->setObjectName("mainWidget");
+    this->setStyleSheet("QWidget#mainWidget{width:400px;"
                         "height:320px;"
                         "background:rgba(14,19,22,0.95);"
-                        "border-radius:3px 3px 0px 0px;}");
-    setWindowFlags(Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint|Qt::Popup);
-    setWindowOpacity(0.95);
+//                        "border:4px solid rgba(225, 0, 0, 1);"
+                        "border-radius:6px;}");
+    //
+    appWidget->setStyleSheet("QWidget{border-top-right-radius:20px;"
+                           "border-bottom-right-radius:20px }");
+    devWidget->setStyleSheet("QWidget{border-top-left-radius:20px;"
+                           "border-bottom-left-radius:20px }");
+//    setWindowFlags(Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint);
 }
 
 void DeviceSwitchWidget::systemTrayMenuInit()
@@ -207,10 +228,10 @@ void DeviceSwitchWidget::systemTrayMenuInit()
     actionMute->setDefaultWidget(actionMuteWid);
     //设置右键菜单
     menu->addAction(actionMute);
-
+    menu->addSeparator();
     menu->addAction(actionSoundPreference);
     menu->setFixedWidth(250);
-    menu->setFixedHeight(84);
+    menu->setFixedHeight(88);
 
     init_widget_action(actionSoundPreferenceWid,"/usr/share/ukui-media/img/setting.svg",tr("Sound preference(S)"));
     init_widget_action(actionMuteWid,"","");
@@ -224,10 +245,13 @@ void DeviceSwitchWidget::systemTrayMenuInit()
     connect(soundSystemTrayIcon,SIGNAL(activated(QSystemTrayIcon::ActivationReason)),\
             this,SLOT(activatedSystemTrayIconSlot(QSystemTrayIcon::ActivationReason)));
     connect(actionSoundPreference,SIGNAL(triggered()),this,SLOT(jumpControlPanelSlot()));
-    menu->setStyleSheet("QMenu {background-color: rgba(8,10,12,90%);"
-                        "border: 1px solid #626c6e;padding: 4px 2px 4px 2px;}"
+    menu->setWindowFlag(Qt::FramelessWindowHint);        //重要
+    menu->setAttribute(Qt::WA_TranslucentBackground);    //重要
+    menu->setStyleSheet("QMenu {height: 88px;width: 250px;background-color: rgba(19,19,20,95%);"
+                        "border:1px solid rgba(255, 255, 255, 0.05);padding: 6px 0px 6px 0px; border-radius: 6px}"
                         "QMenu::item {font-size: 14px;color: #ffffff;"
-                        "height: 36px;width: 246px;}");
+                        "height: 36px;width: 250px;}"
+                        "QMenu::separator{height:1px;background-color:rgba(19,19,20,0);margin-top:1px;margin-bottom:2px;}");
 }
 
 /*
@@ -278,20 +302,26 @@ void DeviceSwitchWidget::activatedSystemTrayIconSlot(QSystemTrayIcon::Activation
     //鼠标左键点击图标
     case QSystemTrayIcon::Trigger: {
         if (isShow) {
-            if (rect.x() > availableWidth/2 && rect.x()< availableWidth  && rect.y() > availableHeight) {
-
-                this->setGeometry(localX,availableHeight-this->height(),400,320);
+            if (rect.x() > availableWidth/2 && rect.x()< availableWidth  && rect.y() > availableHeight) { //下
+                if (availableWidth - rect.x() - rect.width()/2 < this->width() / 2)
+                    this->setGeometry(availableWidth-this->width(),availableHeight-this->height()-3,this->width(),this->height());
+                this->setGeometry(localX,availableHeight-this->height()-3,400,320);
             }
-            else if (rect.x() > availableWidth/2 && rect.x()< availableWidth && rect.y() < 40 ) {
-
-                this->setGeometry(localX,totalHeight-availableHeight,400,320);
-            }            else if (rect.x() < 40 && rect.y() > availableHeight/2 && rect.y()< availableHeight) {
-
-                this->setGeometry(totalWidth-availableWidth,localY,400,320);//左
+            else if (rect.x() > availableWidth/2 && rect.x()< availableWidth && rect.y() < 40 ) { //上
+                if (availableWidth - rect.x() - rect.width()/2 < this->width() / 2)
+                    this->setGeometry(availableWidth-this->width(),totalHeight-availableHeight+3,this->width(),this->height());
+                this->setGeometry(localX,totalHeight-availableHeight+3,this->width(),this->height());
+            }
+            else if (rect.x() < 40 && rect.y() > availableHeight/2 && rect.y()< availableHeight) {
+                if (availableHeight - rect.y() - rect.height()/2 < this->height() /2)
+                    this->setGeometry(totalWidth - availableWidth + 3,availableHeight - this->height(),this->width(),this->height());
+                this->setGeometry(totalWidth-availableWidth+3,localY,this->width(),this->height());//左
             }
             else if (rect.x() > availableWidth && rect.y() > availableHeight/2 && rect.y() < availableHeight) {
-
-                this->setGeometry(localX,localY,400,320);
+                localX = availableWidth - this->width();
+                if (availableHeight - rect.y() - rect.height()/2 < this->height() /2)
+                    this->setGeometry(availableWidth - 3,availableHeight - this->height(),this->width(),this->height() );
+                this->setGeometry(localX-3,localY,400,320);
             }
             this->show();
             break;
@@ -307,8 +337,46 @@ void DeviceSwitchWidget::activatedSystemTrayIconSlot(QSystemTrayIcon::Activation
         break;
     }
     case QSystemTrayIcon::Context: {
-        localX = rect.x();
-        localY = availableHeight - 84;
+        if (rect.x() > availableWidth/2 && rect.x()< availableWidth  && rect.y() > availableHeight) { //下
+            if (availableWidth - rect.x() - rect.width()/2 < menu->width()) {
+                localX = availableWidth - menu->width();
+                localY = availableHeight - menu->height() - 3;
+            }
+            else {
+                localX = rect.x();
+                localY = availableHeight - menu->height() -3;
+            }
+        }
+        else if (rect.x() > availableWidth/2 && rect.x()< availableWidth && rect.y() < 40 ) { //上
+            if (availableWidth - rect.x() - rect.width()/2 < menu->width()) {
+                localX = availableWidth - menu->width();
+                localY = totalHeight - availableHeight + 3;
+            }
+            else {
+                localX = rect.x();
+                localY = totalHeight-availableHeight+3;
+            }
+        }
+        else if (rect.x() < 40 && rect.y() > availableHeight/2 && rect.y()< availableHeight) { //左
+            if (availableHeight - rect.y() - rect.height()/2 < menu->height()) {
+                localX = totalWidth - availableWidth + 3;
+                localY = availableHeight - menu->height();
+            }
+            else {
+                localX = totalWidth - availableWidth +3;
+                localY = rect.y();
+            }
+        }
+        else if (rect.x() > availableWidth && rect.y() > availableHeight/2 && rect.y() < availableHeight) {
+            if (availableHeight - rect.y() - rect.height()/2 < menu->height()) {
+                localX = availableWidth - menu->width() - 3;
+                localY = availableHeight - menu->height();
+            }
+            else {
+                localX = availableWidth - menu->width() - 3;
+                localY = rect.y();
+            }
+        }
         showMenu(localX,localY);
         break;
     }
@@ -328,7 +396,7 @@ void DeviceSwitchWidget::init_widget_action(QWidget *wid, QString iconstr, QStri
 
     QHBoxLayout* layout=new QHBoxLayout(wid);
     wid->setLayout(layout);
-    wid->setFixedSize(244,36);
+    wid->setFixedSize(248,36);
     wid->setStyleSheet(style);
     wid->setFocusPolicy(Qt::NoFocus);
 
@@ -413,7 +481,9 @@ void DeviceSwitchWidget::deviceSwitchWidgetInit()
         break;
     }
 
-    deviceWidget->setStyleSheet("QWidget{ border-right: 1px solid rgba(255,255,255,0.08);}");
+    deviceWidget->setStyleSheet("QWidget{ border-right: 1px solid rgba(255,255,255,0.08); "
+                                "border-top-left-radius:20px;"
+                                "border-bottom-left-radius:20px }");
 }
 
 /*点击切换设备按钮对应的槽函数*/
@@ -698,12 +768,16 @@ void DeviceSwitchWidget::remove_application_control (DeviceSwitchWidget *w,const
     int i = w->stream_control_list->indexOf(name);
 
     w->stream_control_list->removeAt(i);
-
     //当播放音乐的应用程序退出后删除该项
-    QLayoutItem *item = w->appWidget->gridlayout->takeAt(i);
-    item->widget()->setParent(nullptr);
-    delete  item;
+//    QLayoutItem *item = w->appWidget->gridlayout->takeAt(i);
+//    item->widget()->setParent(nullptr);
+//    delete  item;
 
+    QLayoutItem *item ;
+    if ((item = w->appWidget->gridlayout->takeAt(i)) != 0) {
+        item->widget()->setParent(nullptr);
+        delete item;
+    }
     w->appWidget->gridlayout->update();
 //    w->standItemModel->removeRow(i);
     if (appnum <= 0) {
@@ -731,7 +805,7 @@ void DeviceSwitchWidget::add_app_to_tableview(DeviceSwitchWidget *w,int appnum, 
     volume = int(mate_mixer_stream_control_get_volume(control));
     normal = mate_mixer_stream_control_get_normal_volume(control);
     int display_volume = int(100 * volume / normal);
-
+    qDebug() << "添加应用音量";
     //设置应用的图标
     QString iconName = "/usr/share/applications/";
     iconName.append(app_icon_name);
@@ -786,21 +860,21 @@ void DeviceSwitchWidget::add_app_to_tableview(DeviceSwitchWidget *w,int appnum, 
     w->appWidget->gridlayout->setMargin(0);
 
     //设置每项的固定大小
-    w->appWidget->appLabel->setFixedSize(88,14);
+    w->appWidget->appLabel->setFixedSize(88,18);
     w->appWidget->appIconBtn->setFixedSize(32,32);
     w->appWidget->appIconLabel->setFixedSize(24,24);
     w->appWidget->appVolumeLabel->setFixedSize(24,14);
 
-    QSize icon_size(32,32);
+    QSize icon_size(36,36);
     w->appWidget->appIconBtn->setIconSize(icon_size);
     w->appWidget->appIconBtn->setStyleSheet("QPushButton{background:transparent;border:0px;padding-left:0px;}");
     w->appWidget->appIconBtn->setIcon(icon);
 //    w->appWidget->appIconBtn->setFlat(true);
-//    w->appWidget->appIconBtn->setFocusPolicy(Qt::NoFocus);
-    w->appWidget->appIconBtn->setEnabled(true);
+    w->appWidget->appIconBtn->setFocusPolicy(Qt::NoFocus);
+//    w->appWidget->appIconBtn->setEnabled(true);
 
     w->appWidget->appSlider->setMaximum(100);
-    w->appWidget->appSlider->setFixedSize(220,20);
+    w->appWidget->appSlider->setFixedSize(220,22);
 
     QString appSliderStr = app_name;
     QString appLabelStr = app_name;
@@ -1165,16 +1239,19 @@ void DeviceSwitchWidget::update_icon_input (DeviceSwitchWidget *w,MateMixerConte
     gvc_stream_status_icon_set_control (w, control);
 
     if (control != nullptr) {
-            g_debug ("Output icon enabled");
+        g_debug ("Output icon enabled");
     }
     else {
-            g_debug ("There is no output stream/control, output icon disabled");
+        g_debug ("There is no output stream/control, output icon disabled");
     }
-    w->devWidget->noInputWidgetInit();
+
     if(show) {
+//        w->devWidget->noInputWidgetInit();
         w->devWidget->inputWidgetShow();
     }
     else {
+        w->devWidget->inputWidgetHide();
+//        w->devWidget->noInputWidgetInit();
 //        w->devWidget->noInputWidgetInit();
     }
 }
