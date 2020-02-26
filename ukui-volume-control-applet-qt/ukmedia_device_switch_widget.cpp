@@ -248,7 +248,7 @@ void DeviceSwitchWidget::systemTrayMenuInit()
     menu->setWindowFlag(Qt::FramelessWindowHint);        //重要
     menu->setAttribute(Qt::WA_TranslucentBackground);    //重要
     menu->setStyleSheet("QMenu {height: 88px;width: 250px;background-color: rgba(19,19,20,95%);"
-                        "border:1px solid rgba(255, 255, 255, 0.05);padding: 6px 0px 6px 0px; border-radius: 6px}"
+                        "padding: 6px 0px 6px 0px; border-radius: 6px}"
                         "QMenu::item {font-size: 14px;color: #ffffff;"
                         "height: 36px;width: 250px;}"
                         "QMenu::separator{height:1px;background-color:rgba(19,19,20,0);margin-top:1px;margin-bottom:2px;}");
@@ -435,7 +435,7 @@ void DeviceSwitchWidget::init_widget_action(QWidget *wid, QString iconstr, QStri
 /*初始化主界面*/
 void DeviceSwitchWidget::deviceSwitchWidgetInit()
 {
-    const QSize iconSize(16,16);
+    const QSize iconSize(19,19);
     QWidget *deviceWidget = new QWidget(this);
     deviceWidget->setFixedSize(42,320);
 
@@ -462,6 +462,7 @@ void DeviceSwitchWidget::deviceSwitchWidgetInit()
     deviceBtn->setToolTip(tr("Device Volume"));
     appVolumeBtn->setToolTip(tr("Application Volume"));
 
+    deviceBtn->toolTip().resize(98,38);
     switch(btnType) {
         case DEVICE_VOLUME_BUTTON:
         appVolumeBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
