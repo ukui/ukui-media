@@ -124,6 +124,7 @@ Q_SIGNALS:
     void app_volume_changed(bool is_mute,int volume,const gchar *app_name);
     void mouse_middle_clicked_signal();
     void mouse_wheel_signal(bool step);
+    void keyboard_pressed_signal(int volumeGain);
 private Q_SLOTS:
 
     void device_button_clicked_slot();

@@ -23,6 +23,7 @@
 #include <QSlider>
 #include <QEvent>
 #include <QMouseEvent>
+//#include <QPaintEvent>
 #include <QCoreApplication>
 
 class UkmediaDeviceSlider : public QSlider
@@ -76,6 +77,8 @@ private:
     QLabel *noInputDeviceLabel;
     QPushButton *inputDeviceBtn;
     UkmediaDeviceSlider *inputDeviceSlider;
+protected:
+//    void paintEvent(QPaintEvent *event);
 
 };
 

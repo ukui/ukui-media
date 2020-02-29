@@ -18,8 +18,27 @@
 #include "ukmedia_scroll_widget.h"
 #include <QVBoxLayout>
 #include <QDebug>
+//#include <QStyleOption>
+//#include <QPainter>
+
+//void ScrollWitget::paintEvent(QPaintEvent *event)
+//{
+//    QStyleOption opt;
+//    opt.init(this);
+//    QPainter p(this);
+//    p.setBrush(QBrush(QColor(0x00,0xFF,0xFF,0x59)));
+//                      p.setPen(Qt::NoPen);
+//            p.setRenderHint(QPainter::Antialiasing);  // 反锯齿;
+//            p.drawRoundedRect(opt.rect,15,15);
+////            style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+////    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+//    QWidget::paintEvent(event);
+//}
+
+
 ScrollWitget::ScrollWitget(QWidget *parent) : QWidget (parent)
 {
+    setAttribute(Qt::WA_TranslucentBackground);
     area = new QScrollArea(this);
 
     area->setFixedSize(358,320);

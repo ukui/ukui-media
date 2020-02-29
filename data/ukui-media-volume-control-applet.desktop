@@ -18,4 +18,4 @@ X-UKUI-Bugzilla-Component=ukui-volume-control
 #X-UKUI-Autostart-Phase=Panel
 X-MATE-Autostart-Phase=Applications
 X-KDE-autostart-after=panel
-X-UKUI-Autostart-Notify=true
+X-UKUI-AutoRestart=true

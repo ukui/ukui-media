@@ -21,6 +21,23 @@
 #include <QVBoxLayout>
 #include <QSpacerItem>
 #include <QDebug>
+//#include <QStyleOption>
+//#include <QPainter>
+
+//void UkmediaDeviceWidget::paintEvent(QPaintEvent *event)
+//{
+//    QStyleOption opt;
+//    opt.init(this);
+//    QPainter p(this);
+//    p.setBrush(QBrush(QColor(0x00,0xFF,0xFF,0x59)));
+//                      p.setPen(Qt::NoPen);
+//            p.setRenderHint(QPainter::Antialiasing);  // 反锯齿;
+//            p.drawRoundedRect(opt.rect,15,15);
+////            style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+////    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+//    QWidget::paintEvent(event);
+//}
+
 
 UkmediaDeviceSlider::UkmediaDeviceSlider(QWidget *parent)
 {
@@ -34,6 +51,7 @@ UkmediaDeviceSlider::~UkmediaDeviceSlider()
 
 UkmediaDeviceWidget::UkmediaDeviceWidget(QWidget *parent) : QWidget (parent)
 {
+    setAttribute(Qt::WA_TranslucentBackground);
     //初始化设备界面
     deviceWidget = new QWidget(this);
     outputWidget = new QWidget(deviceWidget);

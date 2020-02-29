@@ -88,6 +88,11 @@ void DeviceSwitchWidget::paintEvent(QPaintEvent *event)
     QStyleOption opt;
     opt.init(this);
     QPainter p(this);
+//    p.setBrush(QBrush(QColor(0x00,0xFF,0xFF,0x59)));
+                      p.setPen(Qt::NoPen);
+            p.setRenderHint(QPainter::Antialiasing);  // 反锯齿;
+//            p.drawRoundedRect(opt.rect,6,6);
+            style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
     QWidget::paintEvent(event);
 }
@@ -120,7 +125,7 @@ void DeviceSwitchWidget::showMenu(int x,int y)
 
 DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
 {
-//    setAttribute(Qt::WA_TranslucentBackground);
+    setAttribute(Qt::WA_TranslucentBackground);
     appScrollWidget = new ScrollWitget(this);
     devScrollWidget = new ScrollWitget(this);
     devWidget = new UkmediaDeviceWidget(this);
@@ -178,16 +183,15 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     setWindowOpacity(0.95);
 
     this->setObjectName("mainWidget");
-    this->setStyleSheet("QWidget#mainWidget{width:400px;"
-                        "height:320px;"
+    this->setStyleSheet("QWidget#mainWidget{"
                         "background:rgba(14,19,22,0.95);"
 //                        "border:4px solid rgba(225, 0, 0, 1);"
-                        "border-radius:6px;}");
+                        "border-radius:6px 6px 6px 6px;}");
     //
-    appWidget->setStyleSheet("QWidget{border-top-right-radius:20px;"
-                           "border-bottom-right-radius:20px }");
-    devWidget->setStyleSheet("QWidget{border-top-left-radius:20px;"
-                           "border-bottom-left-radius:20px }");
+//    appWidget->setStyleSheet("QWidget{border-top-right-radius:20px;"
+//                           "border-bottom-right-radius:20px }");
+//    devWidget->setStyleSheet("QWidget{border-top-left-radius:20px;"
+//                           "border-bottom-left-radius:20px }");
 //    setWindowFlags(Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint);
 }
 
@@ -305,23 +309,27 @@ void DeviceSwitchWidget::activatedSystemTrayIconSlot(QSystemTrayIcon::Activation
             if (rect.x() > availableWidth/2 && rect.x()< availableWidth  && rect.y() > availableHeight) { //下
                 if (availableWidth - rect.x() - rect.width()/2 < this->width() / 2)
                     this->setGeometry(availableWidth-this->width(),availableHeight-this->height()-3,this->width(),this->height());
-                this->setGeometry(localX,availableHeight-this->height()-3,400,320);
+                else
+                    this->setGeometry(localX,availableHeight-this->height()-3,this->width(),this->height());
             }
             else if (rect.x() > availableWidth/2 && rect.x()< availableWidth && rect.y() < 40 ) { //上
                 if (availableWidth - rect.x() - rect.width()/2 < this->width() / 2)
                     this->setGeometry(availableWidth-this->width(),totalHeight-availableHeight+3,this->width(),this->height());
-                this->setGeometry(localX,totalHeight-availableHeight+3,this->width(),this->height());
+                else
+                    this->setGeometry(localX,totalHeight-availableHeight+3,this->width(),this->height());
             }
             else if (rect.x() < 40 && rect.y() > availableHeight/2 && rect.y()< availableHeight) {
                 if (availableHeight - rect.y() - rect.height()/2 < this->height() /2)
                     this->setGeometry(totalWidth - availableWidth + 3,availableHeight - this->height(),this->width(),this->height());
-                this->setGeometry(totalWidth-availableWidth+3,localY,this->width(),this->height());//左
+                else
+                    this->setGeometry(totalWidth-availableWidth+3,localY,this->width(),this->height());//左
             }
             else if (rect.x() > availableWidth && rect.y() > availableHeight/2 && rect.y() < availableHeight) {
                 localX = availableWidth - this->width();
                 if (availableHeight - rect.y() - rect.height()/2 < this->height() /2)
                     this->setGeometry(availableWidth - 3,availableHeight - this->height(),this->width(),this->height() );
-                this->setGeometry(localX-3,localY,400,320);
+                else
+                    this->setGeometry(localX-3,localY,this->width(),this->height());
             }
             this->show();
             break;
@@ -1394,6 +1402,14 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
             w->devWidget->outputDeviceSlider->setValue(volume-5);
         }
     });
+
+    //上下左右控制声音
+    connect(w,&DeviceSwitchWidget::keyboard_pressed_signal,[=](int volumeGain){
+        int volume = int(mate_mixer_stream_control_get_volume(control));
+        volume = int(volume*100/65536.0+0.5);
+        w->devWidget->outputDeviceSlider->setValue(volume+volumeGain);
+    });
+
     if (control != nullptr) {
             g_debug ("Output icon enabled");
     }
@@ -1602,8 +1618,25 @@ void DeviceSwitchWidget::contextMenuEvent(QContextMenuEvent *event)
 */
 void DeviceSwitchWidget::keyPressEvent(QKeyEvent *event)
 {
+    int volumeGain ;
     if (event->key() == Qt::Key_Escape) {
         hideWindow();
+    }
+    else if (event->key() == Qt::Key_Up) {
+        volumeGain = 1;
+        Q_EMIT keyboard_pressed_signal(volumeGain);
+    }
+    else if (event->key() == Qt::Key_Down) {
+        volumeGain = -1;
+        Q_EMIT keyboard_pressed_signal(volumeGain);
+    }
+    else if (event->key() == Qt::Key_Left) {
+        volumeGain = -1;
+        Q_EMIT keyboard_pressed_signal(volumeGain);
+    }
+    else if (event->key() == Qt::Key_Right) {
+        volumeGain = 1;
+        Q_EMIT keyboard_pressed_signal(volumeGain);
     }
 }
 

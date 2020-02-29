@@ -19,7 +19,9 @@
 #define SCROLLWITGET_H
 #include <QWidget>
 #include <QScrollBar>
+//#include <QPaintEvent>
 #include <QScrollArea>
+
 class ScrollWitget:public QWidget
 {
     Q_OBJECT
@@ -32,6 +34,8 @@ public:
 private:
     QScrollBar *scrollBar;
     QScrollArea *area;
+protected:
+//    void paintEvent(QPaintEvent *event);
 };
 
 #endif // SCROLLWITGET_H
