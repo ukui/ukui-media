@@ -180,7 +180,7 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
 
     setWindowFlags(Qt::WindowStaysOnTopHint|Qt::Popup);
     setAttribute(Qt::WA_TranslucentBackground);
-    setWindowOpacity(0.95);
+    setWindowOpacity(0.8);
 
     this->setObjectName("mainWidget");
     this->setStyleSheet("QWidget#mainWidget{"
@@ -242,7 +242,7 @@ void DeviceSwitchWidget::systemTrayMenuInit()
     menu->setObjectName("outputSoundMenu");
     soundSystemTrayIcon->setContextMenu(menu);
 
-    menu->setWindowOpacity(0.95);
+    menu->setWindowOpacity(0.8);
 
     soundSystemTrayIcon->setVisible(true);
 
