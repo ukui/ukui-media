@@ -89,8 +89,9 @@ UkmediaDeviceWidget::UkmediaDeviceWidget(QWidget *parent) : QWidget (parent)
     noInputWidgetInit();
 
     outputVolumeLabel->setStyleSheet("QLabel{background:transparent;"
-                                         "border:0px;color:#ffffff;"
-                                         "font-size:14px;}");
+                                     "border:0px;color:#ffffff;"
+                                     "font-family:Noto Sans CJK SC;"
+                                     "font-size:14px;}");
     outputDeviceLabel->setStyleSheet("QLabel{background:transparent;"
                                      "border:0px;color:#ffffff;"
                                      "font-family:Noto Sans CJK SC;"
@@ -98,23 +99,27 @@ UkmediaDeviceWidget::UkmediaDeviceWidget(QWidget *parent) : QWidget (parent)
                                      "color:rgba(255,255,255,1);"
                                      "line-height:34px;"
                                      "opacity:0.97;"
-                                     "font-size:20px;}");
+                                     "font-size:18px;}");
     outputDeviceDisplayLabel->setStyleSheet("QLabel{width:126px;"
                                             "height:14px;"
+                                            "font-family:Noto Sans CJK SC;"
                                             "font-size:14px;"
                                             "color:rgba(255,255,255,0.57);"
                                             "line-height:28px;}");
     inputDeviceLabel->setStyleSheet("QLabel{background:transparent;"
-                                     "border:0px;color:#ffffff;"
-                                     "font-size:20px;}");
+                                    "border:0px;color:#ffffff;"
+                                    "font-family:Noto Sans CJK SC;"
+                                    "font-size:18px;}");
     inputDeviceDisplayLabel->setStyleSheet("QLabel{width:126px;"
                                            "height:14px;"
+                                           "font-family:Noto Sans CJK SC;"
                                            "font-size:14px;"
                                            "color:rgba(255,255,255,0.57);"
                                            "line-height:28px;}");
     inputVolumeLabel->setStyleSheet("QLabel{background:transparent;"
-                                         "border:0px;color:#ffffff;"
-                                         "font-size:14px;}");
+                                    "border:0px;color:#ffffff;"
+                                    "font-family:Noto Sans CJK SC;"
+                                    "font-size:14px;}");
 }
 
 
@@ -166,6 +171,7 @@ void UkmediaDeviceWidget::noInputWidgetInit()
     noInputDeviceLabel->move(18,154);
     noInputDeviceLabel->setStyleSheet("QLabel{width:126px;"
                                       "height:14px;"
+                                      "font-family:Noto Sans CJK SC;"
                                       "font-size:14px;"
                                       "color:rgba(255,255,255,0.57);"
                                       "line-height:28px;}");
@@ -226,6 +232,22 @@ void UkmediaDeviceWidget::inputWidgetHide()
     inputSliderWidget->hide();
     inputDisplayWidget->hide();
     noInputDeviceLabel->show();
+}
+
+/*
+    滚轮滚动事件
+*/
+void UkmediaDeviceWidget::wheelEvent(QWheelEvent *event)
+{
+    bool step;
+    if (event->delta() >0 ) {
+        step = true;
+    }
+    else if (event->delta() < 0 ) {
+        step = false;
+    }
+    Q_EMIT mouse_wheel_signal(step);
+    event->accept();
 }
 
 UkmediaDeviceWidget::~UkmediaDeviceWidget()

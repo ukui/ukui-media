@@ -22,6 +22,7 @@
 #include <QPushButton>
 #include <QSlider>
 #include <QGridLayout>
+#include <QScrollArea>
 //#include <QPaintEvent>
 
 class ApplicationVolumeWidget : public QWidget
@@ -34,13 +35,14 @@ public:
 private:
     QLabel *applicationLabel;
     QLabel *noAppLabel;
-
+    QWidget *displayAppVolumeWidget;
     QStringList *app_volume_list;
     QLabel *appLabel;
     QLabel *appIconLabel;
     QPushButton *appIconBtn;
     QLabel *appVolumeLabel;
     QSlider *appSlider;
+    QScrollArea *appArea;
     QGridLayout *gridlayout;
 protected:
 //    void paintEvent(QPaintEvent *event);

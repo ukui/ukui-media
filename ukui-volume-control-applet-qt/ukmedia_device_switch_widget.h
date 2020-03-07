@@ -80,9 +80,9 @@ public:
     static void on_stream_control_added (MateMixerStream *stream,const gchar *name,DeviceSwitchWidget  *w);
     static void on_stream_control_removed (MateMixerStream *stream,const gchar *name,DeviceSwitchWidget *w);
     static void remove_application_control (DeviceSwitchWidget *w,const gchar *name);
-    static void add_app_to_tableview(DeviceSwitchWidget *w,int appnum,const gchar *app_name,QString app_icon_name,MateMixerStreamControl *control);
+    static void add_app_to_appwidget(DeviceSwitchWidget *w,int appnum,const gchar *app_name,QString app_icon_name,MateMixerStreamControl *control);
     static void on_context_stored_control_added (MateMixerContext *context,const gchar *name,DeviceSwitchWidget *w);
-    static void update_app_volume (MateMixerStreamControl *control, GParamSpec *pspec ,DeviceSwitchWidget *w);
+    static void update_app_volume (MateMixerStreamControl *control, QString *pspec ,DeviceSwitchWidget *w);
 
     static void on_context_device_added (MateMixerContext *context, const gchar *name, DeviceSwitchWidget *w);
     static void add_device (DeviceSwitchWidget *w, MateMixerDevice *device);
@@ -121,12 +121,13 @@ public:
     static gboolean update_default_input_stream (DeviceSwitchWidget *w);
     friend class UkmediaSystemTrayIcon;
 Q_SIGNALS:
-    void app_volume_changed(bool is_mute,int volume,const gchar *app_name);
+    void app_volume_changed(bool is_mute,int volume,QString app_name);
     void mouse_middle_clicked_signal();
     void mouse_wheel_signal(bool step);
     void keyboard_pressed_signal(int volumeGain);
+    void app_name_signal(QString app_name);
+    void system_muted_signal(bool status);
 private Q_SLOTS:
-
     void device_button_clicked_slot();
     void appvolume_button_clicked_slot();
     void activatedSystemTrayIconSlot(QSystemTrayIcon::ActivationReason reason);
@@ -137,7 +138,6 @@ private:
 
     ScrollWitget *devScrollWidget;
     ScrollWitget *appScrollWidget;
-    QScrollArea *devArea;
     UkmediaDeviceWidget *devWidget;
     ApplicationVolumeWidget *appWidget;
     MateMixerStream *stream;
@@ -151,6 +151,7 @@ private:
     QStringList *output_stream_list;
     QStringList *input_stream_list;
     QStringList *stream_control_list;
+    QStringList *app_name_list;
 
     GSettings *sound_settings;
     UkmediaTrayIcon *soundSystemTrayIcon;
@@ -166,7 +167,7 @@ protected:
     void paintEvent(QPaintEvent *event);
     bool event(QEvent *event);//重写窗口事件
 //    void mousePressEvent(QMouseEvent *event);
-    virtual void wheelEvent(QWheelEvent *event);
+//    virtual void wheelEvent(QWheelEvent *event);
     void contextMenuEvent(QContextMenuEvent *event);
     void keyPressEvent(QKeyEvent *event);
 };

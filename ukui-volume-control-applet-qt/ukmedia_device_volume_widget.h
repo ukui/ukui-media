@@ -77,7 +77,10 @@ private:
     QLabel *noInputDeviceLabel;
     QPushButton *inputDeviceBtn;
     UkmediaDeviceSlider *inputDeviceSlider;
+Q_SIGNALS:
+    void mouse_wheel_signal(bool step);
 protected:
+    void wheelEvent(QWheelEvent *event);
 //    void paintEvent(QPaintEvent *event);
 
 };
