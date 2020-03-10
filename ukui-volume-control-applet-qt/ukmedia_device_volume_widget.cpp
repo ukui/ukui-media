@@ -38,17 +38,6 @@
 //    QWidget::paintEvent(event);
 //}
 
-
-UkmediaDeviceSlider::UkmediaDeviceSlider(QWidget *parent)
-{
-    Q_UNUSED(parent);
-}
-
-UkmediaDeviceSlider::~UkmediaDeviceSlider()
-{
-
-}
-
 UkmediaDeviceWidget::UkmediaDeviceWidget(QWidget *parent) : QWidget (parent)
 {
     setAttribute(Qt::WA_TranslucentBackground);
@@ -66,7 +55,7 @@ UkmediaDeviceWidget::UkmediaDeviceWidget(QWidget *parent) : QWidget (parent)
     inputVolumeLabel = new QLabel("0",inputSliderWidget);
     inputDeviceDisplayLabel = new QLabel(tr("Microphone"),inputDisplayWidget);
     inputDeviceBtn = new QPushButton(inputWidget);
-    inputDeviceSlider = new UkmediaDeviceSlider(inputSliderWidget);
+    inputDeviceSlider = new UkmediaVolumeSlider(inputSliderWidget);
 
     outputWidget->setFixedSize(304,52);
     outputDisplayWidget->setFixedSize(252,52);
@@ -76,7 +65,7 @@ UkmediaDeviceWidget::UkmediaDeviceWidget(QWidget *parent) : QWidget (parent)
     outputVolumeLabel = new QLabel("0",outputSliderWidget);
     outputDeviceDisplayLabel = new QLabel(tr("Speaker Realtek Audio"),outputDisplayWidget);
     outputDeviceBtn = new QPushButton(outputWidget);
-    outputDeviceSlider = new UkmediaDeviceSlider(outputSliderWidget);
+    outputDeviceSlider = new UkmediaVolumeSlider(outputSliderWidget);
     noInputDeviceLabel = new QLabel(tr("Input device can not be detected"),this);
 
     inputDeviceBtn->setFocusPolicy(Qt::NoFocus);
@@ -234,21 +223,6 @@ void UkmediaDeviceWidget::inputWidgetHide()
     noInputDeviceLabel->show();
 }
 
-/*
-    滚轮滚动事件
-*/
-void UkmediaDeviceWidget::wheelEvent(QWheelEvent *event)
-{
-    bool step;
-    if (event->delta() >0 ) {
-        step = true;
-    }
-    else if (event->delta() < 0 ) {
-        step = false;
-    }
-    Q_EMIT mouse_wheel_signal(step);
-    event->accept();
-}
 
 UkmediaDeviceWidget::~UkmediaDeviceWidget()
 {

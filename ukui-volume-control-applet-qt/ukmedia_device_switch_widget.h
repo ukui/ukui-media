@@ -23,6 +23,7 @@
 #include "ukmedia_scroll_widget.h"
 #include "ukmedia_device_volume_widget.h"
 #include "ukmedia_application_volume_widget.h"
+#include "ukmedia_mini_master_volume_widget.h"
 #include <QMenu>
 #include <QCheckBox>
 #include <QWidgetAction>
@@ -84,6 +85,7 @@ public:
     static void on_context_stored_control_added (MateMixerContext *context,const gchar *name,DeviceSwitchWidget *w);
     static void update_app_volume (MateMixerStreamControl *control, QString *pspec ,DeviceSwitchWidget *w);
 
+    static void app_volume_mute (MateMixerStreamControl *control, QString *pspec ,DeviceSwitchWidget *w);
     static void on_context_device_added (MateMixerContext *context, const gchar *name, DeviceSwitchWidget *w);
     static void add_device (DeviceSwitchWidget *w, MateMixerDevice *device);
 
@@ -94,7 +96,6 @@ public:
     static void on_stream_control_mute_notify (MateMixerStreamControl *control,GParamSpec *pspec,DeviceSwitchWidget *w);
 
     static void on_context_default_output_stream_notify (MateMixerContext *context,GParamSpec *pspec,DeviceSwitchWidget *w);
-
     static void on_context_stored_control_removed (MateMixerContext *context,const gchar *name,DeviceSwitchWidget *w);
     static void set_context(DeviceSwitchWidget *w,MateMixerContext *context);
 
@@ -127,19 +128,25 @@ Q_SIGNALS:
     void keyboard_pressed_signal(int volumeGain);
     void app_name_signal(QString app_name);
     void system_muted_signal(bool status);
+//    void appvolume_mute_change_mastervolume_status();
 private Q_SLOTS:
     void device_button_clicked_slot();
     void appvolume_button_clicked_slot();
     void activatedSystemTrayIconSlot(QSystemTrayIcon::ActivationReason reason);
     void jumpControlPanelSlot();
+    void miniToAdvancedWidget();
+    void advancedToMiniWidget();
+    void deviceComboxIndexChanged(QString str);
 private:
     QPushButton *deviceBtn;
     QPushButton *appVolumeBtn;
+    QPushButton *switchToMiniBtn;
 
     ScrollWitget *devScrollWidget;
     ScrollWitget *appScrollWidget;
     UkmediaDeviceWidget *devWidget;
     ApplicationVolumeWidget *appWidget;
+    UkmediaMiniMasterVolumeWidget *miniWidget;
     MateMixerStream *stream;
     MateMixerStream *input;
     MateMixerContext *context;

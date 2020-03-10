@@ -20,9 +20,9 @@
 #include <QWidget>
 #include <QLabel>
 #include <QPushButton>
-#include <QSlider>
 #include <QGridLayout>
 #include <QScrollArea>
+#include "ukmedia_volume_slider.h"
 //#include <QPaintEvent>
 
 class ApplicationVolumeWidget : public QWidget
@@ -35,6 +35,13 @@ public:
 private:
     QLabel *applicationLabel;
     QLabel *noAppLabel;
+    QLabel *systemVolumeLabel;
+    QPushButton *systemVolumeBtn;
+    UkmediaVolumeSlider *systemVolumeSlider;
+    QLabel *systemVolumeDisplayLabel;
+
+    QWidget *upWidget;
+    QWidget *systemVolumeWidget;
     QWidget *displayAppVolumeWidget;
     QStringList *app_volume_list;
     QLabel *appLabel;

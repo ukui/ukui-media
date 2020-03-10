@@ -45,8 +45,10 @@ PKGCONFIG += \
 HEADERS += \
     ukmedia_device_switch_widget.h \
     ukmedia_device_volume_widget.h \
+    ukmedia_mini_master_volume_widget.h \
     ukmedia_scroll_widget.h \
-    ukmedia_application_volume_widget.h
+    ukmedia_application_volume_widget.h \
+    ukmedia_volume_slider.h
 
 
 SOURCES += \
@@ -54,7 +56,9 @@ SOURCES += \
     ukmedia_device_switch_widget.cpp \
     ukmedia_device_volume_widget.cpp\
     ukmedia_application_volume_widget.cpp \
-    ukmedia_scroll_widget.cpp
+    ukmedia_mini_master_volume_widget.cpp \
+    ukmedia_scroll_widget.cpp \
+    ukmedia_volume_slider.cpp
 
 RESOURCES += \
     res.qrc

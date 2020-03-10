@@ -25,27 +25,7 @@
 #include <QMouseEvent>
 //#include <QPaintEvent>
 #include <QCoreApplication>
-
-class UkmediaDeviceSlider : public QSlider
-{
-    Q_OBJECT
-public:
-    UkmediaDeviceSlider(QWidget *parent = nullptr);
-    ~UkmediaDeviceSlider();
-
-protected:
-    void mousePressEvent(QMouseEvent *ev)
-    {
-        //注意应先调用父类的鼠标点击处理事件，这样可以不影响拖动的情况
-        QSlider::mousePressEvent(ev);
-        //获取鼠标的位置，这里并不能直接从ev中取值（因为如果是拖动的话，鼠标开始点击的位置没有意义了）
-        double pos = ev->pos().x() / (double)width();
-        setValue(pos *(maximum() - minimum()) + minimum());
-        //向父窗口发送自定义事件event type，这样就可以在父窗口中捕获这个事件进行处理
-        QEvent evEvent(static_cast<QEvent::Type>(QEvent::User + 1));
-        QCoreApplication::sendEvent(parentWidget(), &evEvent);
-    }
-};
+#include "ukmedia_volume_slider.h"
 
 class UkmediaDeviceWidget:public QWidget
 {
@@ -62,7 +42,7 @@ private:
     QLabel *outputVolumeLabel;
     QLabel *outputDeviceDisplayLabel;
     QPushButton *outputDeviceBtn;
-    UkmediaDeviceSlider *outputDeviceSlider;
+    UkmediaVolumeSlider *outputDeviceSlider;
     QWidget *inputWidget;
     QWidget *deviceWidget;
     QWidget *outputWidget;
@@ -76,11 +56,11 @@ private:
     QLabel *inputDeviceDisplayLabel;
     QLabel *noInputDeviceLabel;
     QPushButton *inputDeviceBtn;
-    UkmediaDeviceSlider *inputDeviceSlider;
+    UkmediaVolumeSlider *inputDeviceSlider;
 Q_SIGNALS:
     void mouse_wheel_signal(bool step);
 protected:
-    void wheelEvent(QWheelEvent *event);
+//    void wheelEvent(QWheelEvent *event);
 //    void paintEvent(QPaintEvent *event);
 
 };
