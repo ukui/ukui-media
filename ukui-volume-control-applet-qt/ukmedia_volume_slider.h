@@ -4,6 +4,32 @@
 #include <QCoreApplication>
 #include <QMouseEvent>
 #include <QWidget>
+#include <QToolButton>
+
+enum DisplayerMode{
+    MINI_MODE,
+    ADVANCED_MODE
+};
+
+class UkuiMediaButton:public QToolButton
+{
+    Q_OBJECT
+public:
+    UkuiMediaButton(QWidget *parent = nullptr);
+    ~UkuiMediaButton();
+    friend class UkmediaMiniMasterVolumeWidget;
+
+Q_SIGNALS:
+    void advanceToMiniSignal();
+    void miniToAdvanceSignal();
+    void moveMiniSwitchBtnSignale();
+    void moveAdvanceSwitchBtnSignal();
+protected:
+    void mousePressEvent(QMouseEvent *e);
+    void mouseReleaseEvent(QMouseEvent *e);
+private:
+};
+
 class UkmediaVolumeSlider : public QSlider
 {
     Q_OBJECT

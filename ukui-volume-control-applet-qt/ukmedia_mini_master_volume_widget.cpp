@@ -10,9 +10,11 @@ UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QWidget *parent) : 
     muteBtn = new QPushButton(masterWidget);
     displayVolumeLabel = new QLabel(masterWidget);
     masterVolumeSlider = new UkmediaVolumeSlider(masterWidget);
-//    deviceLabel = new QLabel(this);
+
     deviceCombox = new QComboBox(this);
-    switchBtn = new QPushButton(this);
+    switchBtn = new UkuiMediaButton(this);
+    switchBtn->setParent(this);
+    switchBtn->setStyle(new CustomStyle());
     deviceBtn = new QPushButton(this);
     deviceLabel = new QLabel(tr("Speaker (Realtek Audio)"),this);
     QSpacerItem *item1 = new QSpacerItem(16,20);
@@ -20,14 +22,15 @@ UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QWidget *parent) : 
     QSpacerItem *item3 = new QSpacerItem(15,20);
     QSpacerItem *item4 = new QSpacerItem(19,20);
 
+    switchBtn->show();
     masterVolumeSlider->setOrientation(Qt::Horizontal);
     masterVolumeSlider->setRange(0,100);
-    deviceBtn->setFixedSize(12,16);
+    deviceBtn->setFixedSize(16,16);
     deviceLabel->setFixedSize(154,14);
     masterWidget->setFixedSize(345,31);
-    switchBtn->setFixedSize(36,36);
     deviceCombox->setFixedSize(300,36);
     displayVolumeLabel->setFixedSize(32,20);
+    switchBtn->resize(36,36);
 
     deviceBtn->move(16,16);
     deviceLabel->move(36,18);
@@ -35,14 +38,15 @@ UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QWidget *parent) : 
     switchBtn->move(307,6);
     masterWidget->move(0,59);
     QSize switchSize(16,16);
-    QSize deviceSize(12,16);
-    QSize iconSize(31,24);
-    muteBtn->setFixedSize(31,24);
+    QSize deviceSize(16,16);
+    QSize iconSize(32,32);
+    muteBtn->setFixedSize(32,32);
     masterVolumeSlider->setFixedSize(220,22);
     muteBtn->setIconSize(iconSize);
     switchBtn->setIconSize(switchSize);
     deviceBtn->setIconSize(deviceSize);
 
+    switchBtn->setIcon(QIcon("/usr/share/ukui-media/img/complete-module.svg"));
     this->setFixedSize(345,100);
     setWindowFlags(Qt::WindowStaysOnTopHint|Qt::Popup);
     setAttribute(Qt::WA_TranslucentBackground);
@@ -63,8 +67,7 @@ UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QWidget *parent) : 
     setObjectName("miniWidget");
     deviceCombox->setVisible(false);
 
-    switchBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
-                             "padding-left:0px;}");
+    connect(switchBtn,SIGNAL(moveMiniSwitchBtnSignale()),this,SLOT(moveMiniSwitchBtnSlot()));
     deviceBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
                              "padding-left:0px;}");
     deviceLabel->setStyleSheet("QLabel{font-size:14px;font-family:Noto Sans CJK SC;"
@@ -129,6 +132,14 @@ void UkmediaMiniMasterVolumeWidget::wheelEvent(QWheelEvent *event)
     }
     Q_EMIT mouse_wheel_signal(step);
     event->accept();
+}
+
+/*
+    点击按钮是移动1px
+*/
+void UkmediaMiniMasterVolumeWidget::moveMiniSwitchBtnSlot()
+{
+    switchBtn->move(308,7);
 }
 
 UkmediaMiniMasterVolumeWidget::~UkmediaMiniMasterVolumeWidget()

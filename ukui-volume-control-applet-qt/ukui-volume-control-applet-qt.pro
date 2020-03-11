@@ -43,6 +43,7 @@ PKGCONFIG += \
     Qt5Xdg
 
 HEADERS += \
+    customstyle.h \
     ukmedia_device_switch_widget.h \
     ukmedia_device_volume_widget.h \
     ukmedia_mini_master_volume_widget.h \
@@ -52,6 +53,7 @@ HEADERS += \
 
 
 SOURCES += \
+    customstyle.cpp \
     main.cpp \
     ukmedia_device_switch_widget.cpp \
     ukmedia_device_volume_widget.cpp\

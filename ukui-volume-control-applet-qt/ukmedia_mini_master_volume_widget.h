@@ -6,6 +6,8 @@
 #include <QPushButton>
 #include <QComboBox>
 #include "ukmedia_volume_slider.h"
+#include "customstyle.h"
+
 
 class UkmediaMiniMasterVolumeWidget : public QWidget
 {
@@ -16,13 +18,17 @@ public:
     friend class DeviceSwitchWidget;
 Q_SIGNALS:
     void mouse_wheel_signal(bool step);
+
+private Q_SLOTS:
+    void moveMiniSwitchBtnSlot();
 private:
     QWidget *masterWidget;
     UkmediaVolumeSlider *masterVolumeSlider;
     QLabel *displayVolumeLabel;
 //    QLabel *deviceLabel;
     QPushButton *muteBtn;
-    QPushButton *switchBtn;
+    UkuiMediaButton *switchBtn;
+
     QPushButton *deviceBtn;
     QLabel *deviceLabel;
     QComboBox *deviceCombox;

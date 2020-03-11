@@ -137,10 +137,11 @@ private Q_SLOTS:
     void miniToAdvancedWidget();
     void advancedToMiniWidget();
     void deviceComboxIndexChanged(QString str);
+    void moveAdvanceSwitchBtnSlot();
 private:
     QPushButton *deviceBtn;
     QPushButton *appVolumeBtn;
-    QPushButton *switchToMiniBtn;
+    UkuiMediaButton *switchToMiniBtn;
 
     ScrollWitget *devScrollWidget;
     ScrollWitget *appScrollWidget;

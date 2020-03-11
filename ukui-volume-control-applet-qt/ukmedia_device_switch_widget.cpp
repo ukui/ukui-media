@@ -45,20 +45,15 @@ extern "C" {
 #include <QDebug>
 
 typedef enum {
-    MINI_MODE,
-    ADVANCED_MODE
-}DisplayerMode;
-
-typedef enum {
     DEVICE_VOLUME_BUTTON,
     APP_VOLUME_BUTTON
 }ButtonType;
 
-DisplayerMode displayMode = MINI_MODE;
 ButtonType btnType = DEVICE_VOLUME_BUTTON;
 guint appnum = 0;
 int app_count = 0;
 bool isShow = true;
+extern DisplayerMode displayMode ;
 QString application_name;
 
 UkmediaTrayIcon::UkmediaTrayIcon(QWidget *parent)
@@ -164,11 +159,15 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     appWidget->displayAppVolumeWidget->setFixedWidth(358);
     appWidget->displayAppVolumeWidget->move(0,143);
 
-    switchToMiniBtn = new QPushButton(this);
+    switchToMiniBtn = new UkuiMediaButton(this);
+    switchToMiniBtn->setParent(this);
     QSize switchSize(16,16);
     switchToMiniBtn->setIconSize(switchSize);
     switchToMiniBtn->setFixedSize(36,36);
     switchToMiniBtn->move(360,15);
+    switchToMiniBtn->setStyle(new CustomStyle());
+
+    switchToMiniBtn->setIcon(QIcon("/usr/share/ukui-media/img/mini-module.svg"));
 
     output_stream_list = new QStringList;
     input_stream_list = new QStringList;
@@ -205,6 +204,8 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     systemTrayMenuInit();
 
     deviceSwitchWidgetInit();
+
+    connect(switchToMiniBtn,SIGNAL(moveAdvanceSwitchBtnSignal()),this,SLOT(moveAdvanceSwitchBtnSlot()));
     //mini模式下切换设备
     connect(miniWidget->deviceCombox,SIGNAL(currentIndexChanged(QString)),this,SLOT(deviceComboxIndexChanged(QString)));
     context_set_property(this);
@@ -215,9 +216,9 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
                      this);
 
     //mini切换高级模式
-    connect(miniWidget->switchBtn,SIGNAL(clicked()),this,SLOT(miniToAdvancedWidget()));
+    connect(miniWidget->switchBtn,SIGNAL(miniToAdvanceSignal()),this,SLOT(miniToAdvancedWidget()));
     //高级切换mini模式
-    connect(switchToMiniBtn,SIGNAL(clicked()),this,SLOT(advancedToMiniWidget()));
+    connect(switchToMiniBtn,SIGNAL(advanceToMiniSignal()),this,SLOT(advancedToMiniWidget()));
     //高级模式下设备音量和应用音量的切换
     connect(deviceBtn,SIGNAL(clicked()),this,SLOT(device_button_clicked_slot()));
     connect(appVolumeBtn,SIGNAL(clicked()),this,SLOT(appvolume_button_clicked_slot()));
@@ -232,8 +233,6 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     this->setStyleSheet("QWidget#mainWidget{"
                         "background:rgba(14,19,22,0.9);"
                         "border-radius:6px 6px 6px 6px;}");
-    switchToMiniBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
-                                   "padding-left:0px;}");
     appWidget->setObjectName("appWidget");
     appWidget->setStyleSheet("QWidget#appWidget{background:rgb(14,19,22);}");
     appWidget->displayAppVolumeWidget->setObjectName("displayAppVolumeWidget");
@@ -344,6 +343,14 @@ void DeviceSwitchWidget::jumpControlPanelSlot()
 }
 
 /*
+    按下高级模式的切换界面按钮移动1px
+*/
+void DeviceSwitchWidget::moveAdvanceSwitchBtnSlot()
+{
+    switchToMiniBtn->move(361,16);
+}
+
+/*
     mini 跳转到 advance
 */
 void DeviceSwitchWidget::miniToAdvancedWidget()
@@ -352,6 +359,7 @@ void DeviceSwitchWidget::miniToAdvancedWidget()
     int localX ,availableWidth,totalWidth;
     int localY,availableHeight,totalHeight;
     rect = soundSystemTrayIcon->geometry();
+    qDebug() << "mini to advace";
     //屏幕可用宽高
     availableWidth = QGuiApplication::screens().at(0)->availableGeometry().width();
     availableHeight = QGuiApplication::screens().at(0)->availableGeometry().height();
@@ -2055,6 +2063,7 @@ void DeviceSwitchWidget::updateSystemTrayIcon(int volume,bool isMute)
         muteCheckBox->setChecked(true);
         soundSystemTrayIcon->setIcon(icon);
         miniWidget->muteBtn->setIcon(icon);
+        appWidget->systemVolumeBtn->setIcon(icon);
     }
     else if (volume <= 0) {
         systemTrayIcon = "audio-volume-muted";
@@ -2062,6 +2071,7 @@ void DeviceSwitchWidget::updateSystemTrayIcon(int volume,bool isMute)
         muteCheckBox->setChecked(false);
         soundSystemTrayIcon->setIcon(icon);
         miniWidget->muteBtn->setIcon(icon);
+        appWidget->systemVolumeBtn->setIcon(icon);
     }
     else if (volume > 0 && volume <= 33) {
         systemTrayIcon = "audio-volume-low";
@@ -2069,6 +2079,7 @@ void DeviceSwitchWidget::updateSystemTrayIcon(int volume,bool isMute)
         icon = QIcon::fromTheme(systemTrayIcon);
         soundSystemTrayIcon->setIcon(icon);
         miniWidget->muteBtn->setIcon(icon);
+        appWidget->systemVolumeBtn->setIcon(icon);
     }
     else if (volume >33 && volume <= 66) {
         systemTrayIcon = "audio-volume-medium";
@@ -2076,6 +2087,7 @@ void DeviceSwitchWidget::updateSystemTrayIcon(int volume,bool isMute)
         icon = QIcon::fromTheme(systemTrayIcon);
         soundSystemTrayIcon->setIcon(icon);
         miniWidget->muteBtn->setIcon(icon);
+        appWidget->systemVolumeBtn->setIcon(icon);
     }
     else {
         systemTrayIcon = "audio-volume-high";
@@ -2083,6 +2095,7 @@ void DeviceSwitchWidget::updateSystemTrayIcon(int volume,bool isMute)
         icon = QIcon::fromTheme(systemTrayIcon);
         soundSystemTrayIcon->setIcon(icon);
         miniWidget->muteBtn->setIcon(icon);
+        appWidget->systemVolumeBtn->setIcon(icon);
     }
 
     //设置声音菜单栏静音选项的勾选状态
