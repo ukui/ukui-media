@@ -6,6 +6,21 @@
 #include <QPushButton>
 #include <QComboBox>
 #include "ukmedia_volume_slider.h"
+class UkuiMediaButton:public QPushButton
+{
+    Q_OBJECT
+public:
+    UkuiMediaButton(QWidget *parent = nullptr);
+    ~UkuiMediaButton();
+    friend class UkmediaMiniMasterVolumeWidget;
+protected:
+    void paintEvent(QPaintEvent *);
+    void mousePressEvent(QMouseEvent *e);
+    void mouseReleaseEvent(QMouseEvent *e);
+private:
+    enum States{NORMAL,HOVER,PRESS};
+    States status;
+};
 
 class UkmediaMiniMasterVolumeWidget : public QWidget
 {
@@ -14,6 +29,7 @@ public:
     explicit UkmediaMiniMasterVolumeWidget(QWidget *parent = nullptr);
     ~UkmediaMiniMasterVolumeWidget();
     friend class DeviceSwitchWidget;
+    UkuiMediaButton *switchBtn;
 Q_SIGNALS:
     void mouse_wheel_signal(bool step);
 private:
@@ -22,7 +38,7 @@ private:
     QLabel *displayVolumeLabel;
 //    QLabel *deviceLabel;
     QPushButton *muteBtn;
-    QPushButton *switchBtn;
+
     QPushButton *deviceBtn;
     QLabel *deviceLabel;
     QComboBox *deviceCombox;

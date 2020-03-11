@@ -170,6 +170,8 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     switchToMiniBtn->setFixedSize(36,36);
     switchToMiniBtn->move(360,15);
 
+    switchToMiniBtn->setIcon(QIcon("/usr/share/ukui-media/img/mini-module.svg"));
+
     output_stream_list = new QStringList;
     input_stream_list = new QStringList;
     device_name_list = new QStringList;
@@ -352,6 +354,11 @@ void DeviceSwitchWidget::miniToAdvancedWidget()
     int localX ,availableWidth,totalWidth;
     int localY,availableHeight,totalHeight;
     rect = soundSystemTrayIcon->geometry();
+    qDebug() << "mini to advace";
+    miniWidget->switchBtn->resize(34,34);
+    QSize iconSize(14,14);
+    miniWidget->switchBtn->setIconSize(iconSize);
+    miniWidget->switchBtn->setIcon(QIcon("/usr/share/ukui-media/img/complete-module-s.svg"));
     //屏幕可用宽高
     availableWidth = QGuiApplication::screens().at(0)->availableGeometry().width();
     availableHeight = QGuiApplication::screens().at(0)->availableGeometry().height();
@@ -2055,6 +2062,7 @@ void DeviceSwitchWidget::updateSystemTrayIcon(int volume,bool isMute)
         muteCheckBox->setChecked(true);
         soundSystemTrayIcon->setIcon(icon);
         miniWidget->muteBtn->setIcon(icon);
+        appWidget->systemVolumeBtn->setIcon(icon);
     }
     else if (volume <= 0) {
         systemTrayIcon = "audio-volume-muted";
@@ -2062,6 +2070,7 @@ void DeviceSwitchWidget::updateSystemTrayIcon(int volume,bool isMute)
         muteCheckBox->setChecked(false);
         soundSystemTrayIcon->setIcon(icon);
         miniWidget->muteBtn->setIcon(icon);
+        appWidget->systemVolumeBtn->setIcon(icon);
     }
     else if (volume > 0 && volume <= 33) {
         systemTrayIcon = "audio-volume-low";
@@ -2069,6 +2078,7 @@ void DeviceSwitchWidget::updateSystemTrayIcon(int volume,bool isMute)
         icon = QIcon::fromTheme(systemTrayIcon);
         soundSystemTrayIcon->setIcon(icon);
         miniWidget->muteBtn->setIcon(icon);
+        appWidget->systemVolumeBtn->setIcon(icon);
     }
     else if (volume >33 && volume <= 66) {
         systemTrayIcon = "audio-volume-medium";
@@ -2076,6 +2086,7 @@ void DeviceSwitchWidget::updateSystemTrayIcon(int volume,bool isMute)
         icon = QIcon::fromTheme(systemTrayIcon);
         soundSystemTrayIcon->setIcon(icon);
         miniWidget->muteBtn->setIcon(icon);
+        appWidget->systemVolumeBtn->setIcon(icon);
     }
     else {
         systemTrayIcon = "audio-volume-high";
@@ -2083,6 +2094,7 @@ void DeviceSwitchWidget::updateSystemTrayIcon(int volume,bool isMute)
         icon = QIcon::fromTheme(systemTrayIcon);
         soundSystemTrayIcon->setIcon(icon);
         miniWidget->muteBtn->setIcon(icon);
+        appWidget->systemVolumeBtn->setIcon(icon);
     }
 
     //设置声音菜单栏静音选项的勾选状态
