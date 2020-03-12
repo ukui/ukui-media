@@ -169,6 +169,8 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
 
     switchToMiniBtn->setIcon(QIcon("/usr/share/ukui-media/img/mini-module.svg"));
 
+    switchToMiniBtn->setIcon(QIcon("/usr/share/ukui-media/img/mini-module.svg"));
+
     output_stream_list = new QStringList;
     input_stream_list = new QStringList;
     device_name_list = new QStringList;
@@ -234,9 +236,9 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
                         "background:rgba(14,19,22,0.9);"
                         "border-radius:6px 6px 6px 6px;}");
     appWidget->setObjectName("appWidget");
-    appWidget->setStyleSheet("QWidget#appWidget{background:rgb(14,19,22);}");
+    appWidget->setStyleSheet("QWidget#appWidget{background:rgba(14,19,22,0.9);}");
     appWidget->displayAppVolumeWidget->setObjectName("displayAppVolumeWidget");
-    appWidget->displayAppVolumeWidget->setStyleSheet("QWidget#displayAppVolumeWidget{background:rgb(14,19,22);}");
+    appWidget->displayAppVolumeWidget->setStyleSheet("QWidget#displayAppVolumeWidget{background:rgba(14,19,22,0.9);}");
     appWidget->appArea->setStyleSheet("QScrollArea{border:none;}");
     appWidget->appArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     appWidget->appArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
@@ -360,6 +362,10 @@ void DeviceSwitchWidget::miniToAdvancedWidget()
     int localY,availableHeight,totalHeight;
     rect = soundSystemTrayIcon->geometry();
     qDebug() << "mini to advace";
+    miniWidget->switchBtn->resize(34,34);
+    QSize iconSize(14,14);
+    miniWidget->switchBtn->setIconSize(iconSize);
+    miniWidget->switchBtn->setIcon(QIcon("/usr/share/ukui-media/img/complete-module-s.svg"));
     //屏幕可用宽高
     availableWidth = QGuiApplication::screens().at(0)->availableGeometry().width();
     availableHeight = QGuiApplication::screens().at(0)->availableGeometry().height();

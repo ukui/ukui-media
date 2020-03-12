@@ -15,6 +15,8 @@ UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QWidget *parent) : 
     switchBtn = new UkuiMediaButton(this);
     switchBtn->setParent(this);
     switchBtn->setStyle(new CustomStyle());
+//    deviceLabel = new QLabel(this);
+
     deviceBtn = new QPushButton(this);
     deviceLabel = new QLabel(tr("Speaker (Realtek Audio)"),this);
     QSpacerItem *item1 = new QSpacerItem(16,20);
@@ -22,15 +24,15 @@ UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QWidget *parent) : 
     QSpacerItem *item3 = new QSpacerItem(15,20);
     QSpacerItem *item4 = new QSpacerItem(19,20);
 
-    switchBtn->show();
+    switchBtn->setParent(this);
     masterVolumeSlider->setOrientation(Qt::Horizontal);
     masterVolumeSlider->setRange(0,100);
     deviceBtn->setFixedSize(16,16);
     deviceLabel->setFixedSize(154,14);
     masterWidget->setFixedSize(345,31);
+    switchBtn->resize(36,36);
     deviceCombox->setFixedSize(300,36);
     displayVolumeLabel->setFixedSize(32,20);
-    switchBtn->resize(36,36);
 
     deviceBtn->move(16,16);
     deviceLabel->move(36,18);
@@ -39,6 +41,7 @@ UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QWidget *parent) : 
     masterWidget->move(0,59);
     QSize switchSize(16,16);
     QSize deviceSize(16,16);
+
     QSize iconSize(32,32);
     muteBtn->setFixedSize(32,32);
     masterVolumeSlider->setFixedSize(220,22);

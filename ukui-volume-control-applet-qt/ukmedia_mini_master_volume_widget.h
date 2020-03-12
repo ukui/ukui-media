@@ -8,7 +8,6 @@
 #include "ukmedia_volume_slider.h"
 #include "customstyle.h"
 
-
 class UkmediaMiniMasterVolumeWidget : public QWidget
 {
     Q_OBJECT
