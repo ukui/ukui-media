@@ -38,8 +38,8 @@ public:
     void inputWidgetHide();
     friend class  DeviceSwitchWidget;
 private:
+    QPushButton *outputMuteBtn;
     QLabel *outputDeviceLabel;
-    QLabel *outputVolumeLabel;
     QLabel *outputDeviceDisplayLabel;
     QPushButton *outputDeviceBtn;
     UkmediaVolumeSlider *outputDeviceSlider;
@@ -47,12 +47,10 @@ private:
     QWidget *deviceWidget;
     QWidget *outputWidget;
     QWidget *outputSliderWidget;
-    QWidget *outputDisplayWidget;
     QWidget *inputSliderWidget;
-    QWidget *inputDisplayWidget;
 
     QLabel *inputDeviceLabel;
-    QLabel *inputVolumeLabel;
+    QPushButton *inputMuteButton;
     QLabel *inputDeviceDisplayLabel;
     QLabel *noInputDeviceLabel;
     QPushButton *inputDeviceBtn;

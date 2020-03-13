@@ -110,6 +110,7 @@ int CustomStyle::pixelMetric(QStyle::PixelMetric metric, const QStyleOption *opt
 void CustomStyle::polish(QWidget *widget)
 {
     widget->setAttribute(Qt::WA_Hover);
+
     return QProxyStyle::polish(widget);
 }
 

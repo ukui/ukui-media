@@ -31,7 +31,8 @@ int main(int argc, char *argv[])
        app.sendMessage("raise_window_noop");
        return EXIT_SUCCESS;
     }
-
+    //支持高分屏
+//    QtSingleApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     //加载qm翻译文件o
     QString locale = QLocale::system().name();
     QTranslator translator;

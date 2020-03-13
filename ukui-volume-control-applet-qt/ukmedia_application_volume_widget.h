@@ -45,9 +45,8 @@ private:
     QWidget *displayAppVolumeWidget;
     QStringList *app_volume_list;
     QLabel *appLabel;
-    QLabel *appIconLabel;
+    QPushButton *appMuteBtn;
     QPushButton *appIconBtn;
-    QLabel *appVolumeLabel;
     QSlider *appSlider;
     QScrollArea *appArea;
     QGridLayout *gridlayout;

@@ -128,7 +128,6 @@ void DeviceSwitchWidget::hideWindow()
         break;
     }
     isShow = true;
-    qDebug() << "hideWindow";
 }
 
 /*
@@ -209,7 +208,7 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
 
     connect(switchToMiniBtn,SIGNAL(moveAdvanceSwitchBtnSignal()),this,SLOT(moveAdvanceSwitchBtnSlot()));
     //mini模式下切换设备
-    connect(miniWidget->deviceCombox,SIGNAL(currentIndexChanged(QString)),this,SLOT(deviceComboxIndexChanged(QString)));
+//    connect(miniWidget->deviceCombox,SIGNAL(currentIndexChanged(QString)),this,SLOT(deviceComboxIndexChanged(QString)));
     context_set_property(this);
     devScrollWidget->area->widget()->adjustSize();
     g_signal_connect (G_OBJECT (context),
@@ -238,7 +237,7 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     appWidget->setObjectName("appWidget");
     appWidget->setStyleSheet("QWidget#appWidget{background:rgba(14,19,22,0.9);}");
     appWidget->displayAppVolumeWidget->setObjectName("displayAppVolumeWidget");
-    appWidget->displayAppVolumeWidget->setStyleSheet("QWidget#displayAppVolumeWidget{background:rgba(14,19,22,0.9);}");
+    appWidget->displayAppVolumeWidget->setStyleSheet("QWidget#displayAppVolumeWidget{background:rgba(14,19,22,0);}");
     appWidget->appArea->setStyleSheet("QScrollArea{border:none;}");
     appWidget->appArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     appWidget->appArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
@@ -357,24 +356,45 @@ void DeviceSwitchWidget::moveAdvanceSwitchBtnSlot()
 */
 void DeviceSwitchWidget::miniToAdvancedWidget()
 {
-    QRect rect;
-    int localX ,availableWidth,totalWidth;
-    int localY,availableHeight,totalHeight;
-    rect = soundSystemTrayIcon->geometry();
-    qDebug() << "mini to advace";
     miniWidget->switchBtn->resize(34,34);
     QSize iconSize(14,14);
     miniWidget->switchBtn->setIconSize(iconSize);
-    miniWidget->switchBtn->setIcon(QIcon("/usr/share/ukui-media/img/complete-module-s.svg"));
-    //屏幕可用宽高
-    availableWidth = QGuiApplication::screens().at(0)->availableGeometry().width();
-    availableHeight = QGuiApplication::screens().at(0)->availableGeometry().height();
-    //总共宽高
-    totalWidth =  QGuiApplication::screens().at(0)->size().width();
-    totalHeight = QGuiApplication::screens().at(0)->size().height();
+    miniWidget->switchBtn->setIcon(QIcon("/usr/share/ukui-media/img/complete-module.svg"));
+    int screenNum = QGuiApplication::screens().count();
+    int panelHeight = getPanelHeight("PanelHeight");
+    int position =0;
+    int screen = 0;
+    QRect rect;
+    int localX ,availableWidth,totalWidth;
+    int localY,availableHeight,totalHeight;
+    if (screenNum > 1) {
+        position = getPanelPosition("PanelPosion");
+        if (position == 3) {
+            screen = screenNum - 1;
+            //屏幕可用宽高
+            availableWidth =QGuiApplication::screens().at(screen)->geometry().x() +  QGuiApplication::screens().at(screen)->size().width()-panelHeight;
+            availableHeight = QGuiApplication::screens().at(screen)->availableGeometry().height();
+            //总共宽高
+            totalWidth =  QGuiApplication::screens().at(0)->size().width() + QGuiApplication::screens().at(screen)->size().width();
+            totalHeight = QGuiApplication::screens().at(screen)->size().height();
+        }
+        else if (position == 1 || position == 0) {//在上下
+            availableHeight = QGuiApplication::screens().at(0)->size().height() - panelHeight;
+            availableWidth = QGuiApplication::screens().at(0)->size().width();
+            totalHeight = QGuiApplication::screens().at(0)->size().height();
+            totalWidth = QGuiApplication::screens().at(0)->size().width();
+        }
+        else {
+            availableHeight = QGuiApplication::screens().at(0)->availableGeometry().height();
+            availableWidth = QGuiApplication::screens().at(0)->availableGeometry().width();
+            totalHeight = QGuiApplication::screens().at(0)->size().height();
+            totalWidth = QGuiApplication::screens().at(0)->size().width();
+        }
+    }
+    rect = soundSystemTrayIcon->geometry();
     //显示界面位置
-    localY = availableHeight - this->height();
     localX = rect.x() - (this->width()/2 - rect.size().height()/2) ;
+    localY = availableHeight - this->height();
     if (rect.x() > availableWidth/2 && rect.x()< availableWidth  && rect.y() > availableHeight) { //下
         if (availableWidth - rect.x() - rect.width()/2 < this->width() / 2)
             this->setGeometry(availableWidth-this->width(),availableHeight-this->height()-3,this->width(),this->height());
@@ -387,11 +407,11 @@ void DeviceSwitchWidget::miniToAdvancedWidget()
         else
             this->setGeometry(localX,totalHeight-availableHeight+3,this->width(),this->height());
     }
-    else if (rect.x() < 40 && rect.y() > availableHeight/2 && rect.y()< availableHeight) {
+    else if (rect.x() < panelHeight && rect.y() > availableHeight/2 && rect.y()< availableHeight) {
         if (availableHeight - rect.y() - rect.height()/2 < this->height() /2)
-            this->setGeometry(totalWidth - availableWidth + 3,availableHeight - this->height(),this->width(),this->height());
+            this->setGeometry(panelHeight + 3,availableHeight - this->height(),this->width(),this->height());
         else
-            this->setGeometry(totalWidth-availableWidth+3,localY,this->width(),this->height());//左
+            this->setGeometry(panelHeight+3,localY,this->width(),this->height());//左
     }
     else if (rect.x() > availableWidth && rect.y() > availableHeight/2 && rect.y() < availableHeight) {
         localX = availableWidth - this->width();
@@ -400,7 +420,7 @@ void DeviceSwitchWidget::miniToAdvancedWidget()
         else
             this->setGeometry(localX-3,localY,this->width(),this->height());
     }
-//    qDebug() << "显示状态" << isShow << displayMode << "advance widget show";
+
     this->show();
     miniWidget->hide();
     displayMode = ADVANCED_MODE;
@@ -412,6 +432,69 @@ void DeviceSwitchWidget::miniToAdvancedWidget()
 */
 void DeviceSwitchWidget::advancedToMiniWidget()
 {
+    int screenNum = QGuiApplication::screens().count();
+    int panelHeight = getPanelHeight("PanelHeight");
+    int position =0;
+    int screen = 0;
+    QRect rect;
+    int localX ,availableWidth,totalWidth;
+    int localY,availableHeight,totalHeight;
+    if (screenNum > 1) {
+        position = getPanelPosition("PanelPosion");
+        if (position == 3) {
+            screen = screenNum - 1;
+            //屏幕可用宽高
+            availableWidth =QGuiApplication::screens().at(screen)->geometry().x() +  QGuiApplication::screens().at(screen)->size().width()-panelHeight;
+            availableHeight = QGuiApplication::screens().at(screen)->availableGeometry().height();
+            //总共宽高
+            totalWidth =  QGuiApplication::screens().at(0)->size().width() + QGuiApplication::screens().at(screen)->size().width();
+            totalHeight = QGuiApplication::screens().at(screen)->size().height();
+        }
+        else if (position == 1 || position == 0) {//在上下
+            availableHeight = QGuiApplication::screens().at(0)->size().height() - panelHeight;
+            availableWidth = QGuiApplication::screens().at(0)->size().width();
+            totalHeight = QGuiApplication::screens().at(0)->size().height();
+            totalWidth = QGuiApplication::screens().at(0)->size().width();
+        }
+        else {
+            availableHeight = QGuiApplication::screens().at(0)->availableGeometry().height();
+            availableWidth = QGuiApplication::screens().at(0)->availableGeometry().width();
+            totalHeight = QGuiApplication::screens().at(0)->size().height();
+            totalWidth = QGuiApplication::screens().at(0)->size().width();
+        }
+    }
+    rect = soundSystemTrayIcon->geometry();
+    localX = rect.x() - (miniWidget->width()/2 - rect.size().height()/2) ;
+    localY = availableHeight - miniWidget->size().height();
+    if (rect.x() > availableWidth/2 && rect.x()< availableWidth  && rect.y() > availableHeight) { //下
+        if (availableWidth - rect.x() - rect.width()/2 < this->width() / 2)
+            miniWidget->setGeometry(availableWidth-miniWidget->width(),availableHeight-miniWidget->height()-3,miniWidget->width(),miniWidget->height());
+        else
+            miniWidget->setGeometry(localX,availableHeight-miniWidget->height()-3,miniWidget->width(),miniWidget->height());
+    }
+    else if (rect.x() > availableWidth/2 && rect.x()< availableWidth && rect.y() < panelHeight ) { //上
+        if (availableWidth - rect.x() - rect.width()/2 < miniWidget->width() / 2)
+            miniWidget->setGeometry(availableWidth-miniWidget->width(),totalHeight-availableHeight+3,miniWidget->width(),miniWidget->height());
+        else
+            miniWidget->setGeometry(localX,panelHeight+3,miniWidget->width(),miniWidget->height());
+    }
+    else if (rect.x() < 40 && rect.y() > availableHeight/2 && rect.y()< availableHeight) {
+        if (availableHeight - rect.y() - rect.height()/2 > miniWidget->height() /2) {
+            miniWidget->setGeometry(panelHeight + 3,rect.y()+(rect.height()/2)-(miniWidget->height()/2),miniWidget->width(),miniWidget->height());
+        }
+        else {
+            miniWidget->setGeometry(panelHeight+3,localY,miniWidget->width(),miniWidget->height());//左
+        }
+    }
+    else if (rect.x() > availableWidth && rect.y() > availableHeight/2 && rect.y() < availableHeight) {
+        localX = availableWidth - miniWidget->width();
+        if (availableHeight - rect.y() - rect.height()/2 > miniWidget->height() /2) {
+            miniWidget->setGeometry(availableWidth - miniWidget->width() - 3,rect.y() + (rect.height()/2) - ((miniWidget->height()/2)) ,miniWidget->width(),miniWidget->height() );
+        }
+        else {
+            miniWidget->setGeometry(localX-3,localY,miniWidget->width(),miniWidget->height());
+        }
+    }
     this->hide();
     miniWidget->show();
     displayMode = MINI_MODE;
@@ -433,12 +516,10 @@ void DeviceSwitchWidget::deviceComboxIndexChanged(QString str)
     const gchar *name = str1.toLocal8Bit();
     MateMixerStream *stream = mate_mixer_context_get_stream(context,name);
     if (G_UNLIKELY (stream == NULL)) {
-       qDebug() << "stream wei null -------" << name;
        g_warn_if_reached ();
 //       g_free (name);
        return;
     }
-//    qDebug() << "shebei ming " << str << "获取的stream 名" << mate_mixer_stream_get_name(stream);
 
     flags = mate_mixer_context_get_backend_flags (context);
 
@@ -446,7 +527,6 @@ void DeviceSwitchWidget::deviceComboxIndexChanged(QString str)
         mate_mixer_context_set_default_output_stream (context, stream);
         MateMixerStreamControl *c = mate_mixer_stream_get_default_control(stream);
         int volume = int(mate_mixer_stream_control_get_volume(c) *100 /65536.0+0.5);
-        qDebug() << "设置默认的输出stream 音量为:" << volume;
 //        miniWidget->masterVolumeSlider->setValue(volume);
     }
     else {
@@ -460,16 +540,38 @@ void DeviceSwitchWidget::deviceComboxIndexChanged(QString str)
 */
 void DeviceSwitchWidget::activatedSystemTrayIconSlot(QSystemTrayIcon::ActivationReason reason)
 {
+    int screenNum = QGuiApplication::screens().count();
+    int panelHeight = getPanelHeight("PanelHeight");
+    int position =0;
+    int screen = 0;
     QRect rect;
     int localX ,availableWidth,totalWidth;
     int localY,availableHeight,totalHeight;
+    if (screenNum > 1) {
+        position = getPanelPosition("PanelPosion");
+        if (position == 3) {
+            screen = screenNum - 1;
+            //屏幕可用宽高
+            availableWidth =QGuiApplication::screens().at(screen)->geometry().x() +  QGuiApplication::screens().at(screen)->size().width()-panelHeight;
+            availableHeight = QGuiApplication::screens().at(screen)->availableGeometry().height();
+            //总共宽高
+            totalWidth =  QGuiApplication::screens().at(0)->size().width() + QGuiApplication::screens().at(screen)->size().width();
+            totalHeight = QGuiApplication::screens().at(screen)->size().height();
+        }
+        else if (position == 1 || position == 0) {//在上下
+            availableHeight = QGuiApplication::screens().at(0)->size().height() - panelHeight;
+            availableWidth = QGuiApplication::screens().at(0)->size().width();
+            totalHeight = QGuiApplication::screens().at(0)->size().height();
+            totalWidth = QGuiApplication::screens().at(0)->size().width();
+        }
+        else {
+            availableHeight = QGuiApplication::screens().at(0)->availableGeometry().height();
+            availableWidth = QGuiApplication::screens().at(0)->availableGeometry().width();
+            totalHeight = QGuiApplication::screens().at(0)->size().height();
+            totalWidth = QGuiApplication::screens().at(0)->size().width();
+        }
+    }
     rect = soundSystemTrayIcon->geometry();
-    //屏幕可用宽高
-    availableWidth = QGuiApplication::screens().at(0)->availableGeometry().width();
-    availableHeight = QGuiApplication::screens().at(0)->availableGeometry().height();
-    //总共宽高
-    totalWidth =  QGuiApplication::screens().at(0)->size().width();
-    totalHeight = QGuiApplication::screens().at(0)->size().height();
     //显示界面位置
     localY = availableHeight - this->height();
     localX = rect.x() - (this->width()/2 - rect.size().height()/2) ;
@@ -492,40 +594,43 @@ void DeviceSwitchWidget::activatedSystemTrayIconSlot(QSystemTrayIcon::Activation
     }
     //鼠标左键点击图标
     case QSystemTrayIcon::Trigger: {
-        qDebug() << "trigger" << isShow;
         if (isShow) {
             switch (displayMode) {
             case MINI_MODE:
+                localY = availableHeight - miniWidget->size().height();
                 if (rect.x() > availableWidth/2 && rect.x()< availableWidth  && rect.y() > availableHeight) { //下
                     if (availableWidth - rect.x() - rect.width()/2 < this->width() / 2)
                         miniWidget->setGeometry(availableWidth-miniWidget->width(),availableHeight-miniWidget->height()-3,miniWidget->width(),miniWidget->height());
                     else
                         miniWidget->setGeometry(localX,availableHeight-miniWidget->height()-3,miniWidget->width(),miniWidget->height());
                 }
-                else if (rect.x() > availableWidth/2 && rect.x()< availableWidth && rect.y() < 40 ) { //上
+                else if (rect.x() > availableWidth/2 && rect.x()< availableWidth && rect.y() < panelHeight ) { //上
                     if (availableWidth - rect.x() - rect.width()/2 < miniWidget->width() / 2)
                         miniWidget->setGeometry(availableWidth-miniWidget->width(),totalHeight-availableHeight+3,miniWidget->width(),miniWidget->height());
                     else
-                        miniWidget->setGeometry(localX,totalHeight-availableHeight+3,miniWidget->width(),miniWidget->height());
+                        miniWidget->setGeometry(localX,panelHeight+3,miniWidget->width(),miniWidget->height());
                 }
                 else if (rect.x() < 40 && rect.y() > availableHeight/2 && rect.y()< availableHeight) {
-                    if (availableHeight - rect.y() - rect.height()/2 < miniWidget->height() /2)
-                        miniWidget->setGeometry(totalWidth - availableWidth + 3,availableHeight - miniWidget->height(),miniWidget->width(),miniWidget->height());
-                    else
-                        miniWidget->setGeometry(totalWidth-availableWidth+3,localY,miniWidget->width(),miniWidget->height());//左
+                    if (availableHeight - rect.y() - rect.height()/2 > miniWidget->height() /2) {
+                        miniWidget->setGeometry(panelHeight + 3,rect.y()+(rect.height()/2)-(miniWidget->height()/2),miniWidget->width(),miniWidget->height());
+                    }
+                    else {
+                        miniWidget->setGeometry(panelHeight+3,localY,miniWidget->width(),miniWidget->height());//左
+                    }
                 }
                 else if (rect.x() > availableWidth && rect.y() > availableHeight/2 && rect.y() < availableHeight) {
                     localX = availableWidth - miniWidget->width();
-                    if (availableHeight - rect.y() - rect.height()/2 < miniWidget->height() /2)
-                        miniWidget->setGeometry(availableWidth - 3,availableHeight - miniWidget->height(),miniWidget->width(),miniWidget->height() );
-                    else
+                    if (availableHeight - rect.y() - rect.height()/2 > miniWidget->height() /2) {
+                        miniWidget->setGeometry(availableWidth - miniWidget->width() - 3,rect.y() + (rect.height()/2) - ((miniWidget->height()/2)) ,miniWidget->width(),miniWidget->height() );
+                    }
+                    else {
                         miniWidget->setGeometry(localX-3,localY,miniWidget->width(),miniWidget->height());
+                    }
                 }
                 miniWidget->show();
-                qDebug() << "显示状态" << isShow << displayMode << "mini widget show";
-//                isShow = false;
                 break;
             case ADVANCED_MODE:
+                localY = availableHeight - this->height();
                 if (rect.x() > availableWidth/2 && rect.x()< availableWidth  && rect.y() > availableHeight) { //下
                     if (availableWidth - rect.x() - rect.width()/2 < this->width() / 2)
                         this->setGeometry(availableWidth-this->width(),availableHeight-this->height()-3,this->width(),this->height());
@@ -538,11 +643,11 @@ void DeviceSwitchWidget::activatedSystemTrayIconSlot(QSystemTrayIcon::Activation
                     else
                         this->setGeometry(localX,totalHeight-availableHeight+3,this->width(),this->height());
                 }
-                else if (rect.x() < 40 && rect.y() > availableHeight/2 && rect.y()< availableHeight) {
+                else if (rect.x() < panelHeight && rect.y() > availableHeight/2 && rect.y()< availableHeight) {
                     if (availableHeight - rect.y() - rect.height()/2 < this->height() /2)
-                        this->setGeometry(totalWidth - availableWidth + 3,availableHeight - this->height(),this->width(),this->height());
+                        this->setGeometry(panelHeight + 3,availableHeight - this->height(),this->width(),this->height());
                     else
-                        this->setGeometry(totalWidth-availableWidth+3,localY,this->width(),this->height());//左
+                        this->setGeometry(panelHeight+3,localY,this->width(),this->height());//左
                 }
                 else if (rect.x() > availableWidth && rect.y() > availableHeight/2 && rect.y() < availableHeight) {
                     localX = availableWidth - this->width();
@@ -551,7 +656,6 @@ void DeviceSwitchWidget::activatedSystemTrayIconSlot(QSystemTrayIcon::Activation
                     else
                         this->setGeometry(localX-3,localY,this->width(),this->height());
                 }
-                qDebug() << "显示状态" << isShow << displayMode << "advance widget show";
                 this->show();
 //                isShow = false;
                 break;
@@ -573,7 +677,6 @@ void DeviceSwitchWidget::activatedSystemTrayIconSlot(QSystemTrayIcon::Activation
     }
     //鼠标左键双击图标
     case QSystemTrayIcon::DoubleClick: {
-        qDebug() << "double click hide window";
         hideWindow();
         break;
     }
@@ -588,7 +691,7 @@ void DeviceSwitchWidget::activatedSystemTrayIconSlot(QSystemTrayIcon::Activation
                 localY = availableHeight - menu->height() -3;
             }
         }
-        else if (rect.x() > availableWidth/2 && rect.x()< availableWidth && rect.y() < 40 ) { //上
+        else if (rect.x() > availableWidth/2 && rect.x()< availableWidth && rect.y() < panelHeight ) { //上
             if (availableWidth - rect.x() - rect.width()/2 < menu->width()) {
                 localX = availableWidth - menu->width();
                 localY = totalHeight - availableHeight + 3;
@@ -722,9 +825,7 @@ void DeviceSwitchWidget::deviceSwitchWidgetInit()
         break;
     }
 
-    deviceWidget->setStyleSheet("QWidget{ border-right: 1px solid rgba(255,255,255,0.08); "
-                                "border-top-left-radius:20px;"
-                                "border-bottom-left-radius:20px }");
+    deviceWidget->setStyleSheet("QWidget{ border-right: 1px solid rgba(255,255,255,0.08); }");
 }
 
 /*点击切换设备按钮对应的槽函数*/
@@ -804,9 +905,7 @@ void DeviceSwitchWidget::on_context_stream_added (MateMixerContext *context,cons
 {
     MateMixerStream *stream;
     MateMixerDirection direction;
-    qDebug() << "746 context stream add";
     stream = mate_mixer_context_get_stream (context, name);
-    qDebug() << "context stream 添加" << name;
     if (G_UNLIKELY (stream == nullptr))
         return;
     direction = mate_mixer_stream_get_direction (stream);
@@ -833,7 +932,6 @@ void DeviceSwitchWidget::list_device(DeviceSwitchWidget *w,MateMixerContext *con
         const gchar *label = mate_mixer_stream_get_label(s);
         MateMixerDirection direction = mate_mixer_stream_get_direction(s);
         if (direction == MATE_MIXER_DIRECTION_OUTPUT) {
-            qDebug() << "stream name :" << stream_name <<"label:" <<label;
 //            w->output_stream_list->append(stream_name);
 //            w->miniWidget->deviceCombox->addItem(label);
         }
@@ -888,8 +986,7 @@ void DeviceSwitchWidget::add_stream (DeviceSwitchWidget *w, MateMixerStream *str
         label = mate_mixer_stream_get_label (stream);
 //        w->device_name_list->append(name);
         w->output_stream_list->append(name);
-        w->miniWidget->deviceCombox->addItem(label);
-        qDebug() << "add stream 输出流为：" << name << "输出流标签标签为 " << label;
+//        w->miniWidget->deviceCombox->addItem(label);
     }
 
     controls = mate_mixer_stream_list_controls (stream);
@@ -958,7 +1055,6 @@ void DeviceSwitchWidget::add_application_control (DeviceSwitchWidget *w, MateMix
 
     QString app_icon_name = mate_mixer_app_info_get_icon(info);
     app_name = mate_mixer_app_info_get_name (info);
-    qDebug() << "添加app id为 " << app_id << "添加的应用名为：" << app_name;
     //添加应用音量
     add_app_to_appwidget(w,int(appnum),app_name,app_icon_name,control);
 
@@ -1037,7 +1133,7 @@ void DeviceSwitchWidget::remove_application_control (DeviceSwitchWidget *w,const
     appnum--;
     //设置布局的垂直间距以及设置gridlayout四周的间距
     w->appWidget->gridlayout->setMargin(0);
-    w->appWidget->gridlayout->setSpacing(30);
+    w->appWidget->gridlayout->setSpacing(18);
     w->appWidget->gridlayout->setContentsMargins(18,0,30,30);//w->appWidget->height() - 72 - appnum * 67);
     w->appWidget->appArea->widget()->adjustSize();
     if (appnum <= 0) {
@@ -1051,8 +1147,6 @@ void DeviceSwitchWidget::remove_application_control (DeviceSwitchWidget *w,const
 
 void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, const gchar *app_name,QString app_icon_name,MateMixerStreamControl *control)
 {
-//    w->appWidget->displayAppVolumeWidget->resize(358,appnum*82*5);
-//    qDebug() <<  "appwidget size " << w->appWidget->displayAppVolumeWidget->size();
     //获取应用静音状态及音量
     int volume = 0;
     gboolean is_mute = false;
@@ -1061,7 +1155,6 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
     volume = int(mate_mixer_stream_control_get_volume(control));
     normal = mate_mixer_stream_control_get_normal_volume(control);
     int display_volume = int(100 * volume / normal);
-    qDebug() << "添加应用音量";
     //设置应用的图标
     QString iconName = "/usr/share/applications/";
     iconName.append(app_icon_name);
@@ -1081,46 +1174,46 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
 
     //widget显示应用音量
     QWidget *app_widget = new QWidget(w->appWidget->displayAppVolumeWidget);
-    app_widget->setFixedSize(304,52);
-    QHBoxLayout *hlayout1 = new QHBoxLayout(app_widget);
+    app_widget->setFixedSize(306,60);
+    QHBoxLayout *hlayout = new QHBoxLayout(app_widget);
     QVBoxLayout *vlayout = new QVBoxLayout();
+    QSpacerItem *item1 = new QSpacerItem(18,20);
+    QSpacerItem *item2 = new QSpacerItem(12,20);
+    QWidget *wid = new QWidget(app_widget);
 
-    QWidget *wid1 = new QWidget(app_widget);
-    QWidget *wid2 = new QWidget(app_widget);
-
-    wid1->setFixedSize(254,22);
-    wid2->setFixedSize(254,52);
+    wid->setFixedSize(306,32);
     w->appWidget->appLabel = new QLabel(app_widget);
-    w->appWidget->appIconBtn = new QPushButton(app_widget);
-    w->appWidget->appIconLabel = new QLabel(app_widget);
-    w->appWidget->appVolumeLabel = new QLabel(app_widget);
-    w->appWidget->appSlider = new UkmediaVolumeSlider(app_widget);
+    w->appWidget->appIconBtn = new QPushButton(wid);
+    w->appWidget->appSlider = new UkmediaVolumeSlider(wid);
+    w->appWidget->appMuteBtn = new QPushButton(wid);
     w->appWidget->appSlider->setOrientation(Qt::Horizontal);
+    w->appWidget->appIconBtn->setFixedSize(32,32);
+    w->appWidget->appMuteBtn->setFixedSize(24,24);
 
-    w->appWidget->appVolumeLabel->setFixedHeight(16);
-    hlayout1->addWidget(w->appWidget->appSlider);
-    hlayout1->addWidget(w->appWidget->appVolumeLabel);
-    hlayout1->setSpacing(10);
-    wid1->setLayout(hlayout1);
-    wid1->layout()->setContentsMargins(0,0,0,0);
+    hlayout->addWidget(w->appWidget->appIconBtn);
+    hlayout->addItem(item1);
+    hlayout->addWidget(w->appWidget->appSlider);
+    hlayout->addItem(item2);
+    hlayout->addWidget(w->appWidget->appMuteBtn);
+    hlayout->setSpacing(0);
+    wid->setLayout(hlayout);
+    wid->layout()->setContentsMargins(0,0,0,0);
 
     vlayout->addWidget(w->appWidget->appLabel);
-    vlayout->addWidget(wid1);
-    vlayout->setSpacing(10);
-    wid2->setLayout(vlayout);
-    wid2->layout()->setContentsMargins(0,0,0,6);
+    vlayout->addWidget(wid);
+    vlayout->setSpacing(14);
+    app_widget->setLayout(vlayout);
+    app_widget->layout()->setContentsMargins(0,0,0,0);
 
-    wid2->move(50,0);
+    app_widget->move(0,0);
     //添加widget到gridlayout中
     w->appWidget->gridlayout->addWidget(app_widget);
     w->appWidget->gridlayout->setMargin(0);
-     w->appWidget->gridlayout->setSpacing(30);
+     w->appWidget->gridlayout->setSpacing(18);
 //    w->appWidget->displayAppVolumeWidget->setLayout(w->appWidget->gridlayout);
     //设置每项的固定大小
     w->appWidget->appLabel->setFixedSize(88,18);
     w->appWidget->appIconBtn->setFixedSize(32,32);
-    w->appWidget->appIconLabel->setFixedSize(24,24);
-    w->appWidget->appVolumeLabel->setFixedSize(24,14);
 
     QSize icon_size(32,32);
     w->appWidget->appIconBtn->setIconSize(icon_size);
@@ -1145,19 +1238,32 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
     appVolumeLabelStr.append(QString::number(app_count));
 
     w->app_name_list->append(app_name);
-//    qDebug() << "添加的应用音量名为" << w->app_name_list->at(app_count);
-//    app_count++;
+
     w->appWidget->appSlider->setObjectName(appSliderStr);
     w->appWidget->appLabel->setObjectName(appLabelStr);
-    w->appWidget->appVolumeLabel->setObjectName(appVolumeLabelStr);
+//    w->appWidget->appVolumeLabel->setObjectName(appVolumeLabelStr);
     //设置label 和滑动条的值
     QSlider *s = w->appWidget->findChild<QSlider*>(appSliderStr);
     s->setValue(display_volume);
-    QLabel *l = w->appWidget->findChild<QLabel*>(appVolumeLabelStr);
-    l->setNum(display_volume);
+//    QLabel *l = w->appWidget->findChild<QLabel*>(appVolumeLabelStr);
+//    l->setNum(display_volume);
     QLabel *l2 = w->appWidget->findChild<QLabel*>(appLabelStr);
     l2->setText(app_name);
-    qDebug() << "滑动条名" <<  appSliderStr << display_volume;
+    if (is_mute) {
+        w->appWidget->appMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
+    }
+    else if (display_volume <= 0) {
+        w->appWidget->appMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
+    }
+    else if (display_volume > 0 && display_volume <= 33) {
+       w->appWidget->appMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-low.svg"));
+    }
+    else if(display_volume > 33 && display_volume <= 66) {
+        w->appWidget->appMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-medium.svg"));
+    }
+    else if (display_volume > 66) {
+        w->appWidget->appMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-high.svg"));
+    }
 
 //    w->appWidget->appLabel->setText(app_name);
 //    w->appWidget->appSlider->setValue(display_volume);
@@ -1166,16 +1272,30 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
 //    mate_mixer_stream_control_set_mute(control,is_mute);
     /*滑动条控制应用音量*/
     connect(w->appWidget->appSlider,&QSlider::valueChanged,[=](int value){
-//        application_name = appSliderStr;
+        application_name = appSliderStr;
         QSlider *s = w->findChild<QSlider*>(appSliderStr);
-        qDebug() << appSliderStr << value << application_name;
         s->setValue(value);
-        QLabel *l = w->findChild<QLabel*>(appVolumeLabelStr);
-        l->setNum(value);
-
+//        QLabel *l = w->findChild<QLabel*>(appVolumeLabelStr);
+//        l->setNum(value);
+        bool status = mate_mixer_stream_control_get_mute(control);
         int v = int(value*65536/100 + 0.5);
         mate_mixer_stream_control_set_volume(control,guint(v));
-//        Q_EMIT w->app_name_signal(appSliderStr);
+        if (status) {
+            w->appWidget->appMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
+        }
+        else if (value <= 0) {
+            w->appWidget->appMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
+        }
+        else if (value > 0 && value <= 33) {
+           w->appWidget->appMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-low.svg"));
+        }
+        else if(value > 33 && value <= 66) {
+            w->appWidget->appMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-medium.svg"));
+        }
+        else if (value > 66) {
+            w->appWidget->appMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-high.svg"));
+        }
+        Q_EMIT w->app_name_signal(appSliderStr);
     });
     /*应用音量同步*/
     g_signal_connect (G_OBJECT (control),
@@ -1192,13 +1312,26 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
         QString slider_str = app_name;
 //        slider_str.append("Slider");
 //        slider_str.append(QString::number(appnum));
-        qDebug() << "更新滑动条的值" << slider_str;
         QSlider *s = w->findChild<QSlider*>(slider_str);
         s->setValue(volume);
+        if (is_mute) {
+            w->appWidget->appMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
+        }
+        else if (volume <= 0) {
+            w->appWidget->appMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
+        }
+        else if (volume > 0 && volume <= 33) {
+           w->appWidget->appMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-low.svg"));
+        }
+        else if(volume > 33 && volume <= 66) {
+            w->appWidget->appMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-medium.svg"));
+        }
+        else if (volume > 66) {
+            w->appWidget->appMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-high.svg"));
+        }
     });
 
     connect(w,&DeviceSwitchWidget::system_muted_signal,[=](bool isMute){
-       qDebug() << "设置应用静音" << isMute << mate_mixer_stream_control_get_name(control);
        mate_mixer_stream_control_set_mute(control,isMute);
     });
 
@@ -1210,7 +1343,7 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
     }
 
     //设置布局的垂直间距以及设置gridlayout四周的间距
-    w->appWidget->gridlayout->setContentsMargins(18,0,30,60);
+    w->appWidget->gridlayout->setContentsMargins(18,14,34,18);
     w->appWidget->appArea->widget()->adjustSize();
 //    w->appWidget->gridlayout->setContentsMargins(18,0,30,w->appWidget->height() - 72 - appnum * 82);
     w->appWidget->appLabel->setStyleSheet("QLabel{width:210px;"
@@ -1234,12 +1367,11 @@ void DeviceSwitchWidget::update_app_volume(MateMixerStreamControl *control, QStr
     bool is_mute = mate_mixer_stream_control_get_mute(control);
     MateMixerAppInfo *info = mate_mixer_stream_control_get_app_info(control);
     const gchar *app_name = mate_mixer_app_info_get_name(info);
-//    QString appName = application_name;
-    QString appName= app_name;
-    appName.append("Slider");
-    appName.append(QString::number(appnum));
-    qDebug() << "app name " << app_name;
-//    Q_EMIT w->app_volume_changed(is_mute,int(volume),appName);
+    QString appName = application_name;
+//    QString appName= app_name;
+//    appName.append("Slider");
+//    appName.append(QString::number(app_count));
+    Q_EMIT w->app_volume_changed(is_mute,int(volume),appName);
 }
 
 /*应用音量静音*/
@@ -1251,8 +1383,6 @@ void DeviceSwitchWidget::app_volume_mute (MateMixerStreamControl *control, QStri
     const gchar *app_id =  mate_mixer_app_info_get_id(app_info);
     const gchar *app_version = mate_mixer_app_info_get_version(app_info);
     bool is_mute = mate_mixer_stream_control_get_mute(control);
-    qDebug() << "静音 app_icon" << app_icon << "app name" << app_name << "app_id " << app_id << "app version" << app_version << "静音状态" << is_mute;
-
     //如果主音量处于静音模式，应用音量恢复时，主音量也因恢复
 //    Q_EMIT w->appvolume_mute_change_mastervolume_status();
 }
@@ -1308,7 +1438,6 @@ void DeviceSwitchWidget::on_context_stream_removed (MateMixerContext *context,co
     Q_UNUSED(context);
     remove_stream (w, name);
     MateMixerStream *stream = mate_mixer_context_get_stream(w->context,name);
-//    qDebug() << "context stream removed" << mate_mixer_stream_get_name(stream);
 }
 
 /*
@@ -1316,15 +1445,10 @@ void DeviceSwitchWidget::on_context_stream_removed (MateMixerContext *context,co
 */
 void DeviceSwitchWidget::remove_stream (DeviceSwitchWidget *w, const gchar *name)
 {
-    qDebug() << "remove stream" << name;
-
     bool status;
     int index = w->output_stream_list->indexOf(name);
-    qDebug() << 1253 << index;
     status = w->output_stream_list->removeOne(name);
-    qDebug() << 1255;
-    w->miniWidget->deviceCombox->removeItem(index);
-    qDebug() << "输出name " << name << "list name :" << w->miniWidget->deviceCombox->itemText(index) << "删除index:" << index << "status" << status;
+//    w->miniWidget->deviceCombox->removeItem(index);
     if (w->appWidget->app_volume_list != nullptr) {
         bar_set_stream(w,nullptr);
     }
@@ -1354,7 +1478,6 @@ void DeviceSwitchWidget::add_device (DeviceSwitchWidget *w, MateMixerDevice *dev
     label = mate_mixer_device_get_label (device);
     w->device_name_list->append(name);
 //    w->miniWidget->deviceCombox->addItem(label);
-    qDebug() << "add device 输出设备名为：" << name << "设备标签为 " << label;
 }
 
 /*
@@ -1363,7 +1486,6 @@ void DeviceSwitchWidget::add_device (DeviceSwitchWidget *w, MateMixerDevice *dev
 void DeviceSwitchWidget::on_context_device_removed (MateMixerContext *context,const gchar *name,DeviceSwitchWidget *w)
 {
     int  count = 0;
-    qDebug() << "device remove name &&&&&&& " << name;
 //    MateMixerDevice *dev = mate_mixer_context_get_device(context,name);
 //    QString str = mate_mixer_device_get_label(dev);
 //    do {
@@ -1394,6 +1516,7 @@ void DeviceSwitchWidget::on_context_default_input_stream_notify (MateMixerContex
 
     g_debug ("Default input stream has changed");
     stream = mate_mixer_context_get_default_input_stream (context);
+    update_icon_input (w,w->context);
     set_input_stream (w, stream);
 }
 
@@ -1496,12 +1619,12 @@ void DeviceSwitchWidget::update_icon_input (DeviceSwitchWidget *w,MateMixerConte
     control = mate_mixer_stream_get_default_control(stream);
 
     //初始化滑动条的值
+    bool status = mate_mixer_stream_control_get_mute(control);
     int volume = int(mate_mixer_stream_control_get_volume(control));
     int value = int(volume *100 /65536.0+0.5);
     w->devWidget->inputDeviceSlider->setValue(value);
     QString percent = QString::number(value);
-    w->devWidget->inputVolumeLabel->setText(percent);
-
+    w->updateMicrophoneIcon(value,status);
     while (inputs != nullptr) {
         MateMixerStreamControl *input = MATE_MIXER_STREAM_CONTROL (inputs->data);
         MateMixerStreamControlRole role = mate_mixer_stream_control_get_role (input);
@@ -1535,6 +1658,7 @@ void DeviceSwitchWidget::update_icon_input (DeviceSwitchWidget *w,MateMixerConte
                 break;
             }
         }
+        qDebug() << "1534_______________";
         inputs = inputs->next;
     }
 
@@ -1543,14 +1667,22 @@ void DeviceSwitchWidget::update_icon_input (DeviceSwitchWidget *w,MateMixerConte
     else
             g_debug ("There is no recording application, input icon disabled");
 
+    //静音输入
+    connect(w->devWidget->inputMuteButton,&QPushButton::clicked,[=]() {
+        bool state = mate_mixer_stream_control_get_mute(control);
+        mate_mixer_stream_control_set_mute(control,!state);
+        w->updateMicrophoneIcon(volume,!state);
+    });
+
+    //当有录音时，输入滑块控制输入声音
     connect(w->devWidget->inputDeviceSlider,&QSlider::valueChanged,[=](int value){
         QString percent;
-
         percent = QString::number(value);
         mate_mixer_stream_control_set_mute(control,FALSE);
+        bool status = mate_mixer_stream_control_get_mute(control);
+        w->updateMicrophoneIcon(value,status);
         int volume = value*65536/100;
-        gboolean ok = mate_mixer_stream_control_set_volume(control,volume);
-        w->devWidget->inputVolumeLabel->setText(percent);
+        mate_mixer_stream_control_set_volume(control,volume);
     });
     gvc_stream_status_icon_set_control (w, control);
 
@@ -1562,13 +1694,10 @@ void DeviceSwitchWidget::update_icon_input (DeviceSwitchWidget *w,MateMixerConte
     }
 
     if(show) {
-//        w->devWidget->noInputWidgetInit();
         w->devWidget->inputWidgetShow();
     }
     else {
         w->devWidget->inputWidgetHide();
-//        w->devWidget->noInputWidgetInit();
-//        w->devWidget->noInputWidgetInit();
     }
 }
 
@@ -1601,13 +1730,17 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
         systemTrayIcon = "audio-volume-muted";
         icon = QIcon::fromTheme(systemTrayIcon);
         w->soundSystemTrayIcon->setIcon(QIcon(icon));
-        w->miniWidget->muteBtn->setIcon(icon);
+        w->devWidget->outputMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
+        w->appWidget->systemVolumeBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
+        w->miniWidget->muteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
         w->muteCheckBox->setChecked(true);
     }
     else if (value <= 0) {
         systemTrayIcon = "audio-volume-muted";
         icon = QIcon::fromTheme(systemTrayIcon);
-        w->miniWidget->muteBtn->setIcon(icon);
+        w->miniWidget->muteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
+        w->devWidget->outputMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
+        w->appWidget->systemVolumeBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
         w->soundSystemTrayIcon->setIcon(QIcon(icon));
         w->muteCheckBox->setChecked(false);
         //如果主主音量处于静音状态，应用音量取消静音则设置主音量取消静音
@@ -1622,34 +1755,59 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
         systemTrayIcon = "audio-volume-low";
         icon = QIcon::fromTheme(systemTrayIcon);
         w->soundSystemTrayIcon->setIcon(QIcon(icon));
-        w->miniWidget->muteBtn->setIcon(icon);
+        w->miniWidget->muteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-low.svg"));
+        w->devWidget->outputMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-low.svg"));
+        w->appWidget->systemVolumeBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-low.svg"));
         w->muteCheckBox->setChecked(false);
     }
     else if(value > 33 && value <= 66) {
         systemTrayIcon = "audio-volume-medium";
         icon = QIcon::fromTheme(systemTrayIcon);
         w->soundSystemTrayIcon->setIcon(QIcon(icon));
-        w->miniWidget->muteBtn->setIcon(icon);
+        w->appWidget->systemVolumeBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-medium.svg"));
+        w->devWidget->outputMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-medium.svg"));
+        w->miniWidget->muteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-medium.svg"));
         w->muteCheckBox->setChecked(false);
     }
     else if (value > 66) {
         systemTrayIcon = "audio-volume-high";
         icon = QIcon::fromTheme(systemTrayIcon);
         w->soundSystemTrayIcon->setIcon(QIcon(icon));
-        w->miniWidget->muteBtn->setIcon(icon);
+        w->miniWidget->muteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-high.svg"));
+        w->devWidget->outputMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-high.svg"));
+        w->appWidget->systemVolumeBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-high.svg"));
         w->muteCheckBox->setChecked(false);
     }
-    w->devWidget->outputVolumeLabel->setText(percent);
     w->miniWidget->displayVolumeLabel->setText(percent);
     w->appWidget->systemVolumeDisplayLabel->setText(percent);
     //输出音量控制
+
+    //高级输出设备模式下静音控制
+    connect(w->devWidget->outputMuteBtn,&QPushButton::clicked,[=](){
+        int volume = int(mate_mixer_stream_control_get_volume(control));
+        volume = int(volume*100/65536.0 + 0.5);
+        bool status = mate_mixer_stream_control_get_mute(control);
+        if (status) {
+            status = false;
+            w->muteCheckBox->setChecked(status);
+            mate_mixer_stream_control_set_mute(control,status);
+            w->updateSystemTrayIcon(volume,status);
+        }
+        else {
+            status =true;
+            w->muteCheckBox->setChecked(status);
+            mate_mixer_stream_control_set_mute(control,status);
+            w->updateSystemTrayIcon(volume,status);
+        }
+        Q_EMIT w->system_muted_signal(status);
+        w->menu->hide();
+    });
     //mini模式下系统音量的控制
     connect(w->miniWidget->masterVolumeSlider,&QSlider::valueChanged,[=](int value){
         QString percent;
         percent = QString::number(value);
         mate_mixer_stream_control_set_mute(control,FALSE);
         int volume = value*65536/100;
-        qDebug() << "master slider 滑动" << volume;
         mate_mixer_stream_control_set_volume(control,guint(volume));
         w->miniWidget->displayVolumeLabel->setText(percent);
     });
@@ -1670,9 +1828,7 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
         percent = QString::number(value);
         mate_mixer_stream_control_set_mute(control,FALSE);
         int volume = value*65536/100;
-        qDebug() << "advance volume" << volume;
         mate_mixer_stream_control_set_volume(control,guint(volume));
-        w->devWidget->outputVolumeLabel->setText(percent);
     });
 
     //mini模式下的一键静音
@@ -1744,7 +1900,6 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
         int opVolume = int(mate_mixer_stream_control_get_volume(control));
         opVolume = int(opVolume*100/65536.0 + 0.5);
         if (isMute) {
-            w->devWidget->outputVolumeLabel->setNum(opVolume);
             mate_mixer_stream_control_set_mute(control,FALSE);
         }
         else {
@@ -1763,7 +1918,6 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
         int opVolume = int(mate_mixer_stream_control_get_volume(control));
         opVolume = int(opVolume*100/65536.0 + 0.5);
         if (isMute) {
-            w->devWidget->outputVolumeLabel->setNum(opVolume);
             mate_mixer_stream_control_set_mute(control,FALSE);
         }
         else {
@@ -1804,7 +1958,7 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
     });
 
     //mini模式上下左右控制声音
-    connect(w,&DeviceSwitchWidget::keyboard_pressed_signal,[=](int volumeGain){
+    connect(w->miniWidget,&UkmediaMiniMasterVolumeWidget::keyboard_pressed_signal,[=](int volumeGain){
         int volume = int(mate_mixer_stream_control_get_volume(control));
         volume = int(volume*100/65536.0+0.5);
         w->miniWidget->masterVolumeSlider->setValue(volume+volumeGain);
@@ -1846,7 +2000,14 @@ void DeviceSwitchWidget::on_control_mute_notify (MateMixerStreamControl *control
     gboolean mute = mate_mixer_stream_control_get_mute (control);
     int volume = int(mate_mixer_stream_control_get_volume(control));
     volume = int(volume*100/65536.0+0.5);
-    w->updateSystemTrayIcon(volume,mute);
+    MateMixerStream *stream = mate_mixer_stream_control_get_stream(control);
+    MateMixerDirection direction = mate_mixer_stream_get_direction(stream);
+    if (direction == MATE_MIXER_DIRECTION_OUTPUT) {
+        w->updateSystemTrayIcon(volume,mute);
+    }
+    else if (direction == MATE_MIXER_DIRECTION_INPUT) {
+        w->updateMicrophoneIcon(volume,mute);
+    }
 }
 
 /*
@@ -1883,11 +2044,13 @@ void DeviceSwitchWidget::on_stream_control_volume_notify (MateMixerStreamControl
     int value = int(volume*100/65536.0 + 0.5);
     if (direction == MATE_MIXER_DIRECTION_OUTPUT) {
         w->devWidget->outputDeviceSlider->setValue(value);
+        w->appWidget->systemVolumeSlider->setValue(value);
         w->miniWidget->masterVolumeSlider->setValue(value);
         w->updateSystemTrayIcon(value,muted);
     }
     else if (direction == MATE_MIXER_DIRECTION_INPUT) {
         w->devWidget->inputDeviceSlider->setValue(value);
+        w->updateMicrophoneIcon(value,muted);
     }
 }
 
@@ -2028,32 +2191,56 @@ void DeviceSwitchWidget::contextMenuEvent(QContextMenuEvent *event)
     hideWindow();
 }
 
+
+
 /*
-    按键事件,控制系统音量
+    更新高级模式下麦克风图标
 */
-void DeviceSwitchWidget::keyPressEvent(QKeyEvent *event)
+void DeviceSwitchWidget::updateMicrophoneIcon(int value, bool status)
 {
-    int volumeGain ;
-    if (event->key() == Qt::Key_Escape) {
-        qDebug() << "esp key  hide window";
-        hideWindow();
+    if (status) {
+        devWidget->inputMuteButton->setIcon(QIcon("/usr/share/ukui-media/img/microphone-muted.svg"));
     }
-    else if (event->key() == Qt::Key_Up) {
-        volumeGain = 1;
-        Q_EMIT keyboard_pressed_signal(volumeGain);
+    else if (value <= 0) {
+        devWidget->inputMuteButton->setIcon(QIcon("/usr/share/ukui-media/img/microphone-muted.svg"));
     }
-    else if (event->key() == Qt::Key_Down) {
-        volumeGain = -1;
-        Q_EMIT keyboard_pressed_signal(volumeGain);
+    else if (value > 0 && value <= 33) {
+       devWidget->inputMuteButton->setIcon(QIcon("/usr/share/ukui-media/img/microphone-low.svg"));
     }
-    else if (event->key() == Qt::Key_Left) {
-        volumeGain = -1;
-        Q_EMIT keyboard_pressed_signal(volumeGain);
+    else if(value > 33 && value <= 66) {
+        devWidget->inputMuteButton->setIcon(QIcon("/usr/share/ukui-media/img/microphone-medium.svg"));
     }
-    else if (event->key() == Qt::Key_Right) {
-        volumeGain = 1;
-        Q_EMIT keyboard_pressed_signal(volumeGain);
+    else if (value > 66) {
+        devWidget->inputMuteButton->setIcon(QIcon("/usr/share/ukui-media/img/microphone-high.svg"));
     }
+
+}
+
+/*
+    dbus获取任务栏的位置
+*/
+int DeviceSwitchWidget::getPanelPosition(QString str)
+{
+    QDBusInterface interface( "com.ukui.panel.desktop",
+                              "/",
+                              "com.ukui.panel.desktop",
+                              QDBusConnection::sessionBus() );
+    QDBusReply<int> reply = interface.call("GetPanelPosition", str);
+
+    return reply;
+}
+
+/*
+    获取任务栏高度
+*/
+int DeviceSwitchWidget::getPanelHeight(QString str)
+{
+    QDBusInterface interface( "com.ukui.panel.desktop",
+                              "/",
+                              "com.ukui.panel.desktop",
+                              QDBusConnection::sessionBus() );
+    QDBusReply<int> reply = interface.call("GetPanelSize", str);
+    return reply;
 }
 
 /*
@@ -2068,40 +2255,45 @@ void DeviceSwitchWidget::updateSystemTrayIcon(int volume,bool isMute)
         icon = QIcon::fromTheme(systemTrayIcon);
         muteCheckBox->setChecked(true);
         soundSystemTrayIcon->setIcon(icon);
-        miniWidget->muteBtn->setIcon(icon);
-        appWidget->systemVolumeBtn->setIcon(icon);
+        miniWidget->muteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
+        appWidget->systemVolumeBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
+        devWidget->outputMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
     }
     else if (volume <= 0) {
         systemTrayIcon = "audio-volume-muted";
         icon = QIcon::fromTheme(systemTrayIcon);
         muteCheckBox->setChecked(false);
         soundSystemTrayIcon->setIcon(icon);
-        miniWidget->muteBtn->setIcon(icon);
-        appWidget->systemVolumeBtn->setIcon(icon);
+        miniWidget->muteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
+        appWidget->systemVolumeBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
+        devWidget->outputMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
     }
     else if (volume > 0 && volume <= 33) {
         systemTrayIcon = "audio-volume-low";
         muteCheckBox->setChecked(false);
         icon = QIcon::fromTheme(systemTrayIcon);
         soundSystemTrayIcon->setIcon(icon);
-        miniWidget->muteBtn->setIcon(icon);
-        appWidget->systemVolumeBtn->setIcon(icon);
+        miniWidget->muteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-low.svg"));
+        appWidget->systemVolumeBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-low.svg"));
+        devWidget->outputMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-low.svg"));
     }
     else if (volume >33 && volume <= 66) {
         systemTrayIcon = "audio-volume-medium";
         muteCheckBox->setChecked(false);
         icon = QIcon::fromTheme(systemTrayIcon);
         soundSystemTrayIcon->setIcon(icon);
-        miniWidget->muteBtn->setIcon(icon);
-        appWidget->systemVolumeBtn->setIcon(icon);
+        miniWidget->muteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-medium.svg"));
+        appWidget->systemVolumeBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-medium.svg"));
+        devWidget->outputMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-medium.svg"));
     }
     else {
         systemTrayIcon = "audio-volume-high";
         muteCheckBox->setChecked(false);
         icon = QIcon::fromTheme(systemTrayIcon);
         soundSystemTrayIcon->setIcon(icon);
-        miniWidget->muteBtn->setIcon(icon);
-        appWidget->systemVolumeBtn->setIcon(icon);
+        miniWidget->muteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-high.svg"));
+        appWidget->systemVolumeBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-high.svg"));
+        devWidget->outputMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-high.svg"));
     }
 
     //设置声音菜单栏静音选项的勾选状态
@@ -2111,6 +2303,7 @@ void DeviceSwitchWidget::updateSystemTrayIcon(int volume,bool isMute)
     else {
         muteCheckBox->setChecked(false);
     }
+    qDebug() << "更新托盘图标";
 }
 
 /*

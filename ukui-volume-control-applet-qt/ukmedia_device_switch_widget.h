@@ -28,6 +28,11 @@
 #include <QCheckBox>
 #include <QWidgetAction>
 #include <QFrame>
+#include <QtDBus/QDBusConnection>
+#include <QtDBus/QDBusMessage>
+#include <QtDBus/QDBusInterface>
+#include <QtDBus/QDBusObjectPath>
+#include <QDBusReply>
 #include <QSystemTrayIcon>
 extern "C" {
 #include <libmatemixer/matemixer.h>
@@ -65,7 +70,10 @@ public:
     void showWindow();
     void hideWindow();
     void showMenu(int x,int y);
+    void updateMicrophoneIcon(int volume,bool status);
     void updateSystemTrayIcon(int volume,bool status);
+    int getPanelPosition(QString str);
+    int getPanelHeight(QString str);
     static void list_device(DeviceSwitchWidget *w,MateMixerContext *context);
 
     static void gvc_stream_status_icon_set_control (DeviceSwitchWidget *w,MateMixerStreamControl *control);
@@ -125,7 +133,6 @@ Q_SIGNALS:
     void app_volume_changed(bool is_mute,int volume,QString app_name);
     void mouse_middle_clicked_signal();
     void mouse_wheel_signal(bool step);
-    void keyboard_pressed_signal(int volumeGain);
     void app_name_signal(QString app_name);
     void system_muted_signal(bool status);
 //    void appvolume_mute_change_mastervolume_status();
@@ -177,7 +184,7 @@ protected:
 //    void mousePressEvent(QMouseEvent *event);
 //    virtual void wheelEvent(QWheelEvent *event);
     void contextMenuEvent(QContextMenuEvent *event);
-    void keyPressEvent(QKeyEvent *event);
+//    void keyPressEvent(QKeyEvent *event);
 };
 
 #endif // DEICESWITCHWIDGET_H

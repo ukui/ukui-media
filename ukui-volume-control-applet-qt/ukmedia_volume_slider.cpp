@@ -17,13 +17,13 @@ void UkuiMediaButton::mousePressEvent(QMouseEvent *e)
         this->setFixedSize(34,34);
         QSize iconSize(14,14);
         this->setIconSize(iconSize);
-        this->setIcon(QIcon("/usr/share/ukui-media/img/complete-module-s.svg"));
+        this->setIcon(QIcon("/usr/share/ukui-media/img/complete-module.svg"));
     }
     else {
         this->setFixedSize(34,34);
         QSize iconSize(14,14);
         this->setIconSize(iconSize);
-        this->setIcon(QIcon("/usr/share/ukui-media/img/mini-module-s.svg"));
+        this->setIcon(QIcon("/usr/share/ukui-media/img/mini-module.svg"));
         Q_EMIT moveAdvanceSwitchBtnSignal();
     }
 }

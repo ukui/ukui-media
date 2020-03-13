@@ -70,6 +70,9 @@ UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QWidget *parent) : 
     setObjectName("miniWidget");
     deviceCombox->setVisible(false);
 
+    masterVolumeSlider->setCursor(QCursor(Qt::OpenHandCursor));
+    muteBtn->setCursor(QCursor(Qt::OpenHandCursor));
+
     connect(switchBtn,SIGNAL(moveMiniSwitchBtnSignale()),this,SLOT(moveMiniSwitchBtnSlot()));
     deviceBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
                              "padding-left:0px;}");
@@ -135,6 +138,34 @@ void UkmediaMiniMasterVolumeWidget::wheelEvent(QWheelEvent *event)
     }
     Q_EMIT mouse_wheel_signal(step);
     event->accept();
+}
+
+/*
+    按键事件,控制系统音量
+*/
+void UkmediaMiniMasterVolumeWidget::keyPressEvent(QKeyEvent *event)
+{
+    int volumeGain ;
+    if (event->key() == Qt::Key_Escape) {
+        qDebug() << "esp key  hide window";
+        this->hide();
+    }
+    else if (event->key() == Qt::Key_Up) {
+        volumeGain = 1;
+        Q_EMIT keyboard_pressed_signal(volumeGain);
+    }
+    else if (event->key() == Qt::Key_Down) {
+        volumeGain = -1;
+        Q_EMIT keyboard_pressed_signal(volumeGain);
+    }
+    else if (event->key() == Qt::Key_Left) {
+        volumeGain = -1;
+        Q_EMIT keyboard_pressed_signal(volumeGain);
+    }
+    else if (event->key() == Qt::Key_Right) {
+        volumeGain = 1;
+        Q_EMIT keyboard_pressed_signal(volumeGain);
+    }
 }
 
 /*
