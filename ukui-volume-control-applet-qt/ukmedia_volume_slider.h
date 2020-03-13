@@ -11,6 +11,23 @@ enum DisplayerMode{
     ADVANCED_MODE
 };
 
+#include <QLabel>
+#include <QMouseEvent>
+class MyCustomSlider : public QSlider
+{
+public:
+    MyCustomSlider(QWidget *parent=0);
+    ~MyCustomSlider();
+
+protected:
+    virtual void mousePressEvent(QMouseEvent *event);
+    virtual void mouseReleaseEvent(QMouseEvent *event);
+    virtual void mouseMoveEvent(QMouseEvent *event);
+
+private:
+    QLabel*	m_displayLabel;
+};
+
 class UkuiMediaButton:public QToolButton
 {
     Q_OBJECT

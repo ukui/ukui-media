@@ -46,13 +46,20 @@ UkmediaDeviceWidget::UkmediaDeviceWidget(QWidget *parent) : QWidget (parent)
     outputDeviceLabel = new QLabel(tr("Output Device"),this);
     outputDeviceDisplayLabel = new QLabel(tr("Speaker Realtek Audio"),outputWidget);
     outputDeviceBtn = new QPushButton(outputWidget);
-    outputDeviceSlider = new UkmediaVolumeSlider(outputSliderWidget);
+    outputDeviceSlider = new MyCustomSlider(outputSliderWidget);
     noInputDeviceLabel = new QLabel(tr("Input device can not be detected"),this);
 
     outputMuteBtn->setFixedSize(24,24);
     inputMuteButton->setFixedSize(24,24);
+    QSize iconSize(24,24);
+    outputMuteBtn->setIconSize(iconSize);
+    inputMuteButton->setIconSize(iconSize);
     inputDeviceBtn->setFocusPolicy(Qt::NoFocus);
     outputDeviceBtn->setFocusPolicy(Qt::NoFocus);
+    inputMuteButton->setStyleSheet("QPushButton{background:transparent;border:0px;"
+                                                   "padding-left:0px;}");
+    outputMuteBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
+                                "padding-left:0px;}");
     inputDeviceBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
                                 "padding-left:0px;}");
     outputDeviceBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"

@@ -340,7 +340,7 @@ void DeviceSwitchWidget::systemTrayMenuInit()
 void DeviceSwitchWidget::jumpControlPanelSlot()
 {
     QProcess *m_process = new QProcess;
-    m_process->start("ukui-volumesetWindowOpacity-control");
+    m_process->start("ukui-volume-control");
 }
 
 /*
@@ -390,6 +390,12 @@ void DeviceSwitchWidget::miniToAdvancedWidget()
             totalHeight = QGuiApplication::screens().at(0)->size().height();
             totalWidth = QGuiApplication::screens().at(0)->size().width();
         }
+    }
+    else {
+        availableHeight = QGuiApplication::screens().at(0)->availableGeometry().height();
+        availableWidth = QGuiApplication::screens().at(0)->availableGeometry().width();
+        totalHeight = QGuiApplication::screens().at(0)->size().height();
+        totalWidth = QGuiApplication::screens().at(0)->size().width();
     }
     rect = soundSystemTrayIcon->geometry();
     //显示界面位置
@@ -462,6 +468,12 @@ void DeviceSwitchWidget::advancedToMiniWidget()
             totalHeight = QGuiApplication::screens().at(0)->size().height();
             totalWidth = QGuiApplication::screens().at(0)->size().width();
         }
+    }
+    else {
+        availableHeight = QGuiApplication::screens().at(0)->availableGeometry().height();
+        availableWidth = QGuiApplication::screens().at(0)->availableGeometry().width();
+        totalHeight = QGuiApplication::screens().at(0)->size().height();
+        totalWidth = QGuiApplication::screens().at(0)->size().width();
     }
     rect = soundSystemTrayIcon->geometry();
     localX = rect.x() - (miniWidget->width()/2 - rect.size().height()/2) ;
@@ -570,6 +582,12 @@ void DeviceSwitchWidget::activatedSystemTrayIconSlot(QSystemTrayIcon::Activation
             totalHeight = QGuiApplication::screens().at(0)->size().height();
             totalWidth = QGuiApplication::screens().at(0)->size().width();
         }
+    }
+    else {
+        availableHeight = QGuiApplication::screens().at(0)->availableGeometry().height();
+        availableWidth = QGuiApplication::screens().at(0)->availableGeometry().width();
+        totalHeight = QGuiApplication::screens().at(0)->size().height();
+        totalWidth = QGuiApplication::screens().at(0)->size().width();
     }
     rect = soundSystemTrayIcon->geometry();
     //显示界面位置
@@ -1055,6 +1073,12 @@ void DeviceSwitchWidget::add_application_control (DeviceSwitchWidget *w, MateMix
 
     QString app_icon_name = mate_mixer_app_info_get_icon(info);
     app_name = mate_mixer_app_info_get_name (info);
+
+    int volume = int(mate_mixer_stream_control_get_volume(control));
+    int normal = mate_mixer_stream_control_get_normal_volume(control);
+    int display_volume = int(100 * volume / normal);
+//    qDebug() << "应用音量值为" << display_volume << volume << normal;
+
     //添加应用音量
     add_app_to_appwidget(w,int(appnum),app_name,app_icon_name,control);
 
@@ -1089,6 +1113,7 @@ void DeviceSwitchWidget::on_stream_control_added (MateMixerStream *stream,const 
     MateMixerStreamControl    *control;
     MateMixerStreamControlRole role;
     w->stream_control_list->append(name);
+    qDebug() << "stream name:---" << name << "stream control 总数："<< w->stream_control_list->count();
     control = mate_mixer_stream_get_control (stream, name);
     if G_UNLIKELY (control == nullptr)
         return;
@@ -1116,7 +1141,7 @@ void DeviceSwitchWidget::remove_application_control (DeviceSwitchWidget *w,const
     /* We could call bar_set_stream_control here, but that would pointlessly
      * invalidate the channel bar, so just remove it ourselves */
     int i = w->stream_control_list->indexOf(name);
-
+    qDebug() << "移除stream control:" << name << "stream control list" << w->stream_control_list->at(i) << "app name list :" << w->app_name_list->at(i);
     w->stream_control_list->removeAt(i);
     w->app_name_list->removeAt(i);
     QLayoutItem *item ;
@@ -1132,9 +1157,10 @@ void DeviceSwitchWidget::remove_application_control (DeviceSwitchWidget *w,const
     }
     appnum--;
     //设置布局的垂直间距以及设置gridlayout四周的间距
+    w->appWidget->gridlayout->update();
     w->appWidget->gridlayout->setMargin(0);
     w->appWidget->gridlayout->setSpacing(18);
-    w->appWidget->gridlayout->setContentsMargins(18,0,30,30);//w->appWidget->height() - 72 - appnum * 67);
+    w->appWidget->gridlayout->setContentsMargins(18,14,34,18);
     w->appWidget->appArea->widget()->adjustSize();
     if (appnum <= 0) {
         w->appWidget->noAppLabel->show();
@@ -1155,6 +1181,7 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
     volume = int(mate_mixer_stream_control_get_volume(control));
     normal = mate_mixer_stream_control_get_normal_volume(control);
     int display_volume = int(100 * volume / normal);
+//    qDebug() << "获取应用音量的值为" << display_volume << volume << normal;
     //设置应用的图标
     QString iconName = "/usr/share/applications/";
     iconName.append(app_icon_name);
@@ -1190,6 +1217,8 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
     w->appWidget->appIconBtn->setFixedSize(32,32);
     w->appWidget->appMuteBtn->setFixedSize(24,24);
 
+    QSize appSize(24,24);
+    w->appWidget->appMuteBtn->setIconSize(appSize);
     hlayout->addWidget(w->appWidget->appIconBtn);
     hlayout->addItem(item1);
     hlayout->addWidget(w->appWidget->appSlider);
@@ -1205,11 +1234,9 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
     app_widget->setLayout(vlayout);
     app_widget->layout()->setContentsMargins(0,0,0,0);
 
-    app_widget->move(0,0);
     //添加widget到gridlayout中
     w->appWidget->gridlayout->addWidget(app_widget);
-    w->appWidget->gridlayout->setMargin(0);
-     w->appWidget->gridlayout->setSpacing(18);
+    w->appWidget->gridlayout->update();
 //    w->appWidget->displayAppVolumeWidget->setLayout(w->appWidget->gridlayout);
     //设置每项的固定大小
     w->appWidget->appLabel->setFixedSize(88,18);
@@ -1237,7 +1264,7 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
     appLabelStr.append(QString::number(app_count));
     appVolumeLabelStr.append(QString::number(app_count));
 
-    w->app_name_list->append(app_name);
+    w->app_name_list->append(appSliderStr);
 
     w->appWidget->appSlider->setObjectName(appSliderStr);
     w->appWidget->appLabel->setObjectName(appLabelStr);
@@ -1329,6 +1356,7 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
         else if (volume > 66) {
             w->appWidget->appMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-high.svg"));
         }
+//        qDebug() << "设置应用音量" << volume << slider_str;
     });
 
     connect(w,&DeviceSwitchWidget::system_muted_signal,[=](bool isMute){
@@ -1343,9 +1371,11 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
     }
 
     //设置布局的垂直间距以及设置gridlayout四周的间距
+    w->appWidget->gridlayout->update();
     w->appWidget->gridlayout->setContentsMargins(18,14,34,18);
     w->appWidget->appArea->widget()->adjustSize();
-//    w->appWidget->gridlayout->setContentsMargins(18,0,30,w->appWidget->height() - 72 - appnum * 82);
+    w->appWidget->appMuteBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
+                                                          "padding-left:0px;}");
     w->appWidget->appLabel->setStyleSheet("QLabel{width:210px;"
                                           "height:14px;"
                                           "font-family:Noto Sans CJK SC;"
@@ -1365,9 +1395,13 @@ void DeviceSwitchWidget::update_app_volume(MateMixerStreamControl *control, QStr
     guint volume ;
     volume = guint(value*100/65536.0+0.5);
     bool is_mute = mate_mixer_stream_control_get_mute(control);
+
+    const gchar *controlName = mate_mixer_stream_control_get_name(control);
+    int index = w->stream_control_list->indexOf(controlName);
     MateMixerAppInfo *info = mate_mixer_stream_control_get_app_info(control);
     const gchar *app_name = mate_mixer_app_info_get_name(info);
-    QString appName = application_name;
+    QString appName = w->app_name_list->at(index);
+//    qDebug() << "app name list" << w->app_name_list->count();
 //    QString appName= app_name;
 //    appName.append("Slider");
 //    appName.append(QString::number(app_count));
@@ -1722,7 +1756,7 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
     w->miniWidget->masterVolumeSlider->setValue(value);
     w->appWidget->systemVolumeSlider->setValue(value);
     QString percent = QString::number(value);
-    qDebug() << "音量值为:" << percent << mate_mixer_stream_get_name(stream);
+//    qDebug() << "音量值为:" << percent << mate_mixer_stream_get_name(stream);
 
     QString systemTrayIcon;
     QIcon icon;
@@ -2303,7 +2337,6 @@ void DeviceSwitchWidget::updateSystemTrayIcon(int volume,bool isMute)
     else {
         muteCheckBox->setChecked(false);
     }
-    qDebug() << "更新托盘图标";
 }
 
 /*

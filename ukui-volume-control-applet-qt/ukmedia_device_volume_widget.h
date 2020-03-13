@@ -42,7 +42,7 @@ private:
     QLabel *outputDeviceLabel;
     QLabel *outputDeviceDisplayLabel;
     QPushButton *outputDeviceBtn;
-    UkmediaVolumeSlider *outputDeviceSlider;
+    MyCustomSlider *outputDeviceSlider;
     QWidget *inputWidget;
     QWidget *deviceWidget;
     QWidget *outputWidget;

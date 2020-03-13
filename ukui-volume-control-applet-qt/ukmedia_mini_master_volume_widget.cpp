@@ -24,6 +24,14 @@ UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QWidget *parent) : 
     QSpacerItem *item3 = new QSpacerItem(15,20);
     QSpacerItem *item4 = new QSpacerItem(19,20);
 
+    QIcon icon;
+    QSize deviceIconSize(16,16);
+    QString deviceBtnIcon = "audiocard";
+    icon = QIcon::fromTheme(deviceBtnIcon);
+    deviceBtn->setIconSize(deviceIconSize);
+    deviceBtn->setIcon(QIcon(icon));
+//    audiocard
+
     switchBtn->setParent(this);
     masterVolumeSlider->setOrientation(Qt::Horizontal);
     masterVolumeSlider->setRange(0,100);
