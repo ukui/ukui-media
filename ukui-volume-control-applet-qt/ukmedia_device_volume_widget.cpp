@@ -79,7 +79,7 @@ UkmediaDeviceWidget::UkmediaDeviceWidget(QWidget *parent) : QWidget (parent)
                                             "height:14px;"
                                             "font-family:Noto Sans CJK SC;"
                                             "font-size:14px;"
-                                            "color:rgba(255,255,255,0.57);"
+                                            "color:rgba(255,255,255,1);"
                                             "line-height:28px;}");
     inputDeviceLabel->setStyleSheet("QLabel{background:transparent;"
                                     "border:0px;color:#ffffff;"
@@ -89,7 +89,7 @@ UkmediaDeviceWidget::UkmediaDeviceWidget(QWidget *parent) : QWidget (parent)
                                            "height:14px;"
                                            "font-family:Noto Sans CJK SC;"
                                            "font-size:14px;"
-                                           "color:rgba(255,255,255,0.57);"
+                                           "color:rgba(255,255,255,1);"
                                            "line-height:28px;}");
 }
 

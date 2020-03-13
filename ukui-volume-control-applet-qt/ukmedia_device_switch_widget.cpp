@@ -1147,6 +1147,7 @@ void DeviceSwitchWidget::remove_application_control (DeviceSwitchWidget *w,const
     QLayoutItem *item ;
     if ((item = w->appWidget->gridlayout->takeAt(i)) != 0) {
         item->widget()->setParent(nullptr);
+        w->appWidget->appArea->widget()->adjustSize();
         delete item;
     }
     w->appWidget->gridlayout->update();
@@ -1156,17 +1157,16 @@ void DeviceSwitchWidget::remove_application_control (DeviceSwitchWidget *w,const
         appnum = 1;
     }
     appnum--;
-    //设置布局的垂直间距以及设置gridlayout四周的间距
-    w->appWidget->gridlayout->update();
     w->appWidget->gridlayout->setMargin(0);
     w->appWidget->gridlayout->setSpacing(18);
-    w->appWidget->gridlayout->setContentsMargins(18,14,34,18);
-    w->appWidget->appArea->widget()->adjustSize();
+    w->appWidget->gridlayout->setContentsMargins(18,14,34,60);
+    w->appWidget->gridlayout->update();
+    w->appWidget->noAppLabel->hide();
+    //设置布局的垂直间距以及设置gridlayout四周的间距
     if (appnum <= 0) {
         w->appWidget->noAppLabel->show();
     }
     else {
-        w->appWidget->noAppLabel->hide();
     }
 
 }
@@ -1234,9 +1234,6 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
     app_widget->setLayout(vlayout);
     app_widget->layout()->setContentsMargins(0,0,0,0);
 
-    //添加widget到gridlayout中
-    w->appWidget->gridlayout->addWidget(app_widget);
-    w->appWidget->gridlayout->update();
 //    w->appWidget->displayAppVolumeWidget->setLayout(w->appWidget->gridlayout);
     //设置每项的固定大小
     w->appWidget->appLabel->setFixedSize(88,18);
@@ -1370,8 +1367,11 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
         w->appWidget->noAppLabel->hide();
     }
 
+    //添加widget到gridlayout中
+    w->appWidget->gridlayout->addWidget(app_widget);
     //设置布局的垂直间距以及设置gridlayout四周的间距
-    w->appWidget->gridlayout->update();
+    w->appWidget->gridlayout->setSpacing(18);
+//    w->appWidget->gridlayout->update();
     w->appWidget->gridlayout->setContentsMargins(18,14,34,18);
     w->appWidget->appArea->widget()->adjustSize();
     w->appWidget->appMuteBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
@@ -1380,8 +1380,9 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
                                           "height:14px;"
                                           "font-family:Noto Sans CJK SC;"
                                           "font-size:14px;"
-                                          "color:rgba(255,255,255,0.57);"
+                                          "color:rgba(255,255,255,1);"
                                           "line-height:28px;}");
+    qDebug() << "giradlayout size :"<< w->appWidget->gridlayout->sizeHint();
 }
 
 /*
