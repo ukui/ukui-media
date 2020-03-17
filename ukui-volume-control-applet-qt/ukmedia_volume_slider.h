@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2019 Tianjin KYLIN Information Technology Co., Ltd.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, see <http://www.gnu.org/licenses/&gt;.
+ *
+ */
 #ifndef UKMEDIAVOLUMESLIDER_H
 #define UKMEDIAVOLUMESLIDER_H
 #include <QSlider>
@@ -15,6 +32,7 @@ enum DisplayerMode{
 #include <QMouseEvent>
 class MyCustomSlider : public QSlider
 {
+    Q_OBJECT
 public:
     MyCustomSlider(QWidget *parent=0);
     ~MyCustomSlider();
@@ -23,6 +41,7 @@ protected:
     virtual void mousePressEvent(QMouseEvent *event);
     virtual void mouseReleaseEvent(QMouseEvent *event);
     virtual void mouseMoveEvent(QMouseEvent *event);
+Q_SIGNALS:
 
 private:
     QLabel*	m_displayLabel;
@@ -35,6 +54,9 @@ public:
     UkuiMediaButton(QWidget *parent = nullptr);
     ~UkuiMediaButton();
     friend class UkmediaMiniMasterVolumeWidget;
+protected:
+    //void mousePressEvent(QMouseEvent *e);
+    //void mouseReleaseEvent(QMouseEvent *e);
 
 Q_SIGNALS:
     void advanceToMiniSignal();
@@ -42,8 +64,9 @@ Q_SIGNALS:
     void moveMiniSwitchBtnSignale();
     void moveAdvanceSwitchBtnSignal();
 protected:
-    void mousePressEvent(QMouseEvent *e);
-    void mouseReleaseEvent(QMouseEvent *e);
+    void mousePressEvent(QMouseEvent *e)override;
+    void mouseMoveEvent(QMouseEvent *e)override;
+    void mouseReleaseEvent(QMouseEvent *e)override;
 private:
 };
 
@@ -52,6 +75,7 @@ class UkmediaVolumeSlider : public QSlider
     Q_OBJECT
 public:
     UkmediaVolumeSlider(QWidget *parent = nullptr);
+    void initStyleOption(QStyleOptionSlider *option);
     ~UkmediaVolumeSlider();
 protected:
     void mousePressEvent(QMouseEvent *ev)

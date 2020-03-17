@@ -23,7 +23,6 @@
 #include <QSlider>
 #include <QEvent>
 #include <QMouseEvent>
-//#include <QPaintEvent>
 #include <QCoreApplication>
 #include "ukmedia_volume_slider.h"
 
@@ -42,13 +41,15 @@ private:
     QLabel *outputDeviceLabel;
     QLabel *outputDeviceDisplayLabel;
     QPushButton *outputDeviceBtn;
-    MyCustomSlider *outputDeviceSlider;
+    UkmediaVolumeSlider *outputDeviceSlider;
     QWidget *inputWidget;
     QWidget *deviceWidget;
     QWidget *outputWidget;
     QWidget *outputSliderWidget;
     QWidget *inputSliderWidget;
+    QLabel *outputDisplayVolumeLabel;
 
+    QLabel *displayOutputLabel;
     QLabel *inputDeviceLabel;
     QPushButton *inputMuteButton;
     QLabel *inputDeviceDisplayLabel;

@@ -20,7 +20,6 @@
 
 #include <QWidget>
 #include <QPushButton>
-#include "ukmedia_scroll_widget.h"
 #include "ukmedia_device_volume_widget.h"
 #include "ukmedia_application_volume_widget.h"
 #include "ukmedia_mini_master_volume_widget.h"
@@ -145,13 +144,12 @@ private Q_SLOTS:
     void advancedToMiniWidget();
     void deviceComboxIndexChanged(QString str);
     void moveAdvanceSwitchBtnSlot();
+
 private:
     QPushButton *deviceBtn;
     QPushButton *appVolumeBtn;
     UkuiMediaButton *switchToMiniBtn;
 
-    ScrollWitget *devScrollWidget;
-    ScrollWitget *appScrollWidget;
     UkmediaDeviceWidget *devWidget;
     ApplicationVolumeWidget *appWidget;
     UkmediaMiniMasterVolumeWidget *miniWidget;

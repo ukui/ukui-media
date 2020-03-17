@@ -22,8 +22,8 @@
 #include <QPushButton>
 #include <QGridLayout>
 #include <QScrollArea>
+#include <QVBoxLayout>
 #include "ukmedia_volume_slider.h"
-//#include <QPaintEvent>
 
 class ApplicationVolumeWidget : public QWidget
 {
@@ -34,7 +34,6 @@ public:
     friend class DeviceSwitchWidget;
 private:
     QLabel *applicationLabel;
-    QLabel *noAppLabel;
     QLabel *systemVolumeLabel;
     QPushButton *systemVolumeBtn;
     UkmediaVolumeSlider *systemVolumeSlider;
@@ -50,6 +49,7 @@ private:
     QSlider *appSlider;
     QScrollArea *appArea;
     QGridLayout *gridlayout;
+//    QVBoxLayout *vLayout;
 protected:
 //    void paintEvent(QPaintEvent *event);
 

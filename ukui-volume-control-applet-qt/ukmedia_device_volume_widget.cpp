@@ -21,11 +21,12 @@
 #include <QVBoxLayout>
 #include <QSpacerItem>
 #include <QDebug>
-
+#include "customstyle.h"
 UkmediaDeviceWidget::UkmediaDeviceWidget(QWidget *parent) : QWidget (parent)
 {
     setAttribute(Qt::WA_TranslucentBackground);
     //初始化设备界面
+    displayOutputLabel = new QLabel(this);
     deviceWidget = new QWidget(this);
     outputWidget = new QWidget(deviceWidget);
     outputSliderWidget = new QWidget(outputWidget);
@@ -46,9 +47,12 @@ UkmediaDeviceWidget::UkmediaDeviceWidget(QWidget *parent) : QWidget (parent)
     outputDeviceLabel = new QLabel(tr("Output Device"),this);
     outputDeviceDisplayLabel = new QLabel(tr("Speaker Realtek Audio"),outputWidget);
     outputDeviceBtn = new QPushButton(outputWidget);
-    outputDeviceSlider = new MyCustomSlider(outputSliderWidget);
+    outputDeviceSlider = new UkmediaVolumeSlider(outputSliderWidget);
     noInputDeviceLabel = new QLabel(tr("Input device can not be detected"),this);
+    outputDisplayVolumeLabel = new QLabel(this);
 
+    inputDeviceSlider->setStyle(new CustomStyle());
+    outputDeviceSlider->setStyle(new CustomStyle());
     outputMuteBtn->setFixedSize(24,24);
     inputMuteButton->setFixedSize(24,24);
     QSize iconSize(24,24);
@@ -114,7 +118,6 @@ void UkmediaDeviceWidget::noInputWidgetInit()
     outputDeviceSlider->setRange(0,100);
     outputDeviceSlider->setOrientation(Qt::Horizontal);
     outputDeviceSlider->setFixedSize(220,22);
-
     deviceWidget->setFixedSize(358,320);
 
     QHBoxLayout *hlayout = new QHBoxLayout;

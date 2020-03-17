@@ -40,13 +40,13 @@ ApplicationVolumeWidget::ApplicationVolumeWidget(QWidget *parent) : QWidget (par
     systemVolumeBtn->setFixedSize(32,32);
     systemVolumeSlider->setFixedSize(220,22);
     systemVolumeDisplayLabel->setFixedSize(24,18);
-    applicationLabel->setFixedSize(160,18);
+    applicationLabel->setFixedSize(160,20);
     QSize iconSize(32,32);
     systemVolumeBtn->setIconSize(iconSize);
 
     upWidget->move(0,0);
-    systemVolumeWidget->move(18,92);
     systemVolumeLabel->move(18,62);
+    systemVolumeWidget->move(18,90);
     applicationLabel->move(18,23);
     this->setFixedSize(358,320);
 
@@ -93,7 +93,7 @@ ApplicationVolumeWidget::ApplicationVolumeWidget(QWidget *parent) : QWidget (par
                                     "border:0px;"
                                     "color:#ffffff;"
                                     "font-family:Noto Sans CJK SC;"
-                                    "font-size:18px;}");
+                                    "font-size:20px;}");
 
     upWidget->setStyleSheet("QWidget{border-bottom: 1px solid rgba(255,255,255,0.08); }");
 }

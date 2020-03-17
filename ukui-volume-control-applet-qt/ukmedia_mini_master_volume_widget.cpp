@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2019 Tianjin KYLIN Information Technology Co., Ltd.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, see <http://www.gnu.org/licenses/&gt;.
+ *
+ */
 #include "ukmedia_mini_master_volume_widget.h"
 #include <QLayout>
 #include <QHBoxLayout>
@@ -63,6 +80,7 @@ UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QWidget *parent) : 
     setAttribute(Qt::WA_TranslucentBackground);
     QHBoxLayout *hlayout  = new QHBoxLayout(masterWidget);
 
+    masterVolumeSlider->setStyle(new CustomStyle);
     hlayout->addItem(item1);
     hlayout->addWidget(muteBtn);
     hlayout->addItem(item2);
@@ -81,6 +99,7 @@ UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QWidget *parent) : 
     masterVolumeSlider->setCursor(QCursor(Qt::OpenHandCursor));
     muteBtn->setCursor(QCursor(Qt::OpenHandCursor));
 
+    switchBtn->setToolTip(tr("Go Into Full Mode"));
     connect(switchBtn,SIGNAL(moveMiniSwitchBtnSignale()),this,SLOT(moveMiniSwitchBtnSlot()));
     deviceBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
                              "padding-left:0px;}");
@@ -181,6 +200,7 @@ void UkmediaMiniMasterVolumeWidget::keyPressEvent(QKeyEvent *event)
 */
 void UkmediaMiniMasterVolumeWidget::moveMiniSwitchBtnSlot()
 {
+    qDebug() << "*********";
     switchBtn->move(308,7);
 }
 

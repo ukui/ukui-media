@@ -5,7 +5,7 @@
 #include <QApplication>
 CustomStyle::CustomStyle(const QString &proxyStyleName, QObject *parent) : QProxyStyle (proxyStyleName)
 {
-
+    m_helpTip = new SliderTipLabelHelper(this);
 }
 CustomStyle::~CustomStyle()
 {
@@ -46,31 +46,42 @@ void CustomStyle::drawItemText(QPainter *painter, const QRect &rectangle, int al
 void CustomStyle::drawPrimitive(QStyle::PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const
 {
     switch (element) {
-       //绘制 ToolButton
-       case PE_PanelButtonTool:{
-           painter->save();
-           painter->setRenderHint(QPainter::Antialiasing,true);
-           painter->setPen(Qt::NoPen);
-           painter->setBrush(QColor(0xff,0xff,0xff,0x00));
-           painter->drawRoundedRect(option->rect,4,4);
-           if (option->state & State_MouseOver) {
-              if (option->state & State_Sunken) {
-                  painter->setRenderHint(QPainter::Antialiasing,true);
-                  painter->setPen(Qt::NoPen);
-                  painter->setBrush(QColor(0xff,0xff,0xff,0x14));
-                  painter->drawRoundedRect(option->rect,4,4);
-              } else {
-                  painter->setRenderHint(QPainter::Antialiasing,true);
-                  painter->setPen(Qt::NoPen);
-                  painter->setBrush(QColor(0xff,0xff,0xff,0x1f));
-                  painter->drawRoundedRect(option->rect,4,4);
-              }
-           }
-       painter->restore();
-       return;
-       }break;
-       }
-       return QProxyStyle::drawPrimitive(element, option, painter, widget);
+    //绘制 ToolButton
+    case PE_PanelButtonTool:{
+        painter->save();
+        painter->setRenderHint(QPainter::Antialiasing,true);
+        painter->setPen(Qt::NoPen);
+        painter->setBrush(QColor(0xff,0xff,0xff,0x00));
+        painter->drawRoundedRect(option->rect,4,4);
+        if (option->state & State_MouseOver) {
+            if (option->state & State_Sunken) {
+                painter->setRenderHint(QPainter::Antialiasing,true);
+                painter->setPen(Qt::NoPen);
+                painter->setBrush(QColor(0xff,0xff,0xff,0x14));
+                painter->drawRoundedRect(option->rect,4,4);
+            } else {
+                painter->setRenderHint(QPainter::Antialiasing,true);
+                painter->setPen(Qt::NoPen);
+                painter->setBrush(QColor(0xff,0xff,0xff,0x1f));
+                painter->drawRoundedRect(option->rect,4,4);
+            }
+        }
+        painter->restore();
+        return;
+    }
+    case PE_PanelTipLabel:{
+        painter->save();
+        painter->setRenderHint(QPainter::Antialiasing,true);
+        painter->setPen(Qt::NoPen);
+        painter->setBrush(QColor(0xff,0xff,0x00,0xff));
+//        painter->drawRoundedRect(option->rect,4,4);
+        painter->restore();
+        return;
+    }
+        break;
+
+    }
+    return QProxyStyle::drawPrimitive(element, option, painter, widget);
 }
 
 QPixmap CustomStyle::generatedIconPixmap(QIcon::Mode iconMode, const QPixmap &pixmap, const QStyleOption *option) const
@@ -109,7 +120,33 @@ int CustomStyle::pixelMetric(QStyle::PixelMetric metric, const QStyleOption *opt
 //
 void CustomStyle::polish(QWidget *widget)
 {
-    widget->setAttribute(Qt::WA_Hover);
+    if (widget) {
+        if (widget->inherits("QTipLabel")) {
+            widget->setAttribute(Qt::WA_TranslucentBackground);
+            QPainterPath path;
+            auto rect = widget->rect();
+            rect.adjust(0,0,0,0);
+            path.addRoundedRect(rect,6,6);
+            widget->setProperty("blurRegion",QRegion(path.toFillPolygon().toPolygon()));
+        }
+    }
+    if (widget) {
+        if (widget->inherits("QLable")) {
+            qDebug() << "QLabel+";
+            widget->setAttribute(Qt::WA_TranslucentBackground);
+            QPainterPath path;
+            auto rect = widget->rect();
+            rect.adjust(0,0,0,0);
+            path.addRoundedRect(rect,6,6);
+            widget->setProperty("blurRegion",QRegion(path.toFillPolygon().toPolygon()));
+        }
+    }
+    if (widget){
+        widget->setAttribute(Qt::WA_Hover);
+        widget->inherits("QSlider");
+        m_helpTip->registerWidget(widget);
+        widget->installEventFilter(this);
+    }
 
     return QProxyStyle::polish(widget);
 }
