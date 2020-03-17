@@ -3,7 +3,11 @@ Upstream-Name: ukui-media
 Upstream-Contact: fengzhaoxiang <fengzhaoxiang@kylinos.cn>
 Source: http://github.com/ukui/ukui-media/
 
-Files: ukui-volume-control-applet-qt/main.cpp
+Files: ukui-volume-control-applet-qt/customstyle.cpp
+       ukui-volume-control-applet-qt/customstyle.h 
+       ukui-volume-control-applet-qt/ukmedia_slider_tip_label_helper.cpp	
+       ukui-volume-control-applet-qt/ukmedia_slider_tip_label_helper.h
+       ukui-volume-control-applet-qt/main.cpp
        ukui-volume-control-applet-qt/ukmedia_control_widget.cpp
        ukui-volume-control-applet-qt/ukmedia_control_widget.h
        ukui-volume-control-applet-qt/ukmedia_systemtray_widget.cpp
@@ -14,8 +18,6 @@ Files: ukui-volume-control-applet-qt/main.cpp
        ukui-volume-control-applet-qt/ukmedia_device_switch_widget.h
        ukui-volume-control-applet-qt/ukmedia_device_volume_widget.cpp
        ukui-volume-control-applet-qt/ukmedia_device_volume_widget.h
-       ukui-volume-control-applet-qt/ukmedia_scroll_widget.cpp
-       ukui-volume-control-applet-qt/ukmedia_scroll_widget.h
        ukui-volume-control-applet-qt/ukui-volume-control-applet-qt.pro
        ukui-volume-control-applet-qt/res.qrc
        ukui-volume-control-applet-qt/data/*
@@ -23,6 +25,10 @@ Files: ukui-volume-control-applet-qt/main.cpp
        data/images/*
 Copyright: 2020, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
+
+Files: ukui-volume-control-applet-qt/QtSingleApplication/*
+Copyright: 2013 Digia Plc and/or its subsidiary(-ies).
+License: BSD
 
 Files: ukui-volume-control/gvc-balance-bar.h
        ukui-volume-control/gvc-channel-bar.h
