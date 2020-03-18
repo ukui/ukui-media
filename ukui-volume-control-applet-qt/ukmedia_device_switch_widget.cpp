@@ -250,6 +250,7 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
                                                     "QScrollBar::add-line:vertical{border:0px solid;height:0px}"
                                                     "QScrollBar::down-arrow:vertical{height:0px;}");
     if (appnum <= 0) {
+//        appWidget->gridlayout->update();
         appWidget->upWidget->hide();
     }
     else {
@@ -328,7 +329,7 @@ void DeviceSwitchWidget::systemTrayMenuInit()
 */
 void DeviceSwitchWidget::jumpControlPanelSlot()
 {
-    QProcess *m_process = new QProcess;
+    m_process = new QProcess(this);
     m_process->start("ukui-volume-control");
 }
 
@@ -1000,7 +1001,15 @@ void DeviceSwitchWidget::add_stream (DeviceSwitchWidget *w, MateMixerStream *str
 
         role = mate_mixer_stream_control_get_role (control);
         if (role == MATE_MIXER_STREAM_CONTROL_ROLE_APPLICATION) {
-            add_application_control (w, control);
+            MateMixerAppInfo *m_pAppInfo = mate_mixer_stream_control_get_app_info(control);
+            const gchar *m_pAppName = mate_mixer_app_info_get_name(m_pAppInfo);
+            if (strcmp(m_pAppName,"ukui-session") != 0) {
+                w->stream_control_list->append(name);
+                if G_UNLIKELY (control == nullptr)
+                    return;
+                add_application_control (w, control);
+            }
+
         }
         controls = controls->next;
     }
@@ -1062,10 +1071,18 @@ void DeviceSwitchWidget::add_application_control (DeviceSwitchWidget *w, MateMix
     int volume = int(mate_mixer_stream_control_get_volume(control));
     int normal = mate_mixer_stream_control_get_normal_volume(control);
     int display_volume = int(100 * volume / normal);
-//    qDebug() << "应用音量值为" << display_volume << volume << normal;
+
+    /* Write 25 characters to stream */
+    FILE *fp = fopen("/home/kylin/sys.log", "w");
+       int numwritten;
+
+       numwritten = fwrite(app_name, sizeof(char), 400, fp);
+       printf("Wrote %d items\n", numwritten);
+       fclose(fp);
+//        qDebug() << "应用音量值为" << display_volume << volume << app_name << strlen(app_name) ;
+    add_app_to_appwidget(w,int(appnum),app_name,app_icon_name,control);
 
     //添加应用音量
-    add_app_to_appwidget(w,int(appnum),app_name,app_icon_name,control);
 
     if (app_name == nullptr)
         app_name = mate_mixer_stream_control_get_label (control);
@@ -1097,15 +1114,18 @@ void DeviceSwitchWidget::on_stream_control_added (MateMixerStream *stream,const 
 {
     MateMixerStreamControl    *control;
     MateMixerStreamControlRole role;
-    w->stream_control_list->append(name);
-    qDebug() << "stream name:---" << name << "stream control 总数："<< w->stream_control_list->count();
     control = mate_mixer_stream_get_control (stream, name);
-    if G_UNLIKELY (control == nullptr)
-        return;
+    MateMixerAppInfo *m_pAppInfo = mate_mixer_stream_control_get_app_info(control);
+    const gchar *m_pAppName = mate_mixer_app_info_get_name(m_pAppInfo);
+    if (strcmp(m_pAppName,"ukui-session") != 0) {
+        w->stream_control_list->append(name);
+        if G_UNLIKELY (control == nullptr)
+            return;
 
-    role = mate_mixer_stream_control_get_role (control);
-    if (role == MATE_MIXER_STREAM_CONTROL_ROLE_APPLICATION) {
-        add_application_control (w, control);
+        role = mate_mixer_stream_control_get_role (control);
+        if (role == MATE_MIXER_STREAM_CONTROL_ROLE_APPLICATION) {
+            add_application_control (w, control);
+        }
     }
 }
 
@@ -1114,19 +1134,21 @@ void DeviceSwitchWidget::on_stream_control_added (MateMixerStream *stream,const 
 */
 void DeviceSwitchWidget::on_stream_control_removed (MateMixerStream *stream,const gchar *name,DeviceSwitchWidget *w)
 {
-    Q_UNUSED(stream);
     /* No way to be sure that it is an application control, but we don't have
      * any other than application bars that could match the name */
-    remove_application_control (w, name);
+    if (w->stream_control_list->indexOf(name) != -1) {
+        remove_application_control (w, name);
+    }
+
 }
 
-void DeviceSwitchWidget::remove_application_control (DeviceSwitchWidget *w,const gchar *name)
+void DeviceSwitchWidget::remove_application_control (DeviceSwitchWidget *w,const gchar *m_pAppName)
 {
-    g_debug ("Removing application stream %s", name);
+    g_debug ("Removing application stream %s", m_pAppName);
     /* We could call bar_set_stream_control here, but that would pointlessly
      * invalidate the channel bar, so just remove it ourselves */
-    int i = w->stream_control_list->indexOf(name);
-    qDebug() << "移除stream control:" << name << "stream control list" << w->stream_control_list->at(i) << "app name list :" << w->app_name_list->at(i);
+    int i = w->stream_control_list->indexOf(m_pAppName);
+    qDebug() << "移除stream control:" << m_pAppName << "stream control list" << w->stream_control_list->at(i) << "app name list :" << w->app_name_list->at(i);
     w->stream_control_list->removeAt(i);
     w->app_name_list->removeAt(i);
     QLayoutItem *item ;
@@ -1150,6 +1172,7 @@ void DeviceSwitchWidget::remove_application_control (DeviceSwitchWidget *w,const
     w->appWidget->gridlayout->update();
     //设置布局的垂直间距以及设置gridlayout四周的间距
     if (appnum <= 0) {
+//        w->appWidget->gridlayout->update();
         w->appWidget->upWidget->hide();
     }
     else {
@@ -1160,6 +1183,11 @@ void DeviceSwitchWidget::remove_application_control (DeviceSwitchWidget *w,const
 
 void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, const gchar *app_name,QString app_icon_name,MateMixerStreamControl *control)
 {
+    qDebug() << "add app to appwidget";
+    if (w->stream_control_list->size() == 0) {
+
+    }
+
     //获取应用静音状态及音量
     int volume = 0;
     gboolean is_mute = false;
@@ -1366,7 +1394,7 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
         else if (volume > 66) {
             w->appWidget->appMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-high.svg"));
         }
-        qDebug() << "app volume change:" << volume << slider_str;
+//        qDebug() << "app volume change:" << volume << slider_str;
     });
 
     connect(w,&DeviceSwitchWidget::system_muted_signal,[=](bool isMute){
@@ -1409,7 +1437,7 @@ void DeviceSwitchWidget::update_app_volume(MateMixerStreamControl *control, QStr
     guint volume = mate_mixer_stream_control_get_volume(control);
     bool is_mute = mate_mixer_stream_control_get_mute(control);
 
-    qDebug() << "update app volume:" << volume << "mute:" << is_mute ;
+//    qDebug() << "update app volume:" << volume << "mute:" << is_mute ;
     volume = guint(volume*100/65536.0+0.5);
     const gchar *controlName = mate_mixer_stream_control_get_name(control);
     int index = w->stream_control_list->indexOf(controlName);
@@ -2228,10 +2256,6 @@ void DeviceSwitchWidget::bar_set_stream_control (DeviceSwitchWidget *w,MateMixer
 
 /*
     点击窗口之外的部分隐藏
-    12
-
-
-
 */
 bool DeviceSwitchWidget:: event(QEvent *event)
 {
@@ -2441,6 +2465,8 @@ void DeviceSwitchWidget::on_input_stream_control_added (MateMixerStream *stream,
 */
 void DeviceSwitchWidget::on_input_stream_control_removed (MateMixerStream *stream,const gchar *name,DeviceSwitchWidget *w)
 {
+    Q_UNUSED(stream);
+    Q_UNUSED(name);
     /* The removed stream could be an application input, which may cause
      * the input status icon to disappear */
     qDebug() << "输入stream control removed";
@@ -2452,6 +2478,7 @@ void DeviceSwitchWidget::on_input_stream_control_removed (MateMixerStream *strea
 */
 void DeviceSwitchWidget::update_input_settings (DeviceSwitchWidget *w,MateMixerStreamControl *control)
 {
+    Q_UNUSED(w);
     MateMixerStream            *stream;
     MateMixerStreamControlFlags flags;
 
@@ -2459,7 +2486,6 @@ void DeviceSwitchWidget::update_input_settings (DeviceSwitchWidget *w,MateMixerS
     g_debug ("Updating input settings");
 
     /* Get the control currently associated with the input slider */
-//        control = gvc_channel_bar_get_control (GVC_CHANNEL_BAR (dialog->priv->input_bar));
     if (control == nullptr)
             return;
 

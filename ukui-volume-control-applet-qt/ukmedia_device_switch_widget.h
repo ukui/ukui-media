@@ -33,6 +33,7 @@
 #include <QtDBus/QDBusObjectPath>
 #include <QDBusReply>
 #include <QSystemTrayIcon>
+#include <QProcess>
 extern "C" {
 #include <libmatemixer/matemixer.h>
 #include <gtk/gtk.h>
@@ -175,6 +176,7 @@ private:
     QWidgetAction *actionSoundPreference;
     QCheckBox *muteCheckBox;
     QLabel *muteLabel;
+    QProcess *m_process;
 
 protected:
     void paintEvent(QPaintEvent *event);

@@ -44,7 +44,6 @@ int main(int argc, char *argv[])
         else {
             qDebug() << "Load translations file" << locale << "failed!";
         }
-
     }
 
     //加载qss文件
