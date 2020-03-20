@@ -8,10 +8,10 @@ Files: ukui-volume-control-applet-qt/customstyle.cpp
        ukui-volume-control-applet-qt/ukmedia_slider_tip_label_helper.cpp	
        ukui-volume-control-applet-qt/ukmedia_slider_tip_label_helper.h
        ukui-volume-control-applet-qt/main.cpp
-       ukui-volume-control-applet-qt/ukmedia_control_widget.cpp
-       ukui-volume-control-applet-qt/ukmedia_control_widget.h
-       ukui-volume-control-applet-qt/ukmedia_systemtray_widget.cpp
-       ukui-volume-control-applet-qt/ukmedia_systemtray_widget.h
+       ukui-volume-control-applet-qt/ukmedia_mini_master_volume_widget.cpp
+       ukui-volume-control-applet-qt/ukmedia_mini_master_volume_widget.h	    
+       ukui-volume-control-applet-qt/ukmedia_volume_slider.cpp
+       ukui-volume-control-applet-qt/ukmedia_volume_slider.h   
        ukui-volume-control-applet-qt/ukmedia_application_volume_widget.cpp
        ukui-volume-control-applet-qt/ukmedia_application_volume_widget.h
        ukui-volume-control-applet-qt/ukmedia_device_switch_widget.cpp
@@ -28,7 +28,7 @@ License: GPL-2+
 
 Files: ukui-volume-control-applet-qt/QtSingleApplication/*
 Copyright: 2013 Digia Plc and/or its subsidiary(-ies).
-License: BSD
+License: BSD-3-Clause
 
 Files: ukui-volume-control/gvc-balance-bar.h
        ukui-volume-control/gvc-channel-bar.h
