@@ -36,8 +36,8 @@ ApplicationVolumeWidget::ApplicationVolumeWidget(QWidget *parent) : QWidget (par
     systemVolumeSlider->setOrientation(Qt::Horizontal);
     systemVolumeSlider->setRange(0,100);
     upWidget->setFixedSize(358,143);
-    systemVolumeWidget->setFixedSize(322,60);
-    systemVolumeSliderWidget->setFixedSize(322,32);
+    systemVolumeWidget->setFixedSize(312,60);
+    systemVolumeSliderWidget->setFixedSize(312,32);
     systemVolumeLabel->setFixedSize(220,16);
     systemVolumeBtn->setFixedSize(32,32);
     systemVolumeSlider->setFixedSize(220,22);
