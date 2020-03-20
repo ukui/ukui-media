@@ -31,7 +31,7 @@ INSTALLS += \
 
 CONFIG += \
     c++11 \
-    no_keywords link_pkgconfig \
+    no_keywords link_pkgconfig debug\
 
 PKGCONFIG += \
     gtk+-3.0 \
