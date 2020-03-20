@@ -60,6 +60,7 @@ UkmediaDeviceWidget::UkmediaDeviceWidget(QWidget *parent) : QWidget (parent)
     inputMuteButton->setIconSize(iconSize);
     inputDeviceBtn->setFocusPolicy(Qt::NoFocus);
     outputDeviceBtn->setFocusPolicy(Qt::NoFocus);
+    noInputWidgetInit();
     inputMuteButton->setStyleSheet("QPushButton{background:transparent;border:0px;"
                                                    "padding-left:0px;}");
     outputMuteBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
@@ -69,31 +70,28 @@ UkmediaDeviceWidget::UkmediaDeviceWidget(QWidget *parent) : QWidget (parent)
     outputDeviceBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
                                  "padding-left:0px;}");
 
-    noInputWidgetInit();
 
     outputDeviceLabel->setStyleSheet("QLabel{background:transparent;"
                                      "border:0px;color:#ffffff;"
                                      "font-family:Noto Sans CJK SC;"
                                      "font-weight:400;"
-                                     "color:rgba(255,255,255,1);"
+                                     "color:rgba(255,255,255,0.97);"
                                      "line-height:34px;"
-                                     "opacity:0.97;"
                                      "font-size:20px;}");
-    outputDeviceDisplayLabel->setStyleSheet("QLabel{width:126px;"
-                                            "height:14px;"
-                                            "font-family:Noto Sans CJK SC;"
-                                            "font-size:14px;"
-                                            "color:rgba(255,255,255,1);"
-                                            "line-height:28px;}");
+    outputDeviceDisplayLabel->setStyleSheet("font-size:14px;font-family:Noto Sans CJK SC;"
+                                            "font-weight:400;"
+                                            "color:rgba(255,255,255,0.91);"
+                                            "line-height:28px;");
     inputDeviceLabel->setStyleSheet("QLabel{background:transparent;"
                                     "border:0px;color:#ffffff;"
                                     "font-family:Noto Sans CJK SC;"
+                                    "font-weight:400;"
+                                    "color:rgba(255,255,255,0.97);"
+                                    "line-height:34px;"
                                     "font-size:20px;}");
-    inputDeviceDisplayLabel->setStyleSheet("QLabel{width:126px;"
-                                           "height:14px;"
-                                           "font-family:Noto Sans CJK SC;"
+    inputDeviceDisplayLabel->setStyleSheet("QLabel{font-family:Noto Sans CJK SC;"
                                            "font-size:14px;"
-                                           "color:rgba(255,255,255,1);"
+                                           "color:rgba(255,255,255,0.91);"
                                            "line-height:28px;}");
 }
 
@@ -113,7 +111,7 @@ void UkmediaDeviceWidget::noInputWidgetInit()
     outputDeviceBtn->setIcon(QIcon("/usr/share/ukui-media/img/audiocard.svg"));
   //设置滑动条的范围和取向
     outputDeviceLabel->setFixedSize(78,20);
-    outputDeviceDisplayLabel->setFixedSize(220,14);
+    outputDeviceDisplayLabel->setFixedSize(220,16);
 
     outputDeviceSlider->setRange(0,100);
     outputDeviceSlider->setOrientation(Qt::Horizontal);
@@ -137,7 +135,7 @@ void UkmediaDeviceWidget::noInputWidgetInit()
 
     vlayout->addWidget(outputDeviceDisplayLabel);
     vlayout->addWidget(outputSliderWidget);
-    vlayout->setSpacing(14);
+    vlayout->setSpacing(12);
     outputWidget->setLayout(vlayout);
     outputWidget->layout()->setContentsMargins(0,0,0,0);
 

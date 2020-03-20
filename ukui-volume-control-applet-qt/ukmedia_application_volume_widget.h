@@ -41,6 +41,7 @@ private:
 
     QWidget *upWidget;
     QWidget *systemVolumeWidget;
+    QWidget *systemVolumeSliderWidget;
     QWidget *displayAppVolumeWidget;
     QStringList *app_volume_list;
     QLabel *appLabel;
@@ -49,7 +50,6 @@ private:
     QSlider *appSlider;
     QScrollArea *appArea;
     QGridLayout *gridlayout;
-//    QVBoxLayout *vLayout;
 protected:
 //    void paintEvent(QPaintEvent *event);
 

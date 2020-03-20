@@ -32,7 +32,6 @@ public:
     void unregisterWidget(QWidget *w);
     bool eventFilter(QObject *obj, QEvent *e);
 
-    void buttonPresseEvent(QObject *obj, QMouseEvent *e);
     void mouseMoveEvent(QObject *obj, QMouseEvent *e);
     void mouseReleaseEvent(QObject *obj, QMouseEvent *e);
     void mousePressedEvent(QObject *obj,QMouseEvent *e);

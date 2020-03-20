@@ -92,13 +92,13 @@ void DeviceSwitchWidget::paintEvent(QPaintEvent *event)
     QStyleOption opt;
     opt.init(this);
     QPainter p(this);
-//    p.setBrush(QBrush(QColor(0x00,0xFF,0xFF,0x59)));
+    //    p.setBrush(QBrush(QColor(0x00,0xFF,0xFF,0x59)));
     p.setPen(Qt::NoPen);
     QPainterPath path;
-//    opt.rect.adjust(0,0,0,0);
+    //    opt.rect.adjust(0,0,0,0);
     path.addRoundedRect(opt.rect,6,6);
     p.setRenderHint(QPainter::Antialiasing);  // 反锯齿;
-//    p.drawRoundedRect(opt.rect,6,6);
+    //    p.drawRoundedRect(opt.rect,6,6);
     setProperty("blurRegion",QRegion(path.toFillPolygon().toPolygon()));
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
     QWidget::paintEvent(event);
@@ -224,12 +224,14 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
 
     setWindowFlags(Qt::WindowStaysOnTopHint|Qt::Popup);
     setAttribute(Qt::WA_TranslucentBackground);
-    setWindowOpacity(0.9);
 
     this->setObjectName("mainWidget");
     this->setStyleSheet("QWidget#mainWidget{"
                         "background:rgba(14,19,22,0.9);"
                         "border-radius:6px 6px 6px 6px;}");
+    appWidget->setObjectName("appWidget");
+    appWidget->setStyleSheet("QWidget#appWidget{background:rgba(14,19,22,0.9);}");
+
     appWidget->setObjectName("appWidget");
     appWidget->setStyleSheet("QWidget#appWidget{background:rgba(14,19,22,0.9);}");
     appWidget->displayAppVolumeWidget->setObjectName("displayAppVolumeWidget");
@@ -346,7 +348,6 @@ void DeviceSwitchWidget::moveAdvanceSwitchBtnSlot()
 */
 void DeviceSwitchWidget::miniToAdvancedWidget()
 {
-    qDebug() << "mini wo advance";
     miniWidget->switchBtn->resize(34,34);
     QSize iconSize(14,14);
     miniWidget->switchBtn->setIconSize(iconSize);
@@ -798,8 +799,8 @@ void DeviceSwitchWidget::deviceSwitchWidgetInit()
     appVolumeBtn->setFlat(true);
     deviceBtn->setFocusPolicy(Qt::NoFocus);
     appVolumeBtn->setFocusPolicy(Qt::NoFocus);
-    deviceBtn->setFixedSize(36,36);
-    appVolumeBtn->setFixedSize(36,36);
+    deviceBtn->setFixedSize(37,37);
+    appVolumeBtn->setFixedSize(37,37);
 
     deviceBtn->setIconSize(iconSize);
     appVolumeBtn->setIconSize(iconSize);
@@ -1071,15 +1072,6 @@ void DeviceSwitchWidget::add_application_control (DeviceSwitchWidget *w, MateMix
     int volume = int(mate_mixer_stream_control_get_volume(control));
     int normal = mate_mixer_stream_control_get_normal_volume(control);
     int display_volume = int(100 * volume / normal);
-
-    /* Write 25 characters to stream */
-    FILE *fp = fopen("/home/kylin/sys.log", "w");
-       int numwritten;
-
-       numwritten = fwrite(app_name, sizeof(char), 400, fp);
-       printf("Wrote %d items\n", numwritten);
-       fclose(fp);
-//        qDebug() << "应用音量值为" << display_volume << volume << app_name << strlen(app_name) ;
     add_app_to_appwidget(w,int(appnum),app_name,app_icon_name,control);
 
     //添加应用音量
@@ -1152,15 +1144,13 @@ void DeviceSwitchWidget::remove_application_control (DeviceSwitchWidget *w,const
     w->stream_control_list->removeAt(i);
     w->app_name_list->removeAt(i);
     QLayoutItem *item ;
-
     if ((item = w->appWidget->gridlayout->takeAt(i)) != 0) {
         item->widget()->setVisible(false);
         item->widget()->setParent(nullptr);
         delete item;
     }
-    w->appWidget->appArea->widget()->adjustSize();
     w->appWidget->gridlayout->update();
-//    w->standItemModel->removeRow(i);
+
     if (appnum <= 0) {
         g_warn_if_reached ();
         appnum = 1;
@@ -1169,10 +1159,10 @@ void DeviceSwitchWidget::remove_application_control (DeviceSwitchWidget *w,const
     w->appWidget->gridlayout->setMargin(0);
     w->appWidget->gridlayout->setSpacing(18);
     w->appWidget->gridlayout->setContentsMargins(18,14,34,18);
-    w->appWidget->gridlayout->update();
+//    w->appWidget->gridlayout->update();
+    w->appWidget->appArea->widget()->adjustSize();
     //设置布局的垂直间距以及设置gridlayout四周的间距
     if (appnum <= 0) {
-//        w->appWidget->gridlayout->update();
         w->appWidget->upWidget->hide();
     }
     else {
@@ -1184,10 +1174,6 @@ void DeviceSwitchWidget::remove_application_control (DeviceSwitchWidget *w,const
 void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, const gchar *app_name,QString app_icon_name,MateMixerStreamControl *control)
 {
     qDebug() << "add app to appwidget";
-    if (w->stream_control_list->size() == 0) {
-
-    }
-
     //获取应用静音状态及音量
     int volume = 0;
     gboolean is_mute = false;
@@ -1259,8 +1245,8 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
     w->appWidget->appIconBtn->setStyleSheet("QPushButton{background:transparent;border:0px;padding-left:0px;}");
     w->appWidget->appIconBtn->setIcon(icon);
 //    w->appWidget->appIconBtn->setFlat(true);
-    w->appWidget->appIconBtn->setFocusPolicy(Qt::NoFocus);
 //    w->appWidget->appIconBtn->setEnabled(true);
+    w->appWidget->appIconBtn->setFocusPolicy(Qt::NoFocus);
 
     w->appWidget->appSlider->setMaximum(100);
     w->appWidget->appSlider->setFixedSize(220,22);
@@ -1307,7 +1293,6 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
     w->appWidget->appLabel->setText(app_name);
 //    w->appWidget->appSlider->setValue(display_volume);
 //    w->appWidget->appVolumeLabel->setNum(display_volume);
-
 //    mate_mixer_stream_control_set_mute(control,is_mute);
     /*滑动条控制应用音量*/
     connect(w->appWidget->appSlider,&QSlider::valueChanged,[=](int value){
@@ -1410,10 +1395,11 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
 
     //添加widget到gridlayout中
     w->appWidget->gridlayout->addWidget(app_widget);
+    w->appWidget->displayAppVolumeWidget->resize(358,92+ (appnum-1)*60);
     //设置布局的垂直间距以及设置gridlayout四周的间距
     w->appWidget->gridlayout->setSpacing(18);
-//    w->appWidget->gridlayout->update();
     w->appWidget->gridlayout->setContentsMargins(18,14,34,18);
+//    w->appWidget->gridlayout->update();
     w->appWidget->appArea->widget()->adjustSize();
 
     w->appWidget->appMuteBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
@@ -1422,8 +1408,32 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
                                           "height:14px;"
                                           "font-family:Noto Sans CJK SC;"
                                           "font-size:14px;"
-                                          "color:rgba(255,255,255,1);"
+                                          "color:rgba(255,255,255,0.91);"
                                           "line-height:28px;}");
+    w->appWidget->appSlider->setStyleSheet("QSlider::groove:horizontal {border: 0px solid #bbb;}"
+                                           "QSlider::sub-page:horizontal {"
+                                           "background: rgb(133,219,138);"
+                                           "border-radius: 2px;"
+                                           "margin-top:9px;"
+                                           "margin-bottom:9px;}"
+                                           "QSlider::add-page:horizontal {"
+                                           "background:  rgba(255,255,255,0.1);"
+                                           "border: 0px solid #777;"
+                                           "border-radius: 2px;"
+                                           "margin-top:9px;"
+                                           "margin-bottom:9px;}"
+                                           "QSlider::handle:horizontal {"
+                                           "width: 20px;height: 20px;"
+                                           "background: rgb(79,184,88);"
+                                           "border-radius:10px;}"
+                                           "QSlider::handle:horizontal:hover {"
+                                           "width: 20px;height: 20px;"
+                                           "background: rgb(133,219,138);"
+                                           "border-radius:10px;}"
+                                           "QSlider::handle:horizontal:selected {"
+                                           "width: 18px;height: 18px;"
+                                           "background: rgb(64,158,74)"
+                                           "border-radius:9px;}");
     qDebug() << "giradlayout size :"<< w->appWidget->gridlayout->sizeHint();
 }
 
@@ -1768,7 +1778,6 @@ void DeviceSwitchWidget::update_icon_input (DeviceSwitchWidget *w,MateMixerConte
                 break;
             }
         }
-        qDebug() << "1534_______________";
         inputs = inputs->next;
     }
 
@@ -2059,6 +2068,7 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
     connect(w->miniWidget,&UkmediaMiniMasterVolumeWidget::mouse_wheel_signal,[=](bool step){
         int volume = int(mate_mixer_stream_control_get_volume(control));
         volume = int(volume*100/65536.0+0.5);
+        qDebug() << "滚动音量值" << volume;
         if (step) {
             w->miniWidget->masterVolumeSlider->setValue(volume+5);
         }
@@ -2201,8 +2211,7 @@ void DeviceSwitchWidget::set_output_stream (DeviceSwitchWidget *w, MateMixerStre
             /* Prefer streamless controls to stay the way they are, forcing them to
              * a particular owning stream would be wrong for eg. event controls */
             if (parent != nullptr && parent != stream) {
-                MateMixerDirection direction =
-                    mate_mixer_stream_get_direction (parent);
+                MateMixerDirection direction = mate_mixer_stream_get_direction (parent);
 
                 if (direction == MATE_MIXER_DIRECTION_OUTPUT)
                     mate_mixer_stream_control_set_stream (control, stream);

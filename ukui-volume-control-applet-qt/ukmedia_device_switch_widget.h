@@ -74,16 +74,14 @@ public:
     void updateSystemTrayIcon(int volume,bool status);
     int getPanelPosition(QString str);
     int getPanelHeight(QString str);
+
     static void list_device(DeviceSwitchWidget *w,MateMixerContext *context);
-
     static void gvc_stream_status_icon_set_control (DeviceSwitchWidget *w,MateMixerStreamControl *control);
-    static void context_set_property(DeviceSwitchWidget *object);//guint prop_id,const GValue *value,GParamSpec *pspec);
+    static void context_set_property(DeviceSwitchWidget *object);
     static void on_context_state_notify (MateMixerContext *context,GParamSpec *pspec,DeviceSwitchWidget *w);
-
     static void on_context_stream_added (MateMixerContext *context,const gchar *name,DeviceSwitchWidget  *w);
     static void on_context_stream_removed (MateMixerContext *context,const gchar *name,DeviceSwitchWidget *w);
     static void remove_stream (DeviceSwitchWidget *w, const gchar *name);
-
     static void add_stream (DeviceSwitchWidget *w, MateMixerStream *stream,MateMixerContext *context);
     static void add_application_control (DeviceSwitchWidget *w, MateMixerStreamControl *control);
     static void on_stream_control_added (MateMixerStream *stream,const gchar *name,DeviceSwitchWidget  *w);
@@ -96,7 +94,6 @@ public:
     static void app_volume_mute (MateMixerStreamControl *control, QString *pspec ,DeviceSwitchWidget *w);
     static void on_context_device_added (MateMixerContext *context, const gchar *name, DeviceSwitchWidget *w);
     static void add_device (DeviceSwitchWidget *w, MateMixerDevice *device);
-
     static void on_context_device_removed (MateMixerContext *context,const gchar *name,DeviceSwitchWidget *w);
 
     static void on_context_default_input_stream_notify (MateMixerContext *context,GParamSpec *pspec,DeviceSwitchWidget *w);

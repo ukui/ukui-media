@@ -31,35 +31,45 @@ ApplicationVolumeWidget::ApplicationVolumeWidget(QWidget *parent) : QWidget (par
     systemVolumeSlider = new UkmediaVolumeSlider(this);
     systemVolumeDisplayLabel = new QLabel(this);
     systemVolumeWidget = new QWidget(this);
+    systemVolumeSliderWidget = new QWidget();
 
     systemVolumeSlider->setOrientation(Qt::Horizontal);
-
+    systemVolumeSlider->setRange(0,100);
     upWidget->setFixedSize(358,143);
-    systemVolumeWidget->setFixedSize(306,36);
-    systemVolumeLabel->setFixedSize(88,14);
+    systemVolumeWidget->setFixedSize(340,60);
+    systemVolumeSliderWidget->setFixedSize(306,32);
+    systemVolumeLabel->setFixedSize(220,16);
     systemVolumeBtn->setFixedSize(32,32);
     systemVolumeSlider->setFixedSize(220,22);
-    systemVolumeDisplayLabel->setFixedSize(24,18);
+    systemVolumeDisplayLabel->setFixedSize(24,26);
     applicationLabel->setFixedSize(160,20);
     QSize iconSize(32,32);
     systemVolumeBtn->setIconSize(iconSize);
 
     upWidget->move(0,0);
-    systemVolumeLabel->move(18,62);
-    systemVolumeWidget->move(18,90);
-    applicationLabel->move(18,23);
+    systemVolumeWidget->move(18,62);
+//    systemVolumeSliderWidget->move(18,90);
+    applicationLabel->move(18,22);
     this->setFixedSize(358,320);
 
-    QSpacerItem *item1 = new QSpacerItem(18,20);
-    QSpacerItem *item2 = new QSpacerItem(10,20);
-    QHBoxLayout *hlayout = new QHBoxLayout(systemVolumeWidget);
+    QSpacerItem *item1 = new QSpacerItem(18,20,QSizePolicy::Fixed);
+    QSpacerItem *item2 = new QSpacerItem(10,20,QSizePolicy::Fixed);
+    QHBoxLayout *hlayout = new QHBoxLayout();
     hlayout->addWidget(systemVolumeBtn);
     hlayout->addItem(item1);
     hlayout->addWidget(systemVolumeSlider);
     hlayout->addItem(item2);
     hlayout->addWidget(systemVolumeDisplayLabel);
-    systemVolumeWidget->setLayout(hlayout);
+    systemVolumeSliderWidget->setLayout(hlayout);
     hlayout->setSpacing(0);
+    systemVolumeSliderWidget->layout()->setContentsMargins(0,0,0,0);
+
+    QVBoxLayout *vLayout = new QVBoxLayout;
+    vLayout->addWidget(systemVolumeLabel);
+    vLayout->addItem(new QSpacerItem(20,12,QSizePolicy::Fixed,QSizePolicy::Fixed));
+    vLayout->addWidget(systemVolumeSliderWidget);
+    vLayout->setSpacing(0);
+    systemVolumeWidget->setLayout(vLayout);
     systemVolumeWidget->layout()->setContentsMargins(0,0,0,0);
 
     systemVolumeLabel->setStyleSheet("font-size:14px;font-family:Noto Sans CJK SC;"
@@ -84,14 +94,16 @@ ApplicationVolumeWidget::ApplicationVolumeWidget(QWidget *parent) : QWidget (par
                                       "height: 20px;"
                                       "background: rgb(61,107,229);"
                                       "border-radius:10px;}");
-    systemVolumeDisplayLabel->setStyleSheet("font-size:14px;font-family:Noto Sans CJK SC;"
+    systemVolumeDisplayLabel->setStyleSheet("font-size:18px;font-family:Noto Sans CJK SC;"
                                             "font-weight:400;"
                                             "color:rgba(255,255,255,0.91);"
                                             "line-height:28px;");
     //设置样式
     applicationLabel->setStyleSheet("QLabel{background:transparent;"
                                     "border:0px;"
-                                    "color:#ffffff;"
+                                    "color:rgba(255,255,255,0.97);"
+                                    "font-weight:400;"
+                                    "line-height:34px;"
                                     "font-family:Noto Sans CJK SC;"
                                     "font-size:20px;}");
 

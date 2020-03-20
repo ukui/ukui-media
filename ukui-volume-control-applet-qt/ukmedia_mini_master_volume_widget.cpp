@@ -80,7 +80,6 @@ UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QWidget *parent) : 
     setAttribute(Qt::WA_TranslucentBackground);
     QHBoxLayout *hlayout  = new QHBoxLayout(masterWidget);
 
-    masterVolumeSlider->setStyle(new CustomStyle);
     hlayout->addItem(item1);
     hlayout->addWidget(muteBtn);
     hlayout->addItem(item2);
@@ -127,7 +126,7 @@ UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QWidget *parent) : 
                                       "height: 20px;"
                                       "background: rgb(61,107,229);"
                                       "border-radius:10px;}");
-    this->setStyleSheet("QWidget#miniWidget{"
+    this->setStyleSheet("QWidget#miniWidget{border:1px solid rgba(255, 255, 255, 0.05);"
                         "background:rgba(19,19,20,0.9);"
                         "border-radius:6px 6px 6px 6px;}");
 
@@ -142,7 +141,7 @@ void UkmediaMiniMasterVolumeWidget::paintEvent(QPaintEvent *event)
 //    p.setBrush(QBrush(QColor(0x00,0xFF,0xFF,0x59)));
     p.setPen(Qt::NoPen);
     QPainterPath path;
-//    opt.rect.adjust(0,0,0,0);
+    opt.rect.adjust(0,0,0,0);
     path.addRoundedRect(opt.rect,6,6);
     p.setRenderHint(QPainter::Antialiasing);  // 反锯齿;
 //    p.drawRoundedRect(opt.rect,6,6);
@@ -200,7 +199,6 @@ void UkmediaMiniMasterVolumeWidget::keyPressEvent(QKeyEvent *event)
 */
 void UkmediaMiniMasterVolumeWidget::moveMiniSwitchBtnSlot()
 {
-    qDebug() << "*********";
     switchBtn->move(308,7);
 }
 

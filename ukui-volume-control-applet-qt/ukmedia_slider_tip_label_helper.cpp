@@ -33,8 +33,8 @@ SliderTipLabelHelper::SliderTipLabelHelper(QObject *parent) :QObject(parent)
     m_pTiplabel->setFixedSize(52,30);
     m_pTiplabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     m_pTiplabel->setStyleSheet("QLabel{background:rgba(26,26,26,0.7);"
-                              "border:1px solid rgba(255, 255, 255, 0.2);"
-                              "border-radius:6px;padding:7px}");
+                               "border:1px solid rgba(255, 255, 255, 0.2);"
+                               "border-radius:6px;padding:7px}");
 }
 
 
@@ -51,42 +51,31 @@ void SliderTipLabelHelper::unregisterWidget(QWidget *w)
 
 bool SliderTipLabelHelper::eventFilter(QObject *obj, QEvent *e)
 {
-//    qDebug() << "obj type" << obj << "this type" << this;
     auto slider = qobject_cast<UkmediaVolumeSlider *>(obj);
     if (obj == slider) {
-//    qDebug() << e->type();
-    switch (e->type()) {
-    case QEvent::MouseMove: {
-        QMouseEvent *event = static_cast<QMouseEvent*>(e);
-        mouseMoveEvent(obj, event);
-        qDebug()<<"move";
-        return false;
-    }
-    case QEvent::MouseButtonRelease: {
-        qDebug()<<"release";
-        QMouseEvent *event = static_cast<QMouseEvent*>(e);
-        mouseReleaseEvent(obj, event);
-        return false;
-    }
-    case QEvent::MouseButtonPress:{
-        qDebug()<<"press";
-        QMouseEvent *event = static_cast<QMouseEvent*>(e);
-        mousePressedEvent(obj,event);
-    }
-    case QEvent::Move: {
+        switch (e->type()) {
+        case QEvent::MouseMove: {
+            QMouseEvent *event = static_cast<QMouseEvent*>(e);
+            mouseMoveEvent(obj, event);
+            return false;
+        }
+        case QEvent::MouseButtonRelease: {
+            QMouseEvent *event = static_cast<QMouseEvent*>(e);
+            mouseReleaseEvent(obj, event);
+            return false;
+        }
+        case QEvent::MouseButtonPress:{
+            QMouseEvent *event = static_cast<QMouseEvent*>(e);
+            mousePressedEvent(obj,event);
+        }
 
-    }
-    default:
-        return false;
-    }
+        default:
+            return false;
+        }
     }
     return QObject::eventFilter(obj,e);
 }
 
-void SliderTipLabelHelper::buttonPresseEvent(QObject *obj, QMouseEvent *e)
-{
-
-}
 
 void SliderTipLabelHelper::mouseMoveEvent(QObject *obj, QMouseEvent *e)
 {
@@ -96,10 +85,6 @@ void SliderTipLabelHelper::mouseMoveEvent(QObject *obj, QMouseEvent *e)
     slider->initStyleOption(&m_option);
     rect = slider->style()->subControlRect(QStyle::CC_Slider, &m_option,QStyle::SC_SliderHandle,slider);
     QPoint gPos = slider->mapToGlobal(rect.topLeft());
-    QPoint lPos = slider->mapToParent(rect.topLeft());
-    qDebug() << "鼠标滑动滑块位置" <<  slider->rect() << "滑动条映射到全局坐标" << gPos << "滑动条映射本地位置" << lPos;
-    //m_Tiplabel->move(gPos);
-    qDebug() << m_option.rect << m_option.activeSubControls<< m_option.sliderValue << m_option.sliderPosition;
     QString percent;
     percent = QString::number(m_option.sliderValue);
     percent.append("%");
@@ -119,14 +104,8 @@ void SliderTipLabelHelper::mousePressedEvent(QObject *obj, QMouseEvent *e)
     QStyleOptionSlider m_option;
     auto slider = qobject_cast<UkmediaVolumeSlider *>(obj);
     slider->initStyleOption(&m_option);
-//    m_option.initFrom(slider);
-//    m_option.init(slider);
     rect = slider->style()->subControlRect(QStyle::CC_Slider, &m_option,QStyle::SC_SliderHandle,slider);
     QPoint gPos = slider->mapToGlobal(rect.topLeft());
-    QPoint lPos = slider->mapToParent(rect.topLeft());
-    qDebug() << "鼠标按下滑块位置" <<  slider->rect() << "滑动条映射到全局坐标" << gPos << "滑动条映射本地位置" << lPos;
-    //m_Tiplabel->move(gPos);
-    qDebug()<<m_option.rect<<m_option.activeSubControls<<m_option.sliderValue<<m_option.sliderPosition;
     QString percent;
     percent = QString::number(m_option.sliderValue);
     percent.append("%");
@@ -143,11 +122,6 @@ AppEventFilter::AppEventFilter(SliderTipLabelHelper *parent) : QObject(parent)
 
 bool AppEventFilter::eventFilter(QObject *obj, QEvent *e)
 {
-//    if (e->type() == QEvent::MouseButtonRelease) {
-
-//        return true;
-//    }
-
     return false;
 }
 
