@@ -174,7 +174,6 @@ private:
     QCheckBox *muteCheckBox;
     QLabel *muteLabel;
     QProcess *m_process;
-
 protected:
     void paintEvent(QPaintEvent *event);
     bool event(QEvent *event);//重写窗口事件

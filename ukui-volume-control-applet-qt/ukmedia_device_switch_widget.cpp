@@ -44,6 +44,8 @@ extern "C" {
 #include <QScrollBar>
 #include <QtCore/qmath.h>
 #include <QDebug>
+#include <QList>
+
 
 typedef enum {
     DEVICE_VOLUME_BUTTON,
@@ -177,6 +179,7 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     device_display_name_list = new QStringList;
     stream_control_list = new QStringList;
     app_name_list = new QStringList;
+//    app_widget_list = new QStringList;
     //初始化matemixer
     if (mate_mixer_init() == FALSE) {
         qDebug() << "libmatemixer initialization failed, exiting";
@@ -1055,7 +1058,7 @@ void DeviceSwitchWidget::add_application_control (DeviceSwitchWidget *w, MateMix
         media_role == MATE_MIXER_STREAM_CONTROL_MEDIA_ROLE_TEST ||
         media_role == MATE_MIXER_STREAM_CONTROL_MEDIA_ROLE_ABSTRACT ||
         media_role == MATE_MIXER_STREAM_CONTROL_MEDIA_ROLE_FILTER)
-            return;
+        return;
 
     app_id = mate_mixer_app_info_get_id (info);
 
@@ -1144,6 +1147,7 @@ void DeviceSwitchWidget::remove_application_control (DeviceSwitchWidget *w,const
     w->stream_control_list->removeAt(i);
     w->app_name_list->removeAt(i);
     QLayoutItem *item ;
+
     if ((item = w->appWidget->gridlayout->takeAt(i)) != 0) {
         item->widget()->setVisible(false);
         item->widget()->setParent(nullptr);
@@ -1156,9 +1160,9 @@ void DeviceSwitchWidget::remove_application_control (DeviceSwitchWidget *w,const
         appnum = 1;
     }
     appnum--;
-    w->appWidget->gridlayout->setMargin(0);
-    w->appWidget->gridlayout->setSpacing(18);
-    w->appWidget->gridlayout->setContentsMargins(18,14,34,18);
+//    w->appWidget->gridlayout->setMargin(0);
+//    w->appWidget->gridlayout->setSpacing(18);
+//    w->appWidget->gridlayout->setContentsMargins(18,14,34,18);
 //    w->appWidget->gridlayout->update();
     w->appWidget->appArea->widget()->adjustSize();
     //设置布局的垂直间距以及设置gridlayout四周的间距
@@ -1392,14 +1396,12 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
     else {
         w->appWidget->upWidget->show();
     }
-
-    //添加widget到gridlayout中
     w->appWidget->gridlayout->addWidget(app_widget);
-    w->appWidget->displayAppVolumeWidget->resize(358,92+ (appnum-1)*60);
+//    w->appWidget->displayAppVolumeWidget->resize(358,92+ (appnum-1)*60);
     //设置布局的垂直间距以及设置gridlayout四周的间距
     w->appWidget->gridlayout->setSpacing(18);
     w->appWidget->gridlayout->setContentsMargins(18,14,34,18);
-//    w->appWidget->gridlayout->update();
+    w->appWidget->gridlayout->update();
     w->appWidget->appArea->widget()->adjustSize();
 
     w->appWidget->appMuteBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
@@ -1434,7 +1436,7 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
                                            "width: 18px;height: 18px;"
                                            "background: rgb(64,158,74)"
                                            "border-radius:9px;}");
-    qDebug() << "giradlayout size :"<< w->appWidget->gridlayout->sizeHint();
+//    qDebug() << "giradlayout size :"<< w->appWidget->gridlayout->sizeHint();
 }
 
 /*
