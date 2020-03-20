@@ -18,7 +18,6 @@ Build-Depends: debhelper-compat (= 12),
                mate-common (>= 1.18),
                libqt5svg5-dev,
                libqt5xdg-dev,
-	       qt5-gtk2-platformtheme,
 	       libqt5multimedia5-plugins
 Standards-Version: 4.5.0
 Rules-Requires-Root: no
