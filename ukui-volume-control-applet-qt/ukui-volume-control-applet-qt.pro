@@ -25,7 +25,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 target.path = /usr/bin
 
 #inst.path += /usr/share/ukui-media/translations
-#inst.files += translations/ukui-media-volume-control-applet-qt_zh_CN.qm
+#inst.files += translations/ukui-volume-control-applet-qt_zh_CN.qm
 #              translations/1
 
 CONFIG += \

@@ -1,3 +1,18 @@
+ukui-media (2.0.1-1) unstable; urgency=medium
+
+  * New upstream release.
+    - Update the translation.
+    - Adjust the style and layout.
+    - Fix the focus issue.
+    - Fix the crash when switching profiles.
+    - Fix the wrong place on multi-screen.
+    - Add keyboard support to change the volume.
+    - Show scrollbar when there are multiple apps.
+    - Update default input stream.
+    - Add mini mode.
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Fri, 20 Mar 2020 19:50:01 +0800
+
 ukui-media (2.0.0-1) unstable; urgency=medium
 
   * New upstream release.
