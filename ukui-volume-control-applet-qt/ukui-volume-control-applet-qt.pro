@@ -10,6 +10,8 @@ TEMPLATE = app
 TARGET = ukui-volume-control-applet-qt
 INCLUDEPATH += .
 
+PREFIX = /usr/share/ukui-media
+
 include(QtSingleApplication/qtsingleapplication.pri)
 
 DEFINES += QT_DEPRECATED_WARNINGS
@@ -23,11 +25,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 target.path = /usr/bin
 
 #inst.path += /usr/share/ukui-media/translations
-#inst.files += translations/ukui-media-volume-control-applet-qt_zh_CN.qm
+#inst.files += translations/ukui-volume-control-applet-qt_zh_CN.qm
 #              translations/1
-
-INSTALLS += \
-    target
 
 CONFIG += \
     c++11 \
@@ -66,4 +65,15 @@ RESOURCES += \
     res.qrc
 
 TRANSLATIONS += \
-    translations/ukui-volume-control-applet-qt-zh_CN.ts
+    translations/*.ts
+
+system("lrelease translations/*.ts")
+
+qm_file.files = translations/*.qm
+qm_file.path = $${PREFIX}/translations/
+
+data_files.files = data/*
+data_files.path = $${PREFIX}/
+
+INSTALLS += \
+    target qm_file data_files
