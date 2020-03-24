@@ -94,13 +94,10 @@ void DeviceSwitchWidget::paintEvent(QPaintEvent *event)
     QStyleOption opt;
     opt.init(this);
     QPainter p(this);
-    //    p.setBrush(QBrush(QColor(0x00,0xFF,0xFF,0x59)));
     p.setPen(Qt::NoPen);
     QPainterPath path;
-    //    opt.rect.adjust(0,0,0,0);
     path.addRoundedRect(opt.rect,6,6);
     p.setRenderHint(QPainter::Antialiasing);  // 反锯齿;
-    //    p.drawRoundedRect(opt.rect,6,6);
     setProperty("blurRegion",QRegion(path.toFillPolygon().toPolygon()));
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
     QWidget::paintEvent(event);
@@ -170,7 +167,6 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     switchToMiniBtn->setStyle(new CustomStyle());
 
     switchToMiniBtn->setIcon(QIcon("/usr/share/ukui-media/img/mini-module.svg"));
-
     switchToMiniBtn->setIcon(QIcon("/usr/share/ukui-media/img/mini-module.svg"));
 
     output_stream_list = new QStringList;
@@ -228,6 +224,8 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     setWindowFlags(Qt::WindowStaysOnTopHint|Qt::Popup);
     setAttribute(Qt::WA_TranslucentBackground);
 
+    appWidget->displayAppVolumeWidget->setLayout(appWidget->gridlayout);
+
     this->setObjectName("mainWidget");
     this->setStyleSheet("QWidget#mainWidget{"
                         "background:rgba(14,19,22,0.9);"
@@ -241,7 +239,7 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     appWidget->displayAppVolumeWidget->setStyleSheet("QWidget#displayAppVolumeWidget{background:rgba(14,19,22,0);}");
     appWidget->appArea->setStyleSheet("QScrollArea{border:none;}");
     appWidget->appArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    appWidget->appArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    appWidget->appArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     appWidget->appArea->viewport()->setStyleSheet("background-color:transparent;");
     appWidget->appArea->verticalScrollBar()->setStyleSheet("QScrollBar:vertical{margin:0px 0px 0px 0px;background:transparent;border:0px;width:2px;height:100px;}"
                                                     "QScrollBar::up-arrow:vertical{height:0px;}"
@@ -314,7 +312,6 @@ void DeviceSwitchWidget::systemTrayMenuInit()
     soundSystemTrayIcon->setContextMenu(menu);
 
     menu->setWindowOpacity(0.9);
-
     soundSystemTrayIcon->setVisible(true);
 
     connect(soundSystemTrayIcon,SIGNAL(activated(QSystemTrayIcon::ActivationReason)),\
@@ -1005,15 +1002,19 @@ void DeviceSwitchWidget::add_stream (DeviceSwitchWidget *w, MateMixerStream *str
 
         role = mate_mixer_stream_control_get_role (control);
         if (role == MATE_MIXER_STREAM_CONTROL_ROLE_APPLICATION) {
+            qDebug() << "add stream";
             MateMixerAppInfo *m_pAppInfo = mate_mixer_stream_control_get_app_info(control);
-            const gchar *m_pAppName = mate_mixer_app_info_get_name(m_pAppInfo);
-            if (strcmp(m_pAppName,"ukui-session") != 0) {
-                w->stream_control_list->append(name);
-                if G_UNLIKELY (control == nullptr)
-                    return;
-                add_application_control (w, control);
+            if (m_pAppInfo != nullptr) {
+                const gchar *m_pAppName = mate_mixer_app_info_get_name(m_pAppInfo);
+                if (strcmp(m_pAppName,"ukui-session") != 0) {
+                    w->stream_control_list->append(name);
+                    if G_UNLIKELY (control == nullptr)
+                        return;
+                    add_application_control (w, control);
+                }
             }
-
+            else
+                return;
         }
         controls = controls->next;
     }
@@ -1049,6 +1050,7 @@ void DeviceSwitchWidget::add_application_control (DeviceSwitchWidget *w, MateMix
 
     /* Add stream to the applications page, but make sure the stream qualifies
      * for the inclusion */
+    qDebug() << "add application control";
     info = mate_mixer_stream_control_get_app_info (control);
     if (info == nullptr)
         return;
@@ -1110,17 +1112,23 @@ void DeviceSwitchWidget::on_stream_control_added (MateMixerStream *stream,const 
     MateMixerStreamControl    *control;
     MateMixerStreamControlRole role;
     control = mate_mixer_stream_get_control (stream, name);
+    qDebug() << "on stream control added" << name;
     MateMixerAppInfo *m_pAppInfo = mate_mixer_stream_control_get_app_info(control);
-    const gchar *m_pAppName = mate_mixer_app_info_get_name(m_pAppInfo);
-    if (strcmp(m_pAppName,"ukui-session") != 0) {
-        w->stream_control_list->append(name);
-        if G_UNLIKELY (control == nullptr)
-            return;
+    if (m_pAppInfo != nullptr) {
+        const gchar *m_pAppName = mate_mixer_app_info_get_name(m_pAppInfo);
+        if (strcmp(m_pAppName,"ukui-session") != 0) {
+            w->stream_control_list->append(name);
+            if G_UNLIKELY (control == nullptr)
+                return;
 
-        role = mate_mixer_stream_control_get_role (control);
-        if (role == MATE_MIXER_STREAM_CONTROL_ROLE_APPLICATION) {
-            add_application_control (w, control);
+            role = mate_mixer_stream_control_get_role (control);
+            if (role == MATE_MIXER_STREAM_CONTROL_ROLE_APPLICATION) {
+                add_application_control (w, control);
+            }
         }
+    }
+    else {
+        return;
     }
 }
 
@@ -1403,6 +1411,7 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
     w->appWidget->gridlayout->setContentsMargins(18,14,34,18);
     w->appWidget->gridlayout->update();
     w->appWidget->appArea->widget()->adjustSize();
+    qDebug() << "giradlayout size :"<< w->appWidget->displayAppVolumeWidget->sizeHint();
 
     w->appWidget->appMuteBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
                                             "padding-left:0px;}");
@@ -1436,7 +1445,6 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
                                            "width: 18px;height: 18px;"
                                            "background: rgb(64,158,74)"
                                            "border-radius:9px;}");
-//    qDebug() << "giradlayout size :"<< w->appWidget->gridlayout->sizeHint();
 }
 
 /*
@@ -1451,8 +1459,10 @@ void DeviceSwitchWidget::update_app_volume(MateMixerStreamControl *control, QStr
 
 //    qDebug() << "update app volume:" << volume << "mute:" << is_mute ;
     volume = guint(volume*100/65536.0+0.5);
+
     const gchar *controlName = mate_mixer_stream_control_get_name(control);
     int index = w->stream_control_list->indexOf(controlName);
+    qDebug() << "update app volume";
     MateMixerAppInfo *info = mate_mixer_stream_control_get_app_info(control);
     const gchar *app_name = mate_mixer_app_info_get_name(info);
     QString appName = w->app_name_list->at(index);
@@ -1481,7 +1491,10 @@ void DeviceSwitchWidget::update_app_volume(MateMixerStreamControl *control, QStr
 /*应用音量静音*/
 void DeviceSwitchWidget::app_volume_mute (MateMixerStreamControl *control, QString *pspec ,DeviceSwitchWidget *w)
 {
+    qDebug() << "app volume mute";
     MateMixerAppInfo *app_info = mate_mixer_stream_control_get_app_info(control);
+    if (app_info == nullptr)
+        return;
     const gchar *app_icon = mate_mixer_app_info_get_icon(app_info);
     const gchar *app_name = mate_mixer_app_info_get_name(app_info);
     const gchar *app_id =  mate_mixer_app_info_get_id(app_info);
@@ -1751,7 +1764,10 @@ void DeviceSwitchWidget::update_icon_input (DeviceSwitchWidget *w,MateMixerConte
         MateMixerStreamControl *input = MATE_MIXER_STREAM_CONTROL (inputs->data);
         MateMixerStreamControlRole role = mate_mixer_stream_control_get_role (input);
         if (role == MATE_MIXER_STREAM_CONTROL_ROLE_APPLICATION) {
+            qDebug() << "update icon input";
             MateMixerAppInfo *app_info = mate_mixer_stream_control_get_app_info (input);
+            if (app_info == nullptr)
+                return;
             app_id = mate_mixer_app_info_get_id (app_info);
             if (app_id == nullptr) {
                 /* A recording application which has no

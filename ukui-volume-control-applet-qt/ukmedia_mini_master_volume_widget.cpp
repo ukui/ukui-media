@@ -43,7 +43,7 @@ UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QWidget *parent) : 
 
     QIcon icon;
     QSize deviceIconSize(16,16);
-    QString deviceBtnIcon = "audiocard";
+    QString deviceBtnIcon = "audio-card";
     icon = QIcon::fromTheme(deviceBtnIcon);
     deviceBtn->setIconSize(deviceIconSize);
     deviceBtn->setIcon(QIcon(icon));
@@ -94,10 +94,6 @@ UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QWidget *parent) : 
     this->setWindowOpacity(0.9);
     setObjectName("miniWidget");
     deviceCombox->setVisible(false);
-
-    masterVolumeSlider->setCursor(QCursor(Qt::OpenHandCursor));
-    muteBtn->setCursor(QCursor(Qt::OpenHandCursor));
-
     switchBtn->setToolTip(tr("Go Into Full Mode"));
     connect(switchBtn,SIGNAL(moveMiniSwitchBtnSignale()),this,SLOT(moveMiniSwitchBtnSlot()));
     deviceBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"

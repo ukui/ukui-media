@@ -23,18 +23,40 @@
 #include <QStyleOption>
 #include <QStyle>
 #include <QDebug>
+#include <QPainter>
 
+MediaSliderTipLabel::MediaSliderTipLabel(){
+}
+
+MediaSliderTipLabel::~MediaSliderTipLabel(){
+}
+
+void MediaSliderTipLabel::paintEvent(QPaintEvent *e)
+{
+    QStyleOption opt;
+    opt.init(this);
+    QPainter p(this);
+    p.setBrush(QBrush(QColor(0x00,0xFF,0xFF,0x59)));
+    p.setPen(Qt::NoPen);
+    QPainterPath path;
+    opt.rect.adjust(0,0,0,0);
+    path.addRoundedRect(opt.rect,20,20);
+    p.setRenderHint(QPainter::Antialiasing);
+    setProperty("blurRegion",QRegion(path.toFillPolygon().toPolygon()));
+    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+    QLabel::paintEvent(e);
+}
 SliderTipLabelHelper::SliderTipLabelHelper(QObject *parent) :QObject(parent)
 {
 //    registerWidget(this);
-    m_pTiplabel = new QLabel();
+    m_pTiplabel = new MediaSliderTipLabel();
     m_pTiplabel->setWindowFlag(Qt::ToolTip);
     qApp->installEventFilter(new AppEventFilter(this));
     m_pTiplabel->setFixedSize(52,30);
     m_pTiplabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-    m_pTiplabel->setStyleSheet("QLabel{background:rgba(26,26,26,0.7);"
-                               "border:1px solid rgba(255, 255, 255, 0.2);"
-                               "border-radius:6px;padding:7px}");
+//    m_pTiplabel->setStyleSheet("QLabel{background:rgba(26,26,26,0.7);"
+//                               "border:1px solid rgba(255, 255, 255, 0.2);"
+//                               "border-radius:6px;padding:7px}");
 }
 
 
@@ -108,6 +130,7 @@ void SliderTipLabelHelper::mousePressedEvent(QObject *obj, QMouseEvent *e)
     QPoint gPos = slider->mapToGlobal(rect.topLeft());
     QString percent;
     percent = QString::number(m_option.sliderValue);
+    qDebug() << "slider value is " << slider->value();
     percent.append("%");
     m_pTiplabel->setText(percent);
     m_pTiplabel->move(gPos.x()-(m_pTiplabel->width()/2)+9,gPos.y()-m_pTiplabel->height()-1);

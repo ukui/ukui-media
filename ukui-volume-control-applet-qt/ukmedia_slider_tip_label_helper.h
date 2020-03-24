@@ -21,6 +21,15 @@
 #include <QObject>
 #include <QLabel>
 #include "ukmedia_volume_slider.h"
+
+class MediaSliderTipLabel:public QLabel
+{
+  public:
+    MediaSliderTipLabel();
+    ~MediaSliderTipLabel();
+protected:
+    void paintEvent(QPaintEvent*);
+};
 class SliderTipLabelHelper : public QObject
 {
     Q_OBJECT
@@ -36,7 +45,7 @@ public:
     void mouseReleaseEvent(QObject *obj, QMouseEvent *e);
     void mousePressedEvent(QObject *obj,QMouseEvent *e);
 private:
-    QLabel *m_pTiplabel;
+    MediaSliderTipLabel *m_pTiplabel;
 };
 
 class AppEventFilter : public QObject
