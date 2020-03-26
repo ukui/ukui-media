@@ -21,6 +21,7 @@
 #include <QCoreApplication>
 #include <QMouseEvent>
 #include <QWidget>
+#include <QPushButton>
 #include <QToolButton>
 
 enum DisplayerMode{

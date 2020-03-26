@@ -47,7 +47,6 @@ UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QWidget *parent) : 
     icon = QIcon::fromTheme(deviceBtnIcon);
     deviceBtn->setIconSize(deviceIconSize);
     deviceBtn->setIcon(QIcon(icon));
-//    audiocard
 
     switchBtn->setParent(this);
     masterVolumeSlider->setOrientation(Qt::Horizontal);
@@ -169,7 +168,6 @@ void UkmediaMiniMasterVolumeWidget::keyPressEvent(QKeyEvent *event)
 {
     int volumeGain ;
     if (event->key() == Qt::Key_Escape) {
-        qDebug() << "esp key  hide window";
         this->hide();
     }
     else if (event->key() == Qt::Key_Up) {

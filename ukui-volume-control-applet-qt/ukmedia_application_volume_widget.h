@@ -52,7 +52,6 @@ private:
     QScrollArea *appArea;
     QGridLayout *gridlayout;
 protected:
-//    void paintEvent(QPaintEvent *event);
 
 };
 

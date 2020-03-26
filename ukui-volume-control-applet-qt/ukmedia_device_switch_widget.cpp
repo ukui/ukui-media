@@ -175,6 +175,7 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     device_display_name_list = new QStringList;
     stream_control_list = new QStringList;
     app_name_list = new QStringList;
+
 //    app_widget_list = new QStringList;
     //初始化matemixer
     if (mate_mixer_init() == FALSE) {
@@ -519,7 +520,7 @@ void DeviceSwitchWidget::deviceComboxIndexChanged(QString str)
     const QString str1 =  output_stream_list->at(index);
     const gchar *name = str1.toLocal8Bit();
     MateMixerStream *stream = mate_mixer_context_get_stream(context,name);
-    if (G_UNLIKELY (stream == NULL)) {
+    if (G_UNLIKELY (stream == nullptr)) {
        g_warn_if_reached ();
 //       g_free (name);
        return;
@@ -1002,7 +1003,6 @@ void DeviceSwitchWidget::add_stream (DeviceSwitchWidget *w, MateMixerStream *str
 
         role = mate_mixer_stream_control_get_role (control);
         if (role == MATE_MIXER_STREAM_CONTROL_ROLE_APPLICATION) {
-            qDebug() << "add stream";
             MateMixerAppInfo *m_pAppInfo = mate_mixer_stream_control_get_app_info(control);
             if (m_pAppInfo != nullptr) {
                 const gchar *m_pAppName = mate_mixer_app_info_get_name(m_pAppInfo);
@@ -1050,7 +1050,6 @@ void DeviceSwitchWidget::add_application_control (DeviceSwitchWidget *w, MateMix
 
     /* Add stream to the applications page, but make sure the stream qualifies
      * for the inclusion */
-    qDebug() << "add application control";
     info = mate_mixer_stream_control_get_app_info (control);
     if (info == nullptr)
         return;
@@ -1112,17 +1111,16 @@ void DeviceSwitchWidget::on_stream_control_added (MateMixerStream *stream,const 
     MateMixerStreamControl    *control;
     MateMixerStreamControlRole role;
     control = mate_mixer_stream_get_control (stream, name);
-    qDebug() << "on stream control added" << name;
     MateMixerAppInfo *m_pAppInfo = mate_mixer_stream_control_get_app_info(control);
     if (m_pAppInfo != nullptr) {
         const gchar *m_pAppName = mate_mixer_app_info_get_name(m_pAppInfo);
         if (strcmp(m_pAppName,"ukui-session") != 0) {
-            w->stream_control_list->append(name);
             if G_UNLIKELY (control == nullptr)
                 return;
 
             role = mate_mixer_stream_control_get_role (control);
             if (role == MATE_MIXER_STREAM_CONTROL_ROLE_APPLICATION) {
+                w->stream_control_list->append(name);
                 add_application_control (w, control);
             }
         }
@@ -1139,8 +1137,12 @@ void DeviceSwitchWidget::on_stream_control_removed (MateMixerStream *stream,cons
 {
     /* No way to be sure that it is an application control, but we don't have
      * any other than application bars that could match the name */
-    if (w->stream_control_list->indexOf(name) != -1) {
+    if (w->stream_control_list->count() > 0 && w->app_name_list->count() > 0) {
         remove_application_control (w, name);
+    }
+    else {
+        w->stream_control_list->clear();
+        w->app_name_list->clear();
     }
 
 }
@@ -1151,27 +1153,34 @@ void DeviceSwitchWidget::remove_application_control (DeviceSwitchWidget *w,const
     /* We could call bar_set_stream_control here, but that would pointlessly
      * invalidate the channel bar, so just remove it ourselves */
     int i = w->stream_control_list->indexOf(m_pAppName);
-    qDebug() << "移除stream control:" << m_pAppName << "stream control list" << w->stream_control_list->at(i) << "app name list :" << w->app_name_list->at(i);
+    if (w->stream_control_list->count() > w->app_name_list->count()) {
+        w->stream_control_list->removeAt(i);
+        return;
+    }
     w->stream_control_list->removeAt(i);
     w->app_name_list->removeAt(i);
     QLayoutItem *item ;
 
     if ((item = w->appWidget->gridlayout->takeAt(i)) != 0) {
-        item->widget()->setVisible(false);
-        item->widget()->setParent(nullptr);
+        QWidget *wid = item->widget();
+        w->appWidget->gridlayout->removeWidget(wid);
+        wid->setParent(nullptr);
+        delete wid;
         delete item;
+        /*item->widget()->setVisible(false);
+        item->widget()->setParent(nullptr);
+        delete item;*/
     }
-    w->appWidget->gridlayout->update();
 
+    w->appWidget->gridlayout->update();
     if (appnum <= 0) {
         g_warn_if_reached ();
         appnum = 1;
     }
     appnum--;
-//    w->appWidget->gridlayout->setMargin(0);
-//    w->appWidget->gridlayout->setSpacing(18);
-//    w->appWidget->gridlayout->setContentsMargins(18,14,34,18);
-//    w->appWidget->gridlayout->update();
+    w->appWidget->gridlayout->setVerticalSpacing(18);
+    w->appWidget->gridlayout->setContentsMargins(18,14,34,18);
+    w->appWidget->gridlayout->update();
     w->appWidget->appArea->widget()->adjustSize();
     //设置布局的垂直间距以及设置gridlayout四周的间距
     if (appnum <= 0) {
@@ -1185,7 +1194,6 @@ void DeviceSwitchWidget::remove_application_control (DeviceSwitchWidget *w,const
 
 void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, const gchar *app_name,QString app_icon_name,MateMixerStreamControl *control)
 {
-    qDebug() << "add app to appwidget";
     //获取应用静音状态及音量
     int volume = 0;
     gboolean is_mute = false;
@@ -1348,7 +1356,6 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
         bool isMute = mate_mixer_stream_control_get_mute(control);
         int volume = mate_mixer_stream_control_get_volume(control);
         mate_mixer_stream_control_set_mute(control,!isMute);
-        qDebug() << "点击应用静音" << isMute << volume;
         volume = int(volume*100/65536 + 0.5);
         mate_mixer_stream_control_set_volume(control,guint(volume));
         isMute = mate_mixer_stream_control_get_mute(control);
@@ -1391,7 +1398,6 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
         else if (volume > 66) {
             w->appWidget->appMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-high.svg"));
         }
-//        qDebug() << "app volume change:" << volume << slider_str;
     });
 
     connect(w,&DeviceSwitchWidget::system_muted_signal,[=](bool isMute){
@@ -1405,13 +1411,11 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
         w->appWidget->upWidget->show();
     }
     w->appWidget->gridlayout->addWidget(app_widget);
-//    w->appWidget->displayAppVolumeWidget->resize(358,92+ (appnum-1)*60);
     //设置布局的垂直间距以及设置gridlayout四周的间距
-    w->appWidget->gridlayout->setSpacing(18);
-    w->appWidget->gridlayout->setContentsMargins(18,14,34,18);
+    w->appWidget->gridlayout->setVerticalSpacing(18);
+    w->appWidget->gridlayout->setContentsMargins(18,14,34,60);
     w->appWidget->gridlayout->update();
     w->appWidget->appArea->widget()->adjustSize();
-    qDebug() << "giradlayout size :"<< w->appWidget->displayAppVolumeWidget->sizeHint();
 
     w->appWidget->appMuteBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
                                             "padding-left:0px;}");
@@ -1453,23 +1457,18 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
 void DeviceSwitchWidget::update_app_volume(MateMixerStreamControl *control, QString *str, DeviceSwitchWidget *w )
 {
 //    Q_UNUSED(pspec);
-
     guint volume = mate_mixer_stream_control_get_volume(control);
     bool is_mute = mate_mixer_stream_control_get_mute(control);
-
-//    qDebug() << "update app volume:" << volume << "mute:" << is_mute ;
     volume = guint(volume*100/65536.0+0.5);
 
     const gchar *controlName = mate_mixer_stream_control_get_name(control);
     int index = w->stream_control_list->indexOf(controlName);
-    qDebug() << "update app volume";
     MateMixerAppInfo *info = mate_mixer_stream_control_get_app_info(control);
     const gchar *app_name = mate_mixer_app_info_get_name(info);
     QString appName = w->app_name_list->at(index);
-//    qDebug() << "app name list" << w->app_name_list->count();
-//    QString appName= app_name;
-//    appName.append("Slider");
-//    appName.append(QString::number(app_count));
+    /*QString appName= app_name;
+    appName.append("Slider");
+    appName.append(QString::number(app_count));*/
     if (is_mute) {
         w->appWidget->appMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
     }
@@ -1491,7 +1490,6 @@ void DeviceSwitchWidget::update_app_volume(MateMixerStreamControl *control, QStr
 /*应用音量静音*/
 void DeviceSwitchWidget::app_volume_mute (MateMixerStreamControl *control, QString *pspec ,DeviceSwitchWidget *w)
 {
-    qDebug() << "app volume mute";
     MateMixerAppInfo *app_info = mate_mixer_stream_control_get_app_info(control);
     if (app_info == nullptr)
         return;
@@ -1502,7 +1500,6 @@ void DeviceSwitchWidget::app_volume_mute (MateMixerStreamControl *control, QStri
     bool is_mute = mate_mixer_stream_control_get_mute(control);
     int volume = mate_mixer_stream_control_get_volume(control);
     volume = (volume*100/65536.0 + 0.5);
-    qDebug() << "app volume mute :" << volume << "mute status:" << is_mute;
     if (is_mute) {
         w->appWidget->appMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
     }
@@ -1583,7 +1580,7 @@ void DeviceSwitchWidget::remove_stream (DeviceSwitchWidget *w, const gchar *name
     bool status;
     int index = w->output_stream_list->indexOf(name);
     status = w->output_stream_list->removeOne(name);
-//    w->miniWidget->deviceCombox->removeItem(index);
+    /*w->miniWidget->deviceCombox->removeItem(index);*/
     if (w->appWidget->app_volume_list != nullptr) {
         bar_set_stream(w,nullptr);
     }
@@ -1620,25 +1617,28 @@ void DeviceSwitchWidget::add_device (DeviceSwitchWidget *w, MateMixerDevice *dev
 */
 void DeviceSwitchWidget::on_context_device_removed (MateMixerContext *context,const gchar *name,DeviceSwitchWidget *w)
 {
-    int  count = 0;
-//    MateMixerDevice *dev = mate_mixer_context_get_device(context,name);
-//    QString str = mate_mixer_device_get_label(dev);
-//    do {
-//        qDebug() << "remove +++++++++++++++++++" << name << "device list name " << w->device_name_list->at(count) << "device size" <<w->device_name_list->size() << "device combox size" << w->miniWidget->deviceCombox->count();
-//        if (name == w->device_name_list->at(count)) {
-//            w->device_name_list->removeAt(count);
-//            qDebug() << "********* combox 值 为" << w->miniWidget->deviceCombox->itemText(count);
+    int  index = w->device_name_list->indexOf(name);
+    if (index >= 0) {
+        w->device_name_list->removeAt(index);
+    }
+    else {
+        return;
+    }
 
-////            w->miniWidget->deviceCombox->removeItem(count);
-//            qDebug() << "remove device 名为"  << name << "remove index " << count << "删除后combox 大小" << w->miniWidget->deviceCombox->count();
-////            w->miniWidget->deviceCom
-//            break;
-//        }
-//        count++;
-//        if (count > w->device_name_list->size()) {
-//            break;
-//        }
-//    }while(1);
+    /*MateMixerDevice *dev = mate_mixer_context_get_device(context,name);
+    QString str = mate_mixer_device_get_label(dev);
+    do {
+        if (name == w->device_name_list->at(count)) {
+            w->device_name_list->removeAt(count);
+            w->miniWidget->deviceCombox->removeItem(count);
+            break;
+        }
+        count++;
+        if (count > w->device_name_list->size()) {
+            break;
+        }
+    }while(1);
+    */
 }
 
 /*
@@ -1764,7 +1764,6 @@ void DeviceSwitchWidget::update_icon_input (DeviceSwitchWidget *w,MateMixerConte
         MateMixerStreamControl *input = MATE_MIXER_STREAM_CONTROL (inputs->data);
         MateMixerStreamControlRole role = mate_mixer_stream_control_get_role (input);
         if (role == MATE_MIXER_STREAM_CONTROL_ROLE_APPLICATION) {
-            qDebug() << "update icon input";
             MateMixerAppInfo *app_info = mate_mixer_stream_control_get_app_info (input);
             if (app_info == nullptr)
                 return;
@@ -1859,7 +1858,6 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
     w->miniWidget->masterVolumeSlider->setValue(value);
     w->appWidget->systemVolumeSlider->setValue(value);
     QString percent = QString::number(value);
-//    qDebug() << "音量值为:" << percent << mate_mixer_stream_get_name(stream);
 
     QString systemTrayIcon;
     QIcon icon;
@@ -1881,12 +1879,11 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
         w->soundSystemTrayIcon->setIcon(QIcon(icon));
         w->muteCheckBox->setChecked(false);
         //如果主主音量处于静音状态，应用音量取消静音则设置主音量取消静音
-//        if (state) {
-//            connect(w,&DeviceSwitchWidget::appvolume_mute_change_mastervolume_status,[=](){
-//                mate_mixer_stream_control_set_mute(control,!state);
-//                qDebug() << "设置主音量为不静音" << !state;
-//            });
-//        }
+        /*if (state) {
+            connect(w,&DeviceSwitchWidget::appvolume_mute_change_mastervolume_status,[=](){
+                mate_mixer_stream_control_set_mute(control,!state);
+            });
+        }*/
     }
     else if (value > 0 && value <= 33) {
         systemTrayIcon = "audio-volume-low";
@@ -2086,7 +2083,6 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
     connect(w->miniWidget,&UkmediaMiniMasterVolumeWidget::mouse_wheel_signal,[=](bool step){
         int volume = int(mate_mixer_stream_control_get_volume(control));
         volume = int(volume*100/65536.0+0.5);
-        qDebug() << "滚动音量值" << volume;
         if (step) {
             w->miniWidget->masterVolumeSlider->setValue(volume+5);
         }
@@ -2192,7 +2188,6 @@ void DeviceSwitchWidget::on_stream_control_volume_notify (MateMixerStreamControl
     }
 }
 
-
 /*
     更新输出设置
 */
@@ -2200,8 +2195,6 @@ void DeviceSwitchWidget::update_output_settings (DeviceSwitchWidget *w,MateMixer
 {
     Q_UNUSED(w);
     MateMixerStreamControlFlags flags;
-
-//    qDebug() << "更新输出设置";
 //    flags = mate_mixer_stream_control_get_flags(control);
 //    if (flags & MATE_MIXER_STREAM_CONTROL_CAN_BALANCE) {
 
@@ -2216,8 +2209,6 @@ void DeviceSwitchWidget::set_output_stream (DeviceSwitchWidget *w, MateMixerStre
     if (stream != nullptr) {
         const GList *controls;
         controls = mate_mixer_context_list_stored_controls (w->context);
-
-//        qDebug() << "set output stream" << mate_mixer_stream_get_name(stream);
         /* Move all stored controls to the newly selected default stream */
         while (controls != nullptr) {
             MateMixerStream        *parent;
@@ -2253,9 +2244,6 @@ void DeviceSwitchWidget::update_output_stream_list(DeviceSwitchWidget *w,MateMix
     if (stream != nullptr) {
         name = mate_mixer_stream_get_name(stream);
         label = mate_mixer_stream_get_label(stream);
-//        w->output_stream_list->append(name);
-//        w->miniWidget->deviceCombox->addItem(label);
-//        qDebug() << "更新输出stream名为" << name << "标签为" << label << w->output_stream_list->size();
     }
 }
 
@@ -2443,7 +2431,6 @@ void DeviceSwitchWidget::updateSystemTrayIcon(int volume,bool isMute)
 gboolean DeviceSwitchWidget::update_default_input_stream (DeviceSwitchWidget *w)
 {
     MateMixerStream *stream;
-    qDebug() << "更新默认的输入stream";
     stream = mate_mixer_context_get_default_input_stream (w->context);
 
     if (w->input != nullptr) {
@@ -2471,7 +2458,6 @@ gboolean DeviceSwitchWidget::update_default_input_stream (DeviceSwitchWidget *w)
 void DeviceSwitchWidget::on_input_stream_control_added (MateMixerStream *stream,const gchar *name,DeviceSwitchWidget *w)
 {
     MateMixerStreamControl *control;
-    qDebug() << "input stream control add";
     control = mate_mixer_stream_get_control (stream, name);
     if G_LIKELY (control != nullptr) {
         MateMixerStreamControlRole role = mate_mixer_stream_control_get_role (control);
@@ -2496,7 +2482,6 @@ void DeviceSwitchWidget::on_input_stream_control_removed (MateMixerStream *strea
     Q_UNUSED(name);
     /* The removed stream could be an application input, which may cause
      * the input status icon to disappear */
-    qDebug() << "输入stream control removed";
     update_icon_input (w,w->context);
 }
 
@@ -2508,8 +2493,6 @@ void DeviceSwitchWidget::update_input_settings (DeviceSwitchWidget *w,MateMixerS
     Q_UNUSED(w);
     MateMixerStream            *stream;
     MateMixerStreamControlFlags flags;
-
-    qDebug() << "------update input settings control" << mate_mixer_stream_control_get_name(control) << endl << endl << endl;
     g_debug ("Updating input settings");
 
     /* Get the control currently associated with the input slider */
@@ -2520,7 +2503,7 @@ void DeviceSwitchWidget::update_input_settings (DeviceSwitchWidget *w,MateMixerS
 
     /* Enable level bar only if supported by the control */
     if (flags & MATE_MIXER_STREAM_CONTROL_HAS_MONITOR) {
-        qDebug() << "MATE_MIXER_STREAM_CONTROL_HAS_MONITOR";
+        g_debug("MATE_MIXER_STREAM_CONTROL_HAS_MONITOR");
     }
 
     /* Get owning stream of the control */

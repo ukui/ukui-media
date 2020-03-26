@@ -177,10 +177,7 @@ private:
 protected:
     void paintEvent(QPaintEvent *event);
     bool event(QEvent *event);//重写窗口事件
-//    void mousePressEvent(QMouseEvent *event);
-//    virtual void wheelEvent(QWheelEvent *event);
     void contextMenuEvent(QContextMenuEvent *event);
-//    void keyPressEvent(QKeyEvent *event);
 };
 
 #endif // DEICESWITCHWIDGET_H

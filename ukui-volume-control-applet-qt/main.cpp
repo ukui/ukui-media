@@ -25,14 +25,14 @@
 #include <QObject>
 int main(int argc, char *argv[])
 {
-//    QApplication a(argc,argv);
+    /*QApplication a(argc,argv);*/
     QtSingleApplication app("ukui-volume-control-applet",argc,argv);
     if (app.isRunning()) {
        app.sendMessage("raise_window_noop");
        return EXIT_SUCCESS;
     }
     //支持高分屏
-//    QtSingleApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QtSingleApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     //加载qm翻译文件o
     QString locale = QLocale::system().name();
     QTranslator translator;
@@ -45,7 +45,6 @@ int main(int argc, char *argv[])
             qDebug() << "Load translations file" << locale << "failed!";
         }
     }
-
     //加载qss文件
     QFile qss(":/data/qss/ukuimedia.qss");
     bool ok = qss.open(QFile::ReadOnly);
