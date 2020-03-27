@@ -30,7 +30,6 @@ UkmediaDeviceWidget::UkmediaDeviceWidget(QWidget *parent) : QWidget (parent)
     deviceWidget = new QWidget(this);
     outputWidget = new QWidget(deviceWidget);
     outputSliderWidget = new QWidget(outputWidget);
-
     inputWidget = new QWidget(deviceWidget);
     inputSliderWidget = new QWidget(inputWidget);
 
@@ -42,7 +41,6 @@ UkmediaDeviceWidget::UkmediaDeviceWidget(QWidget *parent) : QWidget (parent)
 
     outputWidget->setFixedSize(340,60);
     outputSliderWidget->setFixedSize(306,32);
-
     outputMuteBtn = new QPushButton(outputSliderWidget);
     outputDeviceLabel = new QLabel(tr("Output Device"),this);
     outputDeviceDisplayLabel = new QLabel(tr("Speaker Realtek Audio"),outputWidget);

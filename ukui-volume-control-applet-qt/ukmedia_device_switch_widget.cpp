@@ -135,7 +135,7 @@ void DeviceSwitchWidget::hideWindow()
 */
 void DeviceSwitchWidget::showMenu(int x,int y)
 {
-    menu->setGeometry(x,y,250,88);
+    menu->setGeometry(x,y,252,90);
 }
 
 DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
@@ -163,7 +163,7 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     QSize switchSize(16,16);
     switchToMiniBtn->setIconSize(switchSize);
     switchToMiniBtn->setFixedSize(36,36);
-    switchToMiniBtn->move(360,15);
+    switchToMiniBtn->move(358,15);
     switchToMiniBtn->setStyle(new CustomStyle());
 
     switchToMiniBtn->setIcon(QIcon("/usr/share/ukui-media/img/mini-module.svg"));
@@ -304,15 +304,15 @@ void DeviceSwitchWidget::systemTrayMenuInit()
     menu->addAction(actionMute);
     menu->addSeparator();
     menu->addAction(actionSoundPreference);
-    menu->setFixedWidth(250);
-    menu->setFixedHeight(88);
+    menu->setFixedWidth(252);
+    menu->setFixedHeight(90);
 
     init_widget_action(actionSoundPreferenceWid,"/usr/share/ukui-media/img/setting.svg",tr("Sound preference(S)"));
     init_widget_action(actionMuteWid,"","");
     menu->setObjectName("outputSoundMenu");
     soundSystemTrayIcon->setContextMenu(menu);
 
-    menu->setWindowOpacity(0.9);
+    menu->setWindowOpacity(0.7);
     soundSystemTrayIcon->setVisible(true);
 
     connect(soundSystemTrayIcon,SIGNAL(activated(QSystemTrayIcon::ActivationReason)),\
@@ -320,10 +320,10 @@ void DeviceSwitchWidget::systemTrayMenuInit()
     connect(actionSoundPreference,SIGNAL(triggered()),this,SLOT(jumpControlPanelSlot()));
     menu->setWindowFlag(Qt::FramelessWindowHint);        //重要
     menu->setAttribute(Qt::WA_TranslucentBackground);    //重要
-    menu->setStyleSheet("QMenu {height: 88px;width: 250px;background-color: rgba(19,19,20,95%);"
+    menu->setStyleSheet("QMenu {height: 90px;width: 252px;background-color: rgba(19,19,20,95%);"
                         "padding: 6px 2px 6px 2px; border-radius: 6px}"
                         "QMenu::item {font-size: 14px;color: #ffffff;"
-                        "height: 36px;width: 250px;}"
+                        "height: 36px;width: 252spx;}"
                         "QMenu::separator{height:1px;background-color:rgba(19,19,20,0);margin-top:1px;margin-bottom:2px;}");
 }
 
@@ -333,7 +333,7 @@ void DeviceSwitchWidget::systemTrayMenuInit()
 void DeviceSwitchWidget::jumpControlPanelSlot()
 {
     m_process = new QProcess(this);
-    m_process->start("ukui-volume-control");
+    m_process->start("ukui-control-center -s");
 }
 
 /*
@@ -341,7 +341,7 @@ void DeviceSwitchWidget::jumpControlPanelSlot()
 */
 void DeviceSwitchWidget::moveAdvanceSwitchBtnSlot()
 {
-    switchToMiniBtn->move(361,16);
+    switchToMiniBtn->move(359,16);
 }
 
 /*
@@ -396,28 +396,28 @@ void DeviceSwitchWidget::miniToAdvancedWidget()
     localY = availableHeight - this->height();
     if (rect.x() > availableWidth/2 && rect.x()< availableWidth  && rect.y() > availableHeight) { //下
         if (availableWidth - rect.x() - rect.width()/2 < this->width() / 2)
-            this->setGeometry(availableWidth-this->width(),availableHeight-this->height()-3,this->width(),this->height());
+            this->setGeometry(availableWidth-this->width(),availableHeight-this->height()-2,this->width(),this->height());
         else
-            this->setGeometry(localX,availableHeight-this->height()-3,this->width(),this->height());
+            this->setGeometry(localX,availableHeight-this->height()-2,this->width(),this->height());
     }
     else if (rect.x() > availableWidth/2 && rect.x()< availableWidth && rect.y() < 40 ) { //上
         if (availableWidth - rect.x() - rect.width()/2 < this->width() / 2)
-            this->setGeometry(availableWidth-this->width(),totalHeight-availableHeight+3,this->width(),this->height());
+            this->setGeometry(availableWidth-this->width(),totalHeight-availableHeight+2,this->width(),this->height());
         else
-            this->setGeometry(localX,totalHeight-availableHeight+3,this->width(),this->height());
+            this->setGeometry(localX,totalHeight-availableHeight+2,this->width(),this->height());
     }
     else if (rect.x() < panelHeight && rect.y() > availableHeight/2 && rect.y()< availableHeight) {
         if (availableHeight - rect.y() - rect.height()/2 < this->height() /2)
-            this->setGeometry(panelHeight + 3,availableHeight - this->height(),this->width(),this->height());
+            this->setGeometry(panelHeight + 2,availableHeight - this->height(),this->width(),this->height());
         else
-            this->setGeometry(panelHeight+3,localY,this->width(),this->height());//左
+            this->setGeometry(panelHeight+2,localY,this->width(),this->height());//左
     }
     else if (rect.x() > availableWidth && rect.y() > availableHeight/2 && rect.y() < availableHeight) {
         localX = availableWidth - this->width();
         if (availableHeight - rect.y() - rect.height()/2 < this->height() /2)
-            this->setGeometry(availableWidth - 3,availableHeight - this->height(),this->width(),this->height() );
+            this->setGeometry(availableWidth - 2,availableHeight - this->height(),this->width(),this->height() );
         else
-            this->setGeometry(localX-3,localY,this->width(),this->height());
+            this->setGeometry(localX-2,localY,this->width(),this->height());
     }
 
     this->show();
@@ -473,31 +473,31 @@ void DeviceSwitchWidget::advancedToMiniWidget()
     localY = availableHeight - miniWidget->size().height();
     if (rect.x() > availableWidth/2 && rect.x()< availableWidth  && rect.y() > availableHeight) { //下
         if (availableWidth - rect.x() - rect.width()/2 < this->width() / 2)
-            miniWidget->setGeometry(availableWidth-miniWidget->width(),availableHeight-miniWidget->height()-3,miniWidget->width(),miniWidget->height());
+            miniWidget->setGeometry(availableWidth-miniWidget->width(),availableHeight-miniWidget->height()-2,miniWidget->width(),miniWidget->height());
         else
-            miniWidget->setGeometry(localX,availableHeight-miniWidget->height()-3,miniWidget->width(),miniWidget->height());
+            miniWidget->setGeometry(localX,availableHeight-miniWidget->height()-2,miniWidget->width(),miniWidget->height());
     }
     else if (rect.x() > availableWidth/2 && rect.x()< availableWidth && rect.y() < panelHeight ) { //上
         if (availableWidth - rect.x() - rect.width()/2 < miniWidget->width() / 2)
-            miniWidget->setGeometry(availableWidth-miniWidget->width(),totalHeight-availableHeight+3,miniWidget->width(),miniWidget->height());
+            miniWidget->setGeometry(availableWidth-miniWidget->width(),totalHeight-availableHeight+2,miniWidget->width(),miniWidget->height());
         else
-            miniWidget->setGeometry(localX,panelHeight+3,miniWidget->width(),miniWidget->height());
+            miniWidget->setGeometry(localX,panelHeight+2,miniWidget->width(),miniWidget->height());
     }
     else if (rect.x() < 40 && rect.y() > availableHeight/2 && rect.y()< availableHeight) {
         if (availableHeight - rect.y() - rect.height()/2 > miniWidget->height() /2) {
-            miniWidget->setGeometry(panelHeight + 3,rect.y()+(rect.height()/2)-(miniWidget->height()/2),miniWidget->width(),miniWidget->height());
+            miniWidget->setGeometry(panelHeight + 2,rect.y()+(rect.height()/2)-(miniWidget->height()/2),miniWidget->width(),miniWidget->height());
         }
         else {
-            miniWidget->setGeometry(panelHeight+3,localY,miniWidget->width(),miniWidget->height());//左
+            miniWidget->setGeometry(panelHeight+2,localY,miniWidget->width(),miniWidget->height());//左
         }
     }
     else if (rect.x() > availableWidth && rect.y() > availableHeight/2 && rect.y() < availableHeight) {
         localX = availableWidth - miniWidget->width();
         if (availableHeight - rect.y() - rect.height()/2 > miniWidget->height() /2) {
-            miniWidget->setGeometry(availableWidth - miniWidget->width() - 3,rect.y() + (rect.height()/2) - ((miniWidget->height()/2)) ,miniWidget->width(),miniWidget->height() );
+            miniWidget->setGeometry(availableWidth - miniWidget->width() - 2,rect.y() + (rect.height()/2) - ((miniWidget->height()/2)) ,miniWidget->width(),miniWidget->height() );
         }
         else {
-            miniWidget->setGeometry(localX-3,localY,miniWidget->width(),miniWidget->height());
+            miniWidget->setGeometry(localX-2,localY,miniWidget->width(),miniWidget->height());
         }
     }
     this->hide();
@@ -611,31 +611,31 @@ void DeviceSwitchWidget::activatedSystemTrayIconSlot(QSystemTrayIcon::Activation
                 localY = availableHeight - miniWidget->size().height();
                 if (rect.x() > availableWidth/2 && rect.x()< availableWidth  && rect.y() > availableHeight) { //下
                     if (availableWidth - rect.x() - rect.width()/2 < this->width() / 2)
-                        miniWidget->setGeometry(availableWidth-miniWidget->width(),availableHeight-miniWidget->height()-3,miniWidget->width(),miniWidget->height());
+                        miniWidget->setGeometry(availableWidth-miniWidget->width(),availableHeight-miniWidget->height()-2,miniWidget->width(),miniWidget->height());
                     else
-                        miniWidget->setGeometry(localX,availableHeight-miniWidget->height()-3,miniWidget->width(),miniWidget->height());
+                        miniWidget->setGeometry(localX,availableHeight-miniWidget->height()-2,miniWidget->width(),miniWidget->height());
                 }
                 else if (rect.x() > availableWidth/2 && rect.x()< availableWidth && rect.y() < panelHeight ) { //上
                     if (availableWidth - rect.x() - rect.width()/2 < miniWidget->width() / 2)
-                        miniWidget->setGeometry(availableWidth-miniWidget->width(),totalHeight-availableHeight+3,miniWidget->width(),miniWidget->height());
+                        miniWidget->setGeometry(availableWidth-miniWidget->width(),totalHeight-availableHeight+2,miniWidget->width(),miniWidget->height());
                     else
-                        miniWidget->setGeometry(localX,panelHeight+3,miniWidget->width(),miniWidget->height());
+                        miniWidget->setGeometry(localX,panelHeight+2,miniWidget->width(),miniWidget->height());
                 }
                 else if (rect.x() < 40 && rect.y() > availableHeight/2 && rect.y()< availableHeight) {
                     if (availableHeight - rect.y() - rect.height()/2 > miniWidget->height() /2) {
-                        miniWidget->setGeometry(panelHeight + 3,rect.y()+(rect.height()/2)-(miniWidget->height()/2),miniWidget->width(),miniWidget->height());
+                        miniWidget->setGeometry(panelHeight+2,rect.y()+(rect.height()/2)-(miniWidget->height()/2),miniWidget->width(),miniWidget->height());
                     }
                     else {
-                        miniWidget->setGeometry(panelHeight+3,localY,miniWidget->width(),miniWidget->height());//左
+                        miniWidget->setGeometry(panelHeight+2,localY,miniWidget->width(),miniWidget->height());//左
                     }
                 }
                 else if (rect.x() > availableWidth && rect.y() > availableHeight/2 && rect.y() < availableHeight) {
                     localX = availableWidth - miniWidget->width();
                     if (availableHeight - rect.y() - rect.height()/2 > miniWidget->height() /2) {
-                        miniWidget->setGeometry(availableWidth - miniWidget->width() - 3,rect.y() + (rect.height()/2) - ((miniWidget->height()/2)) ,miniWidget->width(),miniWidget->height() );
+                        miniWidget->setGeometry(availableWidth - miniWidget->width() - 2,rect.y() + (rect.height()/2) - ((miniWidget->height()/2)) ,miniWidget->width(),miniWidget->height() );
                     }
                     else {
-                        miniWidget->setGeometry(localX-3,localY,miniWidget->width(),miniWidget->height());
+                        miniWidget->setGeometry(localX-2,localY,miniWidget->width(),miniWidget->height());
                     }
                 }
                 miniWidget->show();
@@ -644,28 +644,28 @@ void DeviceSwitchWidget::activatedSystemTrayIconSlot(QSystemTrayIcon::Activation
                 localY = availableHeight - this->height();
                 if (rect.x() > availableWidth/2 && rect.x()< availableWidth  && rect.y() > availableHeight) { //下
                     if (availableWidth - rect.x() - rect.width()/2 < this->width() / 2)
-                        this->setGeometry(availableWidth-this->width(),availableHeight-this->height()-3,this->width(),this->height());
+                        this->setGeometry(availableWidth-this->width(),availableHeight-this->height()-2,this->width(),this->height());
                     else
-                        this->setGeometry(localX,availableHeight-this->height()-3,this->width(),this->height());
+                        this->setGeometry(localX,availableHeight-this->height()-2,this->width(),this->height());
                 }
                 else if (rect.x() > availableWidth/2 && rect.x()< availableWidth && rect.y() < 40 ) { //上
                     if (availableWidth - rect.x() - rect.width()/2 < this->width() / 2)
-                        this->setGeometry(availableWidth-this->width(),totalHeight-availableHeight+3,this->width(),this->height());
+                        this->setGeometry(availableWidth-this->width(),totalHeight-availableHeight+2,this->width(),this->height());
                     else
-                        this->setGeometry(localX,totalHeight-availableHeight+3,this->width(),this->height());
+                        this->setGeometry(localX,totalHeight-availableHeight+2,this->width(),this->height());
                 }
                 else if (rect.x() < panelHeight && rect.y() > availableHeight/2 && rect.y()< availableHeight) {
                     if (availableHeight - rect.y() - rect.height()/2 < this->height() /2)
-                        this->setGeometry(panelHeight + 3,availableHeight - this->height(),this->width(),this->height());
+                        this->setGeometry(panelHeight + 2,availableHeight - this->height(),this->width(),this->height());
                     else
-                        this->setGeometry(panelHeight+3,localY,this->width(),this->height());//左
+                        this->setGeometry(panelHeight+2,localY,this->width(),this->height());//左
                 }
                 else if (rect.x() > availableWidth && rect.y() > availableHeight/2 && rect.y() < availableHeight) {
                     localX = availableWidth - this->width();
                     if (availableHeight - rect.y() - rect.height()/2 < this->height() /2)
-                        this->setGeometry(availableWidth - 3,availableHeight - this->height(),this->width(),this->height() );
+                        this->setGeometry(availableWidth - 2,availableHeight - this->height(),this->width(),this->height() );
                     else
-                        this->setGeometry(localX-3,localY,this->width(),this->height());
+                        this->setGeometry(localX-2,localY,this->width(),this->height());
                 }
                 this->show();
 //                isShow = false;
@@ -695,40 +695,40 @@ void DeviceSwitchWidget::activatedSystemTrayIconSlot(QSystemTrayIcon::Activation
         if (rect.x() > availableWidth/2 && rect.x()< availableWidth  && rect.y() > availableHeight) { //下
             if (availableWidth - rect.x() - rect.width()/2 < menu->width()) {
                 localX = availableWidth - menu->width();
-                localY = availableHeight - menu->height() - 3;
+                localY = availableHeight - menu->height() - 2;
             }
             else {
                 localX = rect.x();
-                localY = availableHeight - menu->height() -3;
+                localY = availableHeight - menu->height() -2;
             }
         }
         else if (rect.x() > availableWidth/2 && rect.x()< availableWidth && rect.y() < panelHeight ) { //上
             if (availableWidth - rect.x() - rect.width()/2 < menu->width()) {
                 localX = availableWidth - menu->width();
-                localY = totalHeight - availableHeight + 3;
+                localY = totalHeight - availableHeight + 2;
             }
             else {
                 localX = rect.x();
-                localY = totalHeight-availableHeight+3;
+                localY = totalHeight-availableHeight+2;
             }
         }
         else if (rect.x() < 40 && rect.y() > availableHeight/2 && rect.y()< availableHeight) { //左
             if (availableHeight - rect.y() - rect.height()/2 < menu->height()) {
-                localX = totalWidth - availableWidth + 3;
+                localX = totalWidth - availableWidth + 2;
                 localY = availableHeight - menu->height();
             }
             else {
-                localX = totalWidth - availableWidth +3;
+                localX = totalWidth - availableWidth +2;
                 localY = rect.y();
             }
         }
         else if (rect.x() > availableWidth && rect.y() > availableHeight/2 && rect.y() < availableHeight) {
             if (availableHeight - rect.y() - rect.height()/2 < menu->height()) {
-                localX = availableWidth - menu->width() - 3;
+                localX = availableWidth - menu->width() - 2;
                 localY = availableHeight - menu->height();
             }
             else {
-                localX = availableWidth - menu->width() - 3;
+                localX = availableWidth - menu->width() - 2;
                 localY = rect.y();
             }
         }
@@ -746,11 +746,11 @@ void DeviceSwitchWidget::activatedSystemTrayIconSlot(QSystemTrayIcon::Activation
 void DeviceSwitchWidget::init_widget_action(QWidget *wid, QString iconstr, QString textstr)
 {
     QString style="QWidget{background:transparent;border:0px;}\
-            QWidget:hover{background-color:#34bed8ef;}\
+            QWidget:hover{background-color:#34bed8ef; border-radius:4px;}\
             QWidget:pressed{background-color:#3a123456;}";
     QHBoxLayout* layout=new QHBoxLayout(wid);
     wid->setLayout(layout);
-    wid->setFixedSize(244,36);
+    wid->setFixedSize(246,36);
     wid->setStyleSheet(style);
     wid->setFocusPolicy(Qt::NoFocus);
 
@@ -1208,12 +1208,12 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
     iconName.append(".desktop");
     XdgDesktopFile xdg;
     xdg.load(iconName);
-    QIcon i=xdg.icon();
+    QString title(xdg.localizedValue("Name").toString());
+
     GError **error = nullptr;
     GKeyFileFlags flags = G_KEY_FILE_NONE;
     GKeyFile *keyflie = g_key_file_new();
-//    QByteArray fpbyte = iconName.toLocal8Bit();
-//    char *filepath = "/usr/share/applications";//fpbyte.data();
+
     g_key_file_load_from_file(keyflie,iconName.toLocal8Bit(),flags,error);
     char *icon_str = g_key_file_get_locale_string(keyflie,"Desktop Entry","Icon",nullptr,nullptr);
     QIcon icon = QIcon::fromTheme(QString::fromLocal8Bit(icon_str));
@@ -1257,7 +1257,7 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
 
 //    w->appWidget->displayAppVolumeWidget->setLayout(w->appWidget->gridlayout);
     //设置每项的固定大小
-    w->appWidget->appLabel->setFixedSize(88,18);
+    w->appWidget->appLabel->setFixedSize(220,18);
     w->appWidget->appIconBtn->setFixedSize(32,32);
 
     QSize icon_size(32,32);
@@ -1285,15 +1285,19 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
     w->app_name_list->append(appSliderStr);
 
     w->appWidget->appSlider->setObjectName(appSliderStr);
-    //w->appWidget->appLabel->setObjectName(appLabelStr);
-//    w->appWidget->appVolumeLabel->setObjectName(appVolumeLabelStr);
+    /*
+    w->appWidget->appLabel->setObjectName(appLabelStr);
+    w->appWidget->appVolumeLabel->setObjectName(appVolumeLabelStr);
+    */
     //设置label 和滑动条的值
     QSlider *s = w->appWidget->findChild<QSlider*>(appSliderStr);
     s->setValue(display_volume);
-//    QLabel *l = w->appWidget->findChild<QLabel*>(appVolumeLabelStr);
-//    l->setNum(display_volume);
-    //QLabel *l2 = w->appWidget->findChild<QLabel*>(appLabelStr);
-    //l2->setText(app_name);
+    /*
+    QLabel *l = w->appWidget->findChild<QLabel*>(appVolumeLabelStr);
+    l->setNum(display_volume);
+    QLabel *l2 = w->appWidget->findChild<QLabel*>(appLabelStr);
+    l2->setText(app_name);
+    */
     if (is_mute) {
         w->appWidget->appMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
     }
@@ -1310,17 +1314,28 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
         w->appWidget->appMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-high.svg"));
     }
 
-    w->appWidget->appLabel->setText(app_name);
-//    w->appWidget->appSlider->setValue(display_volume);
-//    w->appWidget->appVolumeLabel->setNum(display_volume);
-//    mate_mixer_stream_control_set_mute(control,is_mute);
+    if (title == "") {
+        w->appWidget->appLabel->setText(app_icon_name);
+    }
+    else {
+
+        w->appWidget->appLabel->setText(title);
+    }
+
+    /*
+        w->appWidget->appSlider->setValue(display_volume);
+        w->appWidget->appVolumeLabel->setNum(display_volume);
+        mate_mixer_stream_control_set_mute(control,is_mute);
+    */
     /*滑动条控制应用音量*/
     connect(w->appWidget->appSlider,&QSlider::valueChanged,[=](int value){
         application_name = appSliderStr;
         QSlider *s = w->findChild<QSlider*>(appSliderStr);
         s->setValue(value);
-//        QLabel *l = w->findChild<QLabel*>(appVolumeLabelStr);
-//        l->setNum(value);
+        /*
+        QLabel *l = w->findChild<QLabel*>(appVolumeLabelStr);
+        l->setNum(value);
+        */
         bool status = mate_mixer_stream_control_get_mute(control);
         int v = int(value*65536/100 + 0.5);
         mate_mixer_stream_control_set_volume(control,guint(v));
@@ -1379,8 +1394,10 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
     connect(w,&DeviceSwitchWidget::app_volume_changed,[=](bool is_mute,int volume,QString app_name){
         Q_UNUSED(is_mute);
         QString slider_str = app_name;
-//        slider_str.append("Slider");
-//        slider_str.append(QString::number(appnum));
+        /*
+        slider_str.append("Slider");
+        slider_str.append(QString::number(appnum));
+        */
         QSlider *s = w->findChild<QSlider*>(slider_str);
         s->setValue(volume);
         if (is_mute) {
@@ -1413,7 +1430,7 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
     w->appWidget->gridlayout->addWidget(app_widget);
     //设置布局的垂直间距以及设置gridlayout四周的间距
     w->appWidget->gridlayout->setVerticalSpacing(18);
-    w->appWidget->gridlayout->setContentsMargins(18,14,34,60);
+    w->appWidget->gridlayout->setContentsMargins(18,14,34,18);
     w->appWidget->gridlayout->update();
     w->appWidget->appArea->widget()->adjustSize();
 

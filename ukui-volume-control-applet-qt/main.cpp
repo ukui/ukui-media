@@ -47,9 +47,8 @@ int main(int argc, char *argv[])
     }
     //加载qss文件
     QFile qss(":/data/qss/ukuimedia.qss");
-    bool ok = qss.open(QFile::ReadOnly);
-    if (!ok)
-        qDebug() << "加载失败";
+    qss.open(QFile::ReadOnly);
+
     qApp->setStyleSheet(qss.readAll());
     qss.close();
     DeviceSwitchWidget w;

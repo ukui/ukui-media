@@ -61,7 +61,7 @@ UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QWidget *parent) : 
     deviceBtn->move(16,16);
     deviceLabel->move(36,18);
     deviceCombox->move(2,6);
-    switchBtn->move(307,6);
+    switchBtn->move(305,6);
     masterWidget->move(0,59);
     QSize switchSize(16,16);
     QSize deviceSize(16,16);
@@ -193,7 +193,7 @@ void UkmediaMiniMasterVolumeWidget::keyPressEvent(QKeyEvent *event)
 */
 void UkmediaMiniMasterVolumeWidget::moveMiniSwitchBtnSlot()
 {
-    switchBtn->move(308,7);
+    switchBtn->move(306,7);
 }
 
 UkmediaMiniMasterVolumeWidget::~UkmediaMiniMasterVolumeWidget()

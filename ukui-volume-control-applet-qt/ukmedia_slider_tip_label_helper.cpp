@@ -40,7 +40,7 @@ void MediaSliderTipLabel::paintEvent(QPaintEvent *e)
     p.setPen(Qt::NoPen);
     QPainterPath path;
     opt.rect.adjust(0,0,0,0);
-    path.addRoundedRect(opt.rect,20,20);
+    path.addRoundedRect(opt.rect,4,4);
     p.setRenderHint(QPainter::Antialiasing);
     setProperty("blurRegion",QRegion(path.toFillPolygon().toPolygon()));
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);

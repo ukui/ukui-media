@@ -79,18 +79,18 @@ void CustomStyle::drawPrimitive(QStyle::PrimitiveElement element, const QStyleOp
         painter->save();
         painter->setRenderHint(QPainter::TextAntialiasing,true);
         painter->setPen(Qt::NoPen);
-        painter->setBrush(Qt::blue);
+        painter->setBrush(QColor(0xff,0xff,0xff,0x00));
         if (option->state & State_MouseOver) {
             if (option->state & State_Sunken) {
                 painter->setRenderHint(QPainter::Antialiasing,true);
                 painter->setPen(Qt::NoPen);
-                painter->setBrush(QColor(0xff,0x00,0x00));
-                painter->drawRoundedRect(option->rect,6,6);
+                painter->setBrush(QColor(0x3d,0x6b,0xe5,0xff));
+                painter->drawRoundedRect(option->rect,4,4);
             } else {
                 painter->setRenderHint(QPainter::Antialiasing,true);
                 painter->setPen(Qt::NoPen);
-                painter->setBrush(QColor(0x00,0xff,0x00));
-                painter->drawRoundedRect(option->rect.adjusted(2,2,-2,-2),6,6);
+                painter->setBrush(QColor(0xff,0xff,0xff,0x1f));
+                painter->drawRoundedRect(option->rect.adjusted(2,2,-2,-2),4,4);
             }
         }
         painter->restore();
@@ -151,6 +151,7 @@ void CustomStyle::polish(QWidget *widget)
             const_cast<QWidget *> (widget)->setAttribute(Qt::WA_TranslucentBackground);
             widget->setAttribute(Qt::WA_TranslucentBackground);
             QPainterPath path;
+            qDebug() << "label";
             auto rect = widget->rect();
             rect.adjust(0,0,0,0);
             path.addRoundedRect(rect,6,6);
