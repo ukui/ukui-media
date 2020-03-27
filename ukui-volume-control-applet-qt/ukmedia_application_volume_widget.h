@@ -51,6 +51,7 @@ private:
     QSlider *appSlider;
     QScrollArea *appArea;
     QGridLayout *gridlayout;
+//    QVBoxLayout *m_pVlayout;
 protected:
 
 };

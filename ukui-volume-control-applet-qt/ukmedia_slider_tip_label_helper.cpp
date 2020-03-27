@@ -54,9 +54,9 @@ SliderTipLabelHelper::SliderTipLabelHelper(QObject *parent) :QObject(parent)
     qApp->installEventFilter(new AppEventFilter(this));
     m_pTiplabel->setFixedSize(52,30);
     m_pTiplabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-//    m_pTiplabel->setStyleSheet("QLabel{background:rgba(26,26,26,0.7);"
-//                               "border:1px solid rgba(255, 255, 255, 0.2);"
-//                               "border-radius:6px;padding:7px}");
+    m_pTiplabel->setStyleSheet("QLabel{background:rgba(26,26,26,0.7);"
+                               "border:1px solid rgba(255, 255, 255, 0.2);"
+                               "border-radius:6px;padding:7px}");
 }
 
 

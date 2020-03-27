@@ -821,6 +821,8 @@ void DeviceSwitchWidget::deviceSwitchWidgetInit()
         case DEVICE_VOLUME_BUTTON:
         appVolumeBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
                                     "padding-left:0px;}"
+                                    "QPushButton::hover{background:rgba(255,255,255,0.12);"
+                                    "border-radius:4px;}"
                                     "QPushButton::pressed{background:rgba(61,107,229,1);"
                                     "border-radius:4px;padding-left:0px;}");
         deviceBtn->setStyleSheet("QPushButton{background:rgba(61,107,229,1);"
@@ -829,6 +831,8 @@ void DeviceSwitchWidget::deviceSwitchWidgetInit()
     case APP_VOLUME_BUTTON:
         deviceBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
                                  "padding-left:0px;}"
+                                 "QPushButton::hover{background:rgba(255,255,255,0.12);"
+                                 "border-radius:4px;}"
                                  "QPushButton::pressed{background:rgba(61,107,229,1);"
                                  "border-radius:4px;padding-left:0px;}");
         appVolumeBtn->setStyleSheet("QPushButton{background:rgba(61,107,229,1);"
@@ -848,6 +852,8 @@ void DeviceSwitchWidget::device_button_clicked_slot()
 
     appVolumeBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
                                 "padding-left:0px;}"
+                                "QPushButton::hover{background:rgba(255,255,255,0.12);"
+                                "border-radius:4px;}"
                                 "QPushButton::pressed{background:rgba(61,107,229,1);"
                                 "border-radius:4px;}");
     deviceBtn->setStyleSheet("QPushButton{background:rgba(61,107,229,1);"
@@ -863,6 +869,8 @@ void DeviceSwitchWidget::appvolume_button_clicked_slot()
     //切换按钮样式
     deviceBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
                              "padding-left:0px;}"
+                             "QPushButton::hover{background:rgba(255,255,255,0.12);"
+                             "border-radius:4px;}"
                              "QPushButton::pressed{background:rgba(61,107,229,1);"
                              "border-radius:4px;}");
     appVolumeBtn->setStyleSheet("QPushButton{background:rgba(61,107,229,1);"
@@ -1000,14 +1008,14 @@ void DeviceSwitchWidget::add_stream (DeviceSwitchWidget *w, MateMixerStream *str
     while (controls != nullptr) {
         MateMixerStreamControl    *control = MATE_MIXER_STREAM_CONTROL (controls->data);
         MateMixerStreamControlRole role;
-
         role = mate_mixer_stream_control_get_role (control);
+        const gchar *m_pStreamControlName = mate_mixer_stream_control_get_name(control);
         if (role == MATE_MIXER_STREAM_CONTROL_ROLE_APPLICATION) {
             MateMixerAppInfo *m_pAppInfo = mate_mixer_stream_control_get_app_info(control);
             if (m_pAppInfo != nullptr) {
                 const gchar *m_pAppName = mate_mixer_app_info_get_name(m_pAppInfo);
                 if (strcmp(m_pAppName,"ukui-session") != 0) {
-                    w->stream_control_list->append(name);
+                    w->stream_control_list->append(m_pStreamControlName);
                     if G_UNLIKELY (control == nullptr)
                         return;
                     add_application_control (w, control);
@@ -1154,7 +1162,13 @@ void DeviceSwitchWidget::remove_application_control (DeviceSwitchWidget *w,const
      * invalidate the channel bar, so just remove it ourselves */
     int i = w->stream_control_list->indexOf(m_pAppName);
     if (w->stream_control_list->count() > w->app_name_list->count()) {
+        if (i <= 0)
+            return;
         w->stream_control_list->removeAt(i);
+        return;
+    }
+    if ( i > w->app_name_list->count() || i > w->appWidget->gridlayout->count()) {
+
         return;
     }
     w->stream_control_list->removeAt(i);
