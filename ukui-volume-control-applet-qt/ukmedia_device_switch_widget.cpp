@@ -2270,7 +2270,7 @@ void DeviceSwitchWidget::set_output_stream (DeviceSwitchWidget *w, MateMixerStre
         const GList *controls;
         controls = mate_mixer_context_list_stored_controls (w->context);
         if (controls == nullptr) {
-            qDebug() << "list strored control is null";
+            qDebug() << "list stored control is null";
         }
         /* Move all stored controls to the newly selected default stream */
         while (controls != nullptr) {

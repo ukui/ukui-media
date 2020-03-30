@@ -1,3 +1,14 @@
+ukui-media (2.0.2-1) unstable; urgency=medium
+
+  * New upstream bugfix release.
+    - Fix the crash caused by shortcut keys.
+    - Fix that when playing media, adjust the volume will cause the
+      icon disappear.
+    - Fix the crash when switch media.
+    - Fix the inconsistent value when playing multiple media.
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Mon, 30 Mar 2020 15:35:50 +0800
+
 ukui-media (2.0.1-1) unstable; urgency=medium
 
   * New upstream release.
