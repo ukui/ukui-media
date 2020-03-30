@@ -17,12 +17,6 @@
  */
 #include "ukmedia_device_switch_widget.h"
 extern "C" {
-#include <gdk/gdk.h>
-#include <glib-object.h>
-#include <glib/gi18n.h>
-}
-#include <QDebug>
-extern "C" {
 #include <glib-object.h>
 #include <glib.h>
 #include <gio/gio.h>
@@ -148,7 +142,8 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     appWidget->appArea = new QScrollArea(appWidget);
     appWidget->displayAppVolumeWidget = new QWidget(appWidget->appArea);
     appWidget->appArea->setWidget(appWidget->displayAppVolumeWidget);
-    appWidget->gridlayout = new QGridLayout(appWidget->displayAppVolumeWidget);
+//    appWidget->gridlayout = new QGridLayout(appWidget->displayAppVolumeWidget);
+    appWidget->m_pVlayout = new QVBoxLayout(appWidget->displayAppVolumeWidget);
 
     appWidget->appArea->setFixedSize(358,177);
     appWidget->appArea->move(0,143);
@@ -175,7 +170,7 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     device_display_name_list = new QStringList;
     stream_control_list = new QStringList;
     app_name_list = new QStringList;
-
+    appBtnNameList = new QStringList;
 //    app_widget_list = new QStringList;
     //初始化matemixer
     if (mate_mixer_init() == FALSE) {
@@ -225,7 +220,8 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     setWindowFlags(Qt::WindowStaysOnTopHint|Qt::Popup);
     setAttribute(Qt::WA_TranslucentBackground);
 
-    appWidget->displayAppVolumeWidget->setLayout(appWidget->gridlayout);
+//    appWidget->displayAppVolumeWidget->setLayout(appWidget->gridlayout);
+    appWidget->displayAppVolumeWidget->setLayout(appWidget->m_pVlayout);
 
     this->setObjectName("mainWidget");
     this->setStyleSheet("QWidget#mainWidget{"
@@ -503,7 +499,6 @@ void DeviceSwitchWidget::advancedToMiniWidget()
     this->hide();
     miniWidget->show();
     displayMode = MINI_MODE;
-//    isShow = false;
 }
 
 /*
@@ -513,10 +508,8 @@ void DeviceSwitchWidget::deviceComboxIndexChanged(QString str)
 {
     MateMixerBackendFlags flags;
     int index = miniWidget->deviceCombox->findText(str);
-
-//    bool status = output_stream_list->contains(str);
-    //QString转换为const char *
-//    const char *name = str.toLocal8Bit();
+    if (index == -1)
+        return;
     const QString str1 =  output_stream_list->at(index);
     const gchar *name = str1.toLocal8Bit();
     MateMixerStream *stream = mate_mixer_context_get_stream(context,name);
@@ -668,7 +661,6 @@ void DeviceSwitchWidget::activatedSystemTrayIconSlot(QSystemTrayIcon::Activation
                         this->setGeometry(localX-2,localY,this->width(),this->height());
                 }
                 this->show();
-//                isShow = false;
                 break;
             default:
                 break;
@@ -908,7 +900,7 @@ void DeviceSwitchWidget::on_context_stored_control_added (MateMixerContext *cont
     media_role = mate_mixer_stream_control_get_media_role (control);
 
     if (media_role == MATE_MIXER_STREAM_CONTROL_MEDIA_ROLE_EVENT)
-        bar_set_stream_control (w, control);
+        bar_set_stream_control (w, MATE_MIXER_DIRECTION_UNKNOWN,control);
 }
 
 
@@ -982,7 +974,6 @@ void DeviceSwitchWidget::add_stream (DeviceSwitchWidget *w, MateMixerStream *str
             bar_set_stream (w, stream);
             MateMixerStreamControl *c = mate_mixer_stream_get_default_control(stream);
             update_input_settings (w,c);
-//            is_default = TRUE;
         }
     }
     else if (direction == MATE_MIXER_DIRECTION_OUTPUT) {
@@ -994,7 +985,6 @@ void DeviceSwitchWidget::add_stream (DeviceSwitchWidget *w, MateMixerStream *str
         if (stream == output) {
             update_output_settings(w,control);
             bar_set_stream (w, stream);
-//            is_default = TRUE;
         }
         name  = mate_mixer_stream_get_name (stream);
         label = mate_mixer_stream_get_label (stream);
@@ -1111,7 +1101,7 @@ void DeviceSwitchWidget::add_application_control (DeviceSwitchWidget *w, MateMix
             app_icon = "applications-multimedia";
     }
 
-    bar_set_stream_control (w, control);
+    bar_set_stream_control (w,direction,control);
 }
 
 void DeviceSwitchWidget::on_stream_control_added (MateMixerStream *stream,const gchar *name,DeviceSwitchWidget *w)
@@ -1151,6 +1141,7 @@ void DeviceSwitchWidget::on_stream_control_removed (MateMixerStream *stream,cons
     else {
         w->stream_control_list->clear();
         w->app_name_list->clear();
+        w->appBtnNameList->clear();
     }
 
 }
@@ -1167,17 +1158,20 @@ void DeviceSwitchWidget::remove_application_control (DeviceSwitchWidget *w,const
         w->stream_control_list->removeAt(i);
         return;
     }
-    if ( i > w->app_name_list->count() || i > w->appWidget->gridlayout->count()) {
-
+//    if ( i > w->app_name_list->count() || i > w->appWidget->gridlayout->count()) {
+    if ( i > w->app_name_list->count() || i > w->appWidget->m_pVlayout->count()) {
         return;
     }
     w->stream_control_list->removeAt(i);
     w->app_name_list->removeAt(i);
+    w->appBtnNameList->removeAt(i);
     QLayoutItem *item ;
 
-    if ((item = w->appWidget->gridlayout->takeAt(i)) != 0) {
+//    if ((item = w->appWidget->gridlayout->takeAt(i)) != 0) {
+    if ((item = w->appWidget->m_pVlayout->takeAt(i)) != 0) {
         QWidget *wid = item->widget();
-        w->appWidget->gridlayout->removeWidget(wid);
+//        w->appWidget->gridlayout->removeWidget(wid);
+        w->appWidget->m_pVlayout->removeWidget(wid);
         wid->setParent(nullptr);
         delete wid;
         delete item;
@@ -1186,15 +1180,17 @@ void DeviceSwitchWidget::remove_application_control (DeviceSwitchWidget *w,const
         delete item;*/
     }
 
-    w->appWidget->gridlayout->update();
     if (appnum <= 0) {
         g_warn_if_reached ();
         appnum = 1;
     }
     appnum--;
-    w->appWidget->gridlayout->setVerticalSpacing(18);
-    w->appWidget->gridlayout->setContentsMargins(18,14,34,18);
-    w->appWidget->gridlayout->update();
+//    w->appWidget->gridlayout->setVerticalSpacing(18);
+//    w->appWidget->gridlayout->setContentsMargins(18,14,34,18);
+//    w->appWidget->gridlayout->update();
+    w->appWidget->m_pVlayout->setSpacing(18);
+    w->appWidget->m_pVlayout->setContentsMargins(18,14,34,18);
+    w->appWidget->m_pVlayout->update();
     w->appWidget->appArea->widget()->adjustSize();
     //设置布局的垂直间距以及设置gridlayout四周的间距
     if (appnum <= 0) {
@@ -1290,14 +1286,15 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
     QString appVolumeLabelStr = app_name;
 
     appSliderStr.append("Slider");
-    appMuteBtnlStr.append("Label");
+    appMuteBtnlStr.append("button");
     appVolumeLabelStr.append("VolumeLabel");
-    appSliderStr.append(QString::number(app_count++));
+    appSliderStr.append(QString::number(app_count));
     appMuteBtnlStr.append(QString::number(app_count));
     appVolumeLabelStr.append(QString::number(app_count));
 
     w->app_name_list->append(appSliderStr);
-
+    w->appBtnNameList->append(appMuteBtnlStr);
+    w->appWidget->appMuteBtn->setObjectName(appMuteBtnlStr);
     w->appWidget->appSlider->setObjectName(appSliderStr);
     /*
     w->appWidget->appLabel->setObjectName(appLabelStr);
@@ -1306,6 +1303,7 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
     //设置label 和滑动条的值
     QSlider *s = w->appWidget->findChild<QSlider*>(appSliderStr);
     s->setValue(display_volume);
+    QPushButton *btn = w->appWidget->findChild<QPushButton *>(appMuteBtnlStr);
     /*
     QLabel *l = w->appWidget->findChild<QLabel*>(appVolumeLabelStr);
     l->setNum(display_volume);
@@ -1313,26 +1311,25 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
     l2->setText(app_name);
     */
     if (is_mute) {
-        w->appWidget->appMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
+        btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
     }
     else if (display_volume <= 0) {
-        w->appWidget->appMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
+        btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
     }
     else if (display_volume > 0 && display_volume <= 33) {
-       w->appWidget->appMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-low.svg"));
+       btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-low.svg"));
     }
     else if(display_volume > 33 && display_volume <= 66) {
-        w->appWidget->appMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-medium.svg"));
+        btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-medium.svg"));
     }
     else if (display_volume > 66) {
-        w->appWidget->appMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-high.svg"));
+        btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-high.svg"));
     }
 
     if (title == "") {
         w->appWidget->appLabel->setText(app_icon_name);
     }
     else {
-
         w->appWidget->appLabel->setText(title);
     }
 
@@ -1346,6 +1343,8 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
         application_name = appSliderStr;
         QSlider *s = w->findChild<QSlider*>(appSliderStr);
         s->setValue(value);
+        QPushButton *btn = w->findChild<QPushButton*>(appMuteBtnlStr);
+
         /*
         QLabel *l = w->findChild<QLabel*>(appVolumeLabelStr);
         l->setNum(value);
@@ -1354,19 +1353,19 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
         int v = int(value*65536/100 + 0.5);
         mate_mixer_stream_control_set_volume(control,guint(v));
         if (status) {
-            w->appWidget->appMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
+            btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
         }
         else if (value <= 0) {
-            w->appWidget->appMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
+            btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
         }
         else if (value > 0 && value <= 33) {
-           w->appWidget->appMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-low.svg"));
+            btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-low.svg"));
         }
         else if(value > 33 && value <= 66) {
-            w->appWidget->appMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-medium.svg"));
+            btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-medium.svg"));
         }
         else if (value > 66) {
-            w->appWidget->appMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-high.svg"));
+            btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-high.svg"));
         }
         Q_EMIT w->app_name_signal(appSliderStr);
     });
@@ -1387,25 +1386,26 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
         mate_mixer_stream_control_set_mute(control,!isMute);
         volume = int(volume*100/65536 + 0.5);
         mate_mixer_stream_control_set_volume(control,guint(volume));
+        QPushButton *btn = w->appWidget->findChild<QPushButton *>(appMuteBtnlStr);
         isMute = mate_mixer_stream_control_get_mute(control);
         if (isMute) {
-            w->appWidget->appMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
+            btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
         }
         else if (volume <= 0) {
-            w->appWidget->appMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
+            btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
         }
         else if (volume > 0 && volume <= 33) {
-           w->appWidget->appMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-low.svg"));
+            btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-low.svg"));
         }
         else if(volume > 33 && volume <= 66) {
-            w->appWidget->appMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-medium.svg"));
+            btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-medium.svg"));
         }
         else if (volume > 66) {
-            w->appWidget->appMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-high.svg"));
+            btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-high.svg"));
         }
     });
 
-    connect(w,&DeviceSwitchWidget::app_volume_changed,[=](bool is_mute,int volume,QString app_name){
+    connect(w,&DeviceSwitchWidget::app_volume_changed,[=](bool is_mute,int volume,QString app_name,QString appBtnName){
         Q_UNUSED(is_mute);
         QString slider_str = app_name;
         /*
@@ -1414,20 +1414,21 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
         */
         QSlider *s = w->findChild<QSlider*>(slider_str);
         s->setValue(volume);
+        QPushButton *btn = w->findChild<QPushButton *>(appBtnName);
         if (is_mute) {
-            w->appWidget->appMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
+            btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
         }
         else if (volume <= 0) {
-            w->appWidget->appMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
+            btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
         }
         else if (volume > 0 && volume <= 33) {
-           w->appWidget->appMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-low.svg"));
+            btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-low.svg"));
         }
         else if(volume > 33 && volume <= 66) {
-            w->appWidget->appMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-medium.svg"));
+            btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-medium.svg"));
         }
         else if (volume > 66) {
-            w->appWidget->appMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-high.svg"));
+            btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-high.svg"));
         }
     });
 
@@ -1441,11 +1442,19 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
     else {
         w->appWidget->upWidget->show();
     }
-    w->appWidget->gridlayout->addWidget(app_widget);
+    app_count++;
+//    w->appWidget->gridlayout->addWidget(app_widget);
+//    //设置布局的垂直间距以及设置gridlayout四周的间距
+//    w->appWidget->gridlayout->setVerticalSpacing(18);
+//    w->appWidget->gridlayout->setContentsMargins(18,14,34,18);
+//    w->appWidget->gridlayout->update();
+
+    w->appWidget->m_pVlayout->addWidget(app_widget);
     //设置布局的垂直间距以及设置gridlayout四周的间距
-    w->appWidget->gridlayout->setVerticalSpacing(18);
-    w->appWidget->gridlayout->setContentsMargins(18,14,34,18);
-    w->appWidget->gridlayout->update();
+    w->appWidget->m_pVlayout->setSpacing(18);
+    w->appWidget->m_pVlayout->setContentsMargins(18,14,34,18);
+    w->appWidget->m_pVlayout->update();
+
     w->appWidget->appArea->widget()->adjustSize();
 
     w->appWidget->appMuteBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
@@ -1494,12 +1503,15 @@ void DeviceSwitchWidget::update_app_volume(MateMixerStreamControl *control, QStr
 
     const gchar *controlName = mate_mixer_stream_control_get_name(control);
     int index = w->stream_control_list->indexOf(controlName);
+    if (index < 0)
+        return;
     MateMixerAppInfo *info = mate_mixer_stream_control_get_app_info(control);
     const gchar *app_name = mate_mixer_app_info_get_name(info);
     QString appName = w->app_name_list->at(index);
+    QString appBtnName = w->appBtnNameList->at(index);
     /*QString appName= app_name;
     appName.append("Slider");
-    appName.append(QString::number(app_count));*/
+    appName.append(QString::number(app_count));
     if (is_mute) {
         w->appWidget->appMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
     }
@@ -1514,13 +1526,14 @@ void DeviceSwitchWidget::update_app_volume(MateMixerStreamControl *control, QStr
     }
     else if (volume > 66) {
         w->appWidget->appMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-high.svg"));
-    }
-    Q_EMIT w->app_volume_changed(is_mute,int(volume),appName);
+    }*/
+    Q_EMIT w->app_volume_changed(is_mute,int(volume),appName,appBtnName);
 }
 
 /*应用音量静音*/
 void DeviceSwitchWidget::app_volume_mute (MateMixerStreamControl *control, QString *pspec ,DeviceSwitchWidget *w)
 {
+    Q_UNUSED(pspec);
     MateMixerAppInfo *app_info = mate_mixer_stream_control_get_app_info(control);
     if (app_info == nullptr)
         return;
@@ -1610,7 +1623,10 @@ void DeviceSwitchWidget::remove_stream (DeviceSwitchWidget *w, const gchar *name
 {
     bool status;
     int index = w->output_stream_list->indexOf(name);
-    status = w->output_stream_list->removeOne(name);
+    if (index >= 0) {
+        w->output_stream_list->removeAt(index);
+        w->miniWidget->deviceCombox->removeItem(index);
+    }
     /*w->miniWidget->deviceCombox->removeItem(index);*/
     if (w->appWidget->app_volume_list != nullptr) {
         bar_set_stream(w,nullptr);
@@ -1688,6 +1704,9 @@ void DeviceSwitchWidget::on_context_default_input_stream_notify (MateMixerContex
 
 void DeviceSwitchWidget::set_input_stream (DeviceSwitchWidget *w, MateMixerStream *stream)
 {
+    if (stream == nullptr) {
+        return;
+    }
     bar_set_stream (w, stream);
 
     if (stream != nullptr) {
@@ -1717,8 +1736,8 @@ void DeviceSwitchWidget::set_input_stream (DeviceSwitchWidget *w, MateMixerStrea
                           G_CALLBACK (on_stream_control_mute_notify),
                           w);
     }
-    MateMixerStreamControl *c = mate_mixer_stream_get_default_control(stream);
-    update_input_settings (w,c);
+//    MateMixerStreamControl *c = mate_mixer_stream_get_default_control(stream);
+    update_input_settings (w,w->m_pInputBarStreamControl);
 }
 
 /*
@@ -1743,10 +1762,12 @@ void DeviceSwitchWidget::on_context_default_output_stream_notify (MateMixerConte
 {
     MateMixerStream *stream;
     stream = mate_mixer_context_get_default_output_stream (context);
-    update_icon_output(w,context);
     MateMixerStreamControl *control = mate_mixer_stream_get_default_control(stream);
-
-    set_output_stream (w, stream);
+    if (stream == nullptr) {
+        qDebug() << "on contetx default output stream notify" << "stream is null";
+    }
+    update_icon_output(w,context);
+//    set_output_stream (w, stream);
 }
 
 /*
@@ -2226,20 +2247,31 @@ void DeviceSwitchWidget::update_output_settings (DeviceSwitchWidget *w,MateMixer
 {
     Q_UNUSED(w);
     MateMixerStreamControlFlags flags;
-//    flags = mate_mixer_stream_control_get_flags(control);
-//    if (flags & MATE_MIXER_STREAM_CONTROL_CAN_BALANCE) {
+    if (control == nullptr) {
+        return;
+    }
+    /*flags = mate_mixer_stream_control_get_flags(control);
+    if (flags & MATE_MIXER_STREAM_CONTROL_CAN_BALANCE) {
 
-//    }
+    }*/
 
 }
 
 void DeviceSwitchWidget::set_output_stream (DeviceSwitchWidget *w, MateMixerStream *stream)
 {
     MateMixerStreamControl *control;
+    int i = 0;
+    if (stream == nullptr) {
+        qDebug() << "set output stream is nullptr";
+    }
+
     bar_set_stream (w,stream);
     if (stream != nullptr) {
         const GList *controls;
         controls = mate_mixer_context_list_stored_controls (w->context);
+        if (controls == nullptr) {
+            qDebug() << "list strored control is null";
+        }
         /* Move all stored controls to the newly selected default stream */
         while (controls != nullptr) {
             MateMixerStream        *parent;
@@ -2247,7 +2279,6 @@ void DeviceSwitchWidget::set_output_stream (DeviceSwitchWidget *w, MateMixerStre
 
             control = MATE_MIXER_STREAM_CONTROL (controls->data);
             parent  = mate_mixer_stream_control_get_stream (control);
-
             /* Prefer streamless controls to stay the way they are, forcing them to
              * a particular owning stream would be wrong for eg. event controls */
             if (parent != nullptr && parent != stream) {
@@ -2262,7 +2293,7 @@ void DeviceSwitchWidget::set_output_stream (DeviceSwitchWidget *w, MateMixerStre
 
 //        model = gtk_tree_view_get_model (GTK_TREE_VIEW (dialog->priv->output_treeview));
     update_output_stream_list (w, stream);
-    update_output_settings(w,control);
+    update_output_settings(w,w->m_pOutputBarStreamControl);
 }
 
 /*
@@ -2287,15 +2318,22 @@ void DeviceSwitchWidget::bar_set_stream (DeviceSwitchWidget  *w,MateMixerStream 
 
     if (stream != nullptr)
         control = mate_mixer_stream_get_default_control (stream);
-
-    bar_set_stream_control (w, control);
+    MateMixerDirection direction = mate_mixer_stream_get_direction(stream);
+    bar_set_stream_control (w,direction, control);
 }
 
-void DeviceSwitchWidget::bar_set_stream_control (DeviceSwitchWidget *w,MateMixerStreamControl *control)
+void DeviceSwitchWidget::bar_set_stream_control (DeviceSwitchWidget *w,MateMixerDirection direction,MateMixerStreamControl *control)
 {
     Q_UNUSED(w);
     const gchar *name;
     if (control != nullptr) {
+        if (direction == MATE_MIXER_DIRECTION_INPUT) {
+            w->m_pInputBarStreamControl = control;
+        }
+        else if (direction == MATE_MIXER_DIRECTION_OUTPUT) {
+            w->m_pOutputBarStreamControl = control;
+        }
+
         name = mate_mixer_stream_control_get_name (control);
     }
 }

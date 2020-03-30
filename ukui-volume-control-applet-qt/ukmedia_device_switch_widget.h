@@ -116,7 +116,7 @@ public:
     static void update_output_stream_list(DeviceSwitchWidget *w,MateMixerStream *stream);
 
     static void bar_set_stream (DeviceSwitchWidget *w,MateMixerStream *stream);
-    static void bar_set_stream_control (DeviceSwitchWidget *w,MateMixerStreamControl *control);
+    static void bar_set_stream_control (DeviceSwitchWidget *w,MateMixerDirection direction,MateMixerStreamControl *control);
 
     static void on_control_mute_notify (MateMixerStreamControl *control,GParamSpec *pspec,DeviceSwitchWidget *w);
     void init_widget_action(QWidget* wid, QString iconstr, QString textstr);
@@ -127,7 +127,7 @@ public:
     static gboolean update_default_input_stream (DeviceSwitchWidget *w);
     friend class UkmediaSystemTrayIcon;
 Q_SIGNALS:
-    void app_volume_changed(bool is_mute,int volume,QString app_name);
+    void app_volume_changed(bool is_mute,int volume,QString app_name,QString appBtnName);
     void mouse_middle_clicked_signal();
     void mouse_wheel_signal(bool step);
     void app_name_signal(QString app_name);
@@ -155,8 +155,11 @@ private:
     MateMixerStream *input;
     MateMixerContext *context;
     MateMixerStreamControl *control;
+    MateMixerStreamControl *m_pOutputBarStreamControl;
+    MateMixerStreamControl *m_pInputBarStreamControl;
 
     QStringList *soundlist;
+    QStringList *appBtnNameList;
     QStringList *device_name_list;
     QStringList *device_display_name_list;
     QStringList *output_stream_list;

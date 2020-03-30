@@ -50,8 +50,8 @@ private:
     QPushButton *appIconBtn;
     QSlider *appSlider;
     QScrollArea *appArea;
-    QGridLayout *gridlayout;
-//    QVBoxLayout *m_pVlayout;
+//    QGridLayout *gridlayout;
+    QVBoxLayout *m_pVlayout;
 protected:
 
 };
