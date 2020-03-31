@@ -134,6 +134,8 @@ void DeviceSwitchWidget::showMenu(int x,int y)
 
 DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
 {
+    setWindowFlags(Qt::WindowStaysOnTopHint|Qt::Popup);
+    setAttribute(Qt::WA_TranslucentBackground);
     setAttribute(Qt::WA_TranslucentBackground);
     devWidget = new UkmediaDeviceWidget(this);
     appWidget = new ApplicationVolumeWidget(this);//appScrollWidget->area);
@@ -197,7 +199,7 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     appWidget->hide();
     //添加托盘及菜单
     systemTrayMenuInit();
-
+    //初始化设备界面
     deviceSwitchWidgetInit();
 
     connect(switchToMiniBtn,SIGNAL(moveAdvanceSwitchBtnSignal()),this,SLOT(moveAdvanceSwitchBtnSlot()));
@@ -208,7 +210,13 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
                      "notify::state",
                      G_CALLBACK (on_context_state_notify),
                      this);
-
+    //输出音量控制
+    //mini模式下系统音量的控制
+    connect(miniWidget->masterVolumeSlider,SIGNAL(valueChanged(int)),this,SLOT(miniMastrerSliderChangedSlot(int)));
+    //应用音量下系统音量控制
+    connect(appWidget->systemVolumeSlider,SIGNAL(valueChanged(int)),this,SLOT(advancedSystemSliderChangedSlot(int)));
+    //高级模式下系统音量的控制
+    connect(devWidget->outputDeviceSlider,SIGNAL(valueChanged(int)),this,SLOT(outputDeviceSliderChangedSlot(int)));
     //mini切换高级模式
     connect(miniWidget->switchBtn,SIGNAL(miniToAdvanceSignal()),this,SLOT(miniToAdvancedWidget()));
     //高级切换mini模式
@@ -216,11 +224,26 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     //高级模式下设备音量和应用音量的切换
     connect(deviceBtn,SIGNAL(clicked()),this,SLOT(device_button_clicked_slot()));
     connect(appVolumeBtn,SIGNAL(clicked()),this,SLOT(appvolume_button_clicked_slot()));
+    //高级输出设备模式下静音控制
+    connect(devWidget->outputMuteBtn,SIGNAL(clicked()),this,SLOT(devWidgetMuteButtonClickedSlot()));
+    //mini模式下的一键静音
+    connect(miniWidget->muteBtn,SIGNAL(clicked()),this,SLOT(miniWidgetMuteButtonClickedSlot()));
+    //应用音量下一键静音
+    connect(appWidget->systemVolumeBtn,SIGNAL(clicked()),this,SLOT(appWidgetMuteButtonCLickedSlot()));
+    //连接静音勾选框
+    connect(muteCheckBox,SIGNAL(released()),this,SLOT(muteCheckBoxReleasedSlot()));
+    //静音action点击
+    connect(actionMute,SIGNAL(triggered()),this,SLOT(actionMuteTriggeredSLot()));
+    //鼠标中间健点击托盘图标
+    connect(this,SIGNAL(mouse_middle_clicked_signal()),this,SLOT(mouseMeddleClickedTraySlot()));
+    //鼠标滚轮滚动托盘图标
+    connect(soundSystemTrayIcon,SIGNAL(wheelRollEventSignal(bool)),this,SLOT(trayWheelRollEventSlot(bool)));
+    //当mini模式界面显示时鼠标滚轮控制声音
+    connect(miniWidget,SIGNAL(mouse_wheel_signal(bool)),this,SLOT(miniWidgetWheelSlot(bool)));
+    //mini模式上下左右控制声音
+    connect(miniWidget,SIGNAL(keyboard_pressed_signal(int)),this,SLOT(miniWidgetKeyboardPressedSlot(int)));
 
-    setWindowFlags(Qt::WindowStaysOnTopHint|Qt::Popup);
-    setAttribute(Qt::WA_TranslucentBackground);
-
-//    appWidget->displayAppVolumeWidget->setLayout(appWidget->gridlayout);
+    //    appWidget->displayAppVolumeWidget->setLayout(appWidget->gridlayout);
     appWidget->displayAppVolumeWidget->setLayout(appWidget->m_pVlayout);
 
     this->setObjectName("mainWidget");
@@ -322,6 +345,265 @@ void DeviceSwitchWidget::systemTrayMenuInit()
                         "height: 36px;width: 252spx;}"
                         "QMenu::separator{height:1px;background-color:rgba(19,19,20,0);margin-top:1px;margin-bottom:2px;}");
 }
+
+/*
+    mini模式下系统音量的控制
+*/
+void DeviceSwitchWidget::miniMastrerSliderChangedSlot(int value)
+{
+    stream = mate_mixer_context_get_default_output_stream(context);
+    if (stream != nullptr)
+        control = mate_mixer_stream_get_default_control(stream);
+    QString percent;
+    percent = QString::number(value);
+    mate_mixer_stream_control_set_mute(control,FALSE);
+    int volume = value*65536/100;
+    mate_mixer_stream_control_set_volume(control,guint(volume));
+    miniWidget->displayVolumeLabel->setText(percent);
+}
+
+/*
+    应用音量下系统音量控制
+*/
+void DeviceSwitchWidget::advancedSystemSliderChangedSlot(int value)
+{
+    stream = mate_mixer_context_get_default_output_stream(context);
+    if (stream != nullptr)
+        control = mate_mixer_stream_get_default_control(stream);
+    QString percent;
+    percent = QString::number(value);
+    mate_mixer_stream_control_set_mute(control,FALSE);
+    int volume = value*65536/100;
+    mate_mixer_stream_control_set_volume(control,guint(volume));
+    appWidget->systemVolumeDisplayLabel->setText(percent);
+}
+
+/*
+    高级模式下系统音量的控制
+*/
+void DeviceSwitchWidget::outputDeviceSliderChangedSlot(int value)
+{
+    stream = mate_mixer_context_get_default_output_stream(context);
+    if (stream != nullptr)
+        control = mate_mixer_stream_get_default_control(stream);
+    QString percent;
+
+    percent = QString::number(value);
+    mate_mixer_stream_control_set_mute(control,FALSE);
+    int volume = value*65536/100;
+    mate_mixer_stream_control_set_volume(control,guint(volume));
+}
+
+/*
+    高级模式中设备音量的静音按钮点击
+*/
+void DeviceSwitchWidget::devWidgetMuteButtonClickedSlot()
+{
+    stream = mate_mixer_context_get_default_output_stream(context);
+    if (stream != nullptr)
+        control = mate_mixer_stream_get_default_control(stream);
+    int volume = int(mate_mixer_stream_control_get_volume(control));
+    volume = int(volume*100/65536.0 + 0.5);
+    bool status = mate_mixer_stream_control_get_mute(control);
+    if (status) {
+        status = false;
+        muteCheckBox->setChecked(status);
+        mate_mixer_stream_control_set_mute(control,status);
+        updateSystemTrayIcon(volume,status);
+    }
+    else {
+        status =true;
+        muteCheckBox->setChecked(status);
+        mate_mixer_stream_control_set_mute(control,status);
+        updateSystemTrayIcon(volume,status);
+    }
+    Q_EMIT system_muted_signal(status);
+    menu->hide();
+}
+
+/*
+    mini模式下静音按钮点击
+*/
+void DeviceSwitchWidget::miniWidgetMuteButtonClickedSlot()
+{
+    stream = mate_mixer_context_get_default_output_stream(context);
+    if (stream != nullptr)
+        control = mate_mixer_stream_get_default_control(stream);
+    int volume = int(mate_mixer_stream_control_get_volume(control));
+    volume = int(volume*100/65536.0 + 0.5);
+    bool status = mate_mixer_stream_control_get_mute(control);
+    if (status) {
+        status = false;
+        muteCheckBox->setChecked(status);
+        mate_mixer_stream_control_set_mute(control,status);
+        updateSystemTrayIcon(volume,status);
+    }
+    else {
+        status =true;
+        muteCheckBox->setChecked(status);
+        mate_mixer_stream_control_set_mute(control,status);
+        updateSystemTrayIcon(volume,status);
+    }
+    Q_EMIT system_muted_signal(status);
+    menu->hide();
+}
+
+/*
+    应用音量下静音按钮点击
+*/
+void DeviceSwitchWidget::appWidgetMuteButtonCLickedSlot()
+{
+    stream = mate_mixer_context_get_default_output_stream(context);
+    if (stream != nullptr)
+        control = mate_mixer_stream_get_default_control(stream);
+    int volume = int(mate_mixer_stream_control_get_volume(control));
+    volume = int(volume*100/65536.0 + 0.5);
+    bool status = mate_mixer_stream_control_get_mute(control);
+    if (status) {
+        status = false;
+        muteCheckBox->setChecked(status);
+        mate_mixer_stream_control_set_mute(control,status);
+        updateSystemTrayIcon(volume,status);
+    }
+    else {
+        status =true;
+        muteCheckBox->setChecked(status);
+        mate_mixer_stream_control_set_mute(control,status);
+        updateSystemTrayIcon(volume,status);
+    }
+    Q_EMIT system_muted_signal(status);
+    menu->hide();
+}
+
+/*
+    菜单静音勾选框点击
+*/
+void DeviceSwitchWidget::muteCheckBoxReleasedSlot()
+{
+    stream = mate_mixer_context_get_default_output_stream(context);
+    if (stream != nullptr)
+        control = mate_mixer_stream_get_default_control(stream);
+    int volume = int(mate_mixer_stream_control_get_volume(control));
+    volume = int(volume*100/65536.0 + 0.5);
+    bool status = mate_mixer_stream_control_get_mute(control);
+    if (status) {
+        status = false;
+        muteCheckBox->setChecked(status);
+        mate_mixer_stream_control_set_mute(control,status);
+        updateSystemTrayIcon(volume,status);
+    }
+    else {
+        status =true;
+        muteCheckBox->setChecked(status);
+        mate_mixer_stream_control_set_mute(control,status);
+        updateSystemTrayIcon(volume,status);
+    }
+    Q_EMIT system_muted_signal(status);
+    menu->hide();
+}
+
+/*
+    菜单静音选项点击
+*/
+void DeviceSwitchWidget::actionMuteTriggeredSLot()
+{
+    bool isMute = false;
+    stream = mate_mixer_context_get_default_output_stream(context);
+    if (stream != nullptr)
+        control = mate_mixer_stream_get_default_control(stream);
+    isMute = mate_mixer_stream_control_get_mute(control);
+    int opVolume = int(mate_mixer_stream_control_get_volume(control));
+    opVolume = int(opVolume*100/65536.0 + 0.5);
+    if (isMute) {
+        mate_mixer_stream_control_set_mute(control,FALSE);
+    }
+    else {
+        mate_mixer_stream_control_set_mute(control,TRUE);
+    }
+    isMute = mate_mixer_stream_control_get_mute(control);
+    int volume = int(mate_mixer_stream_control_get_volume(control));
+    volume = int(volume*100/65536.0+0.5);
+    updateSystemTrayIcon(volume,isMute);
+    Q_EMIT system_muted_signal(isMute);
+}
+
+/*
+    鼠标滚轮键点击托盘
+*/
+void DeviceSwitchWidget::mouseMeddleClickedTraySlot()
+{
+    stream = mate_mixer_context_get_default_output_stream(context);
+    if (stream != nullptr)
+        control = mate_mixer_stream_get_default_control(stream);
+    bool isMute = mate_mixer_stream_control_get_mute(control);
+    int opVolume = int(mate_mixer_stream_control_get_volume(control));
+    opVolume = int(opVolume*100/65536.0 + 0.5);
+    if (isMute) {
+        mate_mixer_stream_control_set_mute(control,FALSE);
+    }
+    else {
+        mate_mixer_stream_control_set_mute(control,TRUE);
+    }
+    isMute = mate_mixer_stream_control_get_mute(control);
+    int volume = int(mate_mixer_stream_control_get_volume(control));
+    volume = int(volume*100/65536.0+0.5);
+    updateSystemTrayIcon(volume,isMute);
+
+    //发送系统静音信号给应用音量
+    Q_EMIT system_muted_signal(isMute);
+}
+
+/*
+    鼠标滚轮在托盘上滚动
+*/
+void DeviceSwitchWidget::trayWheelRollEventSlot(bool step)
+{
+    stream = mate_mixer_context_get_default_output_stream(context);
+    if (stream != nullptr)
+        control = mate_mixer_stream_get_default_control(stream);
+    int volume = int(mate_mixer_stream_control_get_volume(control));
+    volume = int(volume*100/65536.0+0.5);
+    if (step) {
+        miniWidget->masterVolumeSlider->setValue(volume+5);
+        devWidget->outputDeviceSlider->setValue(volume+5);
+    }
+    else {
+        miniWidget->masterVolumeSlider->setValue(volume-5);
+        devWidget->outputDeviceSlider->setValue(volume-5);
+    }
+}
+
+/*
+    mini界面显示时，鼠标在界面外滚动控制音量
+*/
+void DeviceSwitchWidget::miniWidgetWheelSlot(bool step)
+{
+    stream = mate_mixer_context_get_default_output_stream(context);
+    if (stream != nullptr)
+        control = mate_mixer_stream_get_default_control(stream);
+    int volume = int(mate_mixer_stream_control_get_volume(control));
+    volume = int(volume*100/65536.0+0.5);
+    if (step) {
+        miniWidget->masterVolumeSlider->setValue(volume+5);
+    }
+    else {
+        miniWidget->masterVolumeSlider->setValue(volume-5);
+    }
+}
+
+/*
+    mini界面显示时按上下左右控制音量
+*/
+void DeviceSwitchWidget::miniWidgetKeyboardPressedSlot(int volumeGain)
+{
+    stream = mate_mixer_context_get_default_output_stream(context);
+    if (stream != nullptr)
+        control = mate_mixer_stream_get_default_control(stream);
+    int volume = int(mate_mixer_stream_control_get_volume(control));
+    volume = int(volume*100/65536.0+0.5);
+    miniWidget->masterVolumeSlider->setValue(volume+volumeGain);
+}
+
 
 /*
     跳转到声音首选项
@@ -881,6 +1163,9 @@ void DeviceSwitchWidget::on_context_state_notify (MateMixerContext *context,GPar
         update_default_input_stream (w);
         update_icon_output(w,context);
         update_icon_input(w,context);
+    }
+    else if (state == MATE_MIXER_STATE_FAILED) {
+        g_warning("Failed to connect a sound system");
     }
 
 }
@@ -1763,9 +2048,13 @@ void DeviceSwitchWidget::on_context_default_output_stream_notify (MateMixerConte
     MateMixerStream *stream;
     stream = mate_mixer_context_get_default_output_stream (context);
     MateMixerStreamControl *control = mate_mixer_stream_get_default_control(stream);
+    int value = mate_mixer_stream_control_get_volume(control);
+    value = value * 100 / 65536.0 +0.5;
+    qDebug() << "on context default output stream notify,control name :" << mate_mixer_stream_control_get_name(control) << "音量值：" << value;
     if (stream == nullptr) {
         qDebug() << "on contetx default output stream notify" << "stream is null";
     }
+
     update_icon_output(w,context);
 //    set_output_stream (w, stream);
 }
@@ -1901,16 +2190,21 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
     if (stream != nullptr)
         control = mate_mixer_stream_get_default_control (stream);
 
+    w->outputControlName = mate_mixer_stream_control_get_name(control);
+    w->miniWidget->masterVolumeSlider->setObjectName(w->outputControlName);
     gvc_stream_status_icon_set_control (w, control);
     //初始化滑动条的值
     bool state = mate_mixer_stream_control_get_mute(control);
     int volume = int(mate_mixer_stream_control_get_volume(control));
     int value = int(volume *100 /65536.0+0.5);
+    QSlider *slider1 = w->miniWidget->findChild<QSlider *>(w->outputControlName);
     w->devWidget->outputDeviceSlider->setValue(value);
-    w->miniWidget->masterVolumeSlider->setValue(value);
+//    w->miniWidget->masterVolumeSlider->setValue(value);
     w->appWidget->systemVolumeSlider->setValue(value);
+    slider1->setValue(value);
     QString percent = QString::number(value);
 
+    qDebug() << "update output icon" << value << "control name:" << w->outputControlName;
     QString systemTrayIcon;
     QIcon icon;
     if (state) {
@@ -1966,189 +2260,6 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
     }
     w->miniWidget->displayVolumeLabel->setText(percent);
     w->appWidget->systemVolumeDisplayLabel->setText(percent);
-    //输出音量控制
-
-    //高级输出设备模式下静音控制
-    connect(w->devWidget->outputMuteBtn,&QPushButton::clicked,[=](){
-        int volume = int(mate_mixer_stream_control_get_volume(control));
-        volume = int(volume*100/65536.0 + 0.5);
-        bool status = mate_mixer_stream_control_get_mute(control);
-        if (status) {
-            status = false;
-            w->muteCheckBox->setChecked(status);
-            mate_mixer_stream_control_set_mute(control,status);
-            w->updateSystemTrayIcon(volume,status);
-        }
-        else {
-            status =true;
-            w->muteCheckBox->setChecked(status);
-            mate_mixer_stream_control_set_mute(control,status);
-            w->updateSystemTrayIcon(volume,status);
-        }
-        Q_EMIT w->system_muted_signal(status);
-        w->menu->hide();
-    });
-    //mini模式下系统音量的控制
-    connect(w->miniWidget->masterVolumeSlider,&QSlider::valueChanged,[=](int value){
-        QString percent;
-        percent = QString::number(value);
-        mate_mixer_stream_control_set_mute(control,FALSE);
-        int volume = value*65536/100;
-        mate_mixer_stream_control_set_volume(control,guint(volume));
-        w->miniWidget->displayVolumeLabel->setText(percent);
-    });
-
-    //应用音量下系统音量控制
-    connect(w->appWidget->systemVolumeSlider,&QSlider::valueChanged,[=](int value){
-        QString percent;
-        percent = QString::number(value);
-        mate_mixer_stream_control_set_mute(control,FALSE);
-        int volume = value*65536/100;
-        mate_mixer_stream_control_set_volume(control,guint(volume));
-        w->appWidget->systemVolumeDisplayLabel->setText(percent);
-    });
-    //高级模式下系统音量的控制
-    connect(w->devWidget->outputDeviceSlider,&QSlider::valueChanged,[=](int value){
-        QString percent;
-
-        percent = QString::number(value);
-        mate_mixer_stream_control_set_mute(control,FALSE);
-        int volume = value*65536/100;
-        mate_mixer_stream_control_set_volume(control,guint(volume));
-    });
-
-    //mini模式下的一键静音
-    connect(w->miniWidget->muteBtn,&QPushButton::clicked,[=](){
-        int volume = int(mate_mixer_stream_control_get_volume(control));
-        volume = int(volume*100/65536.0 + 0.5);
-        bool status = mate_mixer_stream_control_get_mute(control);
-        if (status) {
-            status = false;
-            w->muteCheckBox->setChecked(status);
-            mate_mixer_stream_control_set_mute(control,status);
-            w->updateSystemTrayIcon(volume,status);
-        }
-        else {
-            status =true;
-            w->muteCheckBox->setChecked(status);
-            mate_mixer_stream_control_set_mute(control,status);
-            w->updateSystemTrayIcon(volume,status);
-        }
-        Q_EMIT w->system_muted_signal(status);
-        w->menu->hide();
-    });
-
-    //应用音量下一键静音
-    connect(w->appWidget->systemVolumeBtn,&QPushButton::clicked,[=](){
-        int volume = int(mate_mixer_stream_control_get_volume(control));
-        volume = int(volume*100/65536.0 + 0.5);
-        bool status = mate_mixer_stream_control_get_mute(control);
-        if (status) {
-            status = false;
-            w->muteCheckBox->setChecked(status);
-            mate_mixer_stream_control_set_mute(control,status);
-            w->updateSystemTrayIcon(volume,status);
-        }
-        else {
-            status =true;
-            w->muteCheckBox->setChecked(status);
-            mate_mixer_stream_control_set_mute(control,status);
-            w->updateSystemTrayIcon(volume,status);
-        }
-        Q_EMIT w->system_muted_signal(status);
-        w->menu->hide();
-    });
-
-    //连接静音勾选框
-    connect(w->muteCheckBox,&QCheckBox::released,[=](){
-        int volume = int(mate_mixer_stream_control_get_volume(control));
-        volume = int(volume*100/65536.0 + 0.5);
-        bool status = mate_mixer_stream_control_get_mute(control);
-        if (status) {
-            status = false;
-            w->muteCheckBox->setChecked(status);
-            mate_mixer_stream_control_set_mute(control,status);
-            w->updateSystemTrayIcon(volume,status);
-        }
-        else {
-            status =true;
-            w->muteCheckBox->setChecked(status);
-            mate_mixer_stream_control_set_mute(control,status);
-            w->updateSystemTrayIcon(volume,status);
-        }
-        Q_EMIT w->system_muted_signal(status);
-        w->menu->hide();
-    });
-
-    //静音action点击
-    connect(w->actionMute,&QWidgetAction::triggered,[=](bool isMute){
-        isMute = mate_mixer_stream_control_get_mute(control);
-        int opVolume = int(mate_mixer_stream_control_get_volume(control));
-        opVolume = int(opVolume*100/65536.0 + 0.5);
-        if (isMute) {
-            mate_mixer_stream_control_set_mute(control,FALSE);
-        }
-        else {
-            mate_mixer_stream_control_set_mute(control,TRUE);
-        }
-        isMute = mate_mixer_stream_control_get_mute(control);
-        int volume = int(mate_mixer_stream_control_get_volume(control));
-        volume = int(volume*100/65536.0+0.5);
-        w->updateSystemTrayIcon(volume,isMute);
-        Q_EMIT w->system_muted_signal(isMute);
-    });
-
-    //鼠标中间健点击托盘图标
-    connect(w,&DeviceSwitchWidget::mouse_middle_clicked_signal,[=](){
-        bool isMute = mate_mixer_stream_control_get_mute(control);
-        int opVolume = int(mate_mixer_stream_control_get_volume(control));
-        opVolume = int(opVolume*100/65536.0 + 0.5);
-        if (isMute) {
-            mate_mixer_stream_control_set_mute(control,FALSE);
-        }
-        else {
-            mate_mixer_stream_control_set_mute(control,TRUE);
-        }
-        isMute = mate_mixer_stream_control_get_mute(control);
-        int volume = int(mate_mixer_stream_control_get_volume(control));
-        volume = int(volume*100/65536.0+0.5);
-        w->updateSystemTrayIcon(volume,isMute);
-
-        //发送系统静音信号给应用音量
-        Q_EMIT w->system_muted_signal(isMute);
-    });
-
-    //鼠标滚轮滚动托盘图标
-    connect(w->soundSystemTrayIcon,&UkmediaTrayIcon::wheelRollEventSignal,[=](bool step){
-        int volume = int(mate_mixer_stream_control_get_volume(control));
-        volume = int(volume*100/65536.0+0.5);
-        if (step) {
-            w->miniWidget->masterVolumeSlider->setValue(volume+5);
-            w->devWidget->outputDeviceSlider->setValue(volume+5);
-        }
-        else {
-            w->miniWidget->masterVolumeSlider->setValue(volume-5);
-            w->devWidget->outputDeviceSlider->setValue(volume-5);
-        }
-    });
-    //当mini模式下显示时鼠标滚轮控制声音
-    connect(w->miniWidget,&UkmediaMiniMasterVolumeWidget::mouse_wheel_signal,[=](bool step){
-        int volume = int(mate_mixer_stream_control_get_volume(control));
-        volume = int(volume*100/65536.0+0.5);
-        if (step) {
-            w->miniWidget->masterVolumeSlider->setValue(volume+5);
-        }
-        else {
-            w->miniWidget->masterVolumeSlider->setValue(volume-5);
-        }
-    });
-
-    //mini模式上下左右控制声音
-    connect(w->miniWidget,&UkmediaMiniMasterVolumeWidget::keyboard_pressed_signal,[=](int volumeGain){
-        int volume = int(mate_mixer_stream_control_get_volume(control));
-        volume = int(volume*100/65536.0+0.5);
-        w->miniWidget->masterVolumeSlider->setValue(volume+volumeGain);
-    });
 
     if (control != nullptr) {
             g_debug ("Output icon enabled");
@@ -2228,7 +2339,10 @@ void DeviceSwitchWidget::on_stream_control_volume_notify (MateMixerStreamControl
 
     //设置输出滑动条的值
     int value = int(volume*100/65536.0 + 0.5);
+    qDebug() << "volume changed:"  << value << "control name:" << w->outputControlName;
+//    QSlider *s = w->miniWidget->findChild<QSlider *>(w->outputControlName);
     if (direction == MATE_MIXER_DIRECTION_OUTPUT) {
+//        s->setValue(value);
         w->devWidget->outputDeviceSlider->setValue(value);
         w->appWidget->systemVolumeSlider->setValue(value);
         w->miniWidget->masterVolumeSlider->setValue(value);
@@ -2326,6 +2440,7 @@ void DeviceSwitchWidget::bar_set_stream_control (DeviceSwitchWidget *w,MateMixer
 {
     Q_UNUSED(w);
     const gchar *name;
+
     if (control != nullptr) {
         if (direction == MATE_MIXER_DIRECTION_INPUT) {
             w->m_pInputBarStreamControl = control;

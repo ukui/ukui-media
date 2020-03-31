@@ -107,7 +107,6 @@ public:
     static void update_icon_input (DeviceSwitchWidget *w,MateMixerContext *context);
     static void update_icon_output (DeviceSwitchWidget *w,MateMixerContext *contetx);
     static void on_stream_control_volume_notify (MateMixerStreamControl *control,GParamSpec *pspec,DeviceSwitchWidget *w);
-
     static void update_output_settings (DeviceSwitchWidget *w,MateMixerStreamControl *control);
 
     static void on_key_changed (GSettings *settings,gchar *key,DeviceSwitchWidget *w);
@@ -127,7 +126,7 @@ public:
     static gboolean update_default_input_stream (DeviceSwitchWidget *w);
     friend class UkmediaSystemTrayIcon;
 Q_SIGNALS:
-    void app_volume_changed(bool is_mute,int volume,QString app_name,QString appBtnName);
+    void app_volume_changed(bool isMute,int volume,QString app_name,QString appBtnName);
     void mouse_middle_clicked_signal();
     void mouse_wheel_signal(bool step);
     void app_name_signal(QString app_name);
@@ -142,7 +141,18 @@ private Q_SLOTS:
     void advancedToMiniWidget();
     void deviceComboxIndexChanged(QString str);
     void moveAdvanceSwitchBtnSlot();
-
+    void miniMastrerSliderChangedSlot(int value);
+    void advancedSystemSliderChangedSlot(int value);
+    void outputDeviceSliderChangedSlot(int value);
+    void devWidgetMuteButtonClickedSlot();
+    void miniWidgetMuteButtonClickedSlot();
+    void appWidgetMuteButtonCLickedSlot();
+    void muteCheckBoxReleasedSlot();
+    void actionMuteTriggeredSLot();
+    void mouseMeddleClickedTraySlot();
+    void trayWheelRollEventSlot(bool step);
+    void miniWidgetWheelSlot(bool step);
+    void miniWidgetKeyboardPressedSlot(int volumeGain);
 private:
     QPushButton *deviceBtn;
     QPushButton *appVolumeBtn;
@@ -167,12 +177,13 @@ private:
     QStringList *stream_control_list;
     QStringList *app_name_list;
 
-    GSettings *sound_settings;
-    UkmediaTrayIcon *soundSystemTrayIcon;
     QMenu *menu;
     QWidget *actionMuteWid;
-    QWidget *actionSoundPreferenceWid;
     QWidgetAction *actionMute;
+    QString outputControlName;
+    GSettings *sound_settings;
+    UkmediaTrayIcon *soundSystemTrayIcon;
+    QWidget *actionSoundPreferenceWid;
     QWidgetAction *actionSoundPreference;
     QCheckBox *muteCheckBox;
     QLabel *muteLabel;
