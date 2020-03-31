@@ -147,6 +147,9 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
 //    appWidget->gridlayout = new QGridLayout(appWidget->displayAppVolumeWidget);
     appWidget->m_pVlayout = new QVBoxLayout(appWidget->displayAppVolumeWidget);
 
+    //监听控制面板的设置
+    panelSetting = new QGSettings(UKUI_PANEL_SETTING);
+
     appWidget->appArea->setFixedSize(358,177);
     appWidget->appArea->move(0,143);
     appWidget->displayAppVolumeWidget->setFixedWidth(358);
@@ -173,7 +176,7 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     stream_control_list = new QStringList;
     app_name_list = new QStringList;
     appBtnNameList = new QStringList;
-//    app_widget_list = new QStringList;
+
     //初始化matemixer
     if (mate_mixer_init() == FALSE) {
         qDebug() << "libmatemixer initialization failed, exiting";
@@ -242,19 +245,22 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     connect(miniWidget,SIGNAL(mouse_wheel_signal(bool)),this,SLOT(miniWidgetWheelSlot(bool)));
     //mini模式上下左右控制声音
     connect(miniWidget,SIGNAL(keyboard_pressed_signal(int)),this,SLOT(miniWidgetKeyboardPressedSlot(int)));
+    //主屏改变
+    connect(qApp,SIGNAL(primaryScreenChanged(QScreen *)),this,SLOT(primaryScreenChangedSlot(QScreen *)));
 
+    trayRect = soundSystemTrayIcon->geometry();
     //    appWidget->displayAppVolumeWidget->setLayout(appWidget->gridlayout);
     appWidget->displayAppVolumeWidget->setLayout(appWidget->m_pVlayout);
 
     this->setObjectName("mainWidget");
     this->setStyleSheet("QWidget#mainWidget{"
-                        "background:rgba(14,19,22,0.9);"
+                        "background:rgba(14,19,22,0.7);"
                         "border-radius:6px 6px 6px 6px;}");
     appWidget->setObjectName("appWidget");
-    appWidget->setStyleSheet("QWidget#appWidget{background:rgba(14,19,22,0.9);}");
+    appWidget->setStyleSheet("QWidget#appWidget{background:rgba(14,19,22,0.7);}");
 
     appWidget->setObjectName("appWidget");
-    appWidget->setStyleSheet("QWidget#appWidget{background:rgba(14,19,22,0.9);}");
+    appWidget->setStyleSheet("QWidget#appWidget{background:rgba(14,19,22,0.7);}");
     appWidget->displayAppVolumeWidget->setObjectName("displayAppVolumeWidget");
     appWidget->displayAppVolumeWidget->setStyleSheet("QWidget#displayAppVolumeWidget{background:rgba(14,19,22,0);}");
     appWidget->appArea->setStyleSheet("QScrollArea{border:none;}");
@@ -631,74 +637,7 @@ void DeviceSwitchWidget::miniToAdvancedWidget()
     QSize iconSize(14,14);
     miniWidget->switchBtn->setIconSize(iconSize);
     miniWidget->switchBtn->setIcon(QIcon("/usr/share/ukui-media/img/complete-module.svg"));
-    int screenNum = QGuiApplication::screens().count();
-    int panelHeight = getPanelHeight("PanelHeight");
-    int position =0;
-    int screen = 0;
-    QRect rect;
-    int localX ,availableWidth,totalWidth;
-    int localY,availableHeight,totalHeight;
-    if (screenNum > 1) {
-        position = getPanelPosition("PanelPosion");
-        if (position == 3) {
-            screen = screenNum - 1;
-            //屏幕可用宽高
-            availableWidth =QGuiApplication::screens().at(screen)->geometry().x() +  QGuiApplication::screens().at(screen)->size().width()-panelHeight;
-            availableHeight = QGuiApplication::screens().at(screen)->availableGeometry().height();
-            //总共宽高
-            totalWidth =  QGuiApplication::screens().at(0)->size().width() + QGuiApplication::screens().at(screen)->size().width();
-            totalHeight = QGuiApplication::screens().at(screen)->size().height();
-        }
-        else if (position == 1 || position == 0) {//在上下
-            availableHeight = QGuiApplication::screens().at(0)->size().height() - panelHeight;
-            availableWidth = QGuiApplication::screens().at(0)->size().width();
-            totalHeight = QGuiApplication::screens().at(0)->size().height();
-            totalWidth = QGuiApplication::screens().at(0)->size().width();
-        }
-        else {
-            availableHeight = QGuiApplication::screens().at(0)->availableGeometry().height();
-            availableWidth = QGuiApplication::screens().at(0)->availableGeometry().width();
-            totalHeight = QGuiApplication::screens().at(0)->size().height();
-            totalWidth = QGuiApplication::screens().at(0)->size().width();
-        }
-    }
-    else {
-        availableHeight = QGuiApplication::screens().at(0)->availableGeometry().height();
-        availableWidth = QGuiApplication::screens().at(0)->availableGeometry().width();
-        totalHeight = QGuiApplication::screens().at(0)->size().height();
-        totalWidth = QGuiApplication::screens().at(0)->size().width();
-    }
-    rect = soundSystemTrayIcon->geometry();
-    //显示界面位置
-    localX = rect.x() - (this->width()/2 - rect.size().height()/2) ;
-    localY = availableHeight - this->height();
-    if (rect.x() > availableWidth/2 && rect.x()< availableWidth  && rect.y() > availableHeight) { //下
-        if (availableWidth - rect.x() - rect.width()/2 < this->width() / 2)
-            this->setGeometry(availableWidth-this->width(),availableHeight-this->height()-2,this->width(),this->height());
-        else
-            this->setGeometry(localX,availableHeight-this->height()-2,this->width(),this->height());
-    }
-    else if (rect.x() > availableWidth/2 && rect.x()< availableWidth && rect.y() < 40 ) { //上
-        if (availableWidth - rect.x() - rect.width()/2 < this->width() / 2)
-            this->setGeometry(availableWidth-this->width(),totalHeight-availableHeight+2,this->width(),this->height());
-        else
-            this->setGeometry(localX,totalHeight-availableHeight+2,this->width(),this->height());
-    }
-    else if (rect.x() < panelHeight && rect.y() > availableHeight/2 && rect.y()< availableHeight) {
-        if (availableHeight - rect.y() - rect.height()/2 < this->height() /2)
-            this->setGeometry(panelHeight + 2,availableHeight - this->height(),this->width(),this->height());
-        else
-            this->setGeometry(panelHeight+2,localY,this->width(),this->height());//左
-    }
-    else if (rect.x() > availableWidth && rect.y() > availableHeight/2 && rect.y() < availableHeight) {
-        localX = availableWidth - this->width();
-        if (availableHeight - rect.y() - rect.height()/2 < this->height() /2)
-            this->setGeometry(availableWidth - 2,availableHeight - this->height(),this->width(),this->height() );
-        else
-            this->setGeometry(localX-2,localY,this->width(),this->height());
-    }
-
-    this->show();
+    advancedWidgetShow();
     miniWidget->hide();
     displayMode = ADVANCED_MODE;
 //    isShow = false;
@@ -709,77 +648,9 @@ void DeviceSwitchWidget::miniToAdvancedWidget()
 */
 void DeviceSwitchWidget::advancedToMiniWidget()
 {
-    int screenNum = QGuiApplication::screens().count();
-    int panelHeight = getPanelHeight("PanelHeight");
-    int position =0;
-    int screen = 0;
-    QRect rect;
-    int localX ,availableWidth,totalWidth;
-    int localY,availableHeight,totalHeight;
-    if (screenNum > 1) {
-        position = getPanelPosition("PanelPosion");
-        if (position == 3) {
-            screen = screenNum - 1;
-            //屏幕可用宽高
-            availableWidth =QGuiApplication::screens().at(screen)->geometry().x() +  QGuiApplication::screens().at(screen)->size().width()-panelHeight;
-            availableHeight = QGuiApplication::screens().at(screen)->availableGeometry().height();
-            //总共宽高
-            totalWidth =  QGuiApplication::screens().at(0)->size().width() + QGuiApplication::screens().at(screen)->size().width();
-            totalHeight = QGuiApplication::screens().at(screen)->size().height();
-        }
-        else if (position == 1 || position == 0) {//在上下
-            availableHeight = QGuiApplication::screens().at(0)->size().height() - panelHeight;
-            availableWidth = QGuiApplication::screens().at(0)->size().width();
-            totalHeight = QGuiApplication::screens().at(0)->size().height();
-            totalWidth = QGuiApplication::screens().at(0)->size().width();
-        }
-        else {
-            availableHeight = QGuiApplication::screens().at(0)->availableGeometry().height();
-            availableWidth = QGuiApplication::screens().at(0)->availableGeometry().width();
-            totalHeight = QGuiApplication::screens().at(0)->size().height();
-            totalWidth = QGuiApplication::screens().at(0)->size().width();
-        }
-    }
-    else {
-        availableHeight = QGuiApplication::screens().at(0)->availableGeometry().height();
-        availableWidth = QGuiApplication::screens().at(0)->availableGeometry().width();
-        totalHeight = QGuiApplication::screens().at(0)->size().height();
-        totalWidth = QGuiApplication::screens().at(0)->size().width();
-    }
-    rect = soundSystemTrayIcon->geometry();
-    localX = rect.x() - (miniWidget->width()/2 - rect.size().height()/2) ;
-    localY = availableHeight - miniWidget->size().height();
-    if (rect.x() > availableWidth/2 && rect.x()< availableWidth  && rect.y() > availableHeight) { //下
-        if (availableWidth - rect.x() - rect.width()/2 < this->width() / 2)
-            miniWidget->setGeometry(availableWidth-miniWidget->width(),availableHeight-miniWidget->height()-2,miniWidget->width(),miniWidget->height());
-        else
-            miniWidget->setGeometry(localX,availableHeight-miniWidget->height()-2,miniWidget->width(),miniWidget->height());
-    }
-    else if (rect.x() > availableWidth/2 && rect.x()< availableWidth && rect.y() < panelHeight ) { //上
-        if (availableWidth - rect.x() - rect.width()/2 < miniWidget->width() / 2)
-            miniWidget->setGeometry(availableWidth-miniWidget->width(),totalHeight-availableHeight+2,miniWidget->width(),miniWidget->height());
-        else
-            miniWidget->setGeometry(localX,panelHeight+2,miniWidget->width(),miniWidget->height());
-    }
-    else if (rect.x() < 40 && rect.y() > availableHeight/2 && rect.y()< availableHeight) {
-        if (availableHeight - rect.y() - rect.height()/2 > miniWidget->height() /2) {
-            miniWidget->setGeometry(panelHeight + 2,rect.y()+(rect.height()/2)-(miniWidget->height()/2),miniWidget->width(),miniWidget->height());
-        }
-        else {
-            miniWidget->setGeometry(panelHeight+2,localY,miniWidget->width(),miniWidget->height());//左
-        }
-    }
-    else if (rect.x() > availableWidth && rect.y() > availableHeight/2 && rect.y() < availableHeight) {
-        localX = availableWidth - miniWidget->width();
-        if (availableHeight - rect.y() - rect.height()/2 > miniWidget->height() /2) {
-            miniWidget->setGeometry(availableWidth - miniWidget->width() - 2,rect.y() + (rect.height()/2) - ((miniWidget->height()/2)) ,miniWidget->width(),miniWidget->height() );
-        }
-        else {
-            miniWidget->setGeometry(localX-2,localY,miniWidget->width(),miniWidget->height());
-        }
-    }
+    miniWidgetShow();
     this->hide();
-    miniWidget->show();
+//    miniWidget->show();
     displayMode = MINI_MODE;
 }
 
@@ -814,53 +685,26 @@ void DeviceSwitchWidget::deviceComboxIndexChanged(QString str)
     }
 }
 
+/*
+    主屏改变获取托盘所在位置
+*/
+void DeviceSwitchWidget::primaryScreenChangedSlot(QScreen *screen)
+{
+    trayRect = soundSystemTrayIcon->geometry();
+}
 
 /*
     激活声音托盘图标
 */
 void DeviceSwitchWidget::activatedSystemTrayIconSlot(QSystemTrayIcon::ActivationReason reason)
 {
-    int screenNum = QGuiApplication::screens().count();
-    int panelHeight = getPanelHeight("PanelHeight");
-    int position =0;
-    int screen = 0;
-    QRect rect;
-    int localX ,availableWidth,totalWidth;
-    int localY,availableHeight,totalHeight;
-    if (screenNum > 1) {
-        position = getPanelPosition("PanelPosion");
-        if (position == 3) {
-            screen = screenNum - 1;
-            //屏幕可用宽高
-            availableWidth =QGuiApplication::screens().at(screen)->geometry().x() +  QGuiApplication::screens().at(screen)->size().width()-panelHeight;
-            availableHeight = QGuiApplication::screens().at(screen)->availableGeometry().height();
-            //总共宽高
-            totalWidth =  QGuiApplication::screens().at(0)->size().width() + QGuiApplication::screens().at(screen)->size().width();
-            totalHeight = QGuiApplication::screens().at(screen)->size().height();
-        }
-        else if (position == 1 || position == 0) {//在上下
-            availableHeight = QGuiApplication::screens().at(0)->size().height() - panelHeight;
-            availableWidth = QGuiApplication::screens().at(0)->size().width();
-            totalHeight = QGuiApplication::screens().at(0)->size().height();
-            totalWidth = QGuiApplication::screens().at(0)->size().width();
-        }
-        else {
-            availableHeight = QGuiApplication::screens().at(0)->availableGeometry().height();
-            availableWidth = QGuiApplication::screens().at(0)->availableGeometry().width();
-            totalHeight = QGuiApplication::screens().at(0)->size().height();
-            totalWidth = QGuiApplication::screens().at(0)->size().width();
-        }
-    }
-    else {
-        availableHeight = QGuiApplication::screens().at(0)->availableGeometry().height();
-        availableWidth = QGuiApplication::screens().at(0)->availableGeometry().width();
-        totalHeight = QGuiApplication::screens().at(0)->size().height();
-        totalWidth = QGuiApplication::screens().at(0)->size().width();
-    }
-    rect = soundSystemTrayIcon->geometry();
-    //显示界面位置
-    localY = availableHeight - this->height();
-    localX = rect.x() - (this->width()/2 - rect.size().height()/2) ;
+    int panelHeight = panelSetting->get("panelsize").toInt();
+    int panelPosition = panelSetting->get("panelposition").toInt();
+    int totalHeight = qApp->primaryScreen()->size().height();
+    int totalWidth = qApp->primaryScreen()->size().width() + qApp->primaryScreen()->geometry().x();
+    int localX ;
+    int localY;
+
     switch(reason) {
     //鼠标中间键点击图标
     case QSystemTrayIcon::MiddleClick: {
@@ -883,66 +727,10 @@ void DeviceSwitchWidget::activatedSystemTrayIconSlot(QSystemTrayIcon::Activation
         if (isShow) {
             switch (displayMode) {
             case MINI_MODE:
-                localY = availableHeight - miniWidget->size().height();
-                if (rect.x() > availableWidth/2 && rect.x()< availableWidth  && rect.y() > availableHeight) { //下
-                    if (availableWidth - rect.x() - rect.width()/2 < this->width() / 2)
-                        miniWidget->setGeometry(availableWidth-miniWidget->width(),availableHeight-miniWidget->height()-2,miniWidget->width(),miniWidget->height());
-                    else
-                        miniWidget->setGeometry(localX,availableHeight-miniWidget->height()-2,miniWidget->width(),miniWidget->height());
-                }
-                else if (rect.x() > availableWidth/2 && rect.x()< availableWidth && rect.y() < panelHeight ) { //上
-                    if (availableWidth - rect.x() - rect.width()/2 < miniWidget->width() / 2)
-                        miniWidget->setGeometry(availableWidth-miniWidget->width(),totalHeight-availableHeight+2,miniWidget->width(),miniWidget->height());
-                    else
-                        miniWidget->setGeometry(localX,panelHeight+2,miniWidget->width(),miniWidget->height());
-                }
-                else if (rect.x() < 40 && rect.y() > availableHeight/2 && rect.y()< availableHeight) {
-                    if (availableHeight - rect.y() - rect.height()/2 > miniWidget->height() /2) {
-                        miniWidget->setGeometry(panelHeight+2,rect.y()+(rect.height()/2)-(miniWidget->height()/2),miniWidget->width(),miniWidget->height());
-                    }
-                    else {
-                        miniWidget->setGeometry(panelHeight+2,localY,miniWidget->width(),miniWidget->height());//左
-                    }
-                }
-                else if (rect.x() > availableWidth && rect.y() > availableHeight/2 && rect.y() < availableHeight) {
-                    localX = availableWidth - miniWidget->width();
-                    if (availableHeight - rect.y() - rect.height()/2 > miniWidget->height() /2) {
-                        miniWidget->setGeometry(availableWidth - miniWidget->width() - 2,rect.y() + (rect.height()/2) - ((miniWidget->height()/2)) ,miniWidget->width(),miniWidget->height() );
-                    }
-                    else {
-                        miniWidget->setGeometry(localX-2,localY,miniWidget->width(),miniWidget->height());
-                    }
-                }
-                miniWidget->show();
+                miniWidgetShow();
                 break;
             case ADVANCED_MODE:
-                localY = availableHeight - this->height();
-                if (rect.x() > availableWidth/2 && rect.x()< availableWidth  && rect.y() > availableHeight) { //下
-                    if (availableWidth - rect.x() - rect.width()/2 < this->width() / 2)
-                        this->setGeometry(availableWidth-this->width(),availableHeight-this->height()-2,this->width(),this->height());
-                    else
-                        this->setGeometry(localX,availableHeight-this->height()-2,this->width(),this->height());
-                }
-                else if (rect.x() > availableWidth/2 && rect.x()< availableWidth && rect.y() < 40 ) { //上
-                    if (availableWidth - rect.x() - rect.width()/2 < this->width() / 2)
-                        this->setGeometry(availableWidth-this->width(),totalHeight-availableHeight+2,this->width(),this->height());
-                    else
-                        this->setGeometry(localX,totalHeight-availableHeight+2,this->width(),this->height());
-                }
-                else if (rect.x() < panelHeight && rect.y() > availableHeight/2 && rect.y()< availableHeight) {
-                    if (availableHeight - rect.y() - rect.height()/2 < this->height() /2)
-                        this->setGeometry(panelHeight + 2,availableHeight - this->height(),this->width(),this->height());
-                    else
-                        this->setGeometry(panelHeight+2,localY,this->width(),this->height());//左
-                }
-                else if (rect.x() > availableWidth && rect.y() > availableHeight/2 && rect.y() < availableHeight) {
-                    localX = availableWidth - this->width();
-                    if (availableHeight - rect.y() - rect.height()/2 < this->height() /2)
-                        this->setGeometry(availableWidth - 2,availableHeight - this->height(),this->width(),this->height() );
-                    else
-                        this->setGeometry(localX-2,localY,this->width(),this->height());
-                }
-                this->show();
+                advancedWidgetShow();
                 break;
             default:
                 break;
@@ -966,45 +754,21 @@ void DeviceSwitchWidget::activatedSystemTrayIconSlot(QSystemTrayIcon::Activation
         break;
     }
     case QSystemTrayIcon::Context: {
-        if (rect.x() > availableWidth/2 && rect.x()< availableWidth  && rect.y() > availableHeight) { //下
-            if (availableWidth - rect.x() - rect.width()/2 < menu->width()) {
-                localX = availableWidth - menu->width();
-                localY = availableHeight - menu->height() - 2;
-            }
-            else {
-                localX = rect.x();
-                localY = availableHeight - menu->height() -2;
-            }
+        if (panelPosition == 0) { //下
+            localX = totalWidth - menu->width();
+            localY = totalHeight - panelHeight - menu->height() - 2;
         }
-        else if (rect.x() > availableWidth/2 && rect.x()< availableWidth && rect.y() < panelHeight ) { //上
-            if (availableWidth - rect.x() - rect.width()/2 < menu->width()) {
-                localX = availableWidth - menu->width();
-                localY = totalHeight - availableHeight + 2;
-            }
-            else {
-                localX = rect.x();
-                localY = totalHeight-availableHeight+2;
-            }
+        else if (panelPosition == 1) { //上
+            localX = totalWidth - menu->width();
+            localY = panelHeight + 2;
         }
-        else if (rect.x() < 40 && rect.y() > availableHeight/2 && rect.y()< availableHeight) { //左
-            if (availableHeight - rect.y() - rect.height()/2 < menu->height()) {
-                localX = totalWidth - availableWidth + 2;
-                localY = availableHeight - menu->height();
-            }
-            else {
-                localX = totalWidth - availableWidth +2;
-                localY = rect.y();
-            }
+        else if (panelPosition == 2) { //左
+            localX = qApp->primaryScreen()->geometry().x() + panelHeight + 2;
+            localY = totalHeight - menu->height();
         }
-        else if (rect.x() > availableWidth && rect.y() > availableHeight/2 && rect.y() < availableHeight) {
-            if (availableHeight - rect.y() - rect.height()/2 < menu->height()) {
-                localX = availableWidth - menu->width() - 2;
-                localY = availableHeight - menu->height();
-            }
-            else {
-                localX = availableWidth - menu->width() - 2;
-                localY = rect.y();
-            }
+        else if (panelPosition == 3) {
+            localX = totalWidth - menu->width() - panelHeight - 2;
+            localY = totalHeight - menu->height();
         }
         showMenu(localX,localY);
         break;
@@ -1664,8 +1428,8 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
                      G_CALLBACK (app_volume_mute),
                      w);
 
-    //应用静音按钮
-    connect(w->appWidget->appMuteBtn,&QPushButton::clicked,[=](){
+    //应用静音按钮 暂时警用
+    /*connect(w->appWidget->appMuteBtn,&QPushButton::clicked,[=](){
         bool isMute = mate_mixer_stream_control_get_mute(control);
         int volume = mate_mixer_stream_control_get_volume(control);
         mate_mixer_stream_control_set_mute(control,!isMute);
@@ -1688,7 +1452,7 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
         else if (volume > 66) {
             btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-high.svg"));
         }
-    });
+    });*/
 
     connect(w,&DeviceSwitchWidget::app_volume_changed,[=](bool is_mute,int volume,QString app_name,QString appBtnName){
         Q_UNUSED(is_mute);
@@ -2050,9 +1814,8 @@ void DeviceSwitchWidget::on_context_default_output_stream_notify (MateMixerConte
     MateMixerStreamControl *control = mate_mixer_stream_get_default_control(stream);
     int value = mate_mixer_stream_control_get_volume(control);
     value = value * 100 / 65536.0 +0.5;
-    qDebug() << "on context default output stream notify,control name :" << mate_mixer_stream_control_get_name(control) << "音量值：" << value;
     if (stream == nullptr) {
-        qDebug() << "on contetx default output stream notify" << "stream is null";
+        return;
     }
 
     update_icon_output(w,context);
@@ -2203,8 +1966,6 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
     w->appWidget->systemVolumeSlider->setValue(value);
     slider1->setValue(value);
     QString percent = QString::number(value);
-
-    qDebug() << "update output icon" << value << "control name:" << w->outputControlName;
     QString systemTrayIcon;
     QIcon icon;
     if (state) {
@@ -2339,10 +2100,8 @@ void DeviceSwitchWidget::on_stream_control_volume_notify (MateMixerStreamControl
 
     //设置输出滑动条的值
     int value = int(volume*100/65536.0 + 0.5);
-    qDebug() << "volume changed:"  << value << "control name:" << w->outputControlName;
 //    QSlider *s = w->miniWidget->findChild<QSlider *>(w->outputControlName);
     if (direction == MATE_MIXER_DIRECTION_OUTPUT) {
-//        s->setValue(value);
         w->devWidget->outputDeviceSlider->setValue(value);
         w->appWidget->systemVolumeSlider->setValue(value);
         w->miniWidget->masterVolumeSlider->setValue(value);
@@ -2373,19 +2132,14 @@ void DeviceSwitchWidget::update_output_settings (DeviceSwitchWidget *w,MateMixer
 
 void DeviceSwitchWidget::set_output_stream (DeviceSwitchWidget *w, MateMixerStream *stream)
 {
-    MateMixerStreamControl *control;
-    int i = 0;
     if (stream == nullptr) {
-        qDebug() << "set output stream is nullptr";
+       return;
     }
 
     bar_set_stream (w,stream);
     if (stream != nullptr) {
         const GList *controls;
         controls = mate_mixer_context_list_stored_controls (w->context);
-        if (controls == nullptr) {
-            qDebug() << "list stored control is null";
-        }
         /* Move all stored controls to the newly selected default stream */
         while (controls != nullptr) {
             MateMixerStream        *parent;
@@ -2532,6 +2286,54 @@ int DeviceSwitchWidget::getPanelPosition(QString str)
     QDBusReply<int> reply = interface.call("GetPanelPosition", str);
 
     return reply;
+}
+
+/*
+    在指定位置显示mini界面
+*/
+void DeviceSwitchWidget::miniWidgetShow()
+{
+    int panelHeight = panelSetting->get("panelsize").toInt();
+    int panelPosition = panelSetting->get("panelposition").toInt();
+    int totalHeight = qApp->primaryScreen()->size().height();
+    int totalWidth = qApp->primaryScreen()->size().width() + qApp->primaryScreen()->geometry().x();
+    if (panelPosition == 0) { //任务栏在下
+        miniWidget->setGeometry(totalWidth-miniWidget->width(),totalHeight-panelHeight-miniWidget->height()-2,miniWidget->width(),miniWidget->height());
+    }
+    else if (panelPosition == 1) { //任务栏在上
+        miniWidget->setGeometry(totalWidth-miniWidget->width(),panelHeight+2,miniWidget->width(),miniWidget->height());
+    }
+    else if (panelPosition == 2) {//任务栏在左
+        miniWidget->setGeometry(qApp->primaryScreen()->geometry().x()+panelHeight+2,totalHeight-miniWidget->height(),miniWidget->width(),miniWidget->height());
+    }
+    else if (panelPosition == 3) { //任务栏在右
+        miniWidget->setGeometry(totalWidth-panelHeight-miniWidget->width()-2,totalHeight-miniWidget->height(),miniWidget->width(),miniWidget->height());
+    }
+    miniWidget->show();
+}
+
+/*
+    高级模式在指定位置显示
+*/
+void DeviceSwitchWidget::advancedWidgetShow()
+{
+    int panelHeight = panelSetting->get("panelsize").toInt();
+    int panelPosition = panelSetting->get("panelposition").toInt();
+    int totalHeight = qApp->primaryScreen()->size().height();
+    int totalWidth = qApp->primaryScreen()->size().width() + qApp->primaryScreen()->geometry().x();
+    if (panelPosition == 0) { //任务栏在下
+        this->setGeometry(totalWidth-this->width(),totalHeight-panelHeight-this->height()-2,this->width(),this->height());
+    }
+    else if (panelPosition == 1) { //任务栏在上
+        this->setGeometry(totalWidth-this->width(),panelHeight+2,this->width(),this->height());
+    }
+    else if (panelPosition == 2) {//任务栏在左
+        this->setGeometry(qApp->primaryScreen()->geometry().x()+panelHeight+2,totalHeight-this->height(),this->width(),this->height());
+    }
+    else if (panelPosition == 3) { //任务栏在右
+        this->setGeometry(totalWidth-panelHeight-this->width()-2,totalHeight-this->height(),this->width(),this->height());
+    }
+    this->show();
 }
 
 /*

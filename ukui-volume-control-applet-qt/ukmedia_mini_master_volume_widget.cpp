@@ -90,7 +90,7 @@ UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QWidget *parent) : 
     hlayout->setSpacing(0);
     masterWidget->layout()->setContentsMargins(0,0,0,0);
 
-    this->setWindowOpacity(0.9);
+    this->setWindowOpacity(0.8);
     setObjectName("miniWidget");
     deviceCombox->setVisible(false);
     switchBtn->setToolTip(tr("Go Into Full Mode"));
@@ -122,9 +122,8 @@ UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QWidget *parent) : 
                                       "background: rgb(61,107,229);"
                                       "border-radius:10px;}");
     this->setStyleSheet("QWidget#miniWidget{border:1px solid rgba(255, 255, 255, 0.05);"
-                        "background:rgba(19,19,20,0.9);"
+                        "background:rgba(19,19,20,0.8);"
                         "border-radius:6px 6px 6px 6px;}");
-
 
 }
 

@@ -34,12 +34,14 @@
 #include <QDBusReply>
 #include <QSystemTrayIcon>
 #include <QProcess>
+#include <QGSettings>
 extern "C" {
 #include <libmatemixer/matemixer.h>
 #include <gtk/gtk.h>
 #include <canberra-gtk.h>
 #include <gio/gio.h>
 }
+#define UKUI_PANEL_SETTING "org.ukui.panel.settings"
 #define MATE_DESKTOP_USE_UNSTABLE_API
 #define VERSION "1.12.1"
 #define GVC_APPLET_DBUS_NAME    "org.mate.VolumeControlApplet"
@@ -74,6 +76,8 @@ public:
     void updateSystemTrayIcon(int volume,bool status);
     int getPanelPosition(QString str);
     int getPanelHeight(QString str);
+    void miniWidgetShow();
+    void advancedWidgetShow();
 
     static void list_device(DeviceSwitchWidget *w,MateMixerContext *context);
     static void gvc_stream_status_icon_set_control (DeviceSwitchWidget *w,MateMixerStreamControl *control);
@@ -153,10 +157,13 @@ private Q_SLOTS:
     void trayWheelRollEventSlot(bool step);
     void miniWidgetWheelSlot(bool step);
     void miniWidgetKeyboardPressedSlot(int volumeGain);
+    void primaryScreenChangedSlot(QScreen *screen);
 private:
     QPushButton *deviceBtn;
     QPushButton *appVolumeBtn;
     UkuiMediaButton *switchToMiniBtn;
+    QGSettings *panelSetting;
+    QRect trayRect;
 
     UkmediaDeviceWidget *devWidget;
     ApplicationVolumeWidget *appWidget;
