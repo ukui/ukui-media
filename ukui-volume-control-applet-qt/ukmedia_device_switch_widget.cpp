@@ -643,7 +643,7 @@ void DeviceSwitchWidget::miniToAdvancedWidget()
 //    isShow = false;
 }
 
-/*
+/*Right-click menu to jump to sound settings
     advanced 跳转到 mini
 */
 void DeviceSwitchWidget::advancedToMiniWidget()
@@ -755,20 +755,32 @@ void DeviceSwitchWidget::activatedSystemTrayIconSlot(QSystemTrayIcon::Activation
     }
     case QSystemTrayIcon::Context: {
         if (panelPosition == 0) { //下
-            localX = totalWidth - menu->width();
-            localY = totalHeight - panelHeight - menu->height() - 2;
+            if (totalWidth -  cursor().pos().x() < menu->width()) {//靠边显示
+                localX = totalWidth - menu->width();
+                localY = totalHeight - panelHeight - menu->height() - 2;
+            }
+            else {
+                localX = cursor().pos().x();
+                localY = totalHeight - panelHeight - menu->height() - 2;
+            }
         }
         else if (panelPosition == 1) { //上
-            localX = totalWidth - menu->width();
-            localY = panelHeight + 2;
+            if (totalWidth - cursor().pos().x() < menu->width()) {
+                localX = totalWidth - menu->width();
+                localY = panelHeight + 2;
+            }
+            else {
+                localX = cursor().pos().x();
+                localY = panelHeight + 2;
+            }
         }
         else if (panelPosition == 2) { //左
             localX = qApp->primaryScreen()->geometry().x() + panelHeight + 2;
-            localY = totalHeight - menu->height();
+            localY = cursor().pos().y();
         }
         else if (panelPosition == 3) {
             localX = totalWidth - menu->width() - panelHeight - 2;
-            localY = totalHeight - menu->height();
+            localY = cursor().pos().y();
         }
         showMenu(localX,localY);
         break;
