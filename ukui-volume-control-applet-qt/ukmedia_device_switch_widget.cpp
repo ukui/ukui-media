@@ -617,7 +617,7 @@ void DeviceSwitchWidget::miniWidgetKeyboardPressedSlot(int volumeGain)
 void DeviceSwitchWidget::jumpControlPanelSlot()
 {
     m_process = new QProcess(this);
-    m_process->start("ukui-control-center -s");
+    m_process->start("ukui-volume-control");
 }
 
 /*
