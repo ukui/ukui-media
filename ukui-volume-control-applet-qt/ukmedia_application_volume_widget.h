@@ -21,7 +21,6 @@
 #include <QWidget>
 #include <QLabel>
 #include <QPushButton>
-#include <QGridLayout>
 #include <QScrollArea>
 #include <QVBoxLayout>
 #include "ukmedia_volume_slider.h"
@@ -50,7 +49,6 @@ private:
     QPushButton *appIconBtn;
     QSlider *appSlider;
     QScrollArea *appArea;
-//    QGridLayout *gridlayout;
     QVBoxLayout *m_pVlayout;
 protected:
 

@@ -144,7 +144,6 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     appWidget->appArea = new QScrollArea(appWidget);
     appWidget->displayAppVolumeWidget = new QWidget(appWidget->appArea);
     appWidget->appArea->setWidget(appWidget->displayAppVolumeWidget);
-//    appWidget->gridlayout = new QGridLayout(appWidget->displayAppVolumeWidget);
     appWidget->m_pVlayout = new QVBoxLayout(appWidget->displayAppVolumeWidget);
 
     //监听控制面板的设置
@@ -257,7 +256,6 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     connect(qApp,SIGNAL(primaryScreenChanged(QScreen *)),this,SLOT(primaryScreenChangedSlot(QScreen *)));
 
     trayRect = soundSystemTrayIcon->geometry();
-    //    appWidget->displayAppVolumeWidget->setLayout(appWidget->gridlayout);
     appWidget->displayAppVolumeWidget->setLayout(appWidget->m_pVlayout);
 
     this->setObjectName("mainWidget");
@@ -287,7 +285,6 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
                                                     "QScrollBar::add-line:vertical{border:0px solid;height:0px}"
                                                     "QScrollBar::down-arrow:vertical{height:0px;}");
     if (appnum <= 0) {
-//        appWidget->gridlayout->update();
         appWidget->upWidget->hide();
     }
     else {
@@ -1246,7 +1243,6 @@ void DeviceSwitchWidget::remove_application_control (DeviceSwitchWidget *w,const
         w->stream_control_list->removeAt(index);
         return;
     }
-    /*if ( i > w->app_name_list->count() || i > w->appWidget->gridlayout->count()) {*/
     if (index > w->app_name_list->count() || index > w->appWidget->m_pVlayout->count()) {
         return;
     }
@@ -1255,17 +1251,12 @@ void DeviceSwitchWidget::remove_application_control (DeviceSwitchWidget *w,const
     w->appBtnNameList->removeAt(index);
     QLayoutItem *item ;
 
-    /*if ((item = w->appWidget->gridlayout->takeAt(i)) != 0) {*/
     if ((item = w->appWidget->m_pVlayout->takeAt(index)) != 0) {
         QWidget *wid = item->widget();
-        /*w->appWidget->gridlayout->removeWidget(wid);*/
         w->appWidget->m_pVlayout->removeWidget(wid);
         wid->setParent(nullptr);
         delete wid;
         delete item;
-        /*item->widget()->setVisible(false);
-        item->widget()->setParent(nullptr);
-        delete item;*/
     }
 
     if (appnum <= 0) {
@@ -1273,14 +1264,12 @@ void DeviceSwitchWidget::remove_application_control (DeviceSwitchWidget *w,const
         appnum = 1;
     }
     appnum--;
-    /*w->appWidget->gridlayout->setVerticalSpacing(18);
-    w->appWidget->gridlayout->setContentsMargins(18,14,34,18);
-    w->appWidget->gridlayout->update(); */
+
+    //设置布局的间距以及设置vlayout四周的间距
     w->appWidget->m_pVlayout->setSpacing(18);
+    w->appWidget->displayAppVolumeWidget->resize(358,14+appnum*78);
     w->appWidget->m_pVlayout->setContentsMargins(18,14,34,18);
     w->appWidget->m_pVlayout->update();
-    w->appWidget->appArea->widget()->adjustSize();
-    //设置布局的垂直间距以及设置gridlayout四周的间距
     if (appnum <= 0) {
         w->appWidget->upWidget->hide();
     }
@@ -1353,7 +1342,6 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
     app_widget->setLayout(vlayout);
     app_widget->layout()->setContentsMargins(0,0,0,0);
 
-//    w->appWidget->displayAppVolumeWidget->setLayout(w->appWidget->gridlayout);
     //设置每项的固定大小
     w->appWidget->appLabel->setFixedSize(220,18);
     w->appWidget->appIconBtn->setFixedSize(32,32);
@@ -1362,8 +1350,6 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
     w->appWidget->appIconBtn->setIconSize(icon_size);
     w->appWidget->appIconBtn->setStyleSheet("QPushButton{background:transparent;border:0px;padding-left:0px;}");
     w->appWidget->appIconBtn->setIcon(icon);
-//    w->appWidget->appIconBtn->setFlat(true);
-//    w->appWidget->appIconBtn->setEnabled(true);
     w->appWidget->appIconBtn->setFocusPolicy(Qt::NoFocus);
 
     w->appWidget->appSlider->setMaximum(100);
@@ -1389,10 +1375,14 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
     w->appWidget->appVolumeLabel->setObjectName(appVolumeLabelStr);
     */
     //设置label 和滑动条的值
-    QSlider *s = w->appWidget->findChild<QSlider*>(appSliderStr);
-    s->setValue(display_volume);
+    QSlider *slider = w->appWidget->findChild<QSlider*>(appSliderStr);
+    if (slider == nullptr)
+        return;
+    slider->setValue(display_volume);
+
     QPushButton *btn = w->appWidget->findChild<QPushButton *>(appMuteBtnlStr);
-    qDebug() <<  "应用名为:" << appSliderStr << "音量值为:" << display_volume;
+    if (btn == nullptr)
+        return;
     /*
     QLabel *l = w->appWidget->findChild<QLabel*>(appVolumeLabelStr);
     l->setNum(display_volume);
@@ -1430,13 +1420,13 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
     /*滑动条控制应用音量*/
     connect(w->appWidget->appSlider,&QSlider::valueChanged,[=](int value){
         application_name = appSliderStr;
-        QSlider *s = w->findChild<QSlider*>(appSliderStr);
-        s->setValue(value);
-        if (value > 0) {
-            mate_mixer_stream_control_set_mute(control,false);
-        }
+        QSlider *slider = w->findChild<QSlider*>(appSliderStr);
+        if (slider == nullptr)
+            return;
+        slider->setValue(value);
         QPushButton *btn = w->findChild<QPushButton*>(appMuteBtnlStr);
-
+        if (btn == nullptr)
+            return;
         /*
         QLabel *l = w->findChild<QLabel*>(appVolumeLabelStr);
         l->setNum(value);
@@ -1444,6 +1434,9 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
         bool status = mate_mixer_stream_control_get_mute(control);
         int v = int(value*65536/100 + 0.5);
         mate_mixer_stream_control_set_volume(control,guint(v));
+        if (value > 0) {
+            mate_mixer_stream_control_set_mute(control,false);
+        }
         if (status) {
             btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
         }
@@ -1479,6 +1472,8 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
         mate_mixer_stream_control_set_volume(control,guint(volume));
         volume = int(volume*100/65536 + 0.5);
         QPushButton *btn = w->appWidget->findChild<QPushButton *>(appMuteBtnlStr);
+        if (btn == nullptr)
+            return;
         isMute = mate_mixer_stream_control_get_mute(control);
         if (isMute) {
             btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
@@ -1504,9 +1499,13 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
         slider_str.append("Slider");
         slider_str.append(QString::number(appnum));
         */
-        QSlider *s = w->findChild<QSlider*>(slider_str);
-        s->setValue(volume);
+        QSlider *slider = w->findChild<QSlider*>(slider_str);
+        if (slider == nullptr)
+            return;
+        slider->setValue(volume);
         QPushButton *btn = w->findChild<QPushButton *>(appBtnName);
+        if (btn == nullptr)
+            return;
         if (is_mute) {
             btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
         }
@@ -1533,6 +1532,8 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
         int volume = mate_mixer_stream_control_get_volume(control);
         volume = volume*100/65536.0;
         QPushButton *btn = w->findChild<QPushButton *>(appMuteBtnlStr);
+        if (btn == nullptr)
+            return;
         if (isMute) {
             btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
         }
@@ -1557,19 +1558,13 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
         w->appWidget->upWidget->show();
     }
     app_count++;
-    /*w->appWidget->gridlayout->addWidget(app_widget);
-    //设置布局的垂直间距以及设置gridlayout四周的间距
-    w->appWidget->gridlayout->setVerticalSpacing(18);
-    w->appWidget->gridlayout->setContentsMargins(18,14,34,18);
-    w->appWidget->gridlayout->update();*/
 
     w->appWidget->m_pVlayout->addWidget(app_widget);
-    //设置布局的垂直间距以及设置gridlayout四周的间距
+    //设置布局的垂直间距以及设置vlayout四周的间距
     w->appWidget->m_pVlayout->setSpacing(18);
+    w->appWidget->displayAppVolumeWidget->resize(358,14+appnum*78);
     w->appWidget->m_pVlayout->setContentsMargins(18,14,34,18);
     w->appWidget->m_pVlayout->update();
-
-    w->appWidget->appArea->widget()->adjustSize();
 
     w->appWidget->appMuteBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
                                             "padding-left:0px;}");
@@ -2005,6 +2000,8 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
     int volume = int(mate_mixer_stream_control_get_volume(control));
     int value = int(volume *100 /65536.0+0.5);
     QSlider *slider1 = w->miniWidget->findChild<QSlider *>(w->outputControlName);
+    if (slider1 == nullptr)
+        return;
     w->devWidget->outputDeviceSlider->setValue(value);
 //    w->miniWidget->masterVolumeSlider->setValue(value);
     w->appWidget->systemVolumeSlider->setValue(value);
