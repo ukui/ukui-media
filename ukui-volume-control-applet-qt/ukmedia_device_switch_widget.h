@@ -114,7 +114,6 @@ public:
     static void update_output_settings (DeviceSwitchWidget *w,MateMixerStreamControl *control);
 
     static void on_key_changed (GSettings *settings,gchar *key,DeviceSwitchWidget *w);
-
     static void set_output_stream (DeviceSwitchWidget *w, MateMixerStream *stream);
     static void update_output_stream_list(DeviceSwitchWidget *w,MateMixerStream *stream);
 
@@ -158,6 +157,8 @@ private Q_SLOTS:
     void miniWidgetWheelSlot(bool step);
     void miniWidgetKeyboardPressedSlot(int volumeGain);
     void primaryScreenChangedSlot(QScreen *screen);
+    void inputWidgetMuteButtonClicked();
+    void inputWidgetSliderChangedSlot(int value);
 private:
     QPushButton *deviceBtn;
     QPushButton *appVolumeBtn;
