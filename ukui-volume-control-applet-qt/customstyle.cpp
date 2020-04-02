@@ -5,11 +5,12 @@
 #include <QApplication>
 CustomStyle::CustomStyle(const QString &proxyStyleName, QObject *parent) : QProxyStyle (proxyStyleName)
 {
+    Q_UNUSED(parent);
     m_helpTip = new SliderTipLabelHelper(this);
 }
 CustomStyle::~CustomStyle()
 {
-};
+}
 
 void CustomStyle::drawComplexControl(QStyle::ComplexControl control, const QStyleOptionComplex *option, QPainter *painter, const QWidget *widget) const
 {

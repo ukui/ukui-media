@@ -1073,9 +1073,9 @@ void DeviceSwitchWidget::add_stream (DeviceSwitchWidget *w, MateMixerStream *str
         }
         name  = mate_mixer_stream_get_name (stream);
         label = mate_mixer_stream_get_label (stream);
-//        w->device_name_list->append(name);
         w->output_stream_list->append(name);
-//        w->miniWidget->deviceCombox->addItem(label);
+        /*w->device_name_list->append(name);
+        w->miniWidget->deviceCombox->addItem(label);*/
     }
 
     controls = mate_mixer_stream_list_controls (stream);
@@ -1151,17 +1151,12 @@ void DeviceSwitchWidget::add_application_control (DeviceSwitchWidget *w, MateMix
     if (!g_strcmp0 (app_id, "org.mate.VolumeControl") ||
         !g_strcmp0 (app_id, "org.gnome.VolumeControl") ||
         !g_strcmp0 (app_id, "org.PulseAudio.pavucontrol"))
-            return;
+        return;
 
     QString app_icon_name = mate_mixer_app_info_get_icon(info);
     app_name = mate_mixer_app_info_get_name (info);
-
-    int volume = int(mate_mixer_stream_control_get_volume(control));
-    int normal = mate_mixer_stream_control_get_normal_volume(control);
-    int display_volume = int(100 * volume / normal);
+    //添加应用添加到应用音量中
     add_app_to_appwidget(w,int(appnum),app_name,app_icon_name,control);
-
-    //添加应用音量
 
     if (app_name == nullptr)
         app_name = mate_mixer_stream_control_get_label (control);
@@ -1185,7 +1180,6 @@ void DeviceSwitchWidget::add_application_control (DeviceSwitchWidget *w, MateMix
         else
             app_icon = "applications-multimedia";
     }
-
     bar_set_stream_control (w,direction,control);
 }
 
@@ -1218,6 +1212,7 @@ void DeviceSwitchWidget::on_stream_control_added (MateMixerStream *stream,const 
 */
 void DeviceSwitchWidget::on_stream_control_removed (MateMixerStream *stream,const gchar *name,DeviceSwitchWidget *w)
 {
+    Q_UNUSED(stream);
     /* No way to be sure that it is an application control, but we don't have
      * any other than application bars that could match the name */
     if (w->stream_control_list->count() > 0 && w->app_name_list->count() > 0) {
@@ -1228,7 +1223,6 @@ void DeviceSwitchWidget::on_stream_control_removed (MateMixerStream *stream,cons
         w->app_name_list->clear();
         w->appBtnNameList->clear();
     }
-
 }
 
 void DeviceSwitchWidget::remove_application_control (DeviceSwitchWidget *w,const gchar *m_pAppName)
@@ -1700,7 +1694,6 @@ void DeviceSwitchWidget::on_context_stream_removed (MateMixerContext *context,co
 {
     Q_UNUSED(context);
     remove_stream (w, name);
-    MateMixerStream *stream = mate_mixer_context_get_stream(w->context,name);
 }
 
 /*
@@ -1740,12 +1733,12 @@ void DeviceSwitchWidget::on_context_device_added (MateMixerContext *context, con
 void DeviceSwitchWidget::add_device (DeviceSwitchWidget *w, MateMixerDevice *device)
 {
     const gchar *name;
-    const gchar *label;
 
     name  = mate_mixer_device_get_name (device);
-    label = mate_mixer_device_get_label (device);
     w->device_name_list->append(name);
-    /*w->miniWidget->deviceCombox->addItem(label);*/
+    /*const gchar *label;
+    label = mate_mixer_device_get_label (device);
+    w->miniWidget->deviceCombox->addItem(label);*/
 }
 
 /*
@@ -1753,6 +1746,7 @@ void DeviceSwitchWidget::add_device (DeviceSwitchWidget *w, MateMixerDevice *dev
 */
 void DeviceSwitchWidget::on_context_device_removed (MateMixerContext *context,const gchar *name,DeviceSwitchWidget *w)
 {
+    Q_UNUSED(context);
     int  index = w->device_name_list->indexOf(name);
     if (index == -1)
         return;
@@ -1848,6 +1842,7 @@ void DeviceSwitchWidget::on_stream_control_mute_notify (MateMixerStreamControl *
 */
 void DeviceSwitchWidget::on_context_default_output_stream_notify (MateMixerContext *context,GParamSpec *pspec,DeviceSwitchWidget *w)
 {
+    Q_UNUSED(pspec);
     MateMixerStream *stream;
     stream = mate_mixer_context_get_default_output_stream (context);
     MateMixerStreamControl *control = mate_mixer_stream_get_default_control(stream);
@@ -2160,7 +2155,6 @@ void DeviceSwitchWidget::on_stream_control_volume_notify (MateMixerStreamControl
 void DeviceSwitchWidget::update_output_settings (DeviceSwitchWidget *w,MateMixerStreamControl *control)
 {
     Q_UNUSED(w);
-    MateMixerStreamControlFlags flags;
     if (control == nullptr) {
         return;
     }
@@ -2243,7 +2237,6 @@ void DeviceSwitchWidget::bar_set_stream_control (DeviceSwitchWidget *w,MateMixer
         else if (direction == MATE_MIXER_DIRECTION_OUTPUT) {
             w->m_pOutputBarStreamControl = control;
         }
-
         name = mate_mixer_stream_control_get_name (control);
     }
 }
@@ -2267,30 +2260,6 @@ bool DeviceSwitchWidget:: event(QEvent *event)
     }
     return QWidget::event(event);
 }
-
-/*
-    滚轮滚动事件
-*/
-//void DeviceSwitchWidget::wheelEvent(QWheelEvent *event)
-//{
-//    bool step;
-//    if (event->delta() >0 ) {
-//        step = true;
-//    }
-//    else if (event->delta() < 0 ) {
-//        step = false;
-//    }
-//    Q_EMIT mouse_wheel_signal(step);
-//    event->accept();
-//}
-
-void DeviceSwitchWidget::contextMenuEvent(QContextMenuEvent *event)
-{
-    Q_UNUSED(event);
-    hideWindow();
-}
-
-
 
 /*
     更新高级模式下麦克风图标

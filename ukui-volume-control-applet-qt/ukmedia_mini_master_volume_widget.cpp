@@ -32,7 +32,7 @@ UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QWidget *parent) : 
     switchBtn = new UkuiMediaButton(this);
     switchBtn->setParent(this);
     switchBtn->setStyle(new CustomStyle());
-//    deviceLabel = new QLabel(this);
+    masterVolumeSlider->setStyle(new CustomStyle());
 
     deviceBtn = new QPushButton(this);
     deviceLabel = new QLabel(tr("Speaker (Realtek Audio)"),this);

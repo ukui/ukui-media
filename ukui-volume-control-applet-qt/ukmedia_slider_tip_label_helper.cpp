@@ -101,6 +101,7 @@ bool SliderTipLabelHelper::eventFilter(QObject *obj, QEvent *e)
 
 void SliderTipLabelHelper::mouseMoveEvent(QObject *obj, QMouseEvent *e)
 {
+    Q_UNUSED(e);
     QRect rect;
     QStyleOptionSlider m_option;
     auto slider = qobject_cast<UkmediaVolumeSlider *>(obj);
@@ -117,11 +118,14 @@ void SliderTipLabelHelper::mouseMoveEvent(QObject *obj, QMouseEvent *e)
 
 void SliderTipLabelHelper::mouseReleaseEvent(QObject *obj, QMouseEvent *e)
 {
+    Q_UNUSED(obj);
+    Q_UNUSED(e);
     m_pTiplabel->hide();
 }
 
 void SliderTipLabelHelper::mousePressedEvent(QObject *obj, QMouseEvent *e)
 {
+    Q_UNUSED(e);
     QRect rect;
     QStyleOptionSlider m_option;
     auto slider = qobject_cast<UkmediaVolumeSlider *>(obj);
@@ -144,6 +148,8 @@ AppEventFilter::AppEventFilter(SliderTipLabelHelper *parent) : QObject(parent)
 
 bool AppEventFilter::eventFilter(QObject *obj, QEvent *e)
 {
+    Q_UNUSED(obj);
+    Q_UNUSED(e);
     return false;
 }
 
