@@ -127,9 +127,50 @@ void DeviceSwitchWidget::hideWindow()
 /*
     右键菜单
 */
-void DeviceSwitchWidget::showMenu(int x,int y)
+void DeviceSwitchWidget::showMenu()
 {
-    menu->setGeometry(x,y,252,90);
+    int panelHeight = getPanelHeight("panelheight");
+    int panelPosition = getPanelPosition("panelposition");
+
+    if (!panelHeight && !panelPosition) {
+        //给定任务栏高度和初始值
+         panelHeight = 46;
+         panelPosition = 0;
+    }
+
+    int totalHeight = qApp->primaryScreen()->size().height() + qApp->primaryScreen()->geometry().y();
+    int totalWidth = qApp->primaryScreen()->size().width() + qApp->primaryScreen()->geometry().x();
+    int localX = 0;
+    int localY = 0;
+    if (panelPosition == 0) { //任务栏在下
+        if (totalWidth -  cursor().pos().x() < menu->width()) {//靠边显示
+            localX = totalWidth - menu->width();
+            localY = totalHeight - panelHeight - menu->height() - 2;
+        }
+        else {
+            localX = cursor().pos().x();
+            localY = totalHeight - panelHeight - menu->height() - 2;
+        }
+    }
+    else if (panelPosition == 1) { //任务栏在上
+        if (totalWidth - cursor().pos().x() < menu->width()) {
+            localX = totalWidth - menu->width();
+            localY = qApp->primaryScreen()->geometry().y() + panelHeight + 2;
+        }
+        else {
+            localX = cursor().pos().x();
+            localY = qApp->primaryScreen()->geometry().y() + panelHeight + 2;
+        }
+    }
+    else if (panelPosition == 2) { //任务栏在左
+        localX = qApp->primaryScreen()->geometry().x() + panelHeight + 2;
+        localY = cursor().pos().y();
+    }
+    else if (panelPosition == 3) {//任务栏在右
+        localX = totalWidth - menu->width() - panelHeight - 2;
+        localY = cursor().pos().y();
+    }
+    menu->setGeometry(localX,localY,menu->width(),menu->height());
 }
 
 DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
@@ -145,12 +186,6 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     appWidget->displayAppVolumeWidget = new QWidget(appWidget->appArea);
     appWidget->appArea->setWidget(appWidget->displayAppVolumeWidget);
     appWidget->m_pVlayout = new QVBoxLayout(appWidget->displayAppVolumeWidget);
-
-    //监听控制面板的设置
-
-    if(QGSettings::isSchemaInstalled(UKUI_PANEL_SETTING)){
-        panelSetting = new QGSettings(UKUI_PANEL_SETTING);
-    }
 
     appWidget->appArea->setFixedSize(358,177);
     appWidget->appArea->move(0,143);
@@ -189,6 +224,7 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     mate_mixer_context_set_app_id(context, GVC_APPLET_DBUS_NAME);
     mate_mixer_context_set_app_version(context,VERSION);
     mate_mixer_context_set_app_icon(context,"ukuimedia-volume-control");
+
     //打开context
     if G_UNLIKELY (mate_mixer_context_open(context) == FALSE) {
         g_warning ("Failed to connect to a sound system**********************");
@@ -227,8 +263,8 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     //高级切换mini模式
     connect(switchToMiniBtn,SIGNAL(advanceToMiniSignal()),this,SLOT(advancedToMiniWidget()));
     //高级模式下设备音量和应用音量的切换
-    connect(deviceBtn,SIGNAL(clicked()),this,SLOT(device_button_clicked_slot()));
-    connect(appVolumeBtn,SIGNAL(clicked()),this,SLOT(appvolume_button_clicked_slot()));
+    connect(deviceBtn,SIGNAL(clicked()),this,SLOT(deviceButtonClickedSlot()));
+    connect(appVolumeBtn,SIGNAL(clicked()),this,SLOT(appVolumeButtonClickedSlot()));
     //高级输出设备模式下静音控制
     connect(devWidget->outputMuteBtn,SIGNAL(clicked()),this,SLOT(devWidgetMuteButtonClickedSlot()));
     //mini模式下的一键静音
@@ -645,7 +681,6 @@ void DeviceSwitchWidget::miniToAdvancedWidget()
     advancedWidgetShow();
     miniWidget->hide();
     displayMode = ADVANCED_MODE;
-//    isShow = false;
 }
 
 /*Right-click menu to jump to sound settings
@@ -728,22 +763,6 @@ void DeviceSwitchWidget::primaryScreenChangedSlot(QScreen *screen)
 */
 void DeviceSwitchWidget::activatedSystemTrayIconSlot(QSystemTrayIcon::ActivationReason reason)
 {
-    //给定任务栏初始位置和高度
-    int panelHeight = 46;
-    int panelPosition = 0;
-    //获取任务栏高度和位置
-    QStringList keys = panelSetting->keys();
-    if (keys.contains("panelsize")) {
-        panelHeight = panelSetting->get("panelsize").toInt();
-    }
-    if (keys.contains("panelposition")) {
-        panelPosition = panelSetting->get("panelposition").toInt();
-    }
-    int totalHeight = qApp->primaryScreen()->size().height();
-    int totalWidth = qApp->primaryScreen()->size().width() + qApp->primaryScreen()->geometry().x();
-    int localX = 0;
-    int localY = 0;
-
     switch(reason) {
     //鼠标中间键点击图标
     case QSystemTrayIcon::MiddleClick: {
@@ -793,35 +812,7 @@ void DeviceSwitchWidget::activatedSystemTrayIconSlot(QSystemTrayIcon::Activation
         break;
     }
     case QSystemTrayIcon::Context: {
-        if (panelPosition == 0) { //任务栏在下
-            if (totalWidth -  cursor().pos().x() < menu->width()) {//靠边显示
-                localX = totalWidth - menu->width();
-                localY = totalHeight - panelHeight - menu->height() - 2;
-            }
-            else {
-                localX = cursor().pos().x();
-                localY = totalHeight - panelHeight - menu->height() - 2;
-            }
-        }
-        else if (panelPosition == 1) { //任务栏在上
-            if (totalWidth - cursor().pos().x() < menu->width()) {
-                localX = totalWidth - menu->width();
-                localY = panelHeight + 2;
-            }
-            else {
-                localX = cursor().pos().x();
-                localY = panelHeight + 2;
-            }
-        }
-        else if (panelPosition == 2) { //任务栏在左
-            localX = qApp->primaryScreen()->geometry().x() + panelHeight + 2;
-            localY = cursor().pos().y();
-        }
-        else if (panelPosition == 3) {//任务栏在右
-            localX = totalWidth - menu->width() - panelHeight - 2;
-            localY = cursor().pos().y();
-        }
-        showMenu(localX,localY);
+        showMenu();
         break;
     }
     default:
@@ -934,7 +925,7 @@ void DeviceSwitchWidget::deviceSwitchWidgetInit()
 }
 
 /*点击切换设备按钮对应的槽函数*/
-void DeviceSwitchWidget::device_button_clicked_slot()
+void DeviceSwitchWidget::deviceButtonClickedSlot()
 {
     btnType = DEVICE_VOLUME_BUTTON;
     appWidget->hide();
@@ -951,7 +942,7 @@ void DeviceSwitchWidget::device_button_clicked_slot()
 }
 
 /*点击切换应用音量按钮对应的槽函数*/
-void DeviceSwitchWidget::appvolume_button_clicked_slot()
+void DeviceSwitchWidget::appVolumeButtonClickedSlot()
 {
     btnType = APP_VOLUME_BUTTON;
     appWidget->show();
@@ -1074,6 +1065,20 @@ void DeviceSwitchWidget::add_stream (DeviceSwitchWidget *w, MateMixerStream *str
         name  = mate_mixer_stream_get_name (stream);
         label = mate_mixer_stream_get_label (stream);
         w->output_stream_list->append(name);
+        const GList *switchList;
+        MateMixerSwitch *swt;
+        switchList = mate_mixer_stream_list_switches(stream);
+        while (switchList != nullptr) {
+            swt = MATE_MIXER_SWITCH(switchList->data);
+            //            MateMixerSwitchOption *opt = MATE_MIXER_SWITCH_OPTION(optionList->data);
+            MateMixerSwitchOption *opt = mate_mixer_switch_get_active_option(swt);
+            const char *name = mate_mixer_switch_option_get_name(opt);
+            const char *label = mate_mixer_switch_option_get_label(opt);
+            qDebug() << "opt name:" << name << "opt label:" << label;
+
+            switchList = switchList->next;
+        }
+
         /*w->device_name_list->append(name);
         w->miniWidget->deviceCombox->addItem(label);*/
     }
@@ -1851,7 +1856,6 @@ void DeviceSwitchWidget::on_context_default_output_stream_notify (MateMixerConte
     if (stream == nullptr) {
         return;
     }
-
     update_icon_output(w,context);
 //    set_output_stream (w, stream);
 }
@@ -2294,7 +2298,8 @@ int DeviceSwitchWidget::getPanelPosition(QString str)
                               "com.ukui.panel.desktop",
                               QDBusConnection::sessionBus() );
     QDBusReply<int> reply = interface.call("GetPanelPosition", str);
-
+    if (reply < 0)
+        return 0;
     return reply;
 }
 
@@ -2306,21 +2311,17 @@ void DeviceSwitchWidget::miniWidgetShow()
     //给定任务栏高度和初始值
     int panelHeight = 46;
     int panelPosition = 0;
-    //获取任务栏高度和位置
-    QStringList keys = panelSetting->keys();
-    if (keys.contains("panelsize")) {
-        panelHeight = panelSetting->get("panelsize").toInt();
-    }
-    if (keys.contains("panelposition")) {
-        panelPosition = panelSetting->get("panelposition").toInt();
-    }
-    int totalHeight = qApp->primaryScreen()->size().height();
+
+    panelHeight = getPanelHeight("panelheight");
+    panelPosition = getPanelPosition("panelposition");
+
+    int totalHeight = qApp->primaryScreen()->size().height() + qApp->primaryScreen()->geometry().y();
     int totalWidth = qApp->primaryScreen()->size().width() + qApp->primaryScreen()->geometry().x();
     if (panelPosition == 0) { //任务栏在下
         miniWidget->setGeometry(totalWidth-miniWidget->width(),totalHeight-panelHeight-miniWidget->height()-2,miniWidget->width(),miniWidget->height());
     }
     else if (panelPosition == 1) { //任务栏在上
-        miniWidget->setGeometry(totalWidth-miniWidget->width(),panelHeight+2,miniWidget->width(),miniWidget->height());
+        miniWidget->setGeometry(totalWidth-miniWidget->width(),qApp->primaryScreen()->geometry().y()+panelHeight+2,miniWidget->width(),miniWidget->height());
     }
     else if (panelPosition == 2) {//任务栏在左
         miniWidget->setGeometry(qApp->primaryScreen()->geometry().x()+panelHeight+2,totalHeight-miniWidget->height(),miniWidget->width(),miniWidget->height());
@@ -2339,21 +2340,17 @@ void DeviceSwitchWidget::advancedWidgetShow()
     //给定任务栏高度和位置初始值
     int panelHeight = 46;
     int panelPosition = 0;
-    //获取任务栏高度和位置
-    QStringList keys = panelSetting->keys();
-    if (keys.contains("panelsize")) {
-        panelHeight = panelSetting->get("panelsize").toInt();
-    }
-    if (keys.contains("panelposition")) {
-        panelPosition = panelSetting->get("panelposition").toInt();
-    }
-    int totalHeight = qApp->primaryScreen()->size().height();
+
+    panelHeight = getPanelHeight("panelheight");
+    panelPosition = getPanelPosition("panelposition");
+
+    int totalHeight = qApp->primaryScreen()->size().height() + qApp->primaryScreen()->geometry().y();
     int totalWidth = qApp->primaryScreen()->size().width() + qApp->primaryScreen()->geometry().x();
     if (panelPosition == 0) { //任务栏在下
         this->setGeometry(totalWidth-this->width(),totalHeight-panelHeight-this->height()-2,this->width(),this->height());
     }
     else if (panelPosition == 1) { //任务栏在上
-        this->setGeometry(totalWidth-this->width(),panelHeight+2,this->width(),this->height());
+        this->setGeometry(totalWidth-this->width(),qApp->primaryScreen()->geometry().y()+panelHeight+2,this->width(),this->height());
     }
     else if (panelPosition == 2) {//任务栏在左
         this->setGeometry(qApp->primaryScreen()->geometry().x()+panelHeight+2,totalHeight-this->height(),this->width(),this->height());
@@ -2374,6 +2371,8 @@ int DeviceSwitchWidget::getPanelHeight(QString str)
                               "com.ukui.panel.desktop",
                               QDBusConnection::sessionBus() );
     QDBusReply<int> reply = interface.call("GetPanelSize", str);
+    if (reply <= 0)
+        return 46;
     return reply;
 }
 

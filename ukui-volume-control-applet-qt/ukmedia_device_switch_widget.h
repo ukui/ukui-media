@@ -71,7 +71,7 @@ public:
     void systemTrayMenuInit();
     void showWindow();
     void hideWindow();
-    void showMenu(int x,int y);
+    void showMenu();
     void updateMicrophoneIcon(int volume,bool status);
     void updateSystemTrayIcon(int volume,bool status);
     int getPanelPosition(QString str);
@@ -136,8 +136,8 @@ Q_SIGNALS:
     void system_muted_signal(bool status);
 //    void appvolume_mute_change_mastervolume_status();
 private Q_SLOTS:
-    void device_button_clicked_slot();
-    void appvolume_button_clicked_slot();
+    void deviceButtonClickedSlot();
+    void appVolumeButtonClickedSlot();
     void activatedSystemTrayIconSlot(QSystemTrayIcon::ActivationReason reason);
     void jumpControlPanelSlot();
     void miniToAdvancedWidget();
@@ -163,7 +163,7 @@ private:
     QPushButton *deviceBtn;
     QPushButton *appVolumeBtn;
     UkuiMediaButton *switchToMiniBtn;
-    QGSettings *panelSetting;
+//    QGSettings *panelSetting = nullptr;
     QRect trayRect;
 
     UkmediaDeviceWidget *devWidget;
