@@ -108,7 +108,7 @@ void UkmediaDeviceWidget::noInputWidgetInit()
     outputDeviceBtn->setIconSize(iconSize);
     outputDeviceBtn->setIcon(QIcon("/usr/share/ukui-media/img/audiocard.svg"));
   //设置滑动条的范围和取向
-    outputDeviceLabel->setFixedSize(78,20);
+    outputDeviceLabel->setFixedSize(140,20);
     outputDeviceDisplayLabel->setFixedSize(220,16);
 
     outputDeviceSlider->setRange(0,100);
@@ -170,13 +170,12 @@ void UkmediaDeviceWidget::inputWidgetShow()
     //布局
     QHBoxLayout *hlayout = new QHBoxLayout;
     QVBoxLayout *vlayout = new QVBoxLayout;
-    QSpacerItem *item1 = new QSpacerItem(18,20);
-    QSpacerItem *item2 = new QSpacerItem(12,20);
+
     //输入设备布局 inputWidget
     hlayout->addWidget(inputDeviceBtn);
-    hlayout->addItem(item1);
+    hlayout->addItem(new QSpacerItem(18,20));
     hlayout->addWidget(inputDeviceSlider);
-    hlayout->addItem(item2);
+    hlayout->addItem(new QSpacerItem(12,20));
     hlayout->addWidget(inputMuteButton);
     hlayout->setSpacing(0);
     inputSliderWidget->setLayout(hlayout);
