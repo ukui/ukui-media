@@ -115,7 +115,6 @@ void SliderTipLabelHelper::mouseMoveEvent(QObject *obj, QMouseEvent *e)
     rect = slider->style()->subControlRect(QStyle::CC_Slider, &m_option,QStyle::SC_SliderHandle,slider);
     QPoint gPos = slider->mapToGlobal(rect.topLeft());
     QString percent;
-//    percent = QString::number(m_option.sliderValue);
     percent = QString::number(slider->value());
     percent.append("%");
     m_pTiplabel->setText(percent);

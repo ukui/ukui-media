@@ -61,7 +61,6 @@ void UkuiMediaButton::mousePressEvent(QMouseEvent *e)
 void UkuiMediaButton::mouseReleaseEvent(QMouseEvent *e)
 {
     if (displayMode == MINI_MODE) {
-
         Q_EMIT miniToAdvanceSignal();
         this->setFixedSize(36,36);
         QSize iconSize(16,16);
@@ -93,7 +92,6 @@ void UkmediaVolumeSlider::mousePressEvent(QMouseEvent *ev)
     //向父窗口发送自定义事件event type，这样就可以在父窗口中捕获这个事件进行处理
     QEvent evEvent(static_cast<QEvent::Type>(QEvent::User + 1));
     QCoreApplication::sendEvent(parentWidget(), &evEvent);
-    int value = pos *(maximum() - minimum()) + minimum();
 }
 
 void UkmediaVolumeSlider::initStyleOption(QStyleOptionSlider *option)

@@ -155,19 +155,11 @@ void DeviceSwitchWidget::showMenu()
     else if (panelPosition == 1) { //任务栏在上
         if (totalWidth - cursor().pos().x() < menu->width()) {
             localX = totalWidth - menu->width();
-<<<<<<< HEAD
-            localY = panelHeight + 2;
-        }
-        else {
-            localX = cursor().pos().x();
-            localY = panelHeight + 2;
-=======
             localY = qApp->primaryScreen()->geometry().y() + panelHeight + 2;
         }
         else {
             localX = cursor().pos().x();
             localY = qApp->primaryScreen()->geometry().y() + panelHeight + 2;
->>>>>>> 281995804aab6e41a908de4ae56a3f16af33b939
         }
     }
     else if (panelPosition == 2) { //任务栏在左
@@ -698,7 +690,6 @@ void DeviceSwitchWidget::advancedToMiniWidget()
 {
     miniWidgetShow();
     this->hide();
-//    miniWidget->show();
     displayMode = MINI_MODE;
 }
 
@@ -820,11 +811,7 @@ void DeviceSwitchWidget::activatedSystemTrayIconSlot(QSystemTrayIcon::Activation
         break;
     }
     case QSystemTrayIcon::Context: {
-<<<<<<< HEAD
-//        showMenu();
-=======
         showMenu();
->>>>>>> 281995804aab6e41a908de4ae56a3f16af33b939
         break;
     }
     default:
@@ -1080,10 +1067,6 @@ void DeviceSwitchWidget::add_stream (DeviceSwitchWidget *w, MateMixerStream *str
         switchList = mate_mixer_stream_list_switches(stream);
         while (switchList != nullptr) {
             swt = MATE_MIXER_SWITCH(switchList->data);
-<<<<<<< HEAD
-=======
-            //            MateMixerSwitchOption *opt = MATE_MIXER_SWITCH_OPTION(optionList->data);
->>>>>>> 281995804aab6e41a908de4ae56a3f16af33b939
             MateMixerSwitchOption *opt = mate_mixer_switch_get_active_option(swt);
             const char *name = mate_mixer_switch_option_get_name(opt);
             const char *label = mate_mixer_switch_option_get_label(opt);

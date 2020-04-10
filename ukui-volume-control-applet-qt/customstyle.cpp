@@ -152,7 +152,6 @@ void CustomStyle::polish(QWidget *widget)
             const_cast<QWidget *> (widget)->setAttribute(Qt::WA_TranslucentBackground);
             widget->setAttribute(Qt::WA_TranslucentBackground);
             QPainterPath path;
-            qDebug() << "label";
             auto rect = widget->rect();
             rect.adjust(0,0,0,0);
             path.addRoundedRect(rect,6,6);

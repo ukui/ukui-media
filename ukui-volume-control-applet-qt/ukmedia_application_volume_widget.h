@@ -52,6 +52,7 @@ private:
     QVBoxLayout *m_pVlayout;
 protected:
 
+
 };
 
 #endif // APPLICATIONVOLUMEWIDGET_H
