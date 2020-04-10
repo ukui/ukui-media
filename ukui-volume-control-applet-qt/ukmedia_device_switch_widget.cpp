@@ -138,7 +138,7 @@ void DeviceSwitchWidget::showMenu()
          panelPosition = 0;
     }
 
-    int totalHeight = qApp->primaryScreen()->size().height() + + qApp->primaryScreen()->geometry().y();
+    int totalHeight = qApp->primaryScreen()->size().height() + qApp->primaryScreen()->geometry().y();
     int totalWidth = qApp->primaryScreen()->size().width() + qApp->primaryScreen()->geometry().x();
     int localX = 0;
     int localY = 0;
@@ -155,11 +155,19 @@ void DeviceSwitchWidget::showMenu()
     else if (panelPosition == 1) { //任务栏在上
         if (totalWidth - cursor().pos().x() < menu->width()) {
             localX = totalWidth - menu->width();
+<<<<<<< HEAD
             localY = panelHeight + 2;
         }
         else {
             localX = cursor().pos().x();
             localY = panelHeight + 2;
+=======
+            localY = qApp->primaryScreen()->geometry().y() + panelHeight + 2;
+        }
+        else {
+            localX = cursor().pos().x();
+            localY = qApp->primaryScreen()->geometry().y() + panelHeight + 2;
+>>>>>>> 281995804aab6e41a908de4ae56a3f16af33b939
         }
     }
     else if (panelPosition == 2) { //任务栏在左
@@ -812,7 +820,11 @@ void DeviceSwitchWidget::activatedSystemTrayIconSlot(QSystemTrayIcon::Activation
         break;
     }
     case QSystemTrayIcon::Context: {
+<<<<<<< HEAD
 //        showMenu();
+=======
+        showMenu();
+>>>>>>> 281995804aab6e41a908de4ae56a3f16af33b939
         break;
     }
     default:
@@ -1068,6 +1080,10 @@ void DeviceSwitchWidget::add_stream (DeviceSwitchWidget *w, MateMixerStream *str
         switchList = mate_mixer_stream_list_switches(stream);
         while (switchList != nullptr) {
             swt = MATE_MIXER_SWITCH(switchList->data);
+<<<<<<< HEAD
+=======
+            //            MateMixerSwitchOption *opt = MATE_MIXER_SWITCH_OPTION(optionList->data);
+>>>>>>> 281995804aab6e41a908de4ae56a3f16af33b939
             MateMixerSwitchOption *opt = mate_mixer_switch_get_active_option(swt);
             const char *name = mate_mixer_switch_option_get_name(opt);
             const char *label = mate_mixer_switch_option_get_label(opt);
@@ -2275,7 +2291,8 @@ int DeviceSwitchWidget::getPanelPosition(QString str)
                               "com.ukui.panel.desktop",
                               QDBusConnection::sessionBus() );
     QDBusReply<int> reply = interface.call("GetPanelPosition", str);
-
+    if (reply < 0)
+        return 0;
     return reply;
 }
 
@@ -2297,7 +2314,7 @@ void DeviceSwitchWidget::miniWidgetShow()
         miniWidget->setGeometry(totalWidth-miniWidget->width(),totalHeight-panelHeight-miniWidget->height()-2,miniWidget->width(),miniWidget->height());
     }
     else if (panelPosition == 1) { //任务栏在上
-        miniWidget->setGeometry(totalWidth-miniWidget->width(),panelHeight+2,miniWidget->width(),miniWidget->height());
+        miniWidget->setGeometry(totalWidth-miniWidget->width(),qApp->primaryScreen()->geometry().y()+panelHeight+2,miniWidget->width(),miniWidget->height());
     }
     else if (panelPosition == 2) {//任务栏在左
         miniWidget->setGeometry(qApp->primaryScreen()->geometry().x()+panelHeight+2,totalHeight-miniWidget->height(),miniWidget->width(),miniWidget->height());
@@ -2326,7 +2343,7 @@ void DeviceSwitchWidget::advancedWidgetShow()
         this->setGeometry(totalWidth-this->width(),totalHeight-panelHeight-this->height()-2,this->width(),this->height());
     }
     else if (panelPosition == 1) { //任务栏在上
-        this->setGeometry(totalWidth-this->width(),panelHeight+2,this->width(),this->height());
+        this->setGeometry(totalWidth-this->width(),qApp->primaryScreen()->geometry().y()+panelHeight+2,this->width(),this->height());
     }
     else if (panelPosition == 2) {//任务栏在左
         this->setGeometry(qApp->primaryScreen()->geometry().x()+panelHeight+2,totalHeight-this->height(),this->width(),this->height());
@@ -2347,6 +2364,8 @@ int DeviceSwitchWidget::getPanelHeight(QString str)
                               "com.ukui.panel.desktop",
                               QDBusConnection::sessionBus() );
     QDBusReply<int> reply = interface.call("GetPanelSize", str);
+    if (reply <= 0)
+        return 46;
     return reply;
 }
 

@@ -1,3 +1,17 @@
+ukui-media (2.0.3-1) unstable; urgency=medium
+
+  * New upstream bugfix release.
+    - Fix the i18n issue.
+    - Fix that the tooltip doesn't disappear.
+    - Fix that the slider disapplears when switching music.
+    - Fix that sometimes 'mute' doesn't take effect.
+    - Fix the incorrect position of popup window.
+    - Fix the wrong output volume when insert new card device.
+  * debian/watch:
+    - Updated to monitor the upstream orig.tar.gz.
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Mon, 06 Apr 2020 16:26:05 +0800
+
 ukui-media (2.0.2-1) unstable; urgency=medium
 
   * New upstream bugfix release.
