@@ -161,7 +161,7 @@ void UkmediaDeviceWidget::inputWidgetShow()
     inputDeviceBtn->setIconSize(iconSize);
     inputDeviceBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-input-microphone.svg"));
     //设置滑动条的范围和取向
-    inputDeviceLabel->setFixedSize(78,20);
+    inputDeviceLabel->setFixedSize(140,20);
     inputDeviceDisplayLabel->setFixedSize(220,14);
 
     inputDeviceSlider->setRange(0,100);

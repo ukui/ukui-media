@@ -127,9 +127,50 @@ void DeviceSwitchWidget::hideWindow()
 /*
     右键菜单
 */
-void DeviceSwitchWidget::showMenu(int x,int y)
+void DeviceSwitchWidget::showMenu()
 {
-    menu->setGeometry(x,y,252,90);
+    int panelHeight = getPanelHeight("panelheight");
+    int panelPosition = getPanelPosition("panelposition");
+
+    if (!panelHeight && !panelPosition) {
+        //给定任务栏高度和初始值
+         panelHeight = 46;
+         panelPosition = 0;
+    }
+
+    int totalHeight = qApp->primaryScreen()->size().height() + + qApp->primaryScreen()->geometry().y();
+    int totalWidth = qApp->primaryScreen()->size().width() + qApp->primaryScreen()->geometry().x();
+    int localX = 0;
+    int localY = 0;
+    if (panelPosition == 0) { //任务栏在下
+        if (totalWidth -  cursor().pos().x() < menu->width()) {//靠边显示
+            localX = totalWidth - menu->width();
+            localY = totalHeight - panelHeight - menu->height() - 2;
+        }
+        else {
+            localX = cursor().pos().x();
+            localY = totalHeight - panelHeight - menu->height() - 2;
+        }
+    }
+    else if (panelPosition == 1) { //任务栏在上
+        if (totalWidth - cursor().pos().x() < menu->width()) {
+            localX = totalWidth - menu->width();
+            localY = panelHeight + 2;
+        }
+        else {
+            localX = cursor().pos().x();
+            localY = panelHeight + 2;
+        }
+    }
+    else if (panelPosition == 2) { //任务栏在左
+        localX = qApp->primaryScreen()->geometry().x() + panelHeight + 2;
+        localY = cursor().pos().y();
+    }
+    else if (panelPosition == 3) {//任务栏在右
+        localX = totalWidth - menu->width() - panelHeight - 2;
+        localY = cursor().pos().y();
+    }
+    menu->setGeometry(localX,localY,menu->width(),menu->height());
 }
 
 DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
@@ -145,12 +186,6 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     appWidget->displayAppVolumeWidget = new QWidget(appWidget->appArea);
     appWidget->appArea->setWidget(appWidget->displayAppVolumeWidget);
     appWidget->m_pVlayout = new QVBoxLayout(appWidget->displayAppVolumeWidget);
-
-    //监听控制面板的设置
-
-    if(QGSettings::isSchemaInstalled(UKUI_PANEL_SETTING)){
-        panelSetting = new QGSettings(UKUI_PANEL_SETTING);
-    }
 
     appWidget->appArea->setFixedSize(358,177);
     appWidget->appArea->move(0,143);
@@ -189,6 +224,7 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     mate_mixer_context_set_app_id(context, GVC_APPLET_DBUS_NAME);
     mate_mixer_context_set_app_version(context,VERSION);
     mate_mixer_context_set_app_icon(context,"ukuimedia-volume-control");
+
     //打开context
     if G_UNLIKELY (mate_mixer_context_open(context) == FALSE) {
         g_warning ("Failed to connect to a sound system**********************");
@@ -227,8 +263,8 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     //高级切换mini模式
     connect(switchToMiniBtn,SIGNAL(advanceToMiniSignal()),this,SLOT(advancedToMiniWidget()));
     //高级模式下设备音量和应用音量的切换
-    connect(deviceBtn,SIGNAL(clicked()),this,SLOT(device_button_clicked_slot()));
-    connect(appVolumeBtn,SIGNAL(clicked()),this,SLOT(appvolume_button_clicked_slot()));
+    connect(deviceBtn,SIGNAL(clicked()),this,SLOT(deviceButtonClickedSlot()));
+    connect(appVolumeBtn,SIGNAL(clicked()),this,SLOT(appVolumeButtonClickedSlot()));
     //高级输出设备模式下静音控制
     connect(devWidget->outputMuteBtn,SIGNAL(clicked()),this,SLOT(devWidgetMuteButtonClickedSlot()));
     //mini模式下的一键静音
@@ -645,7 +681,6 @@ void DeviceSwitchWidget::miniToAdvancedWidget()
     advancedWidgetShow();
     miniWidget->hide();
     displayMode = ADVANCED_MODE;
-//    isShow = false;
 }
 
 /*Right-click menu to jump to sound settings
@@ -670,7 +705,7 @@ void DeviceSwitchWidget::deviceComboxIndexChanged(QString str)
         return;
     const QString str1 =  output_stream_list->at(index);
     const gchar *name = str1.toLocal8Bit();
-    MateMixerStream *stream = mate_mixer_context_get_stream(context,name);
+    stream = mate_mixer_context_get_stream(context,name);
     if (G_UNLIKELY (stream == nullptr)) {
        g_warn_if_reached ();
        return;
@@ -728,22 +763,6 @@ void DeviceSwitchWidget::primaryScreenChangedSlot(QScreen *screen)
 */
 void DeviceSwitchWidget::activatedSystemTrayIconSlot(QSystemTrayIcon::ActivationReason reason)
 {
-    //给定任务栏初始位置和高度
-    int panelHeight = 46;
-    int panelPosition = 0;
-    //获取任务栏高度和位置
-    QStringList keys = panelSetting->keys();
-    if (keys.contains("panelsize")) {
-        panelHeight = panelSetting->get("panelsize").toInt();
-    }
-    if (keys.contains("panelposition")) {
-        panelPosition = panelSetting->get("panelposition").toInt();
-    }
-    int totalHeight = qApp->primaryScreen()->size().height();
-    int totalWidth = qApp->primaryScreen()->size().width() + qApp->primaryScreen()->geometry().x();
-    int localX = 0;
-    int localY = 0;
-
     switch(reason) {
     //鼠标中间键点击图标
     case QSystemTrayIcon::MiddleClick: {
@@ -793,35 +812,7 @@ void DeviceSwitchWidget::activatedSystemTrayIconSlot(QSystemTrayIcon::Activation
         break;
     }
     case QSystemTrayIcon::Context: {
-        if (panelPosition == 0) { //任务栏在下
-            if (totalWidth -  cursor().pos().x() < menu->width()) {//靠边显示
-                localX = totalWidth - menu->width();
-                localY = totalHeight - panelHeight - menu->height() - 2;
-            }
-            else {
-                localX = cursor().pos().x();
-                localY = totalHeight - panelHeight - menu->height() - 2;
-            }
-        }
-        else if (panelPosition == 1) { //任务栏在上
-            if (totalWidth - cursor().pos().x() < menu->width()) {
-                localX = totalWidth - menu->width();
-                localY = panelHeight + 2;
-            }
-            else {
-                localX = cursor().pos().x();
-                localY = panelHeight + 2;
-            }
-        }
-        else if (panelPosition == 2) { //任务栏在左
-            localX = qApp->primaryScreen()->geometry().x() + panelHeight + 2;
-            localY = cursor().pos().y();
-        }
-        else if (panelPosition == 3) {//任务栏在右
-            localX = totalWidth - menu->width() - panelHeight - 2;
-            localY = cursor().pos().y();
-        }
-        showMenu(localX,localY);
+//        showMenu();
         break;
     }
     default:
@@ -934,7 +925,7 @@ void DeviceSwitchWidget::deviceSwitchWidgetInit()
 }
 
 /*点击切换设备按钮对应的槽函数*/
-void DeviceSwitchWidget::device_button_clicked_slot()
+void DeviceSwitchWidget::deviceButtonClickedSlot()
 {
     btnType = DEVICE_VOLUME_BUTTON;
     appWidget->hide();
@@ -951,7 +942,7 @@ void DeviceSwitchWidget::device_button_clicked_slot()
 }
 
 /*点击切换应用音量按钮对应的槽函数*/
-void DeviceSwitchWidget::appvolume_button_clicked_slot()
+void DeviceSwitchWidget::appVolumeButtonClickedSlot()
 {
     btnType = APP_VOLUME_BUTTON;
     appWidget->show();
@@ -990,17 +981,16 @@ void DeviceSwitchWidget::on_context_state_notify (MateMixerContext *context,GPar
 */
 void DeviceSwitchWidget::on_context_stored_control_added (MateMixerContext *context,const gchar *name,DeviceSwitchWidget *w)
 {
-    MateMixerStreamControl *control;
     MateMixerStreamControlMediaRole media_role;
 
-    control = MATE_MIXER_STREAM_CONTROL (mate_mixer_context_get_stored_control (context, name));
-    if (G_UNLIKELY (control == nullptr))
+    w->control = MATE_MIXER_STREAM_CONTROL (mate_mixer_context_get_stored_control (context, name));
+    if (G_UNLIKELY (w->control == nullptr))
         return;
 
-    media_role = mate_mixer_stream_control_get_media_role (control);
+    media_role = mate_mixer_stream_control_get_media_role (w->control);
 
     if (media_role == MATE_MIXER_STREAM_CONTROL_MEDIA_ROLE_EVENT)
-        bar_set_stream_control (w, MATE_MIXER_DIRECTION_UNKNOWN,control);
+        bar_set_stream_control (w, MATE_MIXER_DIRECTION_UNKNOWN,w->control);
 }
 
 
@@ -1009,15 +999,14 @@ void DeviceSwitchWidget::on_context_stored_control_added (MateMixerContext *cont
 */
 void DeviceSwitchWidget::on_context_stream_added (MateMixerContext *context,const gchar *name,DeviceSwitchWidget *w)
 {
-    MateMixerStream *stream;
-    stream = mate_mixer_context_get_stream (context, name);
-    if (G_UNLIKELY (stream == nullptr))
+    w->stream = mate_mixer_context_get_stream (context, name);
+    if (G_UNLIKELY (w->stream == nullptr))
         return;
 
     /* If the newly added stream belongs to the currently selected device and
      * the test button is hidden, this stream may be the one to allow the
      * sound test and therefore we may need to enable the button */
-    add_stream (w, stream,context);
+    add_stream (w, w->stream,context);
 }
 
 /*
@@ -1030,9 +1019,9 @@ void DeviceSwitchWidget::list_device(DeviceSwitchWidget *w,MateMixerContext *con
 
     while (list != nullptr) {
         add_stream (w, MATE_MIXER_STREAM (list->data),context);
-        MateMixerStream *s = MATE_MIXER_STREAM(list->data);
-        const gchar *stream_name = mate_mixer_stream_get_name(s);
-        MateMixerDirection direction = mate_mixer_stream_get_direction(s);
+        w->stream = MATE_MIXER_STREAM(list->data);
+        const gchar *stream_name = mate_mixer_stream_get_name(w->stream);
+        MateMixerDirection direction = mate_mixer_stream_get_direction(w->stream);
         if (direction == MATE_MIXER_DIRECTION_OUTPUT) {
             w->output_stream_list->append(stream_name);
             /*w->miniWidget->deviceCombox->addItem(label);*/
@@ -1074,6 +1063,19 @@ void DeviceSwitchWidget::add_stream (DeviceSwitchWidget *w, MateMixerStream *str
         name  = mate_mixer_stream_get_name (stream);
         label = mate_mixer_stream_get_label (stream);
         w->output_stream_list->append(name);
+        const GList *switchList;
+        MateMixerSwitch *swt;
+        switchList = mate_mixer_stream_list_switches(stream);
+        while (switchList != nullptr) {
+            swt = MATE_MIXER_SWITCH(switchList->data);
+            MateMixerSwitchOption *opt = mate_mixer_switch_get_active_option(swt);
+            const char *name = mate_mixer_switch_option_get_name(opt);
+            const char *label = mate_mixer_switch_option_get_label(opt);
+            qDebug() << "opt name:" << name << "opt label:" << label;
+
+            switchList = switchList->next;
+        }
+
         /*w->device_name_list->append(name);
         w->miniWidget->deviceCombox->addItem(label);*/
     }
@@ -1081,19 +1083,19 @@ void DeviceSwitchWidget::add_stream (DeviceSwitchWidget *w, MateMixerStream *str
     controls = mate_mixer_stream_list_controls (stream);
 
     while (controls != nullptr) {
-        MateMixerStreamControl    *control = MATE_MIXER_STREAM_CONTROL (controls->data);
+        w->control = MATE_MIXER_STREAM_CONTROL (controls->data);
         MateMixerStreamControlRole role;
-        role = mate_mixer_stream_control_get_role (control);
-        const gchar *m_pStreamControlName = mate_mixer_stream_control_get_name(control);
+        role = mate_mixer_stream_control_get_role (w->control);
+        const gchar *m_pStreamControlName = mate_mixer_stream_control_get_name(w->control);
         if (role == MATE_MIXER_STREAM_CONTROL_ROLE_APPLICATION) {
-            MateMixerAppInfo *m_pAppInfo = mate_mixer_stream_control_get_app_info(control);
+            MateMixerAppInfo *m_pAppInfo = mate_mixer_stream_control_get_app_info(w->control);
             if (m_pAppInfo != nullptr) {
                 const gchar *m_pAppName = mate_mixer_app_info_get_name(m_pAppInfo);
                 if (strcmp(m_pAppName,"ukui-session") != 0) {
                     w->stream_control_list->append(m_pStreamControlName);
-                    if G_UNLIKELY (control == nullptr)
+                    if G_UNLIKELY (w->control == nullptr)
                         return;
-                    add_application_control (w, control);
+                    add_application_control (w, w->control);
                 }
             }
             else
@@ -1118,7 +1120,6 @@ void DeviceSwitchWidget::add_stream (DeviceSwitchWidget *w, MateMixerStream *str
 */
 void DeviceSwitchWidget::add_application_control (DeviceSwitchWidget *w, MateMixerStreamControl *control)
 {
-    MateMixerStream *stream;
     MateMixerStreamControlMediaRole media_role;
     MateMixerAppInfo *info;
     guint app_count;
@@ -1126,7 +1127,6 @@ void DeviceSwitchWidget::add_application_control (DeviceSwitchWidget *w, MateMix
     const gchar *app_id;
     const gchar *app_name;
     const gchar *app_icon;
-    appnum++;
     app_count = appnum;
 
     media_role = mate_mixer_stream_control_get_media_role (control);
@@ -1167,9 +1167,9 @@ void DeviceSwitchWidget::add_application_control (DeviceSwitchWidget *w, MateMix
 
     /* By default channel bars use speaker icons, use microphone icons
      * instead for recording applications */
-    stream = mate_mixer_stream_control_get_stream (control);
-    if (stream != nullptr)
-        direction = mate_mixer_stream_get_direction (stream);
+    w->stream = mate_mixer_stream_control_get_stream (control);
+    if (w->stream != nullptr)
+        direction = mate_mixer_stream_get_direction (w->stream);
 
     if (direction == MATE_MIXER_DIRECTION_INPUT) {
     }
@@ -1185,20 +1185,19 @@ void DeviceSwitchWidget::add_application_control (DeviceSwitchWidget *w, MateMix
 
 void DeviceSwitchWidget::on_stream_control_added (MateMixerStream *stream,const gchar *name,DeviceSwitchWidget *w)
 {
-    MateMixerStreamControl    *control;
     MateMixerStreamControlRole role;
-    control = mate_mixer_stream_get_control (stream, name);
-    MateMixerAppInfo *m_pAppInfo = mate_mixer_stream_control_get_app_info(control);
+    w->control = mate_mixer_stream_get_control (stream, name);
+    MateMixerAppInfo *m_pAppInfo = mate_mixer_stream_control_get_app_info(w->control);
     if (m_pAppInfo != nullptr) {
         const gchar *m_pAppName = mate_mixer_app_info_get_name(m_pAppInfo);
         if (strcmp(m_pAppName,"ukui-session") != 0) {
-            if G_UNLIKELY (control == nullptr)
+            if G_UNLIKELY (w->control == nullptr)
                 return;
 
-            role = mate_mixer_stream_control_get_role (control);
+            role = mate_mixer_stream_control_get_role (w->control);
             if (role == MATE_MIXER_STREAM_CONTROL_ROLE_APPLICATION) {
                 w->stream_control_list->append(name);
-                add_application_control (w, control);
+                add_application_control (w, w->control);
             }
         }
     }
@@ -1275,6 +1274,7 @@ void DeviceSwitchWidget::remove_application_control (DeviceSwitchWidget *w,const
 
 void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, const gchar *app_name,QString app_icon_name,MateMixerStreamControl *control)
 {
+    appnum++;
     //获取应用静音状态及音量
     int volume = 0;
     gboolean is_mute = false;
@@ -1557,6 +1557,7 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
     //设置布局的垂直间距以及设置vlayout四周的间距
     w->appWidget->m_pVlayout->setSpacing(18);
     w->appWidget->displayAppVolumeWidget->resize(358,14+appnum*78);
+    qDebug() << "widget size:" << w->appWidget->displayAppVolumeWidget->size() << "app num" << appnum;
     w->appWidget->m_pVlayout->setContentsMargins(18,14,34,18);
     w->appWidget->m_pVlayout->update();
 
@@ -1684,7 +1685,6 @@ void DeviceSwitchWidget::set_context(DeviceSwitchWidget *w,MateMixerContext *con
                     "stored-control-removed",
                     G_CALLBACK (on_context_stored_control_removed),
                     w);
-
 }
 
 /*
@@ -1818,7 +1818,6 @@ void DeviceSwitchWidget::set_input_stream (DeviceSwitchWidget *w, MateMixerStrea
                           G_CALLBACK (on_stream_control_mute_notify),
                           w);
     }
-//    MateMixerStreamControl *c = mate_mixer_stream_get_default_control(stream);
     update_input_settings (w,w->m_pInputBarStreamControl);
 }
 
@@ -1851,7 +1850,6 @@ void DeviceSwitchWidget::on_context_default_output_stream_notify (MateMixerConte
     if (stream == nullptr) {
         return;
     }
-
     update_icon_output(w,context);
 //    set_output_stream (w, stream);
 }
@@ -1937,27 +1935,10 @@ void DeviceSwitchWidget::update_icon_input (DeviceSwitchWidget *w,MateMixerConte
     }
 
     if (show == TRUE)
-            g_debug ("Input icon enabled");
+        g_debug ("Input icon enabled");
     else
-            g_debug ("There is no recording application, input icon disabled");
+        g_debug ("There is no recording application, input icon disabled");
 
-//    //静音输入
-//    connect(w->devWidget->inputMuteButton,&QPushButton::clicked,[=]() {
-//        bool state = mate_mixer_stream_control_get_mute(control);
-//        mate_mixer_stream_control_set_mute(control,!state);
-//        w->updateMicrophoneIcon(volume,!state);
-//    });
-
-//    //当有录音时，输入滑块控制输入声音
-//    connect(w->devWidget->inputDeviceSlider,&QSlider::valueChanged,[=](int value){
-//        QString percent;
-//        percent = QString::number(value);
-//        mate_mixer_stream_control_set_mute(control,FALSE);
-//        bool status = mate_mixer_stream_control_get_mute(control);
-//        w->updateMicrophoneIcon(value,status);
-//        int volume = value*65536/100;
-//        mate_mixer_stream_control_set_volume(control,volume);
-//    });
     gvc_stream_status_icon_set_control (w, control);
 
     if (control != nullptr) {
@@ -2306,15 +2287,11 @@ void DeviceSwitchWidget::miniWidgetShow()
     //给定任务栏高度和初始值
     int panelHeight = 46;
     int panelPosition = 0;
-    //获取任务栏高度和位置
-    QStringList keys = panelSetting->keys();
-    if (keys.contains("panelsize")) {
-        panelHeight = panelSetting->get("panelsize").toInt();
-    }
-    if (keys.contains("panelposition")) {
-        panelPosition = panelSetting->get("panelposition").toInt();
-    }
-    int totalHeight = qApp->primaryScreen()->size().height();
+
+    panelHeight = getPanelHeight("panelheight");
+    panelPosition = getPanelPosition("panelposition");
+
+    int totalHeight = qApp->primaryScreen()->size().height() + qApp->primaryScreen()->geometry().y();
     int totalWidth = qApp->primaryScreen()->size().width() + qApp->primaryScreen()->geometry().x();
     if (panelPosition == 0) { //任务栏在下
         miniWidget->setGeometry(totalWidth-miniWidget->width(),totalHeight-panelHeight-miniWidget->height()-2,miniWidget->width(),miniWidget->height());
@@ -2339,15 +2316,11 @@ void DeviceSwitchWidget::advancedWidgetShow()
     //给定任务栏高度和位置初始值
     int panelHeight = 46;
     int panelPosition = 0;
-    //获取任务栏高度和位置
-    QStringList keys = panelSetting->keys();
-    if (keys.contains("panelsize")) {
-        panelHeight = panelSetting->get("panelsize").toInt();
-    }
-    if (keys.contains("panelposition")) {
-        panelPosition = panelSetting->get("panelposition").toInt();
-    }
-    int totalHeight = qApp->primaryScreen()->size().height();
+
+    panelHeight = getPanelHeight("panelheight");
+    panelPosition = getPanelPosition("panelposition");
+
+    int totalHeight = qApp->primaryScreen()->size().height() + qApp->primaryScreen()->geometry().y();
     int totalWidth = qApp->primaryScreen()->size().width() + qApp->primaryScreen()->geometry().x();
     if (panelPosition == 0) { //任务栏在下
         this->setGeometry(totalWidth-this->width(),totalHeight-panelHeight-this->height()-2,this->width(),this->height());
