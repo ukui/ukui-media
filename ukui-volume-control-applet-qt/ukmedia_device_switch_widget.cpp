@@ -666,7 +666,7 @@ void DeviceSwitchWidget::miniWidgetKeyboardPressedSlot(int volumeGain)
 void DeviceSwitchWidget::jumpControlPanelSlot()
 {
     m_process = new QProcess(this);
-    m_process->start("ukui-volume-control");
+    m_process->start("ukui-volume-control -s");
 }
 
 /*
@@ -1573,7 +1573,6 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
     //设置布局的垂直间距以及设置vlayout四周的间距
     w->appWidget->m_pVlayout->setSpacing(18);
     w->appWidget->displayAppVolumeWidget->resize(358,14+appnum*78);
-    qDebug() << "widget size:" << w->appWidget->displayAppVolumeWidget->size() << "app num" << appnum;
     w->appWidget->m_pVlayout->setContentsMargins(18,14,34,18);
     w->appWidget->m_pVlayout->update();
 

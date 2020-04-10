@@ -153,7 +153,6 @@ void SliderTipLabelHelper::mousePressedEvent(QObject *obj, QMouseEvent *e)
     percent.append("%");
 
     m_pTiplabel->setText(percent);
-    qDebug() << "value:" << slider->value() << "rect:" <<rect;
     m_pTiplabel->move(gPos.x()-(m_pTiplabel->width()/2)+9,gPos.y()-m_pTiplabel->height()-1);
     m_pTiplabel->show();
 }
