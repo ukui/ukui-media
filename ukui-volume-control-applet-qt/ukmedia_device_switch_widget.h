@@ -185,15 +185,9 @@ private:
     QMenu *menu;
     QAction *m_pMuteAction;
     QAction *m_pSoundPreferenceAction;
-    QWidget *actionMuteWid;
-    QWidgetAction *actionMute;
     QString outputControlName;
     GSettings *sound_settings;
     UkmediaTrayIcon *soundSystemTrayIcon;
-    QWidget *actionSoundPreferenceWid;
-    QWidgetAction *actionSoundPreference;
-    QCheckBox *muteCheckBox;
-    QLabel *muteLabel;
     QProcess *m_process;
 protected:
     void paintEvent(QPaintEvent *event);
