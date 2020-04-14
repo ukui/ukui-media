@@ -20,7 +20,7 @@
 #include <QHBoxLayout>
 #include <QPainter>
 #include <QSpacerItem>
-
+#include <QApplication>
 UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QWidget *parent) : QWidget(parent)
 {
     masterWidget = new QWidget(this);
@@ -184,6 +184,19 @@ void UkmediaMiniMasterVolumeWidget::keyPressEvent(QKeyEvent *event)
         volumeGain = 1;
         Q_EMIT keyboard_pressed_signal(volumeGain);
     }
+}
+
+/*
+    点击窗口之外的部分隐藏
+*/
+bool UkmediaMiniMasterVolumeWidget:: event(QEvent *event)
+{
+    if (event->type() == QEvent::ActivationChange) {
+        if (QApplication::activeWindow() != this) {
+            this->hide();
+        }
+    }
+    return QWidget::event(event);
 }
 
 /*

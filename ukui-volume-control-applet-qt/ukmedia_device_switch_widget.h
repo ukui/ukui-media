@@ -37,8 +37,6 @@
 #include <QGSettings>
 extern "C" {
 #include <libmatemixer/matemixer.h>
-#include <gtk/gtk.h>
-#include <canberra-gtk.h>
 #include <gio/gio.h>
 }
 #define UKUI_PANEL_SETTING "org.ukui.panel.settings"
@@ -185,6 +183,8 @@ private:
     QStringList *app_name_list;
 
     QMenu *menu;
+    QAction *m_pMuteAction;
+    QAction *m_pSoundPreferenceAction;
     QWidget *actionMuteWid;
     QWidgetAction *actionMute;
     QString outputControlName;

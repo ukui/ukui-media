@@ -50,6 +50,7 @@ private:
     QLabel *deviceLabel;
     QComboBox *deviceCombox;
 protected:
+    bool event(QEvent *event);//重写窗口事件
     void paintEvent(QPaintEvent *event);
     virtual void wheelEvent(QWheelEvent *event);
     void keyPressEvent(QKeyEvent *event);

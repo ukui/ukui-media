@@ -18,7 +18,6 @@
 #include "ukmedia_slider_tip_label_helper.h"
 #include <QWidget>
 #include <QMouseEvent>
-#include <xcb/xcb.h>
 #include <QApplication>
 #include <QStyleOption>
 #include <QStyle>
@@ -49,7 +48,7 @@ void MediaSliderTipLabel::paintEvent(QPaintEvent *e)
 //    setProperty("blurRegion",QRegion(path.toFillPolygon().toPolygon()));
 //    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 //    style()->drawControl(QStyle::CE_HeaderLabel,&opt,&p,this);
-//    style()->drawControl(QStyle::CE_HeaderLabel,&opt,&p,this);
+    style()->drawControl(QStyle::CE_HeaderLabel,&opt,&p,this);
     QLabel::paintEvent(e);
 }
 SliderTipLabelHelper::SliderTipLabelHelper(QObject *parent) :QObject(parent)

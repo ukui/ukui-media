@@ -33,7 +33,6 @@ CONFIG += \
     no_keywords link_pkgconfig debug\
 
 PKGCONFIG += \
-    gtk+-3.0 \
     glib-2.0 \
     libmatemixer \
     gsettings-qt \

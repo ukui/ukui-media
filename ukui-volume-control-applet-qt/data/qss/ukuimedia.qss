@@ -1,11 +1,3 @@
-/*音量描述label*/
-QLabel{
-    background:transparent;
-    border:0px;
-    color:#ffffff;
-    font-size:14px;
-}
-
 /*音量值label*/
 QLabel#displayVolumeLabel{
     color: #ffffff;
@@ -17,18 +9,6 @@ QCheckBox
 {
     spacing: 5px;
 
-}
-
-QWidget#mainWidget{
-    width:400px;
-    height:320px;
-    background:rgba(14,19,22,0.95);
-    border:1px solid rgba(255, 255, 255, 0.05);
-    border-radius:60px;}
-
-/*右击菜单*/
-QAction {
-    font-color: rgb(255,255,255);
 }
 
 /*静音按钮*/
@@ -60,28 +40,6 @@ QSlider::handle:horizontal {
     height: 20px;
     background: rgb(61,107,229);
     border-radius:10px;
-}
-
-/*菜单*/
-QMenu {
-    background-color: rgba(8,10,12,90%);
-    border: 1px solid #626c6e;
-    padding: 6px 2px 6px 2px;
-}
-
-QMenu::item {
-    font-size: 14px;
-    color: #ffffff;
-    height: 36px;
-    width: 250px;
-}
-
-QMenu::item:selected{
-    background-color: rgba(190,216,239,20%);
-}
-
-QMenu::item:pressed{
-    background-color: rgb(190,216,239);
 }
 
 /*托盘图标*/
@@ -137,7 +95,7 @@ QScrollBar::add-page:vertical {
 QScrollBar::sub-page:vertical {
         background:#47F8A9;
 }
-
+/*
 QToolTip{
     height: 98px;
     width: 38px;
@@ -152,4 +110,4 @@ QToolTip{
     border:1px solid rgba(255, 255, 255, 0.2);
     border-radius:6px;
 }
-
+*/
