@@ -67,7 +67,23 @@ UkmediaDeviceWidget::UkmediaDeviceWidget(QWidget *parent) : QWidget (parent)
                                 "padding-left:0px;}");
     outputDeviceBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
                                  "padding-left:0px;}");
-
+    outputDeviceSlider->setStyleSheet("QSlider::groove:horizontal {border: 0px solid #bbb;}"
+                                      "QSlider::sub-page:horizontal {"
+                                      "background: rgb(107,142,235);"
+                                      "border-radius: 2px;"
+                                      "margin-top:9px;"
+                                      "margin-bottom:9px;}"
+                                      "QSlider::add-page:horizontal {"
+                                      "background:  rgba(52,70,80,90%);"
+                                      "border: 0px solid #777;"
+                                      "border-radius: 2px;"
+                                      "margin-top:9px;"
+                                      "margin-bottom:9px;}"
+                                      "QSlider::handle:horizontal {"
+                                      "width: 20px;"
+                                      "height: 20px;"
+                                      "background: rgb(61,107,229);"
+                                      "border-radius:10px;}");
 
     outputDeviceLabel->setStyleSheet("QLabel{background:transparent;"
                                      "border:0px;color:#ffffff;"

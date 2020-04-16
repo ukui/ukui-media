@@ -120,9 +120,9 @@ UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QWidget *parent) : 
                                       "height: 20px;"
                                       "background: rgb(61,107,229);"
                                       "border-radius:10px;}");
-    this->setStyleSheet("QWidget#miniWidget{border:1px solid rgba(255, 255, 255, 0.05);"
-                        "background:rgba(19,19,20,0.8);"
-                        "border-radius:6px 6px 6px 6px;}");
+//    this->setStyleSheet("QWidget#miniWidget{border:1px solid rgba(255, 255, 255, 0.05);"
+//                        "background:rgba(19,19,20,0.8);"
+//                        "border-radius:6px 6px 6px 6px;}");
 
 }
 
@@ -131,16 +131,16 @@ void UkmediaMiniMasterVolumeWidget::paintEvent(QPaintEvent *event)
     QStyleOption opt;
     opt.init(this);
     QPainter p(this);
-//    p.setBrush(QBrush(QColor(0x00,0xFF,0xFF,0x59)));
+    p.setBrush(QBrush(QColor(0x13,0x13,0x14,0xB2)));
     p.setPen(Qt::NoPen);
     QPainterPath path;
     opt.rect.adjust(0,0,0,0);
     path.addRoundedRect(opt.rect,6,6);
     p.setRenderHint(QPainter::Antialiasing);  // 反锯齿;
-//    p.drawRoundedRect(opt.rect,6,6);
+    p.drawRoundedRect(opt.rect,6,6);
     setProperty("blurRegion",QRegion(path.toFillPolygon().toPolygon()));
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
-    QWidget::paintEvent(event);
+//    QWidget::paintEvent(event);
 }
 
 /*

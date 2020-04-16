@@ -24,6 +24,30 @@
 
 DisplayerMode displayMode = MINI_MODE;
 
+UkuiApplicationWidget::UkuiApplicationWidget(QWidget *parent)
+{
+    Q_UNUSED(parent);
+}
+
+void UkuiApplicationWidget::paintEvent(QPaintEvent *e)
+{
+    QStyleOption opt;
+    opt.init(this);
+    QPainter p(this);
+    p.setBrush(QBrush(QColor(0x00,0x00,0x00,0x00)));
+    p.setPen(Qt::NoPen);
+    QPainterPath path;
+    opt.rect.adjust(0,0,0,0);
+    p.setRenderHint(QPainter::Antialiasing);  // 反锯齿;
+    setProperty("blurRegion",QRegion(path.toFillPolygon().toPolygon()));
+    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+}
+
+UkuiApplicationWidget::~UkuiApplicationWidget()
+{
+
+}
+
 UkuiMediaButton::UkuiMediaButton(QWidget *parent)
 {
     Q_UNUSED(parent);

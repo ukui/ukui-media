@@ -85,16 +85,28 @@ bool UkmediaTrayIcon::event(QEvent *event)
 
 void DeviceSwitchWidget::paintEvent(QPaintEvent *event)
 {
+//    QStyleOption opt;
+//    opt.init(this);
+//    QPainter p(this);
+//    p.setPen(Qt::NoPen);
+//    QPainterPath path;
+//    path.addRoundedRect(opt.rect,6,6);
+//    p.setRenderHint(QPainter::Antialiasing);  // 反锯齿;
+//    setProperty("blurRegion",QRegion(path.toFillPolygon().toPolygon()));
+//    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+//    QWidget::paintEvent(event);
     QStyleOption opt;
     opt.init(this);
     QPainter p(this);
+    p.setBrush(QBrush(QColor(0x13,0x13,0x14,0xB2)));
     p.setPen(Qt::NoPen);
     QPainterPath path;
+    opt.rect.adjust(0,0,0,0);
     path.addRoundedRect(opt.rect,6,6);
     p.setRenderHint(QPainter::Antialiasing);  // 反锯齿;
+    p.drawRoundedRect(opt.rect,6,6);
     setProperty("blurRegion",QRegion(path.toFillPolygon().toPolygon()));
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
-    QWidget::paintEvent(event);
 }
 
 /*
@@ -183,7 +195,7 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     miniWidget = new UkmediaMiniMasterVolumeWidget();
 
     appWidget->appArea = new QScrollArea(appWidget);
-    appWidget->displayAppVolumeWidget = new QWidget(appWidget->appArea);
+    appWidget->displayAppVolumeWidget = new UkuiApplicationWidget(appWidget->appArea);
     appWidget->appArea->setWidget(appWidget->displayAppVolumeWidget);
     appWidget->m_pVlayout = new QVBoxLayout(appWidget->displayAppVolumeWidget);
 
@@ -294,16 +306,15 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     appWidget->displayAppVolumeWidget->setLayout(appWidget->m_pVlayout);
 
     this->setObjectName("mainWidget");
-    this->setStyleSheet("QWidget#mainWidget{"
-                        "background:rgba(14,19,22,0.7);"
-                        "border-radius:6px 6px 6px 6px;}");
+//    this->setStyleSheet("QWidget#mainWidget{"
+//                        "background:rgba(14,19,22,0.7);"
+//                        "border-radius:6px 6px 6px 6px;}");
     appWidget->setObjectName("appWidget");
-    appWidget->setStyleSheet("QWidget#appWidget{background:rgba(14,19,22,0.7);}");
 
     appWidget->setObjectName("appWidget");
-    appWidget->setStyleSheet("QWidget#appWidget{background:rgba(14,19,22,0.7);}");
-    appWidget->displayAppVolumeWidget->setObjectName("displayAppVolumeWidget");
-    appWidget->displayAppVolumeWidget->setStyleSheet("QWidget#displayAppVolumeWidget{background:rgba(14,19,22,0);}");
+//    appWidget->setStyleSheet("QWidget#appWidget{background:rgba(14,19,22,0.7);}");
+//    appWidget->displayAppVolumeWidget->setObjectName("displayAppVolumeWidget");
+//    appWidget->displayAppVolumeWidget->setStyleSheet("QWidget#displayAppVolumeWidget{background:rgba(14,19,22,0);}");
     appWidget->appArea->setStyleSheet("QScrollArea{border:none;}");
     appWidget->appArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     appWidget->appArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
@@ -1119,7 +1130,7 @@ void DeviceSwitchWidget::add_application_control (DeviceSwitchWidget *w, MateMix
     QString app_icon_name = mate_mixer_app_info_get_icon(info);
     app_name = mate_mixer_app_info_get_name (info);
     //添加应用添加到应用音量中
-    add_app_to_appwidget(w,int(appnum),app_name,app_icon_name,control);
+    add_app_to_appwidget(w,app_name,app_icon_name,control);
 
     if (app_name == nullptr)
         app_name = mate_mixer_stream_control_get_label (control);
@@ -1177,14 +1188,11 @@ void DeviceSwitchWidget::on_stream_control_removed (MateMixerStream *stream,cons
     Q_UNUSED(stream);
     /* No way to be sure that it is an application control, but we don't have
      * any other than application bars that could match the name */
-    qDebug() << "移除stream" << name;
 
-    if (w->stream_control_list->contains(name)) {
-        qDebug() << "移除的stream 在stream中" << name;
-    }
-    else {
+    if (!w->stream_control_list->contains(name)) {
         return;
     }
+
     if (w->stream_control_list->count() > 0 && w->app_name_list->count() > 0) {
         remove_application_control (w, name);
     }
@@ -1200,16 +1208,19 @@ void DeviceSwitchWidget::remove_application_control (DeviceSwitchWidget *w,const
     g_debug ("Removing application stream %s", m_pAppName);
     /* We could call bar_set_stream_control here, but that would pointlessly
      * invalidate the channel bar, so just remove it ourselves */
-    int index = w->stream_control_list->indexOf(m_pAppName);
+    int index = -1;
+    if (w->stream_control_list->contains(m_pAppName)) {
+        index = w->stream_control_list->indexOf(m_pAppName);
+    }
     if (index == -1)
         return;
-    if (w->stream_control_list->count() > w->app_name_list->count()) {
-        w->stream_control_list->removeAt(index);
-        return;
-    }
-    if (index > w->app_name_list->count() || index > w->appWidget->m_pVlayout->count()) {
-        return;
-    }
+//    if (w->stream_control_list->count() > w->app_name_list->count()) {
+//        w->stream_control_list->removeAt(index);
+//        return;
+//    }
+//    if (index > w->app_name_list->count() || index > w->appWidget->m_pVlayout->count()) {
+//        return;
+//    }
     w->stream_control_list->removeAt(index);
     w->app_name_list->removeAt(index);
     w->appBtnNameList->removeAt(index);
@@ -1232,7 +1243,6 @@ void DeviceSwitchWidget::remove_application_control (DeviceSwitchWidget *w,const
     //设置布局的间距以及设置vlayout四周的间距
     w->appWidget->m_pVlayout->setSpacing(18);
     w->appWidget->displayAppVolumeWidget->resize(358,14+appnum*78);
-
     w->appWidget->m_pVlayout->setContentsMargins(18,14,34,18);
     w->appWidget->m_pVlayout->update();
     if (appnum <= 0) {
@@ -1244,7 +1254,7 @@ void DeviceSwitchWidget::remove_application_control (DeviceSwitchWidget *w,const
 
 }
 
-void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, const gchar *app_name,QString app_icon_name,MateMixerStreamControl *control)
+void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar *app_name,QString app_icon_name,MateMixerStreamControl *control)
 {
     appnum++;
     //获取应用静音状态及音量
@@ -1262,15 +1272,15 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
     XdgDesktopFile xdg;
     xdg.load(iconName);
     QString title(xdg.localizedValue("Name").toString());
+    QString xdgicon(xdg.localizedValue("Icon").toString());
 
-    GError **error = nullptr;
-    GKeyFileFlags flags = G_KEY_FILE_NONE;
-    GKeyFile *keyflie = g_key_file_new();
+//    GError **error = nullptr;
+//    GKeyFileFlags flags = G_KEY_FILE_NONE;
+//    GKeyFile *keyflie = g_key_file_new();
 
-    qDebug() << "应用名:" << app_name;
-    g_key_file_load_from_file(keyflie,iconName.toLocal8Bit(),flags,error);
-    char *icon_str = g_key_file_get_locale_string(keyflie,"Desktop Entry","Icon",nullptr,nullptr);
-    QIcon icon = QIcon::fromTheme(QString::fromLocal8Bit(icon_str));
+//    g_key_file_load_from_file(keyflie,iconName.toLocal8Bit(),flags,error);
+//    char *icon_str = g_key_file_get_locale_string(keyflie,"Desktop Entry","Icon",nullptr,nullptr);
+//    QIcon icon = QIcon::fromTheme(QString::fromLocal8Bit(icon_str));
     w->appWidget->app_volume_list->append(app_icon_name);
 
     //widget显示应用音量
@@ -1311,12 +1321,11 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
 
     //设置每项的固定大小
     w->appWidget->appLabel->setFixedSize(220,18);
-    w->appWidget->appIconBtn->setFixedSize(32,32);
 
     QSize icon_size(32,32);
     w->appWidget->appIconBtn->setIconSize(icon_size);
     w->appWidget->appIconBtn->setStyleSheet("QPushButton{background:transparent;border:0px;padding-left:0px;}");
-    w->appWidget->appIconBtn->setIcon(icon);
+    w->appWidget->appIconBtn->setIcon(QIcon::fromTheme(xdgicon));
     w->appWidget->appIconBtn->setFocusPolicy(Qt::NoFocus);
 
     w->appWidget->appSlider->setMaximum(100);
@@ -1337,10 +1346,7 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
     w->appBtnNameList->append(appMuteBtnlStr);
     w->appWidget->appMuteBtn->setObjectName(appMuteBtnlStr);
     w->appWidget->appSlider->setObjectName(appSliderStr);
-    /*
-    w->appWidget->appLabel->setObjectName(appLabelStr);
-    w->appWidget->appVolumeLabel->setObjectName(appVolumeLabelStr);
-    */
+
     //设置label 和滑动条的值
     QSlider *slider = w->appWidget->findChild<QSlider*>(appSliderStr);
     if (slider == nullptr)
@@ -1350,12 +1356,7 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
     QPushButton *btn = w->appWidget->findChild<QPushButton *>(appMuteBtnlStr);
     if (btn == nullptr)
         return;
-    /*
-    QLabel *l = w->appWidget->findChild<QLabel*>(appVolumeLabelStr);
-    l->setNum(display_volume);
-    QLabel *l2 = w->appWidget->findChild<QLabel*>(appLabelStr);
-    l2->setText(app_name);
-    */
+
     if (is_mute) {
         btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
     }
@@ -1379,11 +1380,6 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
         w->appWidget->appLabel->setText(title);
     }
 
-    /*
-        w->appWidget->appSlider->setValue(display_volume);
-        w->appWidget->appVolumeLabel->setNum(display_volume);
-        mate_mixer_stream_control_set_mute(control,is_mute);
-    */
     /*滑动条控制应用音量*/
     connect(w->appWidget->appSlider,&QSlider::valueChanged,[=](int value){
         application_name = appSliderStr;
@@ -1394,10 +1390,7 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
         QPushButton *btn = w->findChild<QPushButton*>(appMuteBtnlStr);
         if (btn == nullptr)
             return;
-        /*
-        QLabel *l = w->findChild<QLabel*>(appVolumeLabelStr);
-        l->setNum(value);
-        */
+
         bool status = mate_mixer_stream_control_get_mute(control);
         int v = int(value*65536/100 + 0.5);
         mate_mixer_stream_control_set_volume(control,guint(v));
@@ -1462,10 +1455,7 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
     connect(w,&DeviceSwitchWidget::app_volume_changed,[=](bool is_mute,int volume,QString app_name,QString appBtnName){
         Q_UNUSED(is_mute);
         QString slider_str = app_name;
-        /*
-        slider_str.append("Slider");
-        slider_str.append(QString::number(appnum));
-        */
+
         QSlider *slider = w->findChild<QSlider*>(slider_str);
         if (slider == nullptr)
             return;
@@ -1492,10 +1482,7 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
 
     connect(w,&DeviceSwitchWidget::system_muted_signal,[=](bool isMute){
         mate_mixer_stream_control_set_mute(control,isMute);
-        /*
-        slider_str.append("Slider");
-        slider_str.append(QString::number(appnum));
-        */
+
         int volume = mate_mixer_stream_control_get_volume(control);
         volume = volume*100/65536.0;
         QPushButton *btn = w->findChild<QPushButton *>(appMuteBtnlStr);
@@ -1525,13 +1512,15 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
         w->appWidget->upWidget->show();
     }
     app_count++;
-    appnum++;
     w->appWidget->m_pVlayout->addWidget(app_widget);
     //设置布局的垂直间距以及设置vlayout四周的间距
     w->appWidget->m_pVlayout->setSpacing(18);
     w->appWidget->displayAppVolumeWidget->resize(358,14+appnum*78);
     w->appWidget->m_pVlayout->setContentsMargins(18,14,34,18);
     w->appWidget->m_pVlayout->update();
+    
+    app_widget->setStyleSheet("QWidget{ background:transparent;}");
+    w->appWidget->displayAppVolumeWidget->setStyleSheet("QWidget{ background:transparent;}");
     w->appWidget->appMuteBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
                                             "padding-left:0px;}");
     w->appWidget->appLabel->setStyleSheet("QLabel{width:210px;"
@@ -1672,7 +1661,6 @@ void DeviceSwitchWidget::on_context_stream_removed (MateMixerContext *context,co
 */
 void DeviceSwitchWidget::remove_stream (DeviceSwitchWidget *w, const gchar *name)
 {
-    qDebug() << "移除应用" <<  name;
     int index = w->output_stream_list->indexOf(name);
     if (index == -1) {
         return;

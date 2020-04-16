@@ -23,6 +23,7 @@
 #include <QWidget>
 #include <QPushButton>
 #include <QToolButton>
+#include <QFrame>
 #include <QDebug>
 enum DisplayerMode{
     MINI_MODE,
@@ -33,6 +34,16 @@ enum DisplayerMode{
 //{
 
 //}
+
+class UkuiApplicationWidget:public QWidget
+{
+    Q_OBJECT
+public:
+    UkuiApplicationWidget(QWidget *parent = nullptr);
+    ~UkuiApplicationWidget();
+protected:
+    void paintEvent(QPaintEvent*);
+};
 
 class UkuiMediaButton:public QToolButton
 {

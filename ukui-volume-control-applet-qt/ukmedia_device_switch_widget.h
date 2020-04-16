@@ -89,7 +89,7 @@ public:
     static void on_stream_control_added (MateMixerStream *stream,const gchar *name,DeviceSwitchWidget  *w);
     static void on_stream_control_removed (MateMixerStream *stream,const gchar *name,DeviceSwitchWidget *w);
     static void remove_application_control (DeviceSwitchWidget *w,const gchar *name);
-    static void add_app_to_appwidget(DeviceSwitchWidget *w,int appnum,const gchar *app_name,QString app_icon_name,MateMixerStreamControl *control);
+    static void add_app_to_appwidget(DeviceSwitchWidget *w,const gchar *app_name,QString app_icon_name,MateMixerStreamControl *control);
     static void on_context_stored_control_added (MateMixerContext *context,const gchar *name,DeviceSwitchWidget *w);
     static void update_app_volume (MateMixerStreamControl *control, QString *pspec ,DeviceSwitchWidget *w);
 

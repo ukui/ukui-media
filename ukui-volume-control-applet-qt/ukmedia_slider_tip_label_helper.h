@@ -30,6 +30,7 @@ class MediaSliderTipLabel:public QLabel
 protected:
     void paintEvent(QPaintEvent*);
 };
+
 class SliderTipLabelHelper : public QObject
 {
     Q_OBJECT

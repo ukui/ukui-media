@@ -23,11 +23,13 @@
 #include <QStyle>
 #include <QDebug>
 #include <QPainter>
+#include <QStylePainter>
 #include <QMouseEvent>
 #include <QCoreApplication>
 #include "ukmedia_volume_slider.h"
 
 MediaSliderTipLabel::MediaSliderTipLabel(){
+    setAttribute(Qt::WA_TranslucentBackground);
 }
 
 MediaSliderTipLabel::~MediaSliderTipLabel(){
@@ -35,20 +37,18 @@ MediaSliderTipLabel::~MediaSliderTipLabel(){
 
 void MediaSliderTipLabel::paintEvent(QPaintEvent *e)
 {
-    QStyleOption opt;
-    opt.init(this);
-    QPainter p(this);
-//    p.setBrush(QBrush(QColor(0x1A,0x1A,0x1A,0xFF)));
-//    p.setPen(Qt::NoPen);
-//    p.drawRoundedRect(this->rect(), 6, 6);
-//    QPainterPath path;
-//    opt.rect.adjust(0,0,0,0);
-//    path.addRoundedRect(opt.rect,4,4);
-//    p.setRenderHint(QPainter::Antialiasing);
-//    setProperty("blurRegion",QRegion(path.toFillPolygon().toPolygon()));
-//    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
-//    style()->drawControl(QStyle::CE_HeaderLabel,&opt,&p,this);
-    style()->drawControl(QStyle::CE_HeaderLabel,&opt,&p,this);
+    QStyleOptionFrame opt;
+    initStyleOption(&opt);
+    QStylePainter p(this);
+    p.setBrush(QBrush(QColor(0x1A,0x1A,0x1A,0x4C)));
+    p.setPen(Qt::NoPen);
+    p.drawRoundedRect(this->rect(), 6, 6);
+    QPainterPath path;
+    path.addRoundedRect(opt.rect,6,6);
+    p.setRenderHint(QPainter::Antialiasing);
+    setProperty("blurRegion",QRegion(path.toFillPolygon().toPolygon()));
+    p.drawPrimitive(QStyle::PE_PanelTipLabel, opt);
+//    this->setProperty("blurRegion", QRegion(QRect(0, 0, 1, 1)));
     QLabel::paintEvent(e);
 }
 SliderTipLabelHelper::SliderTipLabelHelper(QObject *parent) :QObject(parent)
@@ -59,10 +59,10 @@ SliderTipLabelHelper::SliderTipLabelHelper(QObject *parent) :QObject(parent)
     qApp->installEventFilter(new AppEventFilter(this));
     m_pTiplabel->setFixedSize(52,30);
     m_pTiplabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-    m_pTiplabel->setStyleSheet("QLabel{background:rgba(26,26,26,0.7);"
-                               "border:1px solid rgba(255, 255, 255, 0.2);"
-                               "border-radius:6px;padding:7px}");
-}
+//    m_pTiplabel->setStyleSheet("QLabel{background:rgba(26,26,26,0.7);"
+//                               "border:1px solid rgba(255, 255, 255, 0.2);"
+//                                   "border-radius:6px;padding:7px}");
+    }
 
 void SliderTipLabelHelper::registerWidget(QWidget *w)
 {
