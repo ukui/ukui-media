@@ -200,7 +200,7 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     QSize switchSize(16,16);
     switchToMiniBtn->setIconSize(switchSize);
     switchToMiniBtn->setFixedSize(36,36);
-    switchToMiniBtn->move(358,15);
+    switchToMiniBtn->move(361,6);
     switchToMiniBtn->setStyle(new CustomStyle());
 
     switchToMiniBtn->setIcon(QIcon("/usr/share/ukui-media/img/mini-module.svg"));
@@ -633,7 +633,7 @@ void DeviceSwitchWidget::jumpControlPanelSlot()
 */
 void DeviceSwitchWidget::moveAdvanceSwitchBtnSlot()
 {
-    switchToMiniBtn->move(359,16);
+    switchToMiniBtn->move(362,7);
 }
 
 /*
@@ -791,13 +791,10 @@ void DeviceSwitchWidget::activatedSystemTrayIconSlot(QSystemTrayIcon::Activation
 */
 void DeviceSwitchWidget::init_widget_action(QWidget *wid, QString iconstr, QString textstr)
 {
-//    QString style="QWidget{background:transparent;border:0px;}\
-//            QWidget:hover{background-color:#34bed8ef; border-radius:4px;}\
-//            QWidget:pressed{background-color:#3a123456;}";
     QHBoxLayout* layout=new QHBoxLayout(wid);
     wid->setLayout(layout);
     wid->setFixedSize(246,36);
-//    wid->setStyleSheet(style);
+
     wid->setFocusPolicy(Qt::NoFocus);
 
     if(!iconstr.isEmpty()) {
@@ -811,12 +808,12 @@ void DeviceSwitchWidget::init_widget_action(QWidget *wid, QString iconstr, QStri
         labelicon->setPixmap(*pixmap);
         labelicon->setFixedSize(pixmap->size());
         labelicon->setAlignment(Qt::AlignCenter);
-//        labelicon->setStyleSheet("QLabel{background:transparent;border:0px;}");
+        labelicon->setStyleSheet("QLabel{background:transparent;border:0px;}");
         layout->addWidget(labelicon);
     }
 
     QLabel* labeltext=new QLabel(wid);
-//    labeltext->setStyleSheet("background:transparent;border:0px;color:#ffffff;font-size:14px;");
+    labeltext->setStyleSheet("background:transparent;border:0px;color:#ffffff;font-size:14px;");
     QByteArray textbyte=textstr.toLocal8Bit();
     char* text=textbyte.data();
     labeltext->setText(tr(text));
@@ -1180,6 +1177,14 @@ void DeviceSwitchWidget::on_stream_control_removed (MateMixerStream *stream,cons
     Q_UNUSED(stream);
     /* No way to be sure that it is an application control, but we don't have
      * any other than application bars that could match the name */
+    qDebug() << "移除stream" << name;
+
+    if (w->stream_control_list->contains(name)) {
+        qDebug() << "移除的stream 在stream中" << name;
+    }
+    else {
+        return;
+    }
     if (w->stream_control_list->count() > 0 && w->app_name_list->count() > 0) {
         remove_application_control (w, name);
     }
@@ -1227,6 +1232,7 @@ void DeviceSwitchWidget::remove_application_control (DeviceSwitchWidget *w,const
     //设置布局的间距以及设置vlayout四周的间距
     w->appWidget->m_pVlayout->setSpacing(18);
     w->appWidget->displayAppVolumeWidget->resize(358,14+appnum*78);
+
     w->appWidget->m_pVlayout->setContentsMargins(18,14,34,18);
     w->appWidget->m_pVlayout->update();
     if (appnum <= 0) {
@@ -1261,6 +1267,7 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
     GKeyFileFlags flags = G_KEY_FILE_NONE;
     GKeyFile *keyflie = g_key_file_new();
 
+    qDebug() << "应用名:" << app_name;
     g_key_file_load_from_file(keyflie,iconName.toLocal8Bit(),flags,error);
     char *icon_str = g_key_file_get_locale_string(keyflie,"Desktop Entry","Icon",nullptr,nullptr);
     QIcon icon = QIcon::fromTheme(QString::fromLocal8Bit(icon_str));
@@ -1518,14 +1525,13 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,int appnum, 
         w->appWidget->upWidget->show();
     }
     app_count++;
-
+    appnum++;
     w->appWidget->m_pVlayout->addWidget(app_widget);
     //设置布局的垂直间距以及设置vlayout四周的间距
     w->appWidget->m_pVlayout->setSpacing(18);
     w->appWidget->displayAppVolumeWidget->resize(358,14+appnum*78);
     w->appWidget->m_pVlayout->setContentsMargins(18,14,34,18);
     w->appWidget->m_pVlayout->update();
-
     w->appWidget->appMuteBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
                                             "padding-left:0px;}");
     w->appWidget->appLabel->setStyleSheet("QLabel{width:210px;"
@@ -1666,6 +1672,7 @@ void DeviceSwitchWidget::on_context_stream_removed (MateMixerContext *context,co
 */
 void DeviceSwitchWidget::remove_stream (DeviceSwitchWidget *w, const gchar *name)
 {
+    qDebug() << "移除应用" <<  name;
     int index = w->output_stream_list->indexOf(name);
     if (index == -1) {
         return;

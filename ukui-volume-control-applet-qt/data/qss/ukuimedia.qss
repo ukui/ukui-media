@@ -5,17 +5,6 @@ QLabel#displayVolumeLabel{
     font-weight: bold;
 }
 
-QCheckBox
-{
-    spacing: 5px;
-
-}
-
-/*静音按钮*/
-QPushButton{
-    background-color: rgba(21,26,30,90%);
-    border-left: 0px;
-}
 
 /*滑动条slider*/
 QSlider::groove:horizontal {
@@ -42,27 +31,6 @@ QSlider::handle:horizontal {
     border-radius:10px;
 }
 
-/*托盘图标*/
-QSystemTrayIcon::hover{
-    background-color: rgba(190,216,239,20%);
-}
-
-QSystemTrayIcon::pressed{
-    background-color: rgba(190,216,239,12%);
-}
-
-QCheckBox {
-   width:16px;
-   height:16px;
-}
-
-QCheckBox::indicator:unchecked {
-   image:url(/usr/share/ukui-media/img/settings.svg);
-}
-
-QCheckBox::indicator:checked {
-   image:url(/usr/share/ukui-media/img/tick.svg);
-}
 
 QScrollBar:vertical {
         border:2px solid red;
@@ -95,19 +63,3 @@ QScrollBar::add-page:vertical {
 QScrollBar::sub-page:vertical {
         background:#47F8A9;
 }
-/*
-QToolTip{
-    height: 98px;
-    width: 38px;
-    padding-left: 4px;
-    padding-right: 4x;
-    padding-top: 0px;
-    padding-bottom: 0px;
-    border-style: solid;
-    font-size:14px;
-    color:rgba(255,255,255,1);
-    background:rgba(26,26,26,0.7);
-    border:1px solid rgba(255, 255, 255, 0.2);
-    border-radius:6px;
-}
-*/
