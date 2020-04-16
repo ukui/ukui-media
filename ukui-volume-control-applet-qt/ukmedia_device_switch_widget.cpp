@@ -1292,13 +1292,13 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
     QSpacerItem *item2 = new QSpacerItem(12,20);
     QWidget *wid = new QWidget(app_widget);
 
-    wid->setFixedSize(306,32);
+    wid->setFixedSize(306,38);
     w->appWidget->appLabel = new QLabel(app_widget);
     w->appWidget->appIconBtn = new QPushButton(wid);
     w->appWidget->appSlider = new UkmediaVolumeSlider(wid);
     w->appWidget->appMuteBtn = new QPushButton(wid);
     w->appWidget->appSlider->setOrientation(Qt::Horizontal);
-    w->appWidget->appIconBtn->setFixedSize(32,32);
+    w->appWidget->appIconBtn->setFixedSize(38,38);
     w->appWidget->appMuteBtn->setFixedSize(24,24);
 
     w->appWidget->appSlider->setStyle(new CustomStyle());
@@ -1315,7 +1315,7 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
 
     vlayout->addWidget(w->appWidget->appLabel);
     vlayout->addWidget(wid);
-    vlayout->setSpacing(14);
+    vlayout->setSpacing(8);
     app_widget->setLayout(vlayout);
     app_widget->layout()->setContentsMargins(0,0,0,0);
 
@@ -1324,6 +1324,7 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
 
     QSize icon_size(32,32);
     w->appWidget->appIconBtn->setIconSize(icon_size);
+//    w->appWidget->appIconBtn->setStyleSheet("QPushButton{background:rgba(255,0,0,0.4);}");
     w->appWidget->appIconBtn->setStyleSheet("QPushButton{background:transparent;border:0px;padding-left:0px;}");
     w->appWidget->appIconBtn->setIcon(QIcon::fromTheme(xdgicon));
     w->appWidget->appIconBtn->setFocusPolicy(Qt::NoFocus);
