@@ -74,7 +74,7 @@ UkmediaDeviceWidget::UkmediaDeviceWidget(QWidget *parent) : QWidget (parent)
                                       "margin-top:9px;"
                                       "margin-bottom:9px;}"
                                       "QSlider::add-page:horizontal {"
-                                      "background:  rgba(52,70,80,90%);"
+                                      "background:  rgba(255,255,255,0.1);"
                                       "border: 0px solid #777;"
                                       "border-radius: 2px;"
                                       "margin-top:9px;"

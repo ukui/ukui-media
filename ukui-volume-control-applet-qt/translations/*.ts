@@ -17,32 +17,32 @@
 <context>
     <name>DeviceSwitchWidget</name>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="199"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="201"/>
         <source>Go Into Mini Mode</source>
         <translation>进入Mini模式</translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="339"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="331"/>
         <source>Output volume control</source>
         <translation>输出音量控制</translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="340"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="332"/>
         <source>Mute</source>
         <translation>静音</translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="341"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="333"/>
         <source>Sound preference(S)</source>
         <translation>设置声音(S)</translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="864"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="847"/>
         <source>Device Volume</source>
         <translation>设备音量</translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="865"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="848"/>
         <source>Application Volume</source>
         <translation>应用音量</translation>
     </message>

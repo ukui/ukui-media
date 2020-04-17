@@ -85,16 +85,6 @@ bool UkmediaTrayIcon::event(QEvent *event)
 
 void DeviceSwitchWidget::paintEvent(QPaintEvent *event)
 {
-//    QStyleOption opt;
-//    opt.init(this);
-//    QPainter p(this);
-//    p.setPen(Qt::NoPen);
-//    QPainterPath path;
-//    path.addRoundedRect(opt.rect,6,6);
-//    p.setRenderHint(QPainter::Antialiasing);  // 反锯齿;
-//    setProperty("blurRegion",QRegion(path.toFillPolygon().toPolygon()));
-//    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
-//    QWidget::paintEvent(event);
     QStyleOption opt;
     opt.init(this);
     QPainter p(this);
@@ -214,8 +204,6 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     switchToMiniBtn->setFixedSize(36,36);
     switchToMiniBtn->move(361,6);
     switchToMiniBtn->setStyle(new CustomStyle());
-
-    switchToMiniBtn->setIcon(QIcon("/usr/share/ukui-media/img/mini-module.svg"));
     switchToMiniBtn->setIcon(QIcon("/usr/share/ukui-media/img/mini-module.svg"));
 
     output_stream_list = new QStringList;
@@ -306,15 +294,8 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     appWidget->displayAppVolumeWidget->setLayout(appWidget->m_pVlayout);
 
     this->setObjectName("mainWidget");
-//    this->setStyleSheet("QWidget#mainWidget{"
-//                        "background:rgba(14,19,22,0.7);"
-//                        "border-radius:6px 6px 6px 6px;}");
     appWidget->setObjectName("appWidget");
 
-    appWidget->setObjectName("appWidget");
-//    appWidget->setStyleSheet("QWidget#appWidget{background:rgba(14,19,22,0.7);}");
-//    appWidget->displayAppVolumeWidget->setObjectName("displayAppVolumeWidget");
-//    appWidget->displayAppVolumeWidget->setStyleSheet("QWidget#displayAppVolumeWidget{background:rgba(14,19,22,0);}");
     appWidget->appArea->setStyleSheet("QScrollArea{border:none;}");
     appWidget->appArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     appWidget->appArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
@@ -744,12 +725,6 @@ void DeviceSwitchWidget::activatedSystemTrayIconSlot(QSystemTrayIcon::Activation
     //鼠标中间键点击图标
     case QSystemTrayIcon::MiddleClick: {
         if (this->isHidden() || miniWidget->isHidden()) {
-//            if (!actionMute->isChecked()) {
-//                m_pMuteAction->setIcon(QIcon("/usr/share/ukui-media/img/tick.svg"));
-//            }
-//            else {
-//                m_pMuteAction->setIcon(QIcon(""));
-//            }
             Q_EMIT mouse_middle_clicked_signal();
         }
         else {
