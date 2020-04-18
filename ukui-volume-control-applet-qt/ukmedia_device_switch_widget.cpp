@@ -177,6 +177,7 @@ void DeviceSwitchWidget::showMenu()
 
 DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
 {
+
     setWindowFlags(Qt::WindowStaysOnTopHint|Qt::Popup);
     setAttribute(Qt::WA_TranslucentBackground);
     setAttribute(Qt::WA_TranslucentBackground);
@@ -1040,7 +1041,7 @@ void DeviceSwitchWidget::add_stream (DeviceSwitchWidget *w, MateMixerStream *str
             MateMixerAppInfo *m_pAppInfo = mate_mixer_stream_control_get_app_info(w->control);
             if (m_pAppInfo != nullptr) {
                 const gchar *m_pAppName = mate_mixer_app_info_get_name(m_pAppInfo);
-                if (strcmp(m_pAppName,"ukui-session") != 0) {
+                if (strcmp(m_pAppName,"ukui-session") != 0 && strcmp(m_pAppName,"ukui-volume-control-applet-qt") != 0) {
                     w->stream_control_list->append(m_pStreamControlName);
                     if G_UNLIKELY (w->control == nullptr)
                         return;
@@ -1139,7 +1140,7 @@ void DeviceSwitchWidget::on_stream_control_added (MateMixerStream *stream,const 
     MateMixerAppInfo *m_pAppInfo = mate_mixer_stream_control_get_app_info(w->control);
     if (m_pAppInfo != nullptr) {
         const gchar *m_pAppName = mate_mixer_app_info_get_name(m_pAppInfo);
-        if (strcmp(m_pAppName,"ukui-session") != 0) {
+        if (strcmp(m_pAppName,"ukui-session") != 0 && strcmp(m_pAppName,"ukui-volume-control-applet-qt") != 0) {
             if G_UNLIKELY (w->control == nullptr)
                 return;
 
@@ -2062,6 +2063,15 @@ void DeviceSwitchWidget::on_stream_control_volume_notify (MateMixerStreamControl
         w->devWidget->inputDeviceSlider->setValue(value);
         w->updateMicrophoneIcon(value,muted);
     }
+
+    //音量值改变时添加提示音
+    QMediaPlayer *player = new QMediaPlayer;
+    player->setMedia(QUrl::fromLocalFile("/usr/share/sounds/ukui/default/alerts/drip.ogg"));
+    player->play();
+    connect(player,&QMediaPlayer::stateChanged,[=](){
+         player->deleteLater() ;
+    });
+
 }
 
 /*
@@ -2182,10 +2192,10 @@ bool DeviceSwitchWidget:: event(QEvent *event)
 void DeviceSwitchWidget::updateMicrophoneIcon(int value, bool status)
 {
     if (status) {
-        devWidget->inputMuteButton->setIcon(QIcon("/usr/share/ukui-media/img/microphone-muted.svg"));
+        devWidget->inputMuteButton->setIcon(QIcon("/usr/share/ukui-media/img/microphone-mute.svg"));
     }
     else if (value <= 0) {
-        devWidget->inputMuteButton->setIcon(QIcon("/usr/share/ukui-media/img/microphone-muted.svg"));
+        devWidget->inputMuteButton->setIcon(QIcon("/usr/share/ukui-media/img/microphone-mute.svg"));
     }
     else if (value > 0 && value <= 33) {
        devWidget->inputMuteButton->setIcon(QIcon("/usr/share/ukui-media/img/microphone-low.svg"));

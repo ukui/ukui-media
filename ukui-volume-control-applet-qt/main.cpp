@@ -23,6 +23,7 @@
 #include <QFile>
 #include "ukmedia_device_switch_widget.h"
 #include <QObject>
+#include <QQmlApplicationEngine>
 int main(int argc, char *argv[])
 {
     /*QApplication a(argc,argv);*/
@@ -45,6 +46,7 @@ int main(int argc, char *argv[])
             qDebug() << "Load translations file" << locale << "failed!";
         }
     }
+
     //加载qss文件
     QFile qss(":/data/qss/ukuimedia.qss");
     qss.open(QFile::ReadOnly);

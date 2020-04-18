@@ -35,6 +35,7 @@
 #include <QSystemTrayIcon>
 #include <QProcess>
 #include <QGSettings>
+#include <QMediaPlayer>
 extern "C" {
 #include <libmatemixer/matemixer.h>
 #include <gio/gio.h>

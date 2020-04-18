@@ -85,6 +85,23 @@ UkmediaDeviceWidget::UkmediaDeviceWidget(QWidget *parent) : QWidget (parent)
                                       "background: rgb(61,107,229);"
                                       "border-radius:10px;}");
 
+    inputDeviceSlider->setStyleSheet("QSlider::groove:horizontal {border: 0px solid #bbb;}"
+                                      "QSlider::sub-page:horizontal {"
+                                      "background: rgb(107,142,235);"
+                                      "border-radius: 2px;"
+                                      "margin-top:9px;"
+                                      "margin-bottom:9px;}"
+                                      "QSlider::add-page:horizontal {"
+                                      "background:  rgba(255,255,255,0.1);"
+                                      "border: 0px solid #777;"
+                                      "border-radius: 2px;"
+                                      "margin-top:9px;"
+                                      "margin-bottom:9px;}"
+                                      "QSlider::handle:horizontal {"
+                                      "width: 20px;"
+                                      "height: 20px;"
+                                      "background: rgb(61,107,229);"
+                                      "border-radius:10px;}");
     outputDeviceLabel->setStyleSheet("QLabel{background:transparent;"
                                      "border:0px;color:#ffffff;"
                                      "font-family:Noto Sans CJK SC;"
