@@ -1125,8 +1125,10 @@ void DeviceSwitchWidget::add_application_control (DeviceSwitchWidget *w, MateMix
     /* By default channel bars use speaker icons, use microphone icons
      * instead for recording applications */
     w->stream = mate_mixer_stream_control_get_stream (control);
-    if (w->stream != nullptr)
+    if (w->stream != nullptr) {
         direction = mate_mixer_stream_get_direction (w->stream);
+    }
+
 
     if (direction == MATE_MIXER_DIRECTION_INPUT) {
     }
@@ -2144,8 +2146,9 @@ void DeviceSwitchWidget::bar_set_stream (DeviceSwitchWidget  *w,MateMixerStream 
 {
     MateMixerStreamControl *control = nullptr;
 
-    if (stream != nullptr)
+    if (stream != nullptr) {
         control = mate_mixer_stream_get_default_control (stream);
+    }
     MateMixerDirection direction = mate_mixer_stream_get_direction(stream);
     bar_set_stream_control (w,direction, control);
 }

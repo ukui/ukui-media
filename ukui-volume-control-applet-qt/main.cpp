@@ -23,7 +23,6 @@
 #include <QFile>
 #include "ukmedia_device_switch_widget.h"
 #include <QObject>
-#include <QQmlApplicationEngine>
 int main(int argc, char *argv[])
 {
     /*QApplication a(argc,argv);*/
