@@ -365,6 +365,13 @@ void DeviceSwitchWidget::miniMastrerSliderChangedSlot(int value)
     int volume = value*65536/100;
     mate_mixer_stream_control_set_volume(control,guint(volume));
     miniWidget->displayVolumeLabel->setText(percent);
+    //音量值改变时添加提示音
+    QMediaPlayer *player = new QMediaPlayer;
+    player->setMedia(QUrl::fromLocalFile("/usr/share/sounds/ukui/default/alerts/drip.ogg"));
+    player->play();
+    connect(player,&QMediaPlayer::stateChanged,[=](){
+         player->deleteLater() ;
+    });
 }
 
 /*
@@ -1980,6 +1987,7 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
     else {
             g_debug ("There is no output stream/control, output icon disabled");
     }
+
 }
 
 void DeviceSwitchWidget::gvc_stream_status_icon_set_control (DeviceSwitchWidget *w,MateMixerStreamControl *control)
@@ -2063,14 +2071,6 @@ void DeviceSwitchWidget::on_stream_control_volume_notify (MateMixerStreamControl
         w->devWidget->inputDeviceSlider->setValue(value);
         w->updateMicrophoneIcon(value,muted);
     }
-
-    //音量值改变时添加提示音
-    QMediaPlayer *player = new QMediaPlayer;
-    player->setMedia(QUrl::fromLocalFile("/usr/share/sounds/ukui/default/alerts/drip.ogg"));
-    player->play();
-    connect(player,&QMediaPlayer::stateChanged,[=](){
-         player->deleteLater() ;
-    });
 
 }
 
