@@ -107,7 +107,7 @@ public:
     static void on_context_stored_control_removed (MateMixerContext *context,const gchar *name,DeviceSwitchWidget *w);
     static void set_context(DeviceSwitchWidget *w,MateMixerContext *context);
 
-    static void update_icon_input (DeviceSwitchWidget *w,MateMixerContext *context);
+    static void update_icon_input (DeviceSwitchWidget *w,MateMixerStream *stream);
     static void update_icon_output (DeviceSwitchWidget *w,MateMixerContext *contetx);
     static void on_stream_control_volume_notify (MateMixerStreamControl *control,GParamSpec *pspec,DeviceSwitchWidget *w);
     static void update_output_settings (DeviceSwitchWidget *w,MateMixerStreamControl *control);
