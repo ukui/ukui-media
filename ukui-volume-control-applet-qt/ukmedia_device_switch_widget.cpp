@@ -173,7 +173,6 @@ void DeviceSwitchWidget::showMenu()
         localY = cursor().pos().y();
     }
 //    menu->setGeometry(localX,localY,menu->width(),menu->height());
-    qDebug() << "菜单位置" << menu->geometry() << panelHeight;
 }
 
 DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
@@ -365,6 +364,7 @@ void DeviceSwitchWidget::miniMastrerSliderChangedSlot(int value)
     int volume = value*65536/100;
     mate_mixer_stream_control_set_volume(control,guint(volume));
     miniWidget->displayVolumeLabel->setText(percent);
+
     //音量值改变时添加提示音
     QMediaPlayer *player = new QMediaPlayer;
     player->setMedia(QUrl::fromLocalFile("/usr/share/sounds/ukui/default/alerts/drip.ogg"));
@@ -979,7 +979,6 @@ void DeviceSwitchWidget::list_device(DeviceSwitchWidget *w,MateMixerContext *con
         add_stream (w, MATE_MIXER_STREAM (list->data),context);
         w->stream = MATE_MIXER_STREAM(list->data);
         const gchar *stream_name = mate_mixer_stream_get_name(w->stream);
-        qDebug() << "1111111111111111";
         MateMixerDirection direction = mate_mixer_stream_get_direction(w->stream);
         if (direction == MATE_MIXER_DIRECTION_OUTPUT) {
             w->output_stream_list->append(stream_name);
@@ -1000,7 +999,6 @@ void DeviceSwitchWidget::add_stream (DeviceSwitchWidget *w, MateMixerStream *str
     const gchar *name = "";
     const gchar *label = "";
 
-    qDebug() << "22222222222222222";
     direction = mate_mixer_stream_get_direction (stream);
     if (direction == MATE_MIXER_DIRECTION_INPUT) {
         MateMixerStream *input;
@@ -1033,14 +1031,7 @@ void DeviceSwitchWidget::add_stream (DeviceSwitchWidget *w, MateMixerStream *str
             MateMixerSwitchOption *opt = mate_mixer_switch_get_active_option(swt);
             const char *name = mate_mixer_switch_option_get_name(opt);
             const char *label = mate_mixer_switch_option_get_label(opt);
-            qDebug() << "opt name:" << name << "opt label:" << label;
-            if (strcmp(name,"analog-output-headphones") == 0) {
-                qDebug() << "设置模拟erji" ;
-                w->miniWidget->deviceLabel->setText(tr("Analog headphones"));
-            }
-            else if (strcmp(name,"analog-output-speaker") == 0) {
-                w->miniWidget->deviceLabel->setText(tr("Speaker (Realtek Audio)"));
-            }
+
             switchList = switchList->next;
         }
         /*w->device_name_list->append(name);
@@ -1057,7 +1048,7 @@ void DeviceSwitchWidget::add_stream (DeviceSwitchWidget *w, MateMixerStream *str
             MateMixerAppInfo *m_pAppInfo = mate_mixer_stream_control_get_app_info(w->control);
             if (m_pAppInfo != nullptr) {
                 const gchar *m_pAppName = mate_mixer_app_info_get_name(m_pAppInfo);
-                if (strcmp(m_pAppName,"ukui-session") != 0 && strcmp(m_pAppName,"ukui-volume-control-applet-qt") != 0) {
+                if (strcmp(m_pAppName,"ukui-session") != 0 && strcmp(m_pAppName,"ukui-volume-control-applet-qt") != 0 && strcmp(m_pAppName,"Volume Control")) {
                     w->stream_control_list->append(m_pStreamControlName);
                     if G_UNLIKELY (w->control == nullptr)
                         return;
@@ -1135,7 +1126,6 @@ void DeviceSwitchWidget::add_application_control (DeviceSwitchWidget *w, MateMix
      * instead for recording applications */
     w->stream = mate_mixer_stream_control_get_stream (control);
     if (w->stream != nullptr) {
-        qDebug() << "33333333333333333";
         direction = mate_mixer_stream_get_direction (w->stream);
     }
 
@@ -1159,7 +1149,7 @@ void DeviceSwitchWidget::on_stream_control_added (MateMixerStream *stream,const 
     MateMixerAppInfo *m_pAppInfo = mate_mixer_stream_control_get_app_info(w->control);
     if (m_pAppInfo != nullptr) {
         const gchar *m_pAppName = mate_mixer_app_info_get_name(m_pAppInfo);
-        if (strcmp(m_pAppName,"ukui-session") != 0 && strcmp(m_pAppName,"ukui-volume-control-applet-qt") != 0) {
+        if (strcmp(m_pAppName,"ukui-session") != 0 && strcmp(m_pAppName,"ukui-volume-control-applet-qt") != 0 && strcmp(m_pAppName,"Volume Control")) {
             if G_UNLIKELY (w->control == nullptr)
                 return;
 
@@ -1269,13 +1259,6 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
     QString title(xdg.localizedValue("Name").toString());
     QString xdgicon(xdg.localizedValue("Icon").toString());
 
-//    GError **error = nullptr;
-//    GKeyFileFlags flags = G_KEY_FILE_NONE;
-//    GKeyFile *keyflie = g_key_file_new();
-
-//    g_key_file_load_from_file(keyflie,iconName.toLocal8Bit(),flags,error);
-//    char *icon_str = g_key_file_get_locale_string(keyflie,"Desktop Entry","Icon",nullptr,nullptr);
-//    QIcon icon = QIcon::fromTheme(QString::fromLocal8Bit(icon_str));
     w->appWidget->app_volume_list->append(app_icon_name);
 
     //widget显示应用音量
@@ -1735,7 +1718,6 @@ void DeviceSwitchWidget::on_context_default_input_stream_notify (MateMixerContex
     MateMixerStream *stream;
 
     stream = mate_mixer_context_get_default_input_stream (context);
-    qDebug() << "on_context_default_input_stream_notify";
     g_debug ("Default input stream has changed");
     set_input_stream (w, stream);
     update_icon_input (w,stream);
@@ -1761,11 +1743,11 @@ void DeviceSwitchWidget::set_input_stream (DeviceSwitchWidget *w, MateMixerStrea
             /* Prefer streamless controls to stay the way they are, forcing them to
              * a particular owning stream would be wrong for eg. event controls */
             if (parent != nullptr && parent != stream) {
-                qDebug() << "44444444444444";
                 MateMixerDirection direction =mate_mixer_stream_get_direction (parent);
 
-                if (direction == MATE_MIXER_DIRECTION_INPUT)
+                if (direction == MATE_MIXER_DIRECTION_INPUT) {
                     mate_mixer_stream_control_set_stream (control, stream);
+                }
             }
             controls = controls->next;
         }
@@ -1776,7 +1758,9 @@ void DeviceSwitchWidget::set_input_stream (DeviceSwitchWidget *w, MateMixerStrea
                           G_CALLBACK (on_stream_control_mute_notify),
                           w);
     }
-    update_input_settings (w,w->m_pInputBarStreamControl);
+    MateMixerStreamControl *control = mate_mixer_stream_get_default_control(stream);
+//    update_input_settings (w,w->m_pInputBarStreamControl);
+    update_input_settings (w,control);
 }
 
 /*
@@ -1847,7 +1831,7 @@ void DeviceSwitchWidget::update_icon_input (DeviceSwitchWidget *w,MateMixerStrea
     qDebug() << "update icon input";
     const GList *inputs =mate_mixer_stream_list_controls(stream);
     control = mate_mixer_stream_get_default_control(stream);
-
+//    w->stream = stream;
     //初始化滑动条的值
     bool status = mate_mixer_stream_control_get_mute(control);
     int volume = int(mate_mixer_stream_control_get_volume(control));
@@ -1927,7 +1911,7 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
     if (stream != nullptr)
         control = mate_mixer_stream_get_default_control (stream);
 
-    qDebug() << "9999999999999" << mate_mixer_stream_get_direction(stream) << endl;
+//    w->stream = stream;
     w->outputControlName = mate_mixer_stream_control_get_name(control);
     w->miniWidget->masterVolumeSlider->setObjectName(w->outputControlName);
     gvc_stream_status_icon_set_control (w, control);
@@ -2035,7 +2019,6 @@ void DeviceSwitchWidget::on_control_mute_notify (MateMixerStreamControl *control
     int volume = int(mate_mixer_stream_control_get_volume(control));
     volume = int(volume*100/65536.0+0.5);
     MateMixerStream *stream = mate_mixer_stream_control_get_stream(control);
-    qDebug() << "555555555555555" << "control name:" << mate_mixer_stream_control_get_label(control);
     MateMixerDirection direction;
     if (stream != nullptr) {
         direction = mate_mixer_stream_get_direction(stream);
@@ -2079,19 +2062,36 @@ void DeviceSwitchWidget::on_stream_control_volume_notify (MateMixerStreamControl
     decscription = mate_mixer_stream_control_get_label(control);
 
     MateMixerStream *stream = mate_mixer_stream_control_get_stream(control);
+    if (MATE_MIXER_IS_STREAM(stream)) {
+
+        qDebug() << "get stream error " << mate_mixer_stream_control_get_label(control) << mate_mixer_stream_get_label(stream);
+    }
+    else {
+        stream = w->stream;
+        direction = mate_mixer_stream_get_direction(MATE_MIXER_STREAM(stream));
+        if (direction == MATE_MIXER_DIRECTION_OUTPUT) {
+            mate_mixer_context_set_default_output_stream(w->context,stream);
+//            set_output_stream(w,stream);
+        }
+        else if (direction == MATE_MIXER_DIRECTION_INPUT) {
+            mate_mixer_context_set_default_input_stream(w->context,stream);
+//            set_input_stream(w,stream);
+        }
+        qDebug() << "从control 获取的stream不为stream" << mate_mixer_stream_get_label(stream);
+    }
+
     direction = mate_mixer_stream_get_direction(MATE_MIXER_STREAM(stream));
-    qDebug() << "66666666666666666" << mate_mixer_stream_control_get_label(control) << mate_mixer_stream_get_label(stream);
     //设置输出滑动条的值
     int value = int(volume*100/65536.0 + 0.5);
-//    QSlider *s = w->miniWidget->findChild<QSlider *>(w->outputControlName);
     if (direction == MATE_MIXER_DIRECTION_OUTPUT) {
         w->devWidget->outputDeviceSlider->setValue(value);
         w->appWidget->systemVolumeSlider->setValue(value);
         w->miniWidget->masterVolumeSlider->setValue(value);
         w->updateSystemTrayIcon(value,muted);
+        qDebug() << "set output volume";
     }
     else if (direction == MATE_MIXER_DIRECTION_INPUT) {
-        qDebug() << "77777777777" << mate_mixer_stream_control_get_label(control) << mate_mixer_stream_get_label(stream);
+        qDebug() << "stream get label:" << mate_mixer_stream_control_get_label(control) << mate_mixer_stream_get_label(stream);
 
         w->devWidget->inputDeviceSlider->setValue(value);
         w->updateMicrophoneIcon(value,muted);
@@ -2135,11 +2135,10 @@ void DeviceSwitchWidget::set_output_stream (DeviceSwitchWidget *w, MateMixerStre
             /* Prefer streamless controls to stay the way they are, forcing them to
              * a particular owning stream would be wrong for eg. event controls */
             if (parent != nullptr && parent != stream) {
-                qDebug() << "777777777777777";
                 MateMixerDirection direction = mate_mixer_stream_get_direction (parent);
 
                 if (direction == MATE_MIXER_DIRECTION_OUTPUT) {
-                    qDebug() << "7777777777777 control label:" << mate_mixer_stream_control_get_label(control) << "stream label:" << mate_mixer_stream_get_label(stream);
+                    qDebug() << "get control label:" << mate_mixer_stream_control_get_label(control) << "stream label:" << mate_mixer_stream_get_label(stream);
                     mate_mixer_stream_control_set_stream (control, stream);
                 }
             }
@@ -2175,7 +2174,6 @@ void DeviceSwitchWidget::bar_set_stream (DeviceSwitchWidget  *w,MateMixerStream 
     if (stream != nullptr) {
         control = mate_mixer_stream_get_default_control (stream);
     }
-    qDebug() << "8888888888888";
     MateMixerDirection direction = mate_mixer_stream_get_direction(stream);
     bar_set_stream_control (w,direction, control);
 }
