@@ -1250,6 +1250,7 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
     volume = int(mate_mixer_stream_control_get_volume(control));
     normal = mate_mixer_stream_control_get_normal_volume(control);
     int display_volume = int(100 * volume / normal);
+    qDebug() << "app name" << app_name;
     //设置应用的图标
     QString iconName = "/usr/share/applications/";
     iconName.append(app_icon_name);
@@ -1792,6 +1793,7 @@ void DeviceSwitchWidget::on_context_default_output_stream_notify (MateMixerConte
     if (stream == nullptr) {
         return;
     }
+    qDebug() << "默认的输出流改变" << mate_mixer_stream_get_label(stream);
     update_icon_output(w,context);
 //    set_output_stream (w, stream);
 }
@@ -2064,20 +2066,21 @@ void DeviceSwitchWidget::on_stream_control_volume_notify (MateMixerStreamControl
     MateMixerStream *stream = mate_mixer_stream_control_get_stream(control);
     if (MATE_MIXER_IS_STREAM(stream)) {
 
-        qDebug() << "get stream error " << mate_mixer_stream_control_get_label(control) << mate_mixer_stream_get_label(stream);
+        qDebug() << "get stream correct " << mate_mixer_stream_control_get_label(control) << mate_mixer_stream_get_label(stream);
     }
     else {
         stream = w->stream;
         direction = mate_mixer_stream_get_direction(MATE_MIXER_STREAM(stream));
         if (direction == MATE_MIXER_DIRECTION_OUTPUT) {
-            mate_mixer_context_set_default_output_stream(w->context,stream);
-//            set_output_stream(w,stream);
+            set_output_stream(w,stream);
+//            mate_mixer_context_set_default_output_stream(w->context,stream);
+            qDebug() << "从control 获取的output stream不为stream" << mate_mixer_stream_get_label(stream);
         }
         else if (direction == MATE_MIXER_DIRECTION_INPUT) {
-            mate_mixer_context_set_default_input_stream(w->context,stream);
-//            set_input_stream(w,stream);
+            set_input_stream(w,stream);
+//            mate_mixer_context_set_default_input_stream(w->context,stream);
+            qDebug() << "从control 获取的input stream不为stream" << mate_mixer_stream_get_label(stream);
         }
-        qDebug() << "从control 获取的stream不为stream" << mate_mixer_stream_get_label(stream);
     }
 
     direction = mate_mixer_stream_get_direction(MATE_MIXER_STREAM(stream));
