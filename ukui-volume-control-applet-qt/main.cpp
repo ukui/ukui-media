@@ -23,6 +23,49 @@
 #include <QFile>
 #include "ukmedia_device_switch_widget.h"
 #include <QObject>
+#include <QDateTime>
+#include <QMutex>
+#include <QFile>
+#include <QDir>
+
+/*! The ukui-media is the media of UKUI.
+
+  Usage: ukui-media [CONFIG_ID]
+
+    CONFIG_ID      Section qInstallMessageHandlername in config file ~/.config/ukui/ukui-media.conf
+
+                   (default main)
+
+ */
+void outputMessage(QtMsgType type, const QMessageLogContext &context, const QString &msg)
+{
+    QString txt;
+    switch (type) {
+    //调试信息提示
+    case QtDebugMsg:
+        txt = QString("Debug: %1").arg(msg);
+        break;
+        //一般的warning提示
+    case QtWarningMsg:
+        txt = QString("Warning: %1").arg(msg);
+        break;
+        //严重错误提示
+    case QtCriticalMsg:
+        txt = QString("Critical: %1").arg(msg);
+        break;
+        //致命错误提示
+    case QtFatalMsg:
+        txt = QString("Fatal: %1").arg(msg);
+        abort();
+    }
+
+    QFile outFile(qgetenv("HOME") +"/.config/ukui/ukui-media.log");
+    outFile.open(QIODevice::WriteOnly | QIODevice::Append);
+    QTextStream ts(&outFile);  //
+    ts << txt << endl;
+
+}
+
 int main(int argc, char *argv[])
 {
     /*QApplication a(argc,argv);*/
@@ -46,6 +89,8 @@ int main(int argc, char *argv[])
         }
     }
 
+    //注册MessageHandler
+    qInstallMessageHandler(outputMessage);
     //加载qss文件
     QFile qss(":/data/qss/ukuimedia.qss");
     qss.open(QFile::ReadOnly);
