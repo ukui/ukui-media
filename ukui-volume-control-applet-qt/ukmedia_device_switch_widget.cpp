@@ -63,9 +63,11 @@ UkmediaTrayIcon::~UkmediaTrayIcon()
 
 }
 
-/*
-    获取托盘图标的滚动事件
-*/
+/*!
+ * \brief
+ * \details
+ * 处理托盘的滚动事件
+ */
 bool UkmediaTrayIcon::event(QEvent *event)
 {
     bool value = false;
@@ -83,6 +85,11 @@ bool UkmediaTrayIcon::event(QEvent *event)
 
 }
 
+/*!
+ * \brief
+ * \details
+ * 绘制窗体的颜色及圆角
+ */
 void DeviceSwitchWidget::paintEvent(QPaintEvent *event)
 {
     QStyleOption opt;
@@ -99,18 +106,22 @@ void DeviceSwitchWidget::paintEvent(QPaintEvent *event)
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 }
 
-/*
-    显示window
-*/
+/*!
+ * \brief
+ * \details
+ * 显示窗体
+ */
 void DeviceSwitchWidget::showWindow()
 {
     this->show();
     isShow = false;
 }
 
-/*
-    隐藏window
-*/
+/*!
+ * \brief
+ * \details
+ * 隐藏窗体
+ */
 void DeviceSwitchWidget::hideWindow()
 {
     switch (displayMode) {
@@ -126,16 +137,22 @@ void DeviceSwitchWidget::hideWindow()
     isShow = true;
 }
 
-/*
-    右键菜单
-*/
+/*!
+ * \brief
+ * \details
+ * 右击托盘图标显示菜单
+ */
 void DeviceSwitchWidget::showMenu()
 {
     int panelHeight = getPanelHeight("panelheight");
     int panelPosition = getPanelPosition("panelposition");
 
     if (panelHeight <= 0 || panelPosition <= 0) {
-        //给定任务栏高度和初始值
+        /*!
+         * \brief
+         * \details
+         * 给定任务栏高度
+         */
          panelHeight = 46;
          panelPosition = 0;
     }
@@ -144,8 +161,14 @@ void DeviceSwitchWidget::showMenu()
     int totalWidth = qApp->primaryScreen()->size().width() + qApp->primaryScreen()->geometry().x();
     int localX = 0;
     int localY = 0;
-    if (panelPosition == 0) { //任务栏在下
-        if (totalWidth -  cursor().pos().x() < menu->width()) {//靠边显示
+    /*!
+     * \brief
+     * \details
+     * 任务栏位置 ，0,1,2,3分别代表任务栏在下、上、左、右
+     * 其中任务栏在上下时考虑当前鼠标位置不能完全显示菜单时靠边显示菜单
+     */
+    if (panelPosition == 0) {
+        if (totalWidth -  cursor().pos().x() < menu->width()) {
             localX = totalWidth - menu->width();
             localY = totalHeight - panelHeight - menu->height() ;
         }
@@ -154,7 +177,7 @@ void DeviceSwitchWidget::showMenu()
             localY = totalHeight - panelHeight - menu->height();
         }
     }
-    else if (panelPosition == 1) { //任务栏在上
+    else if (panelPosition == 1) {
         if (totalWidth - cursor().pos().x() < menu->width()) {
             localX = totalWidth - menu->width();
             localY = qApp->primaryScreen()->geometry().y() + panelHeight + 2;
@@ -164,11 +187,11 @@ void DeviceSwitchWidget::showMenu()
             localY = qApp->primaryScreen()->geometry().y() + panelHeight + 2;
         }
     }
-    else if (panelPosition == 2) { //任务栏在左
+    else if (panelPosition == 2) {
         localX = qApp->primaryScreen()->geometry().x() + panelHeight + 2;
         localY = cursor().pos().y();
     }
-    else if (panelPosition == 3) {//任务栏在右
+    else if (panelPosition == 3) {
         localX = totalWidth - menu->width() - panelHeight - 2;
         localY = cursor().pos().y();
     }
@@ -177,7 +200,6 @@ void DeviceSwitchWidget::showMenu()
 
 DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
 {
-
     setWindowFlags(Qt::WindowStaysOnTopHint|Qt::Popup);
     setAttribute(Qt::WA_TranslucentBackground);
     setAttribute(Qt::WA_TranslucentBackground);
@@ -215,18 +237,31 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     app_name_list = new QStringList;
     appBtnNameList = new QStringList;
 
-    //初始化matemixer
+    /*!
+     * \brief
+     * \details
+     * mixer初始化
+     */
     if (mate_mixer_init() == FALSE) {
         qDebug() << "libmatemixer initialization failed, exiting";
     }
-    //创建context
+    /*!
+     * \brief
+     * \details
+     * 创建context，这是重要的一环，因为声音的音量值、设备名称等各种信息
+     * 都可以直接或间接的通过context获得
+     */
     context = mate_mixer_context_new();
     mate_mixer_context_set_app_name (context,_("Ukui Volume Control App"));//设置app名
     mate_mixer_context_set_app_id(context, GVC_APPLET_DBUS_NAME);
     mate_mixer_context_set_app_version(context,VERSION);
     mate_mixer_context_set_app_icon(context,"ukuimedia-volume-control");
 
-    //打开context
+    /*!
+     * \brief
+     * \details
+     * 打开context，如果context打开失败将导致无法加载声音
+     */
     if G_UNLIKELY (mate_mixer_context_open(context) == FALSE) {
         g_warning ("Failed to connect to a sound system**********************");
     }
@@ -236,56 +271,109 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     devWidget->move(42,0);
     appWidget->move(42,0);
     this->setFixedSize(400,320);
-
     devWidget->show();
     appWidget->hide();
-    //添加托盘及菜单
+
+    /*!
+     * \brief
+     * \details
+     * 菜单及设备界面的初始化
+     */
     systemTrayMenuInit();
-    //初始化设备界面
     deviceSwitchWidgetInit();
 
     connect(switchToMiniBtn,SIGNAL(moveAdvanceSwitchBtnSignal()),this,SLOT(moveAdvanceSwitchBtnSlot()));
-    //mini模式下切换设备，由于设计需求不需要此功能，删除此功能
+    /*!
+     * \brief
+     * \details
+     * mini模式下切换设备，为了减少用户使用的复杂度，暂时禁用此功能
+     */
     /*connect(miniWidget->deviceCombox,SIGNAL(currentIndexChanged(QString)),this,SLOT(deviceComboxIndexChanged(QString)));*/
     context_set_property(this);
     g_signal_connect (G_OBJECT (context),
                      "notify::state",
                      G_CALLBACK (on_context_state_notify),
                      this);
-    //输出音量控制
-    //mini模式下系统音量的控制
+
+    /*!
+     * \brief
+     * \details
+     * mini模式下,当滑动条值改变时更改系统音量
+     */
     connect(miniWidget->masterVolumeSlider,SIGNAL(valueChanged(int)),this,SLOT(miniMastrerSliderChangedSlot(int)));
-    //应用音量下系统音量控制
+    /*!
+     * \brief
+     * \details
+     * 完整模式下,应用音量节面，当滑动条值改变时更改系统音量
+     */
     connect(appWidget->systemVolumeSlider,SIGNAL(valueChanged(int)),this,SLOT(advancedSystemSliderChangedSlot(int)));
-    //高级模式下系统音量的控制
+    /*!
+     * \brief
+     * \details
+     * 完整模式下,系统音量界面，当滑动条值改变时更改系统音量
+     */
     connect(devWidget->outputDeviceSlider,SIGNAL(valueChanged(int)),this,SLOT(outputDeviceSliderChangedSlot(int)));
-    //mini切换高级模式
+    /*!
+     * \brief
+     * \details
+     * mini模式切换到完整模式
+     */
     connect(miniWidget->switchBtn,SIGNAL(miniToAdvanceSignal()),this,SLOT(miniToAdvancedWidget()));
-    //高级切换mini模式
+    /*!
+     * \brief
+     * \details
+     * 完整模式切换到mini模式
+     */
     connect(switchToMiniBtn,SIGNAL(advanceToMiniSignal()),this,SLOT(advancedToMiniWidget()));
-    //高级模式下设备音量和应用音量的切换
+    /*!
+     * \brief
+     * \details
+     * 完整模式下,系统音量和应用音量的切换
+     */
     connect(deviceBtn,SIGNAL(clicked()),this,SLOT(deviceButtonClickedSlot()));
     connect(appVolumeBtn,SIGNAL(clicked()),this,SLOT(appVolumeButtonClickedSlot()));
-    //高级输出设备模式下静音控制
+    /*!
+     * \brief
+     * \details
+     * 一系列的静音控制功能
+     */
     connect(devWidget->outputMuteBtn,SIGNAL(clicked()),this,SLOT(devWidgetMuteButtonClickedSlot()));
-    //mini模式下的一键静音
     connect(miniWidget->muteBtn,SIGNAL(clicked()),this,SLOT(miniWidgetMuteButtonClickedSlot()));
-    //应用音量下一键静音
     connect(appWidget->systemVolumeBtn,SIGNAL(clicked()),this,SLOT(appWidgetMuteButtonCLickedSlot()));
-    //静音action点击
+
 //    connect(actionMute,SIGNAL(triggered()),this,SLOT(actionMuteTriggeredSLot()));
     connect(m_pMuteAction,SIGNAL(triggered()),this,SLOT(actionMuteTriggeredSLot()));
-    //鼠标中间健点击托盘图标
+    /*!
+     * \brief
+     * \details
+     * 鼠标中间滚轮键设置音量静音
+     */
     connect(this,SIGNAL(mouse_middle_clicked_signal()),this,SLOT(mouseMeddleClickedTraySlot()));
-    //鼠标滚轮滚动托盘图标
+    /*!
+     * \brief
+     * \details
+     * 当无任何控制音量的界面显示时，鼠标滚轮向上滚动音量托盘图标增加音量
+     * 向下滚动减少音量值
+     */
     connect(soundSystemTrayIcon,SIGNAL(wheelRollEventSignal(bool)),this,SLOT(trayWheelRollEventSlot(bool)));
-    //当mini模式界面显示时鼠标滚轮控制声音
+    /*!
+     * \brief
+     * \details
+     * mini界面显示时，鼠标滚轮控制音量
+     */
     connect(miniWidget,SIGNAL(mouse_wheel_signal(bool)),this,SLOT(miniWidgetWheelSlot(bool)));
-    //mini模式上下左右控制声音
+    /*!
+     * \brief
+     * \details
+     * mini模式下,上下左右键控制音量值
+     */
     connect(miniWidget,SIGNAL(keyboard_pressed_signal(int)),this,SLOT(miniWidgetKeyboardPressedSlot(int)));
-    //静音输入
+    /*!
+     * \brief
+     * \details
+     * 完整模式下，输入音量的静音功能
+     */
     connect(devWidget->inputMuteButton,SIGNAL(clicked()),this,SLOT(inputWidgetMuteButtonClicked()));
-    //当有录音时，输入滑块控制输入声音
     connect(devWidget->inputDeviceSlider,SIGNAL(valueChanged(int)),this,SLOT(inputWidgetSliderChangedSlot(int)));
 
     //主屏改变
@@ -320,9 +408,11 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     }
 }
 
-/*
-    托盘菜单初始化
-*/
+/*!
+ * \brief
+ * \details
+ * 菜单的初始化
+ */
 void DeviceSwitchWidget::systemTrayMenuInit()
 {
     menu = new QMenu(this);
@@ -350,9 +440,11 @@ void DeviceSwitchWidget::systemTrayMenuInit()
     menu->setAttribute(Qt::WA_TranslucentBackground);    //重要
 }
 
-/*
-    mini模式下系统音量的控制
-*/
+/*!
+ * \brief
+ * \details
+ * mini模式下，滑动条控制输出音量
+ */
 void DeviceSwitchWidget::miniMastrerSliderChangedSlot(int value)
 {
     stream = mate_mixer_context_get_default_output_stream(context);
@@ -374,9 +466,11 @@ void DeviceSwitchWidget::miniMastrerSliderChangedSlot(int value)
     });
 }
 
-/*
-    应用音量下系统音量控制
-*/
+/*!
+ * \brief
+ * \details
+ * 完整模式下，应用音量选项中系统音量控制输出音量值
+ */
 void DeviceSwitchWidget::advancedSystemSliderChangedSlot(int value)
 {
     stream = mate_mixer_context_get_default_output_stream(context);
@@ -390,9 +484,11 @@ void DeviceSwitchWidget::advancedSystemSliderChangedSlot(int value)
     appWidget->systemVolumeDisplayLabel->setText(percent);
 }
 
-/*
-    高级模式下系统音量的控制
-*/
+/*!
+ * \brief
+ * \details
+ * 完整模式下，设备音量中滑动条改变控制输出音量
+ */
 void DeviceSwitchWidget::outputDeviceSliderChangedSlot(int value)
 {
     stream = mate_mixer_context_get_default_output_stream(context);
@@ -406,9 +502,11 @@ void DeviceSwitchWidget::outputDeviceSliderChangedSlot(int value)
     mate_mixer_stream_control_set_volume(control,guint(volume));
 }
 
-/*
-    高级模式中设备音量的静音按钮点击
-*/
+/*!
+ * \brief
+ * \details
+ * 完整模式下，点击静音按钮控制输出音量的静音状态
+ */
 void DeviceSwitchWidget::devWidgetMuteButtonClickedSlot()
 {
     stream = mate_mixer_context_get_default_output_stream(context);
@@ -433,9 +531,11 @@ void DeviceSwitchWidget::devWidgetMuteButtonClickedSlot()
     menu->hide();
 }
 
-/*
-    mini模式下静音按钮点击
-*/
+/*!
+ * \brief
+ * \details
+ * mini模式下静音按钮的控制静音状态
+ */
 void DeviceSwitchWidget::miniWidgetMuteButtonClickedSlot()
 {
     stream = mate_mixer_context_get_default_output_stream(context);
@@ -460,9 +560,11 @@ void DeviceSwitchWidget::miniWidgetMuteButtonClickedSlot()
     menu->hide();
 }
 
-/*
-    应用音量下静音按钮点击
-*/
+/*!
+ * \brief
+ * \details
+ * 完整模式中应用音量的静音控制
+ */
 void DeviceSwitchWidget::appWidgetMuteButtonCLickedSlot()
 {
     stream = mate_mixer_context_get_default_output_stream(context);
@@ -487,9 +589,11 @@ void DeviceSwitchWidget::appWidgetMuteButtonCLickedSlot()
     menu->hide();
 }
 
-/*
-    菜单静音勾选框点击
-*/
+/*!
+ * \brief
+ * \details
+ * 菜单静音勾选框设置静音
+ */
 void DeviceSwitchWidget::muteCheckBoxReleasedSlot()
 {
     stream = mate_mixer_context_get_default_output_stream(context);
@@ -514,9 +618,11 @@ void DeviceSwitchWidget::muteCheckBoxReleasedSlot()
     menu->hide();
 }
 
-/*
-    菜单静音选项点击
-*/
+/*!
+ * \brief
+ * \details
+ * 右键菜单的静音选项点击
+ */
 void DeviceSwitchWidget::actionMuteTriggeredSLot()
 {
     bool isMute = false;
@@ -541,9 +647,11 @@ void DeviceSwitchWidget::actionMuteTriggeredSLot()
     Q_EMIT system_muted_signal(isMute);
 }
 
-/*
-    鼠标滚轮键点击托盘
-*/
+/*!
+ * \brief
+ * \details
+ * 鼠标滚轮点击托盘图标，设置输出音量的静音状态
+ */
 void DeviceSwitchWidget::mouseMeddleClickedTraySlot()
 {
     stream = mate_mixer_context_get_default_output_stream(context);
@@ -567,9 +675,11 @@ void DeviceSwitchWidget::mouseMeddleClickedTraySlot()
     Q_EMIT system_muted_signal(isMute);
 }
 
-/*
-    鼠标滚轮在托盘上滚动
-*/
+/*!
+ * \brief
+ * \details
+ * 鼠标滚轮在声音托盘上滚动设置输出音量值
+ */
 void DeviceSwitchWidget::trayWheelRollEventSlot(bool step)
 {
     stream = mate_mixer_context_get_default_output_stream(context);
@@ -587,9 +697,11 @@ void DeviceSwitchWidget::trayWheelRollEventSlot(bool step)
     }
 }
 
-/*
-    mini界面显示时，鼠标在界面外滚动控制音量
-*/
+/*!
+ * \brief
+ * \details
+ * mini界面显示时，在窗口外滚动鼠标滚轮控制音量值
+ */
 void DeviceSwitchWidget::miniWidgetWheelSlot(bool step)
 {
     stream = mate_mixer_context_get_default_output_stream(context);
@@ -605,9 +717,11 @@ void DeviceSwitchWidget::miniWidgetWheelSlot(bool step)
     }
 }
 
-/*
-    mini界面显示时按上下左右控制音量
-*/
+/*!
+ * \brief
+ * \details
+ * mini模式下上下左右键控制音量
+ */
 void DeviceSwitchWidget::miniWidgetKeyboardPressedSlot(int volumeGain)
 {
     stream = mate_mixer_context_get_default_output_stream(context);
@@ -619,26 +733,32 @@ void DeviceSwitchWidget::miniWidgetKeyboardPressedSlot(int volumeGain)
 }
 
 
-/*
-    跳转到声音首选项
-*/
+/*!
+ * \brief
+ * \details
+ * 点击菜单中声音设置跳转到控制面板的声音控制
+ */
 void DeviceSwitchWidget::jumpControlPanelSlot()
 {
     m_process = new QProcess(this);
     m_process->start("ukui-control-center -s");
 }
 
-/*
-    按下高级模式的切换界面按钮移动1px
-*/
+/*!
+ * \brief
+ * \details
+ * 按下时按钮偏移1px，达到动画效果
+ */
 void DeviceSwitchWidget::moveAdvanceSwitchBtnSlot()
 {
     switchToMiniBtn->move(362,7);
 }
 
-/*
-    mini 跳转到 advance
-*/
+/*!
+ * \brief
+ * \details
+ * mini切换到完整模式
+ */
 void DeviceSwitchWidget::miniToAdvancedWidget()
 {
     miniWidget->switchBtn->resize(34,34);
@@ -650,9 +770,11 @@ void DeviceSwitchWidget::miniToAdvancedWidget()
     displayMode = ADVANCED_MODE;
 }
 
-/*Right-click menu to jump to sound settings
-    advanced 跳转到 mini
-*/
+/*!
+ * \brief
+ * \details
+ * 从完整模式切换到mini模式
+ */
 void DeviceSwitchWidget::advancedToMiniWidget()
 {
     miniWidgetShow();
@@ -660,9 +782,11 @@ void DeviceSwitchWidget::advancedToMiniWidget()
     displayMode = MINI_MODE;
 }
 
-/*
-    mini模式下切换输出设备
-*/
+/*!
+ * \brief
+ * \details
+ * mini模式下切换输出设备，由于考虑到用户使用的简便性，禁用此功能
+ */
 void DeviceSwitchWidget::deviceComboxIndexChanged(QString str)
 {
     MateMixerBackendFlags flags;
@@ -686,9 +810,11 @@ void DeviceSwitchWidget::deviceComboxIndexChanged(QString str)
     }
 }
 
-/*
-    滚动输入音量条
-*/
+/*!
+ * \brief
+ * \details
+ * 滚动输入滑动条控制输入音量
+ */
 void DeviceSwitchWidget::inputWidgetSliderChangedSlot(int value)
 {
     stream = mate_mixer_context_get_default_input_stream (context);
@@ -702,9 +828,11 @@ void DeviceSwitchWidget::inputWidgetSliderChangedSlot(int value)
     mate_mixer_stream_control_set_volume(control,volume);
 }
 
-/*
-    输入静音按钮点击
-*/
+/*!
+ * \brief
+ * \details
+ * 点击输入静音按钮，设置输入音量的静音状态
+ */
 void DeviceSwitchWidget::inputWidgetMuteButtonClicked()
 {
     stream = mate_mixer_context_get_default_input_stream (context);
@@ -715,18 +843,22 @@ void DeviceSwitchWidget::inputWidgetMuteButtonClicked()
     updateMicrophoneIcon(volume,!state);
 }
 
-/*
-    主屏改变获取托盘所在位置
-*/
+/*!
+ * \brief
+ * \details
+ * 主屏更改时获取托盘的位置
+ */
 void DeviceSwitchWidget::primaryScreenChangedSlot(QScreen *screen)
 {
     Q_UNUSED(screen);
     trayRect = soundSystemTrayIcon->geometry();
 }
 
-/*
-    激活声音托盘图标
-*/
+/*!
+ * \brief
+ * \details
+ * 声音托盘的触发事件，包括鼠标左键点击，双击，滚轮，右击
+ */
 void DeviceSwitchWidget::activatedSystemTrayIconSlot(QSystemTrayIcon::ActivationReason reason)
 {
     switch(reason) {
@@ -780,9 +912,12 @@ void DeviceSwitchWidget::activatedSystemTrayIconSlot(QSystemTrayIcon::Activation
     }
 }
 
+/*!
+ * \brief
+ * \details
+ * QWidgetAction初始化
+ */
 /*
-    QWidgetAction 初始化
-*/
 void DeviceSwitchWidget::init_widget_action(QWidget *wid, QString iconstr, QString textstr)
 {
     QHBoxLayout* layout=new QHBoxLayout(wid);
@@ -822,10 +957,13 @@ void DeviceSwitchWidget::init_widget_action(QWidget *wid, QString iconstr, QStri
         layout->setContentsMargins(36,0,0,0);
     }
 }
-
-/*
-    初始化主界面
 */
+
+/*!
+ * \brief
+ * \details
+ * 初始化显示设备界面
+ */
 void DeviceSwitchWidget::deviceSwitchWidgetInit()
 {
     const QSize iconSize(19,19);
@@ -881,7 +1019,11 @@ void DeviceSwitchWidget::deviceSwitchWidgetInit()
     deviceWidget->setStyleSheet("QWidget{ border-right: 1px solid rgba(255,255,255,0.08); }");
 }
 
-/*点击切换设备按钮对应的槽函数*/
+/*!
+ * \brief
+ * \details
+ * 点击设备切换按钮切换到设备音量界面
+ */
 void DeviceSwitchWidget::deviceButtonClickedSlot()
 {
     btnType = DEVICE_VOLUME_BUTTON;
@@ -898,7 +1040,11 @@ void DeviceSwitchWidget::deviceButtonClickedSlot()
                              "border-radius:4px;}");
 }
 
-/*点击切换应用音量按钮对应的槽函数*/
+/*!
+ * \brief
+ * \details
+ * 点击应用音量按钮切换到应用音量界面
+ */
 void DeviceSwitchWidget::appVolumeButtonClickedSlot()
 {
     btnType = APP_VOLUME_BUTTON;
@@ -915,9 +1061,11 @@ void DeviceSwitchWidget::appVolumeButtonClickedSlot()
                              "border-radius:4px;}");
 }
 
-/*
- * context状态通知
-*/
+/*!
+ * \brief
+ * \details
+ * 获取context状态
+ */
 void DeviceSwitchWidget::on_context_state_notify (MateMixerContext *context,GParamSpec *pspec,DeviceSwitchWidget *w)
 {
     Q_UNUSED(pspec);
@@ -934,9 +1082,6 @@ void DeviceSwitchWidget::on_context_state_notify (MateMixerContext *context,GPar
     }
 }
 
-/*
-    context 存储control增加
-*/
 void DeviceSwitchWidget::on_context_stored_control_added (MateMixerContext *context,const gchar *name,DeviceSwitchWidget *w)
 {
     MateMixerStreamControlMediaRole media_role;
@@ -952,9 +1097,11 @@ void DeviceSwitchWidget::on_context_stored_control_added (MateMixerContext *cont
 }
 
 
-/*
-    当其他设备插入时添加这个stream
-*/
+/*!
+ * \brief
+ * \details
+ * 当切换声音设备时会触发此函数
+ */
 void DeviceSwitchWidget::on_context_stream_added (MateMixerContext *context,const gchar *name,DeviceSwitchWidget *w)
 {
     w->stream = mate_mixer_context_get_stream (context, name);
@@ -967,9 +1114,6 @@ void DeviceSwitchWidget::on_context_stream_added (MateMixerContext *context,cons
     add_stream (w, w->stream,context);
 }
 
-/*
-    列出设备
-*/
 void DeviceSwitchWidget::list_device(DeviceSwitchWidget *w,MateMixerContext *context)
 {
     const GList *list;
@@ -1072,9 +1216,11 @@ void DeviceSwitchWidget::add_stream (DeviceSwitchWidget *w, MateMixerStream *str
                       w);
 }
 
-/*
-    添加应用音量控制
-*/
+/*!
+ * \brief
+ * \details
+ * 当有应用播放或录制时会执行此函数
+ */
 void DeviceSwitchWidget::add_application_control (DeviceSwitchWidget *w, MateMixerStreamControl *control)
 {
     MateMixerStreamControlMediaRole media_role;
@@ -1165,9 +1311,6 @@ void DeviceSwitchWidget::on_stream_control_added (MateMixerStream *stream,const 
     }
 }
 
-/*
-    移除control
-*/
 void DeviceSwitchWidget::on_stream_control_removed (MateMixerStream *stream,const gchar *name,DeviceSwitchWidget *w)
 {
     Q_UNUSED(stream);
@@ -1188,6 +1331,11 @@ void DeviceSwitchWidget::on_stream_control_removed (MateMixerStream *stream,cons
     }
 }
 
+/*!
+ * \brief
+ * \details
+ * 当播放或录制应用退出时删除在应用音量界面上该应用的显示
+ */
 void DeviceSwitchWidget::remove_application_control (DeviceSwitchWidget *w,const gchar *m_pAppName)
 {
     g_debug ("Removing application stream %s", m_pAppName);
@@ -1197,15 +1345,10 @@ void DeviceSwitchWidget::remove_application_control (DeviceSwitchWidget *w,const
     if (w->stream_control_list->contains(m_pAppName)) {
         index = w->stream_control_list->indexOf(m_pAppName);
     }
-    if (index == -1)
+    if (index == -1) {
         return;
-//    if (w->stream_control_list->count() > w->app_name_list->count()) {
-//        w->stream_control_list->removeAt(index);
-//        return;
-//    }
-//    if (index > w->app_name_list->count() || index > w->appWidget->m_pVlayout->count()) {
-//        return;
-//    }
+    }
+
     w->stream_control_list->removeAt(index);
     w->app_name_list->removeAt(index);
     w->appBtnNameList->removeAt(index);
@@ -1239,6 +1382,11 @@ void DeviceSwitchWidget::remove_application_control (DeviceSwitchWidget *w,const
 
 }
 
+/*!
+ * \brief
+ * \details
+ * 当有应用播放或录制音频时，将该应用添加到应用音量界面上
+ */
 void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar *app_name,QString app_icon_name,MateMixerStreamControl *control)
 {
     appnum++;
@@ -1535,9 +1683,11 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
                                            "border-radius:9px;}");
 }
 
-/*
-    同步应用音量
-*/
+/*!
+ * \brief
+ * \details
+ * 更新应用音量的值
+ */
 void DeviceSwitchWidget::update_app_volume(MateMixerStreamControl *control, QString *str, DeviceSwitchWidget *w )
 {
     Q_UNUSED(str);
@@ -1555,7 +1705,11 @@ void DeviceSwitchWidget::update_app_volume(MateMixerStreamControl *control, QStr
     Q_EMIT w->app_volume_changed(is_mute,int(volume),appName,appBtnName);
 }
 
-/*应用音量静音*/
+/*!
+ * \brief
+ * \details
+ * 应用音量静音
+ */
 void DeviceSwitchWidget::app_volume_mute (MateMixerStreamControl *control, QString *pspec ,DeviceSwitchWidget *w)
 {
     Q_UNUSED(pspec);
@@ -1585,9 +1739,11 @@ void DeviceSwitchWidget::app_volume_mute (MateMixerStreamControl *control, QStri
     Q_EMIT w->appvolume_mute_change_mastervolume_status();*/
 }
 
-/*
-    连接context，处理不同信号
-*/
+/*!
+ * \brief
+ * \details
+ * 处理context信号
+ */
 void DeviceSwitchWidget::set_context(DeviceSwitchWidget *w,MateMixerContext *context)
 {
     g_signal_connect (G_OBJECT (context),
@@ -1627,18 +1783,12 @@ void DeviceSwitchWidget::set_context(DeviceSwitchWidget *w,MateMixerContext *con
                     w);
 }
 
-/*
-    remove stream
-*/
 void DeviceSwitchWidget::on_context_stream_removed (MateMixerContext *context,const gchar *name,DeviceSwitchWidget *w)
 {
     Q_UNUSED(context);
     remove_stream (w, name);
 }
 
-/*
-    移除stream
-*/
 void DeviceSwitchWidget::remove_stream (DeviceSwitchWidget *w, const gchar *name)
 {
     int index = w->output_stream_list->indexOf(name);
@@ -1655,9 +1805,11 @@ void DeviceSwitchWidget::remove_stream (DeviceSwitchWidget *w, const gchar *name
     }
 }
 
-/*
-    context 添加设备并设置到单选框
-*/
+/*!
+ * \brief
+ * \details
+ * 设备增加
+ */
 void DeviceSwitchWidget::on_context_device_added (MateMixerContext *context, const gchar *name, DeviceSwitchWidget *w)
 {
     MateMixerDevice *device;
@@ -1667,9 +1819,11 @@ void DeviceSwitchWidget::on_context_device_added (MateMixerContext *context, con
     add_device (w, device);
 }
 
-/*
-    添加设备
-*/
+/*!
+ * \brief
+ * \details
+ * 添加设备，存储设备列表
+ */
 void DeviceSwitchWidget::add_device (DeviceSwitchWidget *w, MateMixerDevice *device)
 {
     const gchar *name;
@@ -1681,9 +1835,11 @@ void DeviceSwitchWidget::add_device (DeviceSwitchWidget *w, MateMixerDevice *dev
     w->miniWidget->deviceCombox->addItem(label);*/
 }
 
-/*
-    移除设备
-*/
+/*!
+ * \brief
+ * \details
+ * 移除设备，将改设备名从列表移除
+ */
 void DeviceSwitchWidget::on_context_device_removed (MateMixerContext *context,const gchar *name,DeviceSwitchWidget *w)
 {
     Q_UNUSED(context);
@@ -1693,26 +1849,13 @@ void DeviceSwitchWidget::on_context_device_removed (MateMixerContext *context,co
     if (index >= 0) {
         w->device_name_list->removeAt(index);
     }
-
-    /*MateMixerDevice *dev = mate_mixer_context_get_device(context,name);
-    QString str = mate_mixer_device_get_label(dev);
-    do {
-        if (name == w->device_name_list->at(count)) {
-            w->device_name_list->removeAt(count);
-            w->miniWidget->deviceCombox->removeItem(count);
-            break;
-        }
-        count++;
-        if (count > w->device_name_list->size()) {
-            break;
-        }
-    }while(1);
-    */
 }
 
-/*
-    默认输入流通知
-*/
+/*!
+ * \brief
+ * \details
+ * 默认的输入流更改时会触发此函数（拔插耳机，带输入的声卡设备）
+ */
 void DeviceSwitchWidget::on_context_default_input_stream_notify (MateMixerContext *context,GParamSpec *pspec,DeviceSwitchWidget *w)
 {
     Q_UNUSED(pspec);
@@ -1764,24 +1907,31 @@ void DeviceSwitchWidget::set_input_stream (DeviceSwitchWidget *w, MateMixerStrea
     update_input_settings (w,control);
 }
 
-/*
-    control 静音通知
-*/
+/*!
+ * \brief
+ * \details
+ * 静音通知功能
+ */
 void DeviceSwitchWidget::on_stream_control_mute_notify (MateMixerStreamControl *control,GParamSpec *pspec,DeviceSwitchWidget *w)
 {
     Q_UNUSED(pspec);
     Q_UNUSED(w);
-//    update_icon_output(w,w->context);
-    /* Stop monitoring the input stream when it gets muted */
-//    if (mate_mixer_stream_control_get_mute (control) == TRUE)
-//        mate_mixer_stream_control_set_monitor_enabled (control, FALSE);
-//    else
-//        mate_mixer_stream_control_set_monitor_enabled (control, TRUE);
+    /*
+    update_icon_output(w,w->context);
+    Stop monitoring the input stream when it gets muted */
+    if (mate_mixer_stream_control_get_mute (control) == TRUE) {
+        mate_mixer_stream_control_set_monitor_enabled (control, FALSE);
+    }
+   else {
+        mate_mixer_stream_control_set_monitor_enabled (control, TRUE);
+    }
 }
 
-/*
-    默认输出流通知
-*/
+/*!
+ * \brief
+ * \details
+ * 默认的输出流更改，切换输出设备（包括拔插耳机，声卡设备都会触发此函数）
+ */
 void DeviceSwitchWidget::on_context_default_output_stream_notify (MateMixerContext *context,GParamSpec *pspec,DeviceSwitchWidget *w)
 {
     Q_UNUSED(pspec);
@@ -1798,9 +1948,11 @@ void DeviceSwitchWidget::on_context_default_output_stream_notify (MateMixerConte
 //    set_output_stream (w, stream);
 }
 
-/*
-    移除存储control
-*/
+/*!
+ * \brief
+ * \details
+ * 移除存储的control
+ */
 void DeviceSwitchWidget::on_context_stored_control_removed (MateMixerContext *context,const gchar *name,DeviceSwitchWidget *w)
 {
     Q_UNUSED(context);
@@ -1810,30 +1962,31 @@ void DeviceSwitchWidget::on_context_stored_control_removed (MateMixerContext *co
     }
 }
 
-/*
- * context设置属性
-*/
+/*!
+ * \brief
+ * \details
+ * 设置context
+ */
 void DeviceSwitchWidget::context_set_property(DeviceSwitchWidget *w)
 {
     set_context(w,w->context);
 }
 
-/*
-    更新输入音量及图标
-*/
+/*!
+ * \brief
+ * \details
+ * 更新输入引来
+ */
 void DeviceSwitchWidget::update_icon_input (DeviceSwitchWidget *w,MateMixerStream *stream)
 {
-//    MateMixerStream *stream;
     MateMixerStreamControl *control = nullptr;
     const gchar *app_id;
     gboolean show = FALSE;
 
-//    stream = mate_mixer_context_get_default_input_stream (context);
-
     qDebug() << "update icon input";
     const GList *inputs =mate_mixer_stream_list_controls(stream);
     control = mate_mixer_stream_get_default_control(stream);
-//    w->stream = stream;
+
     //初始化滑动条的值
     bool status = mate_mixer_stream_control_get_mute(control);
     int volume = int(mate_mixer_stream_control_get_volume(control));
@@ -1879,18 +2032,20 @@ void DeviceSwitchWidget::update_icon_input (DeviceSwitchWidget *w,MateMixerStrea
         inputs = inputs->next;
     }
 
-    if (show == TRUE)
-        g_debug ("Input icon enabled");
-    else
-        g_debug ("There is no recording application, input icon disabled");
+    if (show == TRUE) {
+        qDebug << "Input icon enabled";
+    }
+    else {
+        qDebug << "There is no recording application, input icon disabled";
+    }
 
     gvc_stream_status_icon_set_control (w, control);
 
     if (control != nullptr) {
-        g_debug ("Output icon enabled");
+        qDebug << "Output icon enabled";
     }
     else {
-        g_debug ("There is no output stream/control, output icon disabled");
+        qDebug << "There is no output stream/control, output icon disabled";
     }
 
     if(show) {
@@ -1901,9 +2056,11 @@ void DeviceSwitchWidget::update_icon_input (DeviceSwitchWidget *w,MateMixerStrea
     }
 }
 
-/*
-    更新输出音量及图标
-*/
+/*!
+ * \brief
+ * \details
+ * 更新输出音量及托盘图标
+ */
 void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerContext *context)
 {
     MateMixerStream *stream;
@@ -2011,9 +2168,11 @@ void DeviceSwitchWidget::gvc_stream_status_icon_set_control (DeviceSwitchWidget 
     }
 }
 
-/*
-    静音通知
-*/
+/*!
+ * \brief
+ * \details
+ * 静音
+ */
 void DeviceSwitchWidget::on_control_mute_notify (MateMixerStreamControl *control,GParamSpec *pspec,DeviceSwitchWidget *w)
 {
     Q_UNUSED(pspec);
@@ -2036,9 +2195,11 @@ void DeviceSwitchWidget::on_control_mute_notify (MateMixerStreamControl *control
     }
 }
 
-/*
-    stream control 声音通知
-*/
+/*!
+ * \brief
+ * \details
+ * 音量值更改时会触发此函数
+ */
 void DeviceSwitchWidget::on_stream_control_volume_notify (MateMixerStreamControl *control,GParamSpec *pspec,DeviceSwitchWidget *w)
 {
     Q_UNUSED(pspec);
@@ -2102,9 +2263,11 @@ void DeviceSwitchWidget::on_stream_control_volume_notify (MateMixerStreamControl
 
 }
 
-/*
-    更新输出设置
-*/
+/*!
+ * \brief
+ * \details
+ * 更新输出设置
+ */
 void DeviceSwitchWidget::update_output_settings (DeviceSwitchWidget *w,MateMixerStreamControl *control)
 {
     Q_UNUSED(w);
@@ -2153,9 +2316,11 @@ void DeviceSwitchWidget::set_output_stream (DeviceSwitchWidget *w, MateMixerStre
     update_output_settings(w,w->m_pOutputBarStreamControl);
 }
 
-/*
-    更新输出stream 列表
-*/
+/*!
+ * \brief
+ * \details
+ * 更新输出stream
+ */
 void DeviceSwitchWidget::update_output_stream_list(DeviceSwitchWidget *w,MateMixerStream *stream)
 {
     Q_UNUSED(w);
@@ -2167,9 +2332,11 @@ void DeviceSwitchWidget::update_output_stream_list(DeviceSwitchWidget *w,MateMix
     }
 }
 
-/*
-    bar设置stream
-*/
+/*!
+ * \brief
+ * \details
+ * 设置stream
+ */
 void DeviceSwitchWidget::bar_set_stream (DeviceSwitchWidget  *w,MateMixerStream *stream)
 {
     MateMixerStreamControl *control = nullptr;
@@ -2197,9 +2364,6 @@ void DeviceSwitchWidget::bar_set_stream_control (DeviceSwitchWidget *w,MateMixer
     }
 }
 
-/*
-    点击窗口之外的部分隐藏
-*/
 bool DeviceSwitchWidget:: event(QEvent *event)
 {
     if (event->type() == QEvent::ActivationChange) {
@@ -2217,9 +2381,11 @@ bool DeviceSwitchWidget:: event(QEvent *event)
     return QWidget::event(event);
 }
 
-/*
-    更新高级模式下麦克风图标
-*/
+/*!
+ * \brief
+ * \details
+ * 更新麦克风图标
+ */
 void DeviceSwitchWidget::updateMicrophoneIcon(int value, bool status)
 {
     if (status) {
@@ -2240,9 +2406,11 @@ void DeviceSwitchWidget::updateMicrophoneIcon(int value, bool status)
 
 }
 
-/*
-    dbus获取任务栏的位置
-*/
+/*!
+ * \brief
+ * \details
+ * 通过dbus获取任务栏位置
+ */
 int DeviceSwitchWidget::getPanelPosition(QString str)
 {
     QDBusInterface interface( "com.ukui.panel.desktop",
@@ -2255,9 +2423,28 @@ int DeviceSwitchWidget::getPanelPosition(QString str)
     return reply;
 }
 
-/*
-    在指定位置显示mini界面
-*/
+/*!
+ * \brief
+ * \details
+ * 通过dbus获取任务栏高度
+ */
+int DeviceSwitchWidget::getPanelHeight(QString str)
+{
+    QDBusInterface interface( "com.ukui.panel.desktop",
+                              "/",
+                              "com.ukui.panel.desktop",
+                              QDBusConnection::sessionBus() );
+    QDBusReply<int> reply = interface.call("GetPanelSize", str);
+    if (reply <= 0)
+        return 46;
+    return reply;
+}
+
+/*!
+ * \brief
+ * \details
+ * 在指定位置显示任务栏
+ */
 void DeviceSwitchWidget::miniWidgetShow()
 {
     //给定任务栏高度和初始值
@@ -2284,9 +2471,11 @@ void DeviceSwitchWidget::miniWidgetShow()
     miniWidget->show();
 }
 
-/*
-    高级模式在指定位置显示
-*/
+/*!
+ * \brief
+ * \details
+ * 完整模式界面的显示
+ */
 void DeviceSwitchWidget::advancedWidgetShow()
 {
     //给定任务栏高度和位置初始值
@@ -2313,24 +2502,11 @@ void DeviceSwitchWidget::advancedWidgetShow()
     this->show();
 }
 
-/*
-    获取任务栏高度
-*/
-int DeviceSwitchWidget::getPanelHeight(QString str)
-{
-    QDBusInterface interface( "com.ukui.panel.desktop",
-                              "/",
-                              "com.ukui.panel.desktop",
-                              QDBusConnection::sessionBus() );
-    QDBusReply<int> reply = interface.call("GetPanelSize", str);
-    if (reply <= 0)
-        return 46;
-    return reply;
-}
-
-/*
-    更新声音托盘图标
-*/
+/*!
+ * \brief
+ * \details
+ * 更新托盘图标
+ */
 void DeviceSwitchWidget::updateSystemTrayIcon(int volume,bool isMute)
 {
     QString systemTrayIcon;
@@ -2390,9 +2566,11 @@ void DeviceSwitchWidget::updateSystemTrayIcon(int volume,bool isMute)
     }
 }
 
-/*
-    更新默认的输入stream
-*/
+/*!
+ * \brief
+ * \details
+ * 更新默认的输入设备
+ */
 gboolean DeviceSwitchWidget::update_default_input_stream (DeviceSwitchWidget *w)
 {
     MateMixerStream *stream;
@@ -2416,9 +2594,6 @@ gboolean DeviceSwitchWidget::update_default_input_stream (DeviceSwitchWidget *w)
     return TRUE;
 }
 
-/*
-    输入stream control add
-*/
 void DeviceSwitchWidget::on_input_stream_control_added (MateMixerStream *stream,const gchar *name,DeviceSwitchWidget *w)
 {
     MateMixerStreamControl *control;
@@ -2437,9 +2612,6 @@ void DeviceSwitchWidget::on_input_stream_control_added (MateMixerStream *stream,
     update_icon_input (w,stream);
 }
 
-/*
-    输入stream control removed
-*/
 void DeviceSwitchWidget::on_input_stream_control_removed (MateMixerStream *stream,const gchar *name,DeviceSwitchWidget *w)
 {
 //    Q_UNUSED(stream);
@@ -2449,9 +2621,11 @@ void DeviceSwitchWidget::on_input_stream_control_removed (MateMixerStream *strea
     update_icon_input (w,stream);
 }
 
-/*
-    更新输入设置w
-*/
+/*!
+ * \brief
+ * \details
+ * 更新输入设置
+ */
 void DeviceSwitchWidget::update_input_settings (DeviceSwitchWidget *w,MateMixerStreamControl *control)
 {
     Q_UNUSED(w);
