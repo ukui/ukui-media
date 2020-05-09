@@ -1258,6 +1258,15 @@ void DeviceSwitchWidget::add_application_control (DeviceSwitchWidget *w, MateMix
 
     QString app_icon_name = mate_mixer_app_info_get_icon(info);
     app_name = mate_mixer_app_info_get_name (info);
+    if (app_name == nullptr) {
+        app_name = mate_mixer_stream_control_get_label(control);
+    }
+    if (app_name == nullptr) {
+        app_name = mate_mixer_stream_control_get_name(control);
+    }
+    if (app_name == nullptr) {
+        return;
+    }
     //添加应用添加到应用音量中
     add_app_to_appwidget(w,app_name,app_icon_name,control);
 
@@ -1385,6 +1394,51 @@ void DeviceSwitchWidget::remove_application_control (DeviceSwitchWidget *w,const
 /*!
  * \brief
  * \details
+ * 获取应用名称，从desktop全路径名下解析出应用名称
+ */
+QString DeviceSwitchWidget::getAppName(QString desktopfp)
+{
+    GError** error=nullptr;
+    GKeyFileFlags flags=G_KEY_FILE_NONE;
+    GKeyFile* keyfile=g_key_file_new ();
+
+    QByteArray fpbyte=desktopfp.toLocal8Bit();
+    char* filepath=fpbyte.data();
+    g_key_file_load_from_file(keyfile,filepath,flags,error);
+
+    char* name=g_key_file_get_locale_string(keyfile,"Desktop Entry","Name", nullptr, nullptr);
+    QString namestr=QString::fromLocal8Bit(name);
+
+    g_key_file_free(keyfile);
+    return namestr;
+}
+
+/*!
+ * \brief
+ * \details
+ * 获取应用图标，从desktop全路径名下解析出应用图标
+ */
+QString DeviceSwitchWidget::getAppIcon(QString desktopfp)
+{
+    GError** error=nullptr;
+    GKeyFileFlags flags=G_KEY_FILE_NONE;
+    GKeyFile* keyfile=g_key_file_new ();
+
+    QByteArray fpbyte=desktopfp.toLocal8Bit();
+    char* filepath=fpbyte.data();
+    g_key_file_load_from_file(keyfile,filepath,flags,error);
+
+    char* name=g_key_file_get_locale_string(keyfile,"Desktop Entry","Icon", nullptr, nullptr);
+    QString namestr=QString::fromLocal8Bit(name);
+
+    g_key_file_free(keyfile);
+    return namestr;
+}
+
+
+/*!
+ * \brief
+ * \details
  * 当有应用播放或录制音频时，将该应用添加到应用音量界面上
  */
 void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar *app_name,QString app_icon_name,MateMixerStreamControl *control)
@@ -1398,18 +1452,45 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
     volume = int(mate_mixer_stream_control_get_volume(control));
     normal = mate_mixer_stream_control_get_normal_volume(control);
     int display_volume = int(100 * volume / normal);
-    qDebug() << "app name" << app_name;
+    qDebug() << "app name" << app_name << "app icon name:" << app_icon_name;
     //设置应用的图标
     QString iconName = "/usr/share/applications/";
+
+    /*!
+     * \brief
+     * \details
+     * 由于获取到的麒麟影音软件获取的app icon不正确
+     * 可能是软件没有发出正确的信号告知正确的icon，
+     * 因此添加判断当匹配应用名为Kylinvideo时设置
+     * 正确的icon名来保证找到正确的desktop,从而设置
+     * 应用音量正确的应用名和图标
+     */
+    if (strcmp(app_name,"KylinVideo") == 0) {
+        app_icon_name = "kylin-video";
+    }
+
+    /*!
+     * \brief
+     * \details
+     * 由于腾讯视频是由谷歌浏览器网页版的腾讯视频封装的
+     * 因此获取的appName和appIconName均和chromium
+     * 相关，特定添加以下判断，来使得用户使用腾讯视频观看
+     * 视频的时候不会出现应用名和图标显示不正确的问题
+     */
+    if (strcmp(app_name,"Chromium") == 0 && strcmp(app_icon_name.toLatin1().data(),"chromium-browser") == 0) {
+        app_icon_name = "TencentVideo";
+    }
     iconName.append(app_icon_name);
     iconName.append(".desktop");
-    XdgDesktopFile xdg;
-    xdg.load(iconName);
-    QString title(xdg.localizedValue("Name").toString());
-    QString xdgicon(xdg.localizedValue("Icon").toString());
+    QString pAppName = w->getAppName(iconName);
+    QString pAppIcon = w->getAppIcon(iconName);
+//    XdgDesktopFile xdg;
+//    xdg.load(iconName);
+//    QString title(xdg.localizedValue("Name").toString());
+//    QString xdgicon(xdg.localizedValue("Icon").toString());
 
     w->appWidget->app_volume_list->append(app_icon_name);
-
+    qDebug() << "应用名为:" << pAppName << "desktop 名：" << iconName;
     //widget显示应用音量
     QWidget *app_widget = new QWidget(w->appWidget->displayAppVolumeWidget);
     app_widget->setFixedSize(306,60);
@@ -1453,7 +1534,7 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
     w->appWidget->appIconBtn->setIconSize(icon_size);
 //    w->appWidget->appIconBtn->setStyleSheet("QPushButton{background:rgba(255,0,0,0.4);}");
     w->appWidget->appIconBtn->setStyleSheet("QPushButton{background:transparent;border:0px;padding-left:0px;}");
-    w->appWidget->appIconBtn->setIcon(QIcon::fromTheme(xdgicon));
+    w->appWidget->appIconBtn->setIcon(QIcon::fromTheme(pAppIcon));
     w->appWidget->appIconBtn->setFocusPolicy(Qt::NoFocus);
 
     w->appWidget->appSlider->setMaximum(100);
@@ -1501,11 +1582,11 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
         btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-high.svg"));
     }
 
-    if (title == "") {
+    if (pAppName == "") {
         w->appWidget->appLabel->setText(app_icon_name);
     }
     else {
-        w->appWidget->appLabel->setText(title);
+        w->appWidget->appLabel->setText(pAppName);
     }
 
     /*滑动条控制应用音量*/

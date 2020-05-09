@@ -78,6 +78,8 @@ public:
     void miniWidgetShow();
     void advancedWidgetShow();
 
+    QString getAppName(QString desktopfp);
+    QString getAppIcon(QString desktopfp);
     static void list_device(DeviceSwitchWidget *w,MateMixerContext *context);
     static void gvc_stream_status_icon_set_control (DeviceSwitchWidget *w,MateMixerStreamControl *control);
     static void context_set_property(DeviceSwitchWidget *object);
