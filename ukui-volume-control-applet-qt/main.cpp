@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
     QTranslator translator;
 
     if (locale == "zh_CN") {
-        if (translator.load("/usr/share/ukui-media/translations/*.qm")) {
+        if (translator.load("/usr/share/ukui-media/translations/ukui-volume-control-applet-qt-zh_CN.qm")) {
             app.installTranslator(&translator);
         }
         else {
