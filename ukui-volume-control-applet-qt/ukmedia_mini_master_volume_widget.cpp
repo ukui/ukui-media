@@ -24,7 +24,7 @@
 UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QWidget *parent) : QWidget(parent)
 {
     masterWidget = new QWidget(this);
-    muteBtn = new QPushButton(masterWidget);
+    muteBtn = new UkuiButtonDrawSvg(masterWidget);
     displayVolumeLabel = new QLabel(masterWidget);
     masterVolumeSlider = new UkmediaVolumeSlider(masterWidget);
 

@@ -27,7 +27,7 @@ ApplicationVolumeWidget::ApplicationVolumeWidget(QWidget *parent) : QWidget (par
     applicationLabel = new QLabel(tr("Application Volume"),this);
     app_volume_list = new QStringList;
     systemVolumeLabel = new QLabel(tr("System Volume"),this);
-    systemVolumeBtn = new QPushButton(this);
+    systemVolumeBtn = new UkuiButtonDrawSvg(this);
     systemVolumeSlider = new UkmediaVolumeSlider(this);
     systemVolumeDisplayLabel = new QLabel(this);
     systemVolumeWidget = new QWidget(this);

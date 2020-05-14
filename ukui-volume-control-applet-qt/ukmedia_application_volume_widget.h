@@ -35,7 +35,7 @@ public:
 private:
     QLabel *applicationLabel;
     QLabel *systemVolumeLabel;
-    QPushButton *systemVolumeBtn;
+    UkuiButtonDrawSvg *systemVolumeBtn;
     UkmediaVolumeSlider *systemVolumeSlider;
     QLabel *systemVolumeDisplayLabel;
 
@@ -45,7 +45,7 @@ private:
     UkuiApplicationWidget *displayAppVolumeWidget;
     QStringList *app_volume_list;
     QLabel *appLabel;
-    QPushButton *appMuteBtn;
+    UkuiButtonDrawSvg *appMuteBtn;
     QPushButton *appIconBtn;
     QSlider *appSlider;
     QScrollArea *appArea;

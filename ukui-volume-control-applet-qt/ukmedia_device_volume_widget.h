@@ -37,7 +37,7 @@ public:
     void inputWidgetHide();
     friend class  DeviceSwitchWidget;
 private:
-    QPushButton *outputMuteBtn;
+    UkuiButtonDrawSvg *outputMuteBtn;
     QLabel *outputDeviceLabel;
     QLabel *outputDeviceDisplayLabel;
     QPushButton *outputDeviceBtn;
@@ -51,7 +51,7 @@ private:
 
     QLabel *displayOutputLabel;
     QLabel *inputDeviceLabel;
-    QPushButton *inputMuteButton;
+    UkuiButtonDrawSvg *inputMuteButton;
     QLabel *inputDeviceDisplayLabel;
     QLabel *noInputDeviceLabel;
     QPushButton *inputDeviceBtn;

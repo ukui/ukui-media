@@ -43,7 +43,7 @@ private:
     UkmediaVolumeSlider *masterVolumeSlider;
     QLabel *displayVolumeLabel;
 //    QLabel *deviceLabel;
-    QPushButton *muteBtn;
+    UkuiButtonDrawSvg *muteBtn;
     UkuiMediaButton *switchBtn;
 
     QPushButton *deviceBtn;

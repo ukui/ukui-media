@@ -37,11 +37,11 @@ UkmediaDeviceWidget::UkmediaDeviceWidget(QWidget *parent) : QWidget (parent)
     inputDeviceDisplayLabel = new QLabel(tr("Microphone"),inputWidget);
     inputDeviceBtn = new QPushButton(inputWidget);
     inputDeviceSlider = new UkmediaVolumeSlider(inputSliderWidget);
-    inputMuteButton = new QPushButton(inputSliderWidget);
+    inputMuteButton = new UkuiButtonDrawSvg(inputSliderWidget);
 
     outputWidget->setFixedSize(340,60);
     outputSliderWidget->setFixedSize(306,32);
-    outputMuteBtn = new QPushButton(outputSliderWidget);
+    outputMuteBtn = new UkuiButtonDrawSvg(outputSliderWidget);
     outputDeviceLabel = new QLabel(tr("Output Device"),this);
     outputDeviceDisplayLabel = new QLabel(tr("Speaker Realtek Audio"),outputWidget);
     outputDeviceBtn = new QPushButton(outputWidget);

@@ -40,6 +40,11 @@ extern "C" {
 #include <libmatemixer/matemixer.h>
 #include <gio/gio.h>
 }
+
+#define UKUI_THEME_SETTING "org.ukui.style"
+#define UKUI_THEME_NAME "style-name"
+#define UKUI_THEME_WHITE "ukui-white"
+#define UKUI_THEME_BLACK "ukui-black"
 #define UKUI_PANEL_SETTING "org.ukui.panel.settings"
 #define MATE_DESKTOP_USE_UNSTABLE_API
 #define VERSION "1.12.1"
@@ -77,6 +82,16 @@ public:
     int getPanelHeight(QString str);
     void miniWidgetShow();
     void advancedWidgetShow();
+
+    int getInputVolume();
+    int getOutputVolume();
+    bool getInputMuteStatus();
+    bool getOutputMuteStatus();
+
+    void inputVolumeDarkThemeImage(int value,bool status);
+    void outputVolumeDarkThemeImage(int value,bool status);
+    void drawImagColorFromTheme(UkuiButtonDrawSvg *button, QString iconStr);
+    void themeChangeIcons();
 
     QString getAppName(QString desktopfp);
     QString getAppIcon(QString desktopfp);
@@ -160,6 +175,7 @@ private Q_SLOTS:
     void primaryScreenChangedSlot(QScreen *screen);
     void inputWidgetMuteButtonClicked();
     void inputWidgetSliderChangedSlot(int value);
+    void ukuiThemeChangedSlot(const QString &themeStr);
 private:
     QPushButton *deviceBtn;
     QPushButton *appVolumeBtn;
@@ -186,12 +202,15 @@ private:
     QStringList *app_name_list;
 
     QMenu *menu;
+    QGSettings *m_pThemeSetting;
     QAction *m_pMuteAction;
     QAction *m_pSoundPreferenceAction;
     QString outputControlName;
     GSettings *sound_settings;
     UkmediaTrayIcon *soundSystemTrayIcon;
     QProcess *m_process;
+    QString mThemeName;
+
 protected:
     void paintEvent(QPaintEvent *event);
     bool event(QEvent *event);//重写窗口事件

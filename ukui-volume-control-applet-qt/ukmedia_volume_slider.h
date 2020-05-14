@@ -25,15 +25,39 @@
 #include <QToolButton>
 #include <QFrame>
 #include <QDebug>
+
+typedef struct UkuiThemeIcon
+{
+    QImage image;
+    QColor color;
+}UkuiThemeIcon;
 enum DisplayerMode{
     MINI_MODE,
     ADVANCED_MODE
 };
-
+static QColor symbolic_color = Qt::gray;
 //class UkuiDeviceButton:public QPushButton
 //{
 
 //}
+class UkuiButtonDrawSvg:public QPushButton
+{
+    Q_OBJECT
+public:
+    UkuiButtonDrawSvg(QWidget *parent = nullptr);
+    ~UkuiButtonDrawSvg();
+    QPixmap filledSymbolicColoredPixmap(QImage &source, QColor &baseColor);
+    QRect IconGeometry();
+    void draw(QPaintEvent* e);
+    void init(QImage image ,QColor color);
+    friend class DeviceSwitchWidget;
+
+protected:
+    void paintEvent(QPaintEvent *event);
+    bool event(QEvent *e);
+private:
+    UkuiThemeIcon themeIcon;
+};
 
 class UkuiApplicationWidget:public QWidget
 {
