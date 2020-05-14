@@ -533,7 +533,7 @@ void DeviceSwitchWidget::devWidgetMuteButtonClickedSlot()
         status = false;
         m_pMuteAction->setIcon(QIcon(""));
         mate_mixer_stream_control_set_mute(control,status);
-        updateSystemTrayIcon(volume,status);
+//        updateSystemTrayIcon(volume,status);
     }
     else {
         status =true;
@@ -541,8 +541,9 @@ void DeviceSwitchWidget::devWidgetMuteButtonClickedSlot()
         QIcon muteActionIcon = QIcon::fromTheme(muteActionIconStr);
         m_pMuteAction->setIcon(muteActionIcon);
         mate_mixer_stream_control_set_mute(control,status);
-        updateSystemTrayIcon(volume,status);
+//        updateSystemTrayIcon(volume,status);
     }
+    themeChangeIcons();
     Q_EMIT system_muted_signal(status);
     menu->hide();
 }
@@ -564,7 +565,7 @@ void DeviceSwitchWidget::miniWidgetMuteButtonClickedSlot()
         status = false;
         m_pMuteAction->setIcon(QIcon(""));
         mate_mixer_stream_control_set_mute(control,status);
-        updateSystemTrayIcon(volume,status);
+//        updateSystemTrayIcon(volume,status);
     }
     else {
         status =true;
@@ -572,7 +573,7 @@ void DeviceSwitchWidget::miniWidgetMuteButtonClickedSlot()
         QIcon muteActionIcon = QIcon::fromTheme(muteActionIconStr);
         m_pMuteAction->setIcon(muteActionIcon);
         mate_mixer_stream_control_set_mute(control,status);
-        updateSystemTrayIcon(volume,status);
+//        updateSystemTrayIcon(volume,status);
     }
     Q_EMIT system_muted_signal(status);
     themeChangeIcons();
@@ -606,6 +607,7 @@ void DeviceSwitchWidget::appWidgetMuteButtonCLickedSlot()
         mate_mixer_stream_control_set_mute(control,status);
         updateSystemTrayIcon(volume,status);
     }
+//    themeChangeIcons();
     Q_EMIT system_muted_signal(status);
     menu->hide();
 }
@@ -854,9 +856,6 @@ void DeviceSwitchWidget::drawImagColorFromTheme(UkuiButtonDrawSvg *button, QStri
 */
 void DeviceSwitchWidget::outputVolumeDarkThemeImage(int value,bool status)
 {
-    if (appnum > 0) {
-        
-    }
     QString iconStr;
     if (status) {
         iconStr = "audio-volume-muted-symbolic";
@@ -981,7 +980,7 @@ void DeviceSwitchWidget::themeChangeIcons()
     qDebug() << "----" << nInputValue << nOutputValue << inputStatus << outputStatus;
     miniWidget->muteBtn->repaint();
     devWidget->inputMuteButton->repaint();
-    appWidget->appMuteBtn->repaint();
+//    appWidget->appMuteBtn->repaint();
     appWidget->systemVolumeBtn->repaint();
 }
 
@@ -1730,7 +1729,7 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
     w->appWidget->appLabel = new QLabel(app_widget);
     w->appWidget->appIconBtn = new QPushButton(wid);
     w->appWidget->appSlider = new UkmediaVolumeSlider(wid);
-    w->appWidget->appMuteBtn = new UkuiButtonDrawSvg(wid);
+    w->appWidget->appMuteBtn = new QPushButton(wid);
     w->appWidget->appSlider->setOrientation(Qt::Horizontal);
     w->appWidget->appIconBtn->setFixedSize(38,38);
     w->appWidget->appMuteBtn->setFixedSize(24,24);
@@ -1788,29 +1787,34 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
         return;
     slider->setValue(display_volume);
 
-    UkuiButtonDrawSvg *btn = w->appWidget->findChild<UkuiButtonDrawSvg *>(appMuteBtnlStr);
+    QPushButton *btn = w->appWidget->findChild<QPushButton *>(appMuteBtnlStr);
     if (btn == nullptr)
         return;
 
     QString audioIconStr;
     QIcon audioIcon;
     if (is_mute) {
-        audioIconStr = "audio-volume-muted-symbolic";
+        audioIconStr = "audio-volume-muted";
+        btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
     }
     else if (display_volume <= 0) {
-        audioIconStr = "audio-volume-muted-symbolic";
+        audioIconStr = "audio-volume-muted";
+        btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
     }
     else if (display_volume > 0 && display_volume <= 33) {
-        audioIconStr = "audio-volume-low-symbolic";
+        audioIconStr = "audio-volume-low";
+        btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-low.svg"));
     }
     else if(display_volume > 33 && display_volume <= 66) {
-        audioIconStr = "audio-volume-medium-symbolic";
+        audioIconStr = "audio-volume-medium";
+        btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-medium.svg"));
     }
     else if (display_volume > 66) {
-        audioIconStr = "audio-volume-high-symbolic";
+        audioIconStr = "audio-volume-high";
+        btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-high.svg"));
     }
-    w->drawImagColorFromTheme(btn,audioIconStr);
-//    audioIcon = QIcon::fromTheme(audioIconStr);
+//    w->drawImagColorFromTheme(btn,audioIconStr);
+    audioIcon = QIcon::fromTheme(audioIconStr);
 //    btn->setIcon(audioIcon);
     if (pAppName == "") {
         w->appWidget->appLabel->setText(app_icon_name);
@@ -1826,7 +1830,7 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
         if (slider == nullptr)
             return;
         slider->setValue(value);
-        UkuiButtonDrawSvg *btn = w->findChild<UkuiButtonDrawSvg*>(appMuteBtnlStr);
+        QPushButton *btn = w->findChild<QPushButton*>(appMuteBtnlStr);
         if (btn == nullptr)
             return;
         QString audioIconStr;
@@ -1838,23 +1842,28 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
             mate_mixer_stream_control_set_mute(control,false);
         }
         if (status) {
-            audioIconStr = "audio-volume-muted-symbolic";
+            btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
+            audioIconStr = "audio-volume-muted";
         }
         else if (value <= 0) {
-            audioIconStr = "audio-volume-muted-symbolic";
+            btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
+            audioIconStr = "audio-volume-muted";
         }
         else if (value > 0 && value <= 33) {
-            audioIconStr = "audio-volume-low-symbolic";
+            btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-low.svg"));
+            audioIconStr = "audio-volume-low";
         }
         else if(value > 33 && value <= 66) {
-            audioIconStr = "audio-volume-medium-symbolic";
+            btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-medium.svg"));
+            audioIconStr = "audio-volume-medium";
         }
         else if (value > 66) {
-            audioIconStr = "audio-volume-high-symbolic";
+            audioIconStr = "audio-volume-high";
+            btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-high.svg"));
         }
-//        audioIcon = QIcon::fromTheme(audioIconStr);
+        audioIcon = QIcon::fromTheme(audioIconStr);
 //        btn->setIcon(audioIcon);
-        w->drawImagColorFromTheme(btn,audioIconStr);
+//        w->drawImagColorFromTheme(btn,audioIconStr);
         Q_EMIT w->app_name_signal(appSliderStr);
     });
     /*应用音量同步*/
@@ -1874,30 +1883,35 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
         mate_mixer_stream_control_set_mute(control,!isMute);
         mate_mixer_stream_control_set_volume(control,guint(volume));
         volume = int(volume*100/65536 + 0.5);
-        UkuiButtonDrawSvg *btn = w->appWidget->findChild<UkuiButtonDrawSvg *>(appMuteBtnlStr);
+        QPushButton *btn = w->appWidget->findChild<QPushButton *>(appMuteBtnlStr);
         if (btn == nullptr)
             return;
         QString muteButtonStr;
         QIcon muteButtonIcon;
         isMute = mate_mixer_stream_control_get_mute(control);
         if (isMute) {
-            muteButtonStr = "audio-volume-muted-symbolic";
+            muteButtonStr = "audio-volume-muted";
+            btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
         }
         else if (volume <= 0) {
-            muteButtonStr = "audio-volume-muted-symbolic";
+            muteButtonStr = "audio-volume-muted";
+            btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
         }
         else if (volume > 0 && volume <= 33) {
-            muteButtonStr = "audio-volume-low-symbolic";
+            muteButtonStr = "audio-volume-low";
+            btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-low.svg"));
         }
         else if(volume > 33 && volume <= 66) {
-            muteButtonStr = "audio-volume-medium-symbolic";
+            btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-medium.svg"));
+            muteButtonStr = "audio-volume-medium";
         }
         else if (volume > 66) {
-            muteButtonStr = "audio-volume-muted-symbolic";
+            muteButtonStr = "audio-volume-high";
+            btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-high.svg"));
         }
-        w->drawImagColorFromTheme(btn,audioIconStr);
-//        muteButtonIcon = QIcon::fromTheme(muteButtonStr);
-        btn->setIcon(muteButtonIcon);
+//        w->drawImagColorFromTheme(btn,audioIconStr);
+        muteButtonIcon = QIcon::fromTheme(muteButtonStr);
+//        btn->setIcon(muteButtonIcon);
     });
 
     connect(w,&DeviceSwitchWidget::app_volume_changed,[=](bool is_mute,int volume,QString app_name,QString appBtnName){
@@ -1913,22 +1927,28 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
         if (btn == nullptr)
             return;
         if (is_mute) {
-            sliderMuteButtonStr = "audio-volume-muted-symbolic";
+            btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
+            sliderMuteButtonStr = "audio-volume-muted";
         }
         else if (volume <= 0) {
-            sliderMuteButtonStr = "audio-volume-muted-symbolic";
+            btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
+            sliderMuteButtonStr = "audio-volume-muted";
         }
         else if (volume > 0 && volume <= 33) {
-            sliderMuteButtonStr = "audio-volume-low-symbolic";
+            sliderMuteButtonStr = "audio-volume-low";
+            btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-low.svg"));
         }
         else if(volume > 33 && volume <= 66) {
-            sliderMuteButtonStr = "audio-volume-medium-symbolic";
+            sliderMuteButtonStr = "audio-volume-medium";
+            btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-medium.svg"));
         }
         else if (volume > 66) {
-            sliderMuteButtonStr = "audio-volume-high-symbolic";
+            sliderMuteButtonStr = "audio-volume-high";
+            btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-high.svg"));
         }
         sliderMuteButtonIcon = QIcon::fromTheme(sliderMuteButtonStr);
-        btn->setIcon(sliderMuteButtonIcon);
+//        btn->setIcon(sliderMuteButtonIcon);
+//        w->drawImagColorFromTheme(btn,audioIconStr);
     });
 
     connect(w,&DeviceSwitchWidget::system_muted_signal,[=](bool isMute){
@@ -1941,22 +1961,28 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
         if (btn == nullptr)
             return;
         if (isMute) {
-            muteButtonStr = "audio-volume-muted-symbolic";
+            muteButtonStr = "audio-volume-muted";
+            btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
         }
         else if (volume <= 0) {
-            muteButtonStr = "audio-volume-muted-symbolic";
+            muteButtonStr = "audio-volume-muted";
+            btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
         }
         else if (volume > 0 && volume <= 33) {
-            muteButtonStr = "audio-volume-low-symbolic";
+            muteButtonStr = "audio-volume-low";
+            btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-low.svg"));
         }
         else if(volume > 33 && volume <= 66) {
-            muteButtonStr = "audio-volume-medium-symbolic";
+            muteButtonStr = "audio-volume-medium";
+            btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-medium.svg"));
         }
         else if (volume > 66) {
-            muteButtonStr = "audio-volume-high-symbolic";
+            muteButtonStr = "audio-volume-high";
+            btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-high.svg"));
         }
         muteButtonIcon = QIcon::fromTheme(muteButtonStr);
-        btn->setIcon(muteButtonIcon);
+//        btn->setIcon(muteButtonIcon);
+//        w->drawImagColorFromTheme(btn,audioIconStr);
     });
 
     if (appnum <= 0) {
@@ -2417,7 +2443,6 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
     QIcon trayIcon;
     QIcon audioIcon;
 
-    w->themeChangeIcons();
     if (state) {
         systemTrayIcon = "audio-volume-muted";
         audioIconStr = "audio-volume-muted-symbolic";
@@ -2448,12 +2473,13 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
         w->m_pMuteAction->setIcon(QIcon(""));
     }
 
+    w->themeChangeIcons();
     trayIcon = QIcon::fromTheme(systemTrayIcon);
-    audioIcon = QIcon::fromTheme(audioIconStr);
+//    audioIcon = QIcon::fromTheme(audioIconStr);
     w->soundSystemTrayIcon->setIcon(QIcon(trayIcon));
-    w->devWidget->outputMuteBtn->setIcon(QIcon(audioIcon));
+//    w->devWidget->outputMuteBtn->setIcon(QIcon(audioIcon));
+//    w->miniWidget->muteBtn->setIcon(QIcon(audioIcon));
     w->appWidget->systemVolumeBtn->setIcon(QIcon(audioIcon));
-    w->miniWidget->muteBtn->setIcon(QIcon(audioIcon));
     w->miniWidget->displayVolumeLabel->setText(percent);
     w->appWidget->systemVolumeDisplayLabel->setText(percent);
 

@@ -45,7 +45,7 @@ private:
     UkuiApplicationWidget *displayAppVolumeWidget;
     QStringList *app_volume_list;
     QLabel *appLabel;
-    UkuiButtonDrawSvg *appMuteBtn;
+    QPushButton *appMuteBtn;
     QPushButton *appIconBtn;
     QSlider *appSlider;
     QScrollArea *appArea;
