@@ -55,7 +55,7 @@ SliderTipLabelHelper::SliderTipLabelHelper(QObject *parent) :QObject(parent)
 {
 
     m_pTiplabel = new MediaSliderTipLabel();
-    m_pTiplabel->setWindowFlag(Qt::ToolTip);
+    m_pTiplabel->setWindowFlags(Qt::ToolTip);
     qApp->installEventFilter(new AppEventFilter(this));
     m_pTiplabel->setFixedSize(52,30);
     m_pTiplabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);

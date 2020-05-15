@@ -10,6 +10,9 @@ TEMPLATE = app
 TARGET = ukui-volume-control-applet-qt
 INCLUDEPATH += .
 
+if (QT_VERSION <= QT_VERSION_CHECK(5,6,1))
+   QMAKE_CXXFLAGS += -std=c++11
+
 PREFIX = /usr/share/ukui-media
 
 include(QtSingleApplication/qtsingleapplication.pri)

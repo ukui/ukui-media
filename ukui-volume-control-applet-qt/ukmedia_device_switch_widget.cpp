@@ -426,13 +426,18 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
  */
 void DeviceSwitchWidget::systemTrayMenuInit()
 {
-    menu = new QMenu(this);
+    menu = new QMenu();
     soundSystemTrayIcon = new UkmediaTrayIcon(this);
 
     //为系统托盘图标添加菜单静音和声音首选项
     soundSystemTrayIcon->setToolTip(tr("Output volume control"));
+#if (QT_VERSION <= QT_VERSION_CHECK(5,6,1))
+    m_pMuteAction = new QAction(QIcon(""),tr("Mute"),this);
+    m_pSoundPreferenceAction = new QAction(tr("Sound preference(S)"),this);
+#elif (QT_VERSION > QT_VERSION_CHECK(5,6,1))
     m_pMuteAction = new QAction(QIcon(""),tr("Mute"));
     m_pSoundPreferenceAction = new QAction(tr("Sound preference(S)"));
+#endif
     QString settingsIconStr = "document-page-setup";
     QIcon settingsIcon = QIcon::fromTheme(settingsIconStr);
     m_pSoundPreferenceAction->setIcon(settingsIcon);
@@ -597,7 +602,7 @@ void DeviceSwitchWidget::appWidgetMuteButtonCLickedSlot()
         status = false;
         m_pMuteAction->setIcon(QIcon(""));
         mate_mixer_stream_control_set_mute(control,status);
-        updateSystemTrayIcon(volume,status);
+//        updateSystemTrayIcon(volume,status);
     }
     else {
         status =true;
@@ -605,9 +610,9 @@ void DeviceSwitchWidget::appWidgetMuteButtonCLickedSlot()
         QIcon muteActionIcon = QIcon::fromTheme(muteActionIconStr);
         m_pMuteAction->setIcon(muteActionIcon);
         mate_mixer_stream_control_set_mute(control,status);
-        updateSystemTrayIcon(volume,status);
+//        updateSystemTrayIcon(volume,status);
     }
-//    themeChangeIcons();
+    themeChangeIcons();
     Q_EMIT system_muted_signal(status);
     menu->hide();
 }
@@ -1218,7 +1223,6 @@ void DeviceSwitchWidget::deviceSwitchWidgetInit()
     deviceBtn->setToolTip(tr("Device Volume"));
     appVolumeBtn->setToolTip(tr("Application Volume"));
 
-    deviceBtn->toolTip().resize(98,38);
     switch(btnType) {
         case DEVICE_VOLUME_BUTTON:
         appVolumeBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
