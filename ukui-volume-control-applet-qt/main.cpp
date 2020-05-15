@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
     }
 
     //注册MessageHandler
-//    qInstallMessageHandler(outputMessage);
+    qInstallMessageHandler(outputMessage);
     //加载qss文件
     QFile qss(":/data/qss/ukuimedia.qss");
     qss.open(QFile::ReadOnly);
