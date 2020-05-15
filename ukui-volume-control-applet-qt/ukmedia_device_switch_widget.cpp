@@ -200,7 +200,6 @@ void DeviceSwitchWidget::showMenu()
 
 DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
 {
-    setWindowFlags(Qt::WindowStaysOnTopHint|Qt::Popup);
     setAttribute(Qt::WA_TranslucentBackground);
     setAttribute(Qt::WA_TranslucentBackground);
 
@@ -455,7 +454,7 @@ void DeviceSwitchWidget::systemTrayMenuInit()
             this,SLOT(activatedSystemTrayIconSlot(QSystemTrayIcon::ActivationReason)));
     connect(m_pSoundPreferenceAction,SIGNAL(triggered()),this,SLOT(jumpControlPanelSlot()));
 
-    menu->setWindowFlag(Qt::FramelessWindowHint);        //重要
+    menu->setWindowFlags(Qt::FramelessWindowHint);        //重要
     menu->setAttribute(Qt::WA_TranslucentBackground);    //重要
 }
 
