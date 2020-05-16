@@ -13,3 +13,4 @@ X-UKUI-Bugzilla-Bugzilla=UKUI
 X-UKUI-Bugzilla-Product=ukui-media
 X-UKUI-Bugzilla-Component=ukui-volume-control
 X-UKUI-Bugzilla-Version=@VERSION@
+NoDisplay=true
