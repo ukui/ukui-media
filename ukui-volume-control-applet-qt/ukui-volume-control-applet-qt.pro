@@ -39,7 +39,6 @@ PKGCONFIG += \
     gsettings-qt \
     Qt5Svg  \
     gio-2.0 \
-    Qt5Xdg \
     Qt5Multimedia
 
 HEADERS += \
