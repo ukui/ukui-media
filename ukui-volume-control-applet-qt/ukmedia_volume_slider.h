@@ -76,9 +76,6 @@ public:
     UkuiMediaButton(QWidget *parent = nullptr);
     ~UkuiMediaButton();
     friend class UkmediaMiniMasterVolumeWidget;
-protected:
-    //void mousePressEvent(QMouseEvent *e);
-    //void mouseReleaseEvent(QMouseEvent *e);
 
 Q_SIGNALS:
     void advanceToMiniSignal();

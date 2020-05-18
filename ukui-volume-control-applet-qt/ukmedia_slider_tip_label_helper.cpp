@@ -40,9 +40,10 @@ void MediaSliderTipLabel::paintEvent(QPaintEvent *e)
     QStyleOptionFrame opt;
     initStyleOption(&opt);
     QStylePainter p(this);
-    p.setBrush(QBrush(QColor(0x1A,0x1A,0x1A,0x4C)));
+//    p.setBrush(QBrush(QColor(0x1A,0x1A,0x1A,0x4C)));
+    p.setBrush(QBrush(QColor(0xFF,0xFF,0xFF,0x33)));
     p.setPen(Qt::NoPen);
-    p.drawRoundedRect(this->rect(), 6, 6);
+    p.drawRoundedRect(this->rect(), 1, 1);
     QPainterPath path;
     path.addRoundedRect(opt.rect,6,6);
     p.setRenderHint(QPainter::Antialiasing);
@@ -51,18 +52,15 @@ void MediaSliderTipLabel::paintEvent(QPaintEvent *e)
 //    this->setProperty("blurRegion", QRegion(QRect(0, 0, 1, 1)));
     QLabel::paintEvent(e);
 }
+
 SliderTipLabelHelper::SliderTipLabelHelper(QObject *parent) :QObject(parent)
 {
-
     m_pTiplabel = new MediaSliderTipLabel();
     m_pTiplabel->setWindowFlags(Qt::ToolTip);
     qApp->installEventFilter(new AppEventFilter(this));
     m_pTiplabel->setFixedSize(52,30);
     m_pTiplabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-//    m_pTiplabel->setStyleSheet("QLabel{background:rgba(26,26,26,0.7);"
-//                               "border:1px solid rgba(255, 255, 255, 0.2);"
-//                                   "border-radius:6px;padding:7px}");
-    }
+}
 
 void SliderTipLabelHelper::registerWidget(QWidget *w)
 {

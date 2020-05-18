@@ -47,7 +47,6 @@ UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QWidget *parent) : 
     deviceBtn->setIconSize(deviceIconSize);
     deviceBtn->setIcon(QIcon(icon));
 
-    switchBtn->setParent(this);
     masterVolumeSlider->setOrientation(Qt::Horizontal);
     masterVolumeSlider->setRange(0,100);
     deviceBtn->setFixedSize(16,16);

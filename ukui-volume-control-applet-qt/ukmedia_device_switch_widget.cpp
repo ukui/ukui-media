@@ -38,7 +38,6 @@ extern "C" {
 #include <QDebug>
 #include <QList>
 
-
 typedef enum {
     DEVICE_VOLUME_BUTTON,
     APP_VOLUME_BUTTON
@@ -47,7 +46,7 @@ typedef enum {
 ButtonType btnType = DEVICE_VOLUME_BUTTON;
 guint appnum = 0;
 int app_count = 0;
-bool isShow = true;
+//bool isShow = true;
 extern DisplayerMode displayMode ;
 QString application_name;
 
@@ -112,7 +111,7 @@ void DeviceSwitchWidget::paintEvent(QPaintEvent *event)
 void DeviceSwitchWidget::showWindow()
 {
     this->show();
-    isShow = false;
+//    isShow = false;
 }
 
 /*!
@@ -132,7 +131,7 @@ void DeviceSwitchWidget::hideWindow()
     default:
         break;
     }
-    isShow = true;
+//    isShow = true;
 }
 
 /*!
@@ -218,7 +217,7 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
 
     switchToMiniBtn = new UkuiMediaButton(this);
     switchToMiniBtn->setParent(this);
-    switchToMiniBtn->setFocusPolicy(Qt::NoFocus);
+//    switchToMiniBtn->setFocusPolicy(Qt::NoFocus);
 
     switchToMiniBtn->setToolTip(tr("Go Into Mini Mode"));
     QSize switchSize(16,16);
@@ -1099,7 +1098,8 @@ void DeviceSwitchWidget::activatedSystemTrayIconSlot(QSystemTrayIcon::Activation
     }
     //鼠标左键点击图标
     case QSystemTrayIcon::Trigger: {
-        if (isShow) {
+//        if (isShow) {
+        if (!isVisible() || windowState() & Qt::WindowMinimized) {
             switch (displayMode) {
             case MINI_MODE:
                 miniWidgetShow();
@@ -1119,7 +1119,7 @@ void DeviceSwitchWidget::activatedSystemTrayIconSlot(QSystemTrayIcon::Activation
             else if (displayMode == MINI_MODE) {
                 miniWidget->hide();
             }
-            isShow = true;
+//            isShow = true;
             break;
         }
     }
@@ -1793,23 +1793,23 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
     QString audioIconStr;
     QIcon audioIcon;
     if (is_mute) {
-        audioIconStr = "audio-volume-muted";
+        audioIconStr = "audio-volume-muted-symbolic";
         btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
     }
     else if (display_volume <= 0) {
-        audioIconStr = "audio-volume-muted";
+        audioIconStr = "audio-volume-muted-symbolic";
         btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
     }
     else if (display_volume > 0 && display_volume <= 33) {
-        audioIconStr = "audio-volume-low";
+        audioIconStr = "audio-volume-low-symbolic";
         btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-low.svg"));
     }
     else if(display_volume > 33 && display_volume <= 66) {
-        audioIconStr = "audio-volume-medium";
+        audioIconStr = "audio-volume-medium-symbolic";
         btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-medium.svg"));
     }
     else if (display_volume > 66) {
-        audioIconStr = "audio-volume-high";
+        audioIconStr = "audio-volume-high-symbolic";
         btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-high.svg"));
     }
 //    w->drawImagColorFromTheme(btn,audioIconStr);
@@ -1842,22 +1842,22 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
         }
         if (status) {
             btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
-            audioIconStr = "audio-volume-muted";
+            audioIconStr = "audio-volume-muted-symbolic";
         }
         else if (value <= 0) {
             btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
-            audioIconStr = "audio-volume-muted";
+            audioIconStr = "audio-volume-muted-symbolic";
         }
         else if (value > 0 && value <= 33) {
             btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-low.svg"));
-            audioIconStr = "audio-volume-low";
+            audioIconStr = "audio-volume-low-symbolic";
         }
         else if(value > 33 && value <= 66) {
             btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-medium.svg"));
-            audioIconStr = "audio-volume-medium";
+            audioIconStr = "audio-volume-medium-symbolic";
         }
         else if (value > 66) {
-            audioIconStr = "audio-volume-high";
+            audioIconStr = "audio-volume-high-symbolic";
             btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-high.svg"));
         }
         audioIcon = QIcon::fromTheme(audioIconStr);
@@ -1889,23 +1889,23 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
         QIcon muteButtonIcon;
         isMute = mate_mixer_stream_control_get_mute(control);
         if (isMute) {
-            muteButtonStr = "audio-volume-muted";
+            muteButtonStr = "audio-volume-muted-symbolic";
             btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
         }
         else if (volume <= 0) {
-            muteButtonStr = "audio-volume-muted";
+            muteButtonStr = "audio-volume-muted-symbolic";
             btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
         }
         else if (volume > 0 && volume <= 33) {
-            muteButtonStr = "audio-volume-low";
+            muteButtonStr = "audio-volume-low-symbolic";
             btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-low.svg"));
         }
         else if(volume > 33 && volume <= 66) {
             btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-medium.svg"));
-            muteButtonStr = "audio-volume-medium";
+            muteButtonStr = "audio-volume-medium-symbolic";
         }
         else if (volume > 66) {
-            muteButtonStr = "audio-volume-high";
+            muteButtonStr = "audio-volume-high-symbolic";
             btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-high.svg"));
         }
 //        w->drawImagColorFromTheme(btn,audioIconStr);
@@ -2443,11 +2443,11 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
     QIcon audioIcon;
 
     if (state) {
-        systemTrayIcon = "audio-volume-muted";
+        systemTrayIcon = "audio-volume-muted-symbolic";
         audioIconStr = "audio-volume-muted-symbolic";
     }
     else if (value <= 0) {
-        systemTrayIcon = "audio-volume-muted";
+        systemTrayIcon = "audio-volume-muted-symbolic";
         audioIconStr = "audio-volume-muted-symbolic";
         w->m_pMuteAction->setIcon(QIcon(""));
         //如果主主音量处于静音状态，应用音量取消静音则设置主音量取消静音
@@ -2458,16 +2458,16 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
         }*/
     }
     else if (value > 0 && value <= 33) {
-        systemTrayIcon = "audio-volume-low";
+        systemTrayIcon = "audio-volume-low-symbolic";
         audioIconStr = "audio-volume-low-symbolic";
     }
     else if(value > 33 && value <= 66) {
-        systemTrayIcon = "audio-volume-medium";
+        systemTrayIcon = "audio-volume-medium-symbolic";
         audioIconStr = "audio-volume-medium-symbolic";
         w->m_pMuteAction->setIcon(QIcon(""));
     }
     else if (value > 66) {
-        systemTrayIcon = "audio-volume-high";
+        systemTrayIcon = "audio-volume-high-symbolic";
         audioIconStr = "audio-volume-high-symbolic";
         w->m_pMuteAction->setIcon(QIcon(""));
     }
@@ -2712,11 +2712,11 @@ bool DeviceSwitchWidget:: event(QEvent *event)
         if (QApplication::activeWindow() != this) {
             if (displayMode == MINI_MODE) {
                 miniWidget->hide();
-                isShow = true;
+//                isShow = true;
             }
             else if (displayMode == ADVANCED_MODE) {
                 this->hide();
-                isShow = true;
+//                isShow = true;
             }
         }
     }
@@ -2859,25 +2859,25 @@ void DeviceSwitchWidget::updateSystemTrayIcon(int volume,bool isMute)
     QIcon audioIcon;
     QIcon icon;
     if (isMute) {
-        systemTrayIcon = "audio-volume-muted";
+        systemTrayIcon = "audio-volume-muted-symbolic";
         audioIconStr = "audio-volume-muted-symbolic";
     }
     else if (volume <= 0) {
-        systemTrayIcon = "audio-volume-muted";
+        systemTrayIcon = "audio-volume-muted-symbolic";
         audioIconStr = "audio-volume-muted-symbolic";
     }
     else if (volume > 0 && volume <= 33) {
-        systemTrayIcon = "audio-volume-low";
+        systemTrayIcon = "audio-volume-low-symbolic";
         audioIconStr = "audio-volume-low-symbolic";
         m_pMuteAction->setIcon(QIcon(""));
     }
     else if (volume >33 && volume <= 66) {
-        systemTrayIcon = "audio-volume-medium";
+        systemTrayIcon = "audio-volume-medium-symbolic";
         audioIconStr = "audio-volume-medium-symbolic";
         m_pMuteAction->setIcon(QIcon(""));
     }
     else {
-        systemTrayIcon = "audio-volume-high";
+        systemTrayIcon = "audio-volume-high-symbolic";
         audioIconStr = "audio-volume-high-symbolic";
         m_pMuteAction->setIcon(QIcon(""));
     }

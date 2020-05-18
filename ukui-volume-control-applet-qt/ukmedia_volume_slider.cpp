@@ -53,6 +53,7 @@ UkuiMediaButton::UkuiMediaButton(QWidget *parent)
     Q_UNUSED(parent);
     this->setFixedSize(36,36);
 }
+
 UkuiMediaButton::~UkuiMediaButton()
 {
 
@@ -98,6 +99,7 @@ void UkuiMediaButton::mouseReleaseEvent(QMouseEvent *e)
         this->setIconSize(iconSize);
         this->setIcon(QIcon("/usr/share/ukui-media/img/mini-module.svg"));
     }
+//    this->setStyleSheet("background:rgba(255,255,255,0)");
     QToolButton::mouseReleaseEvent(e);
 }
 
