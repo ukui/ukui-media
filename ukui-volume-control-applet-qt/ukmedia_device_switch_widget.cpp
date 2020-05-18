@@ -23,8 +23,6 @@ extern "C" {
 #include <gobject/gparamspecs.h>
 #include <glib/gi18n.h>
 }
-#include <XdgIcon>
-#include <XdgDesktopFile>
 #include <QHBoxLayout>
 #include <QHeaderView>
 #include <QStringList>
@@ -350,8 +348,6 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     connect(devWidget->outputMuteBtn,SIGNAL(clicked()),this,SLOT(devWidgetMuteButtonClickedSlot()));
     connect(miniWidget->muteBtn,SIGNAL(clicked()),this,SLOT(miniWidgetMuteButtonClickedSlot()));
     connect(appWidget->systemVolumeBtn,SIGNAL(clicked()),this,SLOT(appWidgetMuteButtonCLickedSlot()));
-
-//    connect(actionMute,SIGNAL(triggered()),this,SLOT(actionMuteTriggeredSLot()));
     connect(m_pMuteAction,SIGNAL(triggered()),this,SLOT(actionMuteTriggeredSLot()));
     /*!
      * \brief
