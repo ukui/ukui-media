@@ -18,6 +18,7 @@
 #include "ukmedia_volume_slider.h"
 #include <QPalette>
 #include <QPainter>
+#include <QPainterPath>
 #include <QWidget>
 #include <QStyleOptionComplex>
 #include <QDebug>

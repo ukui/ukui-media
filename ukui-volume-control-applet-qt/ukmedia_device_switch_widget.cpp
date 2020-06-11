@@ -29,6 +29,7 @@ extern "C" {
 #include <QSpacerItem>
 #include <QListView>
 #include <QPainter>
+#include <QPainterPath>
 #include <QScreen>
 #include <QProcess>
 #include <QApplication>
