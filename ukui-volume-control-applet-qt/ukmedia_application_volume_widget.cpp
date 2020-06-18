@@ -72,7 +72,7 @@ ApplicationVolumeWidget::ApplicationVolumeWidget(QWidget *parent) : QWidget (par
     systemVolumeWidget->setLayout(vLayout);
     systemVolumeWidget->layout()->setContentsMargins(0,0,0,0);
 
-    systemVolumeLabel->setStyleSheet("font-size:14px;font-family:Noto Sans CJK SC;"
+    systemVolumeLabel->setStyleSheet("font-size:14px;"
                                      "font-weight:400;"
                                      "color:rgba(255,255,255,0.91);"
                                      "line-height:28px;");

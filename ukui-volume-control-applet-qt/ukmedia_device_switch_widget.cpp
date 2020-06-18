@@ -204,6 +204,7 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     devWidget = new UkmediaDeviceWidget(this);
     appWidget = new ApplicationVolumeWidget(this);//appScrollWidget->area);
     miniWidget = new UkmediaMiniMasterVolumeWidget();
+    osdWidget = new UkmediaOsdDisplayWidget();
 
     appWidget->appArea = new QScrollArea(appWidget);
     appWidget->displayAppVolumeWidget = new UkuiApplicationWidget(appWidget->appArea);
@@ -2419,6 +2420,25 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
     MateMixerStream *stream;
     MateMixerStreamControl *control = nullptr;
 
+    //osd widget显示
+    int ret = system(SOUND_MODE_SCRIPTS);
+    if (ret == 0) {
+        QTimer *timer = new QTimer(w->osdWidget); //this 为parent类, 表示当前窗口
+        connect(timer, SIGNAL(timeout()), w, SLOT(osdDisplayWidgetHide())); // SLOT填入一个槽函数
+        timer->start(2000); // 1000毫秒, 等于 1 秒
+        w->osdWidget->UkmediaOsdSetIcon("audio-speakers-symbolic");
+        w->osdWidget->show();
+        qDebug() << "扬声器";
+    }
+    else if (ret == 256) {
+        QTimer *timer = new QTimer(w->osdWidget); //this 为parent类, 表示当前窗口
+        connect(timer, SIGNAL(timeout()), w, SLOT(osdDisplayWidgetHide())); // SLOT填入一个槽函数
+        timer->start(2000); // 1000毫秒, 等于 1 秒
+        w->osdWidget->UkmediaOsdSetIcon("headphones-symbolic");
+        w->osdWidget->show();
+        qDebug() << "模拟耳机 ";
+    }
+
     stream = mate_mixer_context_get_default_output_stream (context);
     if (stream != nullptr)
         control = mate_mixer_stream_get_default_control (stream);
@@ -2491,6 +2511,13 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
             g_debug ("There is no output stream/control, output icon disabled");
     }
 
+}
+
+//osd超时隐藏
+void DeviceSwitchWidget::osdDisplayWidgetHide()
+{
+    if (!this->osdWidget->isHidden())
+        this->osdWidget->hide();
 }
 
 void DeviceSwitchWidget::gvc_stream_status_icon_set_control (DeviceSwitchWidget *w,MateMixerStreamControl *control)

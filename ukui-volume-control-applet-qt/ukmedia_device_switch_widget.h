@@ -23,6 +23,7 @@
 #include "ukmedia_device_volume_widget.h"
 #include "ukmedia_application_volume_widget.h"
 #include "ukmedia_mini_master_volume_widget.h"
+#include "ukmedia_osd_display_widget.h"
 #include <QMenu>
 #include <QCheckBox>
 #include <QWidgetAction>
@@ -36,11 +37,14 @@
 #include <QProcess>
 #include <QGSettings>
 #include <QMediaPlayer>
+#include <QTimer>
 extern "C" {
 #include <libmatemixer/matemixer.h>
 #include <gio/gio.h>
 #include <gtk/gtk.h>
 }
+
+#define SOUND_MODE_SCRIPTS "/usr/share/ukui-media/scripts/detection_output_mode.sh"
 #define UKUI_THEME_SETTING "org.ukui.style"
 #define UKUI_THEME_NAME "style-name"
 #define UKUI_THEME_WHITE "ukui-white"
@@ -176,6 +180,7 @@ private Q_SLOTS:
     void inputWidgetMuteButtonClicked();
     void inputWidgetSliderChangedSlot(int value);
     void ukuiThemeChangedSlot(const QString &themeStr);
+    void osdDisplayWidgetHide();
 private:
     QPushButton *deviceBtn;
     QPushButton *appVolumeBtn;
@@ -184,6 +189,7 @@ private:
     UkmediaDeviceWidget *devWidget;
     ApplicationVolumeWidget *appWidget;
     UkmediaMiniMasterVolumeWidget *miniWidget;
+    UkmediaOsdDisplayWidget *osdWidget;
     MateMixerStream *stream;
     MateMixerStream *input;
     MateMixerContext *context;
