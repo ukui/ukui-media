@@ -90,9 +90,8 @@ void UkmediaOsdDisplayWidget::UkmediaOsdDisplayWidgetInit()
     this->iconButton->setFixedSize(size*0.65,size*0.65);
     QSize iconSize(size*0.65,size*0.65);
     this->iconButton->setIconSize(iconSize);
-    positionX = (screenWidth - this->osdWidget->width())/2;
-    positionY = (screenHeight/2) + (screenHeight/2 - this->osdWidget->height())/2;
-
+    positionX = (screenWidth - this->width())/2;
+    positionY = (screenHeight/2) + (screenHeight/2 - this->height())/2;
     this->move(positionX,positionY);
 //    this->setStyleSheet("QWidget{background:rgba(255,0,0,0.7);}");
     this->osdWidget->setStyleSheet("QWidget{background:rgba(255,0,0,0);}");
