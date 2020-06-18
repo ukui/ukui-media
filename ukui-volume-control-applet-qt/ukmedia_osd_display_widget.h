@@ -40,6 +40,7 @@ public:
 private:
     QWidget *osdWidget;
     QPushButton *iconButton;
+    int ret;
 protected:
     void paintEvent(QPaintEvent *event);
 };

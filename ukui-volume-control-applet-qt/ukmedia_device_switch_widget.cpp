@@ -2422,21 +2422,18 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
 
     //osd widget显示
     int ret = system(SOUND_MODE_SCRIPTS);
-    if (ret == 0) {
+    if (ret != w->osdWidget->ret) {
+        if (ret == 0) {
+            w->osdWidget->UkmediaOsdSetIcon("audio-speakers-symbolic");
+        }
+        else if (ret == 256) {
+            w->osdWidget->UkmediaOsdSetIcon("headphones-symbolic");
+        }
+        w->osdWidget->ret = ret;
+        w->osdWidget->show();
         QTimer *timer = new QTimer(w->osdWidget); //this 为parent类, 表示当前窗口
         connect(timer, SIGNAL(timeout()), w, SLOT(osdDisplayWidgetHide())); // SLOT填入一个槽函数
-        timer->start(2000); // 1000毫秒, 等于 1 秒
-        w->osdWidget->UkmediaOsdSetIcon("audio-speakers-symbolic");
-        w->osdWidget->show();
-        qDebug() << "扬声器";
-    }
-    else if (ret == 256) {
-        QTimer *timer = new QTimer(w->osdWidget); //this 为parent类, 表示当前窗口
-        connect(timer, SIGNAL(timeout()), w, SLOT(osdDisplayWidgetHide())); // SLOT填入一个槽函数
-        timer->start(2000); // 1000毫秒, 等于 1 秒
-        w->osdWidget->UkmediaOsdSetIcon("headphones-symbolic");
-        w->osdWidget->show();
-        qDebug() << "模拟耳机 ";
+        timer->start(2000);
     }
 
     stream = mate_mixer_context_get_default_output_stream (context);

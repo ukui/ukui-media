@@ -27,6 +27,7 @@ UkmediaOsdDisplayWidget::UkmediaOsdDisplayWidget(QWidget *parent) : QWidget (par
 {
     osdWidget = new QWidget(this);
     iconButton = new QPushButton(this);
+    ret = 0;
     iconButton->setFocusPolicy(Qt::NoFocus);
     UkmediaOsdDisplayWidgetInit();
     this->setWindowFlags(Qt::WindowStaysOnTopHint|Qt::Popup);
