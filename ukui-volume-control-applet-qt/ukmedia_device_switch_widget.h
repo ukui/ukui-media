@@ -39,8 +39,8 @@
 extern "C" {
 #include <libmatemixer/matemixer.h>
 #include <gio/gio.h>
+#include <gtk/gtk.h>
 }
-
 #define UKUI_THEME_SETTING "org.ukui.style"
 #define UKUI_THEME_NAME "style-name"
 #define UKUI_THEME_WHITE "ukui-white"
@@ -181,7 +181,6 @@ private:
     QPushButton *appVolumeBtn;
     UkuiMediaButton *switchToMiniBtn;
     QRect trayRect;
-
     UkmediaDeviceWidget *devWidget;
     ApplicationVolumeWidget *appWidget;
     UkmediaMiniMasterVolumeWidget *miniWidget;

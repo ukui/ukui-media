@@ -21,9 +21,9 @@
 #include <QPainter>
 #include <QSpacerItem>
 #include <QApplication>
-UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QWidget *parent) : QWidget(parent)
+UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QFrame *parent) : QFrame(parent)
 {
-    masterWidget = new QWidget(this);
+    masterWidget = new QFrame(this);
     muteBtn = new UkuiButtonDrawSvg(masterWidget);
     displayVolumeLabel = new QLabel(masterWidget);
     masterVolumeSlider = new UkmediaVolumeSlider(masterWidget);
@@ -119,9 +119,6 @@ UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QWidget *parent) : 
                                       "height: 20px;"
                                       "background: rgb(61,107,229);"
                                       "border-radius:10px;}");
-//    this->setStyleSheet("QWidget#miniWidget{border:1px solid rgba(255, 255, 255, 0.05);"
-//                        "background:rgba(19,19,20,0.8);"
-//                        "border-radius:6px 6px 6px 6px;}");
 
 }
 

@@ -37,12 +37,12 @@ extern "C" {
 #include <QtCore/qmath.h>
 #include <QDebug>
 #include <QList>
+#include <cairo.h>
 
 typedef enum {
     DEVICE_VOLUME_BUTTON,
     APP_VOLUME_BUTTON
 }ButtonType;
-
 ButtonType btnType = DEVICE_VOLUME_BUTTON;
 guint appnum = 0;
 int app_count = 0;
@@ -217,8 +217,9 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
 
     switchToMiniBtn = new UkuiMediaButton(this);
     switchToMiniBtn->setParent(this);
+    switchToMiniBtn->setFocusPolicy(Qt::NoFocus);
 //    switchToMiniBtn->setFocusPolicy(Qt::NoFocus);
-
+    
     switchToMiniBtn->setToolTip(tr("Go Into Mini Mode"));
     QSize switchSize(16,16);
     switchToMiniBtn->setIconSize(switchSize);
@@ -451,6 +452,7 @@ void DeviceSwitchWidget::systemTrayMenuInit()
 
     menu->setWindowFlags(Qt::WindowStaysOnTopHint|Qt::Popup);       //重要
     menu->setAttribute(Qt::WA_TranslucentBackground);    //重要
+    menu->setWindowOpacity(0.7);
 }
 
 /*!
@@ -1399,7 +1401,7 @@ void DeviceSwitchWidget::add_stream (DeviceSwitchWidget *w, MateMixerStream *str
             MateMixerSwitchOption *opt = mate_mixer_switch_get_active_option(swt);
             const char *name = mate_mixer_switch_option_get_name(opt);
             const char *label = mate_mixer_switch_option_get_label(opt);
-
+            qDebug() << "name is :" << name << "label is" << label;
             switchList = switchList->next;
         }
         /*w->device_name_list->append(name);
@@ -2887,7 +2889,6 @@ void DeviceSwitchWidget::updateSystemTrayIcon(int volume,bool isMute)
     miniWidget->muteBtn->setIcon(audioIcon);
     appWidget->systemVolumeBtn->setIcon(audioIcon);
     devWidget->outputMuteBtn->setIcon(audioIcon);
-
 
     //设置声音菜单栏静音选项的勾选状态
     if (isMute) {

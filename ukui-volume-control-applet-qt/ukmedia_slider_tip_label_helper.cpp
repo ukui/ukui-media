@@ -49,7 +49,7 @@ void MediaSliderTipLabel::paintEvent(QPaintEvent *e)
     p.setRenderHint(QPainter::Antialiasing);
     setProperty("blurRegion",QRegion(path.toFillPolygon().toPolygon()));
     p.drawPrimitive(QStyle::PE_PanelTipLabel, opt);
-//    this->setProperty("blurRegion", QRegion(QRect(0, 0, 1, 1)));
+    this->setProperty("blurRegion", QRegion(QRect(0, 0, 1, 1)));
     QLabel::paintEvent(e);
 }
 

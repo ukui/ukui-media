@@ -23,14 +23,15 @@
 #include <QPushButton>
 #include <QComboBox>
 #include <QKeyEvent>
+#include <QFrame>
 #include "ukmedia_volume_slider.h"
 #include "customstyle.h"
 
-class UkmediaMiniMasterVolumeWidget : public QWidget
+class UkmediaMiniMasterVolumeWidget : public QFrame
 {
     Q_OBJECT
 public:
-    explicit UkmediaMiniMasterVolumeWidget(QWidget *parent = nullptr);
+    explicit UkmediaMiniMasterVolumeWidget(QFrame *parent = nullptr);
     ~UkmediaMiniMasterVolumeWidget();
     friend class DeviceSwitchWidget;
 Q_SIGNALS:
@@ -39,7 +40,7 @@ Q_SIGNALS:
 private Q_SLOTS:
     void moveMiniSwitchBtnSlot();
 private:
-    QWidget *masterWidget;
+    QFrame *masterWidget;
     UkmediaVolumeSlider *masterVolumeSlider;
     QLabel *displayVolumeLabel;
 //    QLabel *deviceLabel;
