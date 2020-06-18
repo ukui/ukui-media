@@ -19,8 +19,6 @@ for USER in $(who | grep tty | awk '{print $1}' | sort | uniq);do
       exit 0
     elif [[ $line =~ "analog-output-headphone" ]] && [[ $OUTPUT_MODE == "available" ]];then
       exit 1
-    else
-      exit 2
     fi 
   done < /tmp/kylin_headphone.tmp
 done
