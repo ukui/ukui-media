@@ -634,7 +634,7 @@ void DeviceSwitchWidget::muteCheckBoxReleasedSlot()
         status = false;
         m_pMuteAction->setIcon(QIcon(""));
         mate_mixer_stream_control_set_mute(control,status);
-        updateSystemTrayIcon(volume,status);
+//        updateSystemTrayIcon(volume,status);
     }
     else {
         status =true;
@@ -642,8 +642,9 @@ void DeviceSwitchWidget::muteCheckBoxReleasedSlot()
         QIcon muteActionIcon = QIcon::fromTheme(muteActionIconStr);
         m_pMuteAction->setIcon(muteActionIcon);
         mate_mixer_stream_control_set_mute(control,status);
-        updateSystemTrayIcon(volume,status);
+//        updateSystemTrayIcon(volume,status);
     }
+    themeChangeIcons();
     Q_EMIT system_muted_signal(status);
     menu->hide();
 }
@@ -676,7 +677,8 @@ void DeviceSwitchWidget::actionMuteTriggeredSLot()
     isMute = mate_mixer_stream_control_get_mute(control);
     int volume = int(mate_mixer_stream_control_get_volume(control));
     volume = int(volume*100/65536.0+0.5);
-    updateSystemTrayIcon(volume,isMute);
+//    updateSystemTrayIcon(volume,isMute);
+    themeChangeIcons();
     Q_EMIT system_muted_signal(isMute);
 }
 
