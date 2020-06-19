@@ -474,12 +474,15 @@ void DeviceSwitchWidget::miniMastrerSliderChangedSlot(int value)
     miniWidget->displayVolumeLabel->setText(percent);
     themeChangeIcons();
     //音量值改变时添加提示音
-    QMediaPlayer *player = new QMediaPlayer;
-    player->setMedia(QUrl::fromLocalFile("/usr/share/sounds/ukui/default/alerts/drip.ogg"));
-    player->play();
-    connect(player,&QMediaPlayer::stateChanged,[=](){
-         player->deleteLater() ;
-    });
+    if (firstEnterSystem != true) {
+        QMediaPlayer *player = new QMediaPlayer;
+        player->setMedia(QUrl::fromLocalFile("/usr/share/sounds/ukui/default/alerts/drip.ogg"));
+        player->play();
+        connect(player,&QMediaPlayer::stateChanged,[=](){
+             player->deleteLater() ;
+        });
+    }
+    firstEnterSystem = false;
 }
 
 /*!
@@ -699,7 +702,8 @@ void DeviceSwitchWidget::mouseMeddleClickedTraySlot()
     isMute = mate_mixer_stream_control_get_mute(control);
     int volume = int(mate_mixer_stream_control_get_volume(control));
     volume = int(volume*100/65536.0+0.5);
-    updateSystemTrayIcon(volume,isMute);
+//    updateSystemTrayIcon(volume,isMute);
+    themeChangeIcons();
 
     //发送系统静音信号给应用音量
     Q_EMIT system_muted_signal(isMute);

@@ -215,6 +215,7 @@ private:
     UkmediaTrayIcon *soundSystemTrayIcon;
     QProcess *m_process;
     QString mThemeName;
+    bool firstEnterSystem = true;
 
 protected:
     void paintEvent(QPaintEvent *event);
