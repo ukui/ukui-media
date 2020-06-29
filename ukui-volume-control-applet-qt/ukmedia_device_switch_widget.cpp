@@ -309,7 +309,7 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     if (QGSettings::isSchemaInstalled(UKUI_THEME_SETTING)){
         m_pTransparencySetting = new QGSettings(UKUI_TRANSPARENCY_SETTING);
         if (m_pTransparencySetting->keys().contains("transparency")) {
-            transparency = m_pTransparencySetting->get(UKUI_TRANSPARENCY_SETTING).toInt();
+            transparency = m_pTransparencySetting->get("transparency").toInt();
         }
     }
 #endif
@@ -1116,7 +1116,7 @@ void DeviceSwitchWidget::activatedSystemTrayIconSlot(QSystemTrayIcon::Activation
     //获取透明度
     if (QGSettings::isSchemaInstalled(UKUI_THEME_SETTING)){
         if (m_pTransparencySetting->keys().contains("transparency")) {
-            transparency = m_pTransparencySetting->get(UKUI_TRANSPARENCY_SETTING).toInt();
+            transparency = m_pTransparencySetting->get("transparency").toInt();
         }
     }
 #endif
