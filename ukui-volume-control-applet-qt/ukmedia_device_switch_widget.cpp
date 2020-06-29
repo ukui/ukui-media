@@ -305,8 +305,15 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     }
 
 #if (QT_VERSION <= QT_VERSION_CHECK(5,6,1))
-     m_pTransparencySetting = new QGSettings();
+    //获取透明度
+    if (QGSettings::isSchemaInstalled(UKUI_THEME_SETTING)){
+        m_pTransparencySetting = new QGSettings(UKUI_TRANSPARENCY_SETTING);
+        if (m_pTransparencySetting->keys().contains("transparency")) {
+            transparency = m_pTransparencySetting->get(UKUI_TRANSPARENCY_SETTING).toInt();
+        }
+    }
 #endif
+
 
     /*!
      * \brief
@@ -457,7 +464,6 @@ void DeviceSwitchWidget::systemTrayMenuInit()
 
     menu->setWindowFlags(Qt::WindowStaysOnTopHint|Qt::Popup);       //重要
     menu->setAttribute(Qt::WA_TranslucentBackground);    //重要
-    menu->setWindowOpacity(0.7);
 }
 
 /*!
@@ -1106,6 +1112,17 @@ void DeviceSwitchWidget::primaryScreenChangedSlot(QScreen *screen)
  */
 void DeviceSwitchWidget::activatedSystemTrayIconSlot(QSystemTrayIcon::ActivationReason reason)
 {
+#if (QT_VERSION <= QT_VERSION_CHECK(5,6,1))
+    //获取透明度
+    if (QGSettings::isSchemaInstalled(UKUI_THEME_SETTING)){
+        if (m_pTransparencySetting->keys().contains("transparency")) {
+            transparency = m_pTransparencySetting->get(UKUI_TRANSPARENCY_SETTING).toInt();
+        }
+    }
+#endif
+    menu->setWindowOpacity(transparency);
+    osdWidget->setWindowOpacity(transparency);
+    miniWidget->setWindowOpacity(transparency);
     switch(reason) {
     //鼠标中间键点击图标
     case QSystemTrayIcon::MiddleClick: {

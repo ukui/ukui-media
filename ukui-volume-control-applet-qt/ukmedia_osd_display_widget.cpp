@@ -99,7 +99,6 @@ void UkmediaOsdDisplayWidget::UkmediaOsdDisplayWidgetInit()
                                     "border-radius:4px;}"
                                     "QPushButton::pressed{background:rgba(61,107,229,0);"
                                     "border-radius:4px;padding-left:0px;}");
-    this->setWindowOpacity(0.7);
 }
 
 void UkmediaOsdDisplayWidget::UkmediaOsdSetIcon(QString iconStr)

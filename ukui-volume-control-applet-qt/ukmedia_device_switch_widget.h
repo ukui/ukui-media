@@ -45,6 +45,7 @@ extern "C" {
 
 #define SOUND_MODE_SCRIPTS "/usr/share/ukui-media/scripts/detection_output_mode.sh"
 #define UKUI_THEME_SETTING "org.ukui.style"
+#define UKUI_TRANSPARENCY_SETTING "org.ukui.control-center.personalise"
 #define UKUI_THEME_NAME "style-name"
 #define UKUI_THEME_WHITE "ukui-white"
 #define UKUI_THEME_BLACK "ukui-black"
@@ -218,6 +219,7 @@ private:
     QProcess *m_process;
     QString mThemeName;
     bool firstEnterSystem = true;
+    double transparency = 0.7;
 
 protected:
     void paintEvent(QPaintEvent *event);

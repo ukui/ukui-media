@@ -89,7 +89,6 @@ UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QFrame *parent) : Q
     hlayout->setSpacing(0);
     masterWidget->layout()->setContentsMargins(0,0,0,0);
 
-    this->setWindowOpacity(0.8);
     setObjectName("miniWidget");
     deviceCombox->setVisible(false);
     switchBtn->setToolTip(tr("Go Into Full Mode"));

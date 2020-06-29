@@ -27,6 +27,7 @@
 #include "ukmedia_volume_slider.h"
 #include "customstyle.h"
 
+#define UKUI_TRANSPARENCY_SETTING "org.ukui.control-center.personalise"
 class UkmediaMiniMasterVolumeWidget : public QFrame
 {
     Q_OBJECT
@@ -43,7 +44,6 @@ private:
     QFrame *masterWidget;
     UkmediaVolumeSlider *masterVolumeSlider;
     QLabel *displayVolumeLabel;
-//    QLabel *deviceLabel;
     UkuiButtonDrawSvg *muteBtn;
     UkuiMediaButton *switchBtn;
 
