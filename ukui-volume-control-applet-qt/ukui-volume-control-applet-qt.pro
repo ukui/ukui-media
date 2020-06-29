@@ -39,8 +39,7 @@ PKGCONFIG += \
     gsettings-qt \
     Qt5Svg  \
     gio-2.0 \
-    Qt5Multimedia \
-    gtk+-3.0
+    Qt5Multimedia
 
 HEADERS += \
     customstyle.h \

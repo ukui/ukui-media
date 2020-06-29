@@ -27,6 +27,7 @@ UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QFrame *parent) : Q
     muteBtn = new UkuiButtonDrawSvg(masterWidget);
     displayVolumeLabel = new QLabel(masterWidget);
     masterVolumeSlider = new UkmediaVolumeSlider(masterWidget);
+//    masterWidget->setFrameShape(QFrame::Shape::Box);
 
     deviceCombox = new QComboBox(this);
     switchBtn = new UkuiMediaButton(this);

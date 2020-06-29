@@ -23,7 +23,7 @@
 #include <QDebug>
 
 DisplayerMode displayMode = MINI_MODE;
-
+SwitchButtonState buttonState = SWITCH_BUTTON_NORMAL;
 UkuiApplicationWidget::UkuiApplicationWidget(QWidget *parent)
 {
     Q_UNUSED(parent);
@@ -59,24 +59,72 @@ UkuiMediaButton::~UkuiMediaButton()
 
 }
 
+/*!
+ * \brief
+ * \details
+ * 绘制窗体的颜色及圆角
+ */
+//void UkuiMediaButton::paintEvent(QPaintEvent *event)
+//{
+//    QStyleOption opt;
+//    opt.init(this);
+//    QPainter p(this);
+//    if (buttonState == SWITCH_BUTTON_NORMAL) {
+//         p.setBrush(QColor(0xff,0xff,0xff,0x00));
+////         qDebug() << "正常";
+//    }
+//    else if (buttonState == SWITCH_BUTTON_HOVER) {
+//        p.setBrush(QColor(0xff,0xff,0xff,0x1f));
+//        qDebug() << "悬停";
+//    }
+//    else if (buttonState == SWITCH_BUTTON_PRESS) {
+//        p.setBrush(QColor(0xff,0xff,0xff,0x14));
+//        qDebug() << "点击";
+//    }
+//    p.setPen(Qt::NoPen);
+//    QPainterPath path;
+////    opt.rect.adjust(0,0,0,0);
+////    path.addRoundedRect(opt.rect,4,4);
+////    p.setRenderHint(QPainter::Antialiasing);  // 反锯齿;
+//    p.drawRoundedRect(opt.rect,4,4);
+////    this->setIcon(QIcon("/usr/share/ukui-media/img/complete-module.svg"));
+////    setProperty("blurRegion",QRegion(path.toFillPolygon().toPolygon()));
+//    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+//}
+
+void UkuiMediaButton::enterEvent(QEvent *event)
+{
+    buttonState = SWITCH_BUTTON_HOVER;
+}
+
+void UkuiMediaButton::leaveEvent(QEvent *event)
+{
+    buttonState = SWITCH_BUTTON_NORMAL;
+}
+
 void UkuiMediaButton::mouseMoveEvent(QMouseEvent *e)
 {
-   QToolButton::mouseMoveEvent(e);
+    buttonState = SWITCH_BUTTON_HOVER;
+    QToolButton::mouseMoveEvent(e);
 }
 
 void UkuiMediaButton::mousePressEvent(QMouseEvent *e)
 {
+    buttonState = SWITCH_BUTTON_PRESS;
     if (displayMode == MINI_MODE) {
         Q_EMIT moveMiniSwitchBtnSignale();
         this->setFixedSize(34,34);
         QSize iconSize(14,14);
         this->setIconSize(iconSize);
+//        qDebug() << "设置tub ";
+        qDebug() << "设置图标3";
         this->setIcon(QIcon("/usr/share/ukui-media/img/complete-module.svg"));
     }
     else {
         this->setFixedSize(34,34);
         QSize iconSize(14,14);
         this->setIconSize(iconSize);
+        qDebug() << "设置图标4";
         this->setIcon(QIcon("/usr/share/ukui-media/img/mini-module.svg"));
         Q_EMIT moveAdvanceSwitchBtnSignal();
     }
@@ -85,6 +133,7 @@ void UkuiMediaButton::mousePressEvent(QMouseEvent *e)
 
 void UkuiMediaButton::mouseReleaseEvent(QMouseEvent *e)
 {
+    buttonState = SWITCH_BUTTON_NORMAL;
     if (displayMode == MINI_MODE) {
         Q_EMIT miniToAdvanceSignal();
         this->setFixedSize(36,36);
@@ -97,9 +146,9 @@ void UkuiMediaButton::mouseReleaseEvent(QMouseEvent *e)
         this->setFixedSize(36,36);
         QSize iconSize(16,16);
         this->setIconSize(iconSize);
+        qDebug() << "设置图标2";
         this->setIcon(QIcon("/usr/share/ukui-media/img/mini-module.svg"));
     }
-//    this->setStyleSheet("background:rgba(255,255,255,0)");
     QToolButton::mouseReleaseEvent(e);
 }
 

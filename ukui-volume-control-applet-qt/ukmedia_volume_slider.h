@@ -35,6 +35,11 @@ enum DisplayerMode{
     MINI_MODE,
     ADVANCED_MODE
 };
+enum SwitchButtonState{
+    SWITCH_BUTTON_NORMAL,
+    SWITCH_BUTTON_HOVER,
+    SWITCH_BUTTON_PRESS
+};
 static QColor symbolic_color = Qt::gray;
 //class UkuiDeviceButton:public QPushButton
 //{
@@ -86,6 +91,9 @@ protected:
     void mousePressEvent(QMouseEvent *e)override;
     void mouseMoveEvent(QMouseEvent *e)override;
     void mouseReleaseEvent(QMouseEvent *e)override;
+//    void paintEvent(QPaintEvent *event);
+    void enterEvent(QEvent *event);
+    void leaveEvent(QEvent *event);
 private:
 };
 

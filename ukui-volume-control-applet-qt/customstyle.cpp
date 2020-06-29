@@ -57,11 +57,13 @@ void CustomStyle::drawPrimitive(QStyle::PrimitiveElement element, const QStyleOp
                 painter->setPen(Qt::NoPen);
                 painter->setBrush(QColor(0xff,0xff,0xff,0x14));
                 painter->drawRoundedRect(option->rect,4,4);
+                qDebug() << " 点击按钮";
             } else {
                 painter->setRenderHint(QPainter::Antialiasing,true);
                 painter->setPen(Qt::NoPen);
                 painter->setBrush(QColor(0xff,0xff,0xff,0x1f));
                 painter->drawRoundedRect(option->rect,4,4);
+                qDebug() << "悬停按钮";
             }
         }
         painter->restore();

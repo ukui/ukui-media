@@ -41,7 +41,6 @@
 extern "C" {
 #include <libmatemixer/matemixer.h>
 #include <gio/gio.h>
-#include <gtk/gtk.h>
 }
 
 #define SOUND_MODE_SCRIPTS "/usr/share/ukui-media/scripts/detection_output_mode.sh"
@@ -208,6 +207,9 @@ private:
 
     QMenu *menu;
     QGSettings *m_pThemeSetting;
+#if (QT_VERSION <= QT_VERSION_CHECK(5,6,1))
+    QGSettings *m_pTransparencySetting;
+#endif
     QAction *m_pMuteAction;
     QAction *m_pSoundPreferenceAction;
     QString outputControlName;

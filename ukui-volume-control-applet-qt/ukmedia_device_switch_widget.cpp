@@ -37,7 +37,7 @@ extern "C" {
 #include <QtCore/qmath.h>
 #include <QDebug>
 #include <QList>
-#include <cairo.h>
+#include <QFrame>
 
 typedef enum {
     DEVICE_VOLUME_BUTTON,
@@ -199,13 +199,13 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
 {
     setAttribute(Qt::WA_TranslucentBackground);
     setWindowFlags(Qt::WindowStaysOnTopHint|Qt::Popup);
-
     mThemeName = UKUI_THEME_WHITE;
     devWidget = new UkmediaDeviceWidget(this);
     appWidget = new ApplicationVolumeWidget(this);//appScrollWidget->area);
     miniWidget = new UkmediaMiniMasterVolumeWidget();
     osdWidget = new UkmediaOsdDisplayWidget();
 
+    miniWidget->setFrameShape(QFrame::Shape::Box);
     appWidget->appArea = new QScrollArea(appWidget);
     appWidget->displayAppVolumeWidget = new UkuiApplicationWidget(appWidget->appArea);
     appWidget->appArea->setWidget(appWidget->displayAppVolumeWidget);
@@ -303,6 +303,10 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
         }
         connect(m_pThemeSetting, SIGNAL(changed(const QString &)),this,SLOT(ukuiThemeChangedSlot(const QString &)));
     }
+
+#if (QT_VERSION <= QT_VERSION_CHECK(5,6,1))
+     m_pTransparencySetting = new QGSettings();
+#endif
 
     /*!
      * \brief
@@ -468,11 +472,6 @@ void DeviceSwitchWidget::miniMastrerSliderChangedSlot(int value)
         control = mate_mixer_stream_get_default_control(stream);
     QString percent;
     percent = QString::number(value);
-    mate_mixer_stream_control_set_mute(control,FALSE);
-    int volume = value*65536/100;
-    mate_mixer_stream_control_set_volume(control,guint(volume));
-    miniWidget->displayVolumeLabel->setText(percent);
-    themeChangeIcons();
     //音量值改变时添加提示音
     if (firstEnterSystem != true) {
         QMediaPlayer *player = new QMediaPlayer;
@@ -481,7 +480,16 @@ void DeviceSwitchWidget::miniMastrerSliderChangedSlot(int value)
         connect(player,&QMediaPlayer::stateChanged,[=](){
              player->deleteLater() ;
         });
+        mate_mixer_stream_control_set_mute(control,FALSE);
     }
+//    else {
+//        bool status = mate_mixer_stream_control_get_mute(control);
+
+//    }
+    int volume = value*65536/100;
+    mate_mixer_stream_control_set_volume(control,guint(volume));
+    miniWidget->displayVolumeLabel->setText(percent);
+    themeChangeIcons();
     firstEnterSystem = false;
 }
 
@@ -497,7 +505,9 @@ void DeviceSwitchWidget::advancedSystemSliderChangedSlot(int value)
         control = mate_mixer_stream_get_default_control(stream);
     QString percent;
     percent = QString::number(value);
-    mate_mixer_stream_control_set_mute(control,FALSE);
+    if (firstEnterSystem != true) {
+        mate_mixer_stream_control_set_mute(control,FALSE);
+    }
     int volume = value*65536/100;
     mate_mixer_stream_control_set_volume(control,guint(volume));
     appWidget->systemVolumeDisplayLabel->setText(percent);
@@ -516,7 +526,9 @@ void DeviceSwitchWidget::outputDeviceSliderChangedSlot(int value)
     QString percent;
 
     percent = QString::number(value);
-    mate_mixer_stream_control_set_mute(control,FALSE);
+    if (firstEnterSystem != true) {
+        mate_mixer_stream_control_set_mute(control,FALSE);
+    }
     int volume = value*65536/100;
     mate_mixer_stream_control_set_volume(control,guint(volume));
 }
