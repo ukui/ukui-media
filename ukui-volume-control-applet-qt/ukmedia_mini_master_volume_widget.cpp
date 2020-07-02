@@ -19,6 +19,7 @@
 #include <QLayout>
 #include <QHBoxLayout>
 #include <QPainter>
+#include <QPainterPath>
 #include <QSpacerItem>
 #include <QApplication>
 UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QFrame *parent) : QFrame(parent)
