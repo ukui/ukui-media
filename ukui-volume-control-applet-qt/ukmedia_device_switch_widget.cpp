@@ -898,13 +898,8 @@ void DeviceSwitchWidget::outputVolumeDarkThemeImage(int value,bool status)
     else {
         iconStr = "audio-volume-high-symbolic";
     }
+    qDebug() << "主题名" << mThemeName << endl;
     if (mThemeName == UKUI_THEME_WHITE) {
-//        miniWidget->muteBtn->themeIcon.image = QIcon::fromTheme(iconStr).pixmap(24,24).toImage();
-//        devWidget->outputMuteBtn->themeIcon.image = QIcon::fromTheme(iconStr).pixmap(24,24).toImage();
-//        appWidget->systemVolumeBtn->themeIcon.image = QIcon::fromTheme(iconStr).pixmap(32,32).toImage();
-//        miniWidget->muteBtn->setIcon(QIcon::fromTheme(iconStr));
-//        devWidget->outputMuteBtn->setIcon(QIcon::fromTheme(iconStr));
-//        appWidget->systemVolumeBtn->setIcon(QIcon::fromTheme(iconStr));
         miniWidget->muteBtn->themeIcon.color = QColor(255,255,255,216);
         devWidget->outputMuteBtn->themeIcon.color = QColor(255,255,255,216);
         appWidget->systemVolumeBtn->themeIcon.color = QColor(255,255,255,216);

@@ -42,13 +42,18 @@ extern "C" {
 #include <libmatemixer/matemixer.h>
 #include <gio/gio.h>
 }
-
 #define SOUND_MODE_SCRIPTS "/usr/share/ukui-media/scripts/detection_output_mode.sh"
 #define UKUI_THEME_SETTING "org.ukui.style"
 #define UKUI_TRANSPARENCY_SETTING "org.ukui.control-center.personalise"
 #define UKUI_THEME_NAME "style-name"
-#define UKUI_THEME_WHITE "ukui-white"
-#define UKUI_THEME_BLACK "ukui-black"
+#if (QT_VERSION <= QT_VERSION_CHECK(5,6,1))
+    #define UKUI_THEME_WHITE "ukui-default"
+    #define UKUI_THEME_BLACK "ukui-dark"
+#elif (QT_VERSION > QT_VERSION_CHECK(5,6,1))
+    #define UKUI_THEME_WHITE "ukui-white"
+    #define UKUI_THEME_BLACK "ukui-black"
+#endif
+
 #define UKUI_PANEL_SETTING "org.ukui.panel.settings"
 #define MATE_DESKTOP_USE_UNSTABLE_API
 #define VERSION "1.12.1"

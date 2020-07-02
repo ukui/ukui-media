@@ -139,7 +139,11 @@ void UkmediaDeviceWidget::noInputWidgetInit()
     //设置输入输出音量图标
     outputDeviceBtn->setFixedSize(iconSize);
     outputDeviceBtn->setIconSize(iconSize);
+#if (QT_VERSION <= QT_VERSION_CHECK(5,6,1))
+    outputDeviceBtn->setIcon(QIcon("/usr/share/icons/ukui-icon-theme-classical/scalable/devices/audio-card.svg"));
+#elif (QT_VERSION > QT_VERSION_CHECK(5,6,1))
     outputDeviceBtn->setIcon(QIcon("/usr/share/ukui-media/img/audiocard.svg"));
+#endif
   //设置滑动条的范围和取向
     outputDeviceLabel->setFixedSize(140,20);
     outputDeviceDisplayLabel->setFixedSize(220,16);
@@ -192,7 +196,11 @@ void UkmediaDeviceWidget::inputWidgetShow()
     //设置输入输出音量图标
     inputDeviceBtn->setFixedSize(iconSize);
     inputDeviceBtn->setIconSize(iconSize);
+#if (QT_VERSION <= QT_VERSION_CHECK(5,6,1))
+    inputDeviceBtn->setIcon(QIcon("/usr/share/icons/ukui-icon-theme-classical/scalable/devices/audio-input-microphone.svg"));
+#elif (QT_VERSION > QT_VERSION_CHECK(5,6,1))
     inputDeviceBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-input-microphone.svg"));
+#endif
     //设置滑动条的范围和取向
     inputDeviceLabel->setFixedSize(140,20);
     inputDeviceDisplayLabel->setFixedSize(220,14);

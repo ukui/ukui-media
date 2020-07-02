@@ -95,12 +95,12 @@ UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QFrame *parent) : Q
     connect(switchBtn,SIGNAL(moveMiniSwitchBtnSignale()),this,SLOT(moveMiniSwitchBtnSlot()));
     deviceBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
                              "padding-left:0px;}");
-    deviceLabel->setStyleSheet("QLabel{font-size:14px;font-family:Noto Sans CJK SC;"
-                               "font-weight:400;color:rgba(255,255,255,0.97);"
-                               "line-height:34px;}");
-    displayVolumeLabel->setStyleSheet("QLabel{font-size:20px;font-family:Noto Sans CJK SC;"
-                                      "font-weight:400;color:rgba(255,255,255,0.91);"
-                                      "line-height:24px;opacity:0.91;}");
+//    deviceLabel->setStyleSheet("QLabel{font-size:14px;font-family:Noto Sans CJK SC;"
+//                               "font-weight:400;color:rgba(255,255,255,0.97);"
+//                               "line-height:34px;}");
+//    displayVolumeLabel->setStyleSheet("QLabel{font-size:20px;font-family:Noto Sans CJK SC;"
+//                                      "font-weight:400;color:rgba(255,255,255,0.91);"
+//                                      "line-height:24px;opacity:0.91;}");
     muteBtn->setStyleSheet("QPushButton{background:transparent;border:0px;}");
     masterVolumeSlider->setStyleSheet("QSlider::groove:horizontal {border: 0px solid #bbb;}"
                                       "QSlider::sub-page:horizontal {"

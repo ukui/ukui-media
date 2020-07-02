@@ -88,7 +88,9 @@ int main(int argc, char *argv[])
             qDebug() << "Load translations file" << locale << "failed!";
         }
     }
-
+    //4k屏自动放大字体
+    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps) ;
     //注册MessageHandler
 //    qInstallMessageHandler(outputMessage);
     //加载qss文件
