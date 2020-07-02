@@ -52,7 +52,7 @@ UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QFrame *parent) : Q
     masterVolumeSlider->setOrientation(Qt::Horizontal);
     masterVolumeSlider->setRange(0,100);
     deviceBtn->setFixedSize(16,16);
-    deviceLabel->setFixedSize(154,14);
+    deviceLabel->setFixedSize(154,18);
     masterWidget->setFixedSize(345,31);
     switchBtn->resize(36,36);
     deviceCombox->setFixedSize(300,36);
@@ -96,9 +96,9 @@ UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QFrame *parent) : Q
     connect(switchBtn,SIGNAL(moveMiniSwitchBtnSignale()),this,SLOT(moveMiniSwitchBtnSlot()));
     deviceBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
                              "padding-left:0px;}");
-//    deviceLabel->setStyleSheet("QLabel{font-size:14px;font-family:Noto Sans CJK SC;"
-//                               "font-weight:400;color:rgba(255,255,255,0.97);"
-//                               "line-height:34px;}");
+    deviceLabel->setStyleSheet("QLabel{font-size:14px;font-family:Noto Sans CJK SC;"
+                               "font-weight:400;color:rgba(255,255,255,0.97);"
+                               "line-height:34px;}");
 //    displayVolumeLabel->setStyleSheet("QLabel{font-size:20px;font-family:Noto Sans CJK SC;"
 //                                      "font-weight:400;color:rgba(255,255,255,0.91);"
 //                                      "line-height:24px;opacity:0.91;}");
