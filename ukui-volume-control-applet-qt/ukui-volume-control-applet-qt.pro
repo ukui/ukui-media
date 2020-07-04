@@ -68,6 +68,7 @@ RESOURCES += \
 
 TRANSLATIONS += \
     translations/ukui-volume-control-applet-qt-zh_CN.ts \
+    translations/ukui-volume-control-applet-qt-tr.ts \
     translations/ukui-volume-control-applet-qt-bo.ts
 
 system("lrelease translations/*.ts")
