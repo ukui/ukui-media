@@ -22,6 +22,7 @@
 #include <QDebug>
 #include <QStyleOption>
 #include <QPainter>
+#include <QPainterPath>
 
 UkmediaOsdDisplayWidget::UkmediaOsdDisplayWidget(QWidget *parent) : QWidget (parent)
 {
