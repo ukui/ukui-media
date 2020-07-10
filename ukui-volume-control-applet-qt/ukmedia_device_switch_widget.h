@@ -52,7 +52,6 @@ extern "C" {
 #define UKUI_THEME_WHITE "ukui-white"
 #define UKUI_THEME_BLACK "ukui-black"
 
-
 #define UKUI_PANEL_SETTING "org.ukui.panel.settings"
 #define MATE_DESKTOP_USE_UNSTABLE_API
 #define VERSION "1.12.1"

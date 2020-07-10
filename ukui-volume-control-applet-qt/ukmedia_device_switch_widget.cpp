@@ -2700,7 +2700,7 @@ void DeviceSwitchWidget::on_stream_control_volume_notify (MateMixerStreamControl
                                  CA_PROP_EVENT_ID, eventId,
                                  CA_PROP_EVENT_DESCRIPTION, desc, NULL);
         if (retval < 0)
-            qDebug() << "fail to play " << id << ca_strerror(retval);
+            qDebug() << "fail to play " << eventId << ca_strerror(retval);
 
     }
     else if (direction == MATE_MIXER_DIRECTION_INPUT) {

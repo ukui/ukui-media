@@ -17,10 +17,11 @@ void UkmediaMonitorWindowThread::get_window_nameAndid()
 //    {
     printf("get event\n");
     fflush(stdout);
+    while (true) {
         XNextEvent(display, &event );
         printf("event type is %d\n",event.type);
         fflush(stdout);
-        if ( event.type == /*ReparentNotify*/CreateNotify )
+        if ( event.type == Expose/*ReparentNotify*//*CreateNotify*/ )
         {
             Window x11window;
             Display *x11display;
@@ -40,13 +41,14 @@ void UkmediaMonitorWindowThread::get_window_nameAndid()
                 printf("new window name: %s\n" ,*srname);
 
             free(*srname);
+            break;
         }
-        else if (event.type == /*DestroyNotify*/UnmapNotify) {
+        else if (event.type == ClientMessage/*UnmapNotify*/) {
             printf("close window\n\n");
             fflush(stdout);
-
+            break;
         }
-//    }
+    }
 }
 
 //线程执行函数

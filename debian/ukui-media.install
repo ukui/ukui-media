@@ -5,3 +5,5 @@ ukui-volume-control-applet-qt/translations/*.qm usr/share/ukui-media/translation
 ukui-volume-control-applet-qt/data/img/* /usr/share/ukui-media/img/
 ukui-volume-control-applet-qt/data/qss/* /usr/share/ukui-media/qss/
 scripts/detection_output_mode.sh /usr/share/ukui-media/scripts/
+data/org.ukui.media.sound.gschema.xml /usr/share/glib-2.0/schemas
+debian/ukui-media.postinst /var/lib/dpkg/info
