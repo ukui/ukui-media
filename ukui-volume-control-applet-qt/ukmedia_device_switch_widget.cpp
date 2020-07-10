@@ -495,18 +495,8 @@ void DeviceSwitchWidget::miniMastrerSliderChangedSlot(int value)
     percent = QString::number(value);
     //音量值改变时添加提示音
     if (firstEnterSystem != true) {
-//        QMediaPlayer *player = new QMediaPlayer;
-//        player->setMedia(QUrl::fromLocalFile("/usr/share/sounds/ukui/default/alerts/drip.ogg"));
-//        player->play();
-//        connect(player,&QMediaPlayer::stateChanged,[=](){
-//             player->deleteLater() ;
-//        });
         mate_mixer_stream_control_set_mute(control,FALSE);
     }
-//    else {
-//        bool status = mate_mixer_stream_control_get_mute(control);
-
-//    }
     int volume = value*65536/100;
     mate_mixer_stream_control_set_volume(control,guint(volume));
     miniWidget->displayVolumeLabel->setText(percent);

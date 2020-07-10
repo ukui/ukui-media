@@ -49,13 +49,9 @@ extern "C" {
 #define UKUI_THEME_SETTING "org.ukui.style"
 #define UKUI_TRANSPARENCY_SETTING "org.ukui.control-center.personalise"
 #define UKUI_THEME_NAME "style-name"
-#if (QT_VERSION <= QT_VERSION_CHECK(5,6,1))
-    #define UKUI_THEME_WHITE "ukui-default"
-    #define UKUI_THEME_BLACK "ukui-dark"
-#elif (QT_VERSION > QT_VERSION_CHECK(5,6,1))
-    #define UKUI_THEME_WHITE "ukui-white"
-    #define UKUI_THEME_BLACK "ukui-black"
-#endif
+#define UKUI_THEME_WHITE "ukui-white"
+#define UKUI_THEME_BLACK "ukui-black"
+
 
 #define UKUI_PANEL_SETTING "org.ukui.panel.settings"
 #define MATE_DESKTOP_USE_UNSTABLE_API
