@@ -43,7 +43,7 @@ extern "C" {
 #include <libmatemixer/matemixer.h>
 #include <gio/gio.h>
 #include <dconf/dconf.h>
-//#include <libwnck/libwnck.h>
+#include <canberra.h>
 }
 #define SOUND_MODE_SCRIPTS "/usr/share/ukui-media/scripts/detection_output_mode.sh"
 #define UKUI_THEME_SETTING "org.ukui.style"

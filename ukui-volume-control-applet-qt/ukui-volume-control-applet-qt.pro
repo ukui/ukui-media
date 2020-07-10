@@ -41,7 +41,8 @@ PKGCONFIG += \
     gio-2.0 \
     Qt5Multimedia \
     dconf \
-    x11
+    x11 \
+    libcanberra
 
 HEADERS += \
     customstyle.h \

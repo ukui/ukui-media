@@ -495,12 +495,12 @@ void DeviceSwitchWidget::miniMastrerSliderChangedSlot(int value)
     percent = QString::number(value);
     //音量值改变时添加提示音
     if (firstEnterSystem != true) {
-        QMediaPlayer *player = new QMediaPlayer;
-        player->setMedia(QUrl::fromLocalFile("/usr/share/sounds/ukui/default/alerts/drip.ogg"));
-        player->play();
-        connect(player,&QMediaPlayer::stateChanged,[=](){
-             player->deleteLater() ;
-        });
+//        QMediaPlayer *player = new QMediaPlayer;
+//        player->setMedia(QUrl::fromLocalFile("/usr/share/sounds/ukui/default/alerts/drip.ogg"));
+//        player->play();
+//        connect(player,&QMediaPlayer::stateChanged,[=](){
+//             player->deleteLater() ;
+//        });
         mate_mixer_stream_control_set_mute(control,FALSE);
     }
 //    else {
@@ -2666,6 +2666,52 @@ void DeviceSwitchWidget::on_stream_control_volume_notify (MateMixerStreamControl
         w->miniWidget->masterVolumeSlider->setValue(value);
         w->updateSystemTrayIcon(value,muted);
         qDebug() << "set output volume";
+        //设置调节输入音量的提示音
+        const gchar *id = NULL;
+        const gchar *desc = NULL;
+        gint retval;
+        ca_context *context;
+
+        QList<char *> existsPath = w->listExistsPath();
+        QString filenameStr;
+        for (char * path : existsPath) {
+
+            char * prepath = QString(KEYBINDINGS_CUSTOM_DIR).toLatin1().data();
+            char * allpath = strcat(prepath, path);
+
+            const QByteArray ba(KEYBINDINGS_CUSTOM_SCHEMA);
+            const QByteArray bba(allpath);
+            if(QGSettings::isSchemaInstalled(ba))
+            {
+                QGSettings * settings = new QGSettings(ba, bba);
+                filenameStr = settings->get(FILENAME_KEY).toString();
+                QString nameStr = settings->get(NAME_KEY).toString();
+//                int index;
+//                for (int i=0;i<w->m_pSoundList->count();i++) {
+//                    QString str = m_pWidget->m_pSoundList->at(i);
+//                    if (str.contains(filenameStr,Qt::CaseSensitive)) {
+//                        index = i;
+//                        break;
+//                    }
+//                }
+               if (nameStr == "volume-changed") {
+                    break;
+                }
+            }
+
+        }
+        const QByteArray text = filenameStr.toLocal8Bit();
+        id = text.data();
+        desc = "Volume Changed";
+        const gchar *eventId =id;
+        qDebug() << "****" << id << eventId;
+        ca_context_create(&context);
+        retval = ca_context_play (context, 0,
+                                 CA_PROP_EVENT_ID, eventId,
+                                 CA_PROP_EVENT_DESCRIPTION, desc, NULL);
+        if (retval < 0)
+            qDebug() << "fail to play " << id << ca_strerror(retval);
+
     }
     else if (direction == MATE_MIXER_DIRECTION_INPUT) {
         qDebug() << "stream get label:" << mate_mixer_stream_control_get_label(control) << mate_mixer_stream_get_label(stream);
