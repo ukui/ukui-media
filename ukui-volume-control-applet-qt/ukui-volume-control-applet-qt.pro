@@ -39,7 +39,9 @@ PKGCONFIG += \
     gsettings-qt \
     Qt5Svg  \
     gio-2.0 \
-    Qt5Multimedia
+    Qt5Multimedia \
+    dconf \
+    x11
 
 HEADERS += \
     customstyle.h \
@@ -47,6 +49,7 @@ HEADERS += \
     ukmedia_device_volume_widget.h \
     ukmedia_mini_master_volume_widget.h \
     ukmedia_application_volume_widget.h \
+    ukmedia_monitor_window_thread.h \
     ukmedia_osd_display_widget.h \
     ukmedia_slider_tip_label_helper.h \
     ukmedia_volume_slider.h
@@ -59,6 +62,7 @@ SOURCES += \
     ukmedia_device_volume_widget.cpp\
     ukmedia_application_volume_widget.cpp \
     ukmedia_mini_master_volume_widget.cpp \
+    ukmedia_monitor_window_thread.cpp \
     ukmedia_osd_display_widget.cpp \
     ukmedia_slider_tip_label_helper.cpp \
     ukmedia_volume_slider.cpp

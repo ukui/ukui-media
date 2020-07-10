@@ -24,6 +24,7 @@
 #include "ukmedia_application_volume_widget.h"
 #include "ukmedia_mini_master_volume_widget.h"
 #include "ukmedia_osd_display_widget.h"
+
 #include <QMenu>
 #include <QCheckBox>
 #include <QWidgetAction>
@@ -41,6 +42,8 @@
 extern "C" {
 #include <libmatemixer/matemixer.h>
 #include <gio/gio.h>
+#include <dconf/dconf.h>
+//#include <libwnck/libwnck.h>
 }
 #define SOUND_MODE_SCRIPTS "/usr/share/ukui-media/scripts/detection_output_mode.sh"
 #define UKUI_THEME_SETTING "org.ukui.style"
@@ -80,6 +83,10 @@ class DeviceSwitchWidget:public QWidget
 public:
     DeviceSwitchWidget(QWidget *parent = nullptr);
     ~DeviceSwitchWidget();
+    void get_window_nameAndid();
+    QList<char *> listExistsPath();
+    QString findFreePath();
+    void addValue(QString name,QString filename);
     void deviceSwitchWidgetInit();
     void systemTrayMenuInit();
     void showWindow();
@@ -187,6 +194,8 @@ private Q_SLOTS:
     void ukuiThemeChangedSlot(const QString &themeStr);
     void osdDisplayWidgetHide();
 private:
+
+
     QPushButton *deviceBtn;
     QPushButton *appVolumeBtn;
     UkuiMediaButton *switchToMiniBtn;
@@ -225,6 +234,7 @@ private:
     QString mThemeName;
     bool firstEnterSystem = true;
     double transparency = 0.7;
+
 
 protected:
     void paintEvent(QPaintEvent *event);

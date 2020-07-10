@@ -16,12 +16,14 @@
  *
  */
 #include "ukmedia_device_switch_widget.h"
+#include "ukmedia_monitor_window_thread.h"
 extern "C" {
 #include <glib-object.h>
 #include <glib.h>
 #include <gio/gio.h>
 #include <gobject/gparamspecs.h>
 #include <glib/gi18n.h>
+#include <dconf/dconf.h>
 }
 #include <QHBoxLayout>
 #include <QHeaderView>
@@ -39,6 +41,14 @@ extern "C" {
 #include <QDebug>
 #include <QList>
 #include <QFrame>
+
+#define KEYBINDINGS_CUSTOM_SCHEMA "org.ukui.media.sound"
+#define KEYBINDINGS_CUSTOM_DIR "/org/ukui/sound/keybindings/"
+
+#define MAX_CUSTOM_SHORTCUTS 1000
+
+#define FILENAME_KEY "filename"
+#define NAME_KEY "name"
 
 typedef enum {
     DEVICE_VOLUME_BUTTON,
@@ -275,6 +285,7 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     devWidget->show();
     appWidget->hide();
 
+
     /*!
      * \brief
      * \details
@@ -315,7 +326,8 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     }
 #endif
 
-
+    UkmediaMonitorWindowThread *m_pThread = new UkmediaMonitorWindowThread();
+    m_pThread->start();
     /*!
      * \brief
      * \details
@@ -426,6 +438,8 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
         appWidget->upWidget->show();
     }
 }
+
+
 
 /*!
  * \brief
@@ -3038,6 +3052,105 @@ void DeviceSwitchWidget::update_input_settings (DeviceSwitchWidget *w,MateMixerS
     if (G_UNLIKELY (stream == NULL))
             return;
 }
+
+QList<char *> DeviceSwitchWidget::listExistsPath()
+{
+    char ** childs;
+    int len;
+
+    DConfClient * client = dconf_client_new();
+    childs = dconf_client_list (client, KEYBINDINGS_CUSTOM_DIR, &len);
+    g_object_unref (client);
+
+    QList<char *> vals;
+
+    for (int i = 0; childs[i] != NULL; i++){
+        if (dconf_is_rel_dir (childs[i], NULL)){
+            char * val = g_strdup (childs[i]);
+
+            vals.append(val);
+        }
+    }
+    g_strfreev (childs);
+    return vals;
+}
+
+QString DeviceSwitchWidget::findFreePath(){
+    int i = 0;
+    char * dir;
+    bool found;
+    QList<char *> existsdirs;
+
+    existsdirs = listExistsPath();
+
+    for (; i < MAX_CUSTOM_SHORTCUTS; i++){
+        found = true;
+        dir = QString("custom%1/").arg(i).toLatin1().data();
+        for (int j = 0; j < existsdirs.count(); j++)
+            if (!g_strcmp0(dir, existsdirs.at(j))){
+                found = false;
+                break;
+            }
+        if (found)
+            break;
+    }
+
+    if (i == MAX_CUSTOM_SHORTCUTS){
+        qDebug() << "Keyboard Shortcuts" << "Too many custom shortcuts";
+        return "";
+    }
+
+    return QString("%1%2").arg(KEYBINDINGS_CUSTOM_DIR).arg(QString(dir));
+}
+
+void DeviceSwitchWidget::addValue(QString name,QString filename)
+{
+    //在创建setting表时，先判断是否存在该设置，存在时不创建
+    QList<char *> existsPath = listExistsPath();
+
+    for (char * path : existsPath) {
+
+        char * prepath = QString(KEYBINDINGS_CUSTOM_DIR).toLatin1().data();
+        char * allpath = strcat(prepath, path);
+
+        const QByteArray ba(KEYBINDINGS_CUSTOM_SCHEMA);
+        const QByteArray bba(allpath);
+        if(QGSettings::isSchemaInstalled(ba))
+        {
+            QGSettings * settings = new QGSettings(ba, bba);
+            QString filenameStr = settings->get(FILENAME_KEY).toString();
+            QString nameStr = settings->get(NAME_KEY).toString();
+
+            g_warning("full path: %s", allpath);
+            qDebug() << filenameStr << FILENAME_KEY <<NAME_KEY << nameStr;
+            if (nameStr == name) {
+                qDebug() << "找到窗口关闭" ;
+//                return;
+            }
+            delete settings;
+        }
+        else {
+            continue;
+        }
+
+    }
+//    QString availablepath = findFreePath();
+
+//    qDebug() << "Add Path" << availablepath;
+
+//    const QByteArray id(KEYBINDINGS_CUSTOM_SCHEMA);
+//    const QByteArray idd(availablepath.toUtf8().data());
+//    if(QGSettings::isSchemaInstalled(id))
+//    {
+//        QGSettings * settings = new QGSettings(id, idd);
+//        settings->set(FILENAME_KEY, filename);
+//        settings->set(NAME_KEY, name);
+//    }
+
+
+//    delete settings;
+}
+
 
 DeviceSwitchWidget::~DeviceSwitchWidget()
 {
