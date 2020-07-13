@@ -21,6 +21,8 @@ Files: ukui-volume-control-applet-qt/customstyle.cpp
        ukui-volume-control-applet-qt/ukui-volume-control-applet-qt.pro
        ukui-volume-control-applet-qt/ukmedia_osd_display_widget.cpp
        ukui-volume-control-applet-qt/ukmedia_osd_display_widget.h
+       ukui-volume-control-applet-qt/ukmedia_monitor_window_thread.cpp
+       ukui-volume-control-applet-qt/ukmedia_monitor_window_thread.h
        ukui-volume-control-applet-qt/res.qrc
        ukui-volume-control-applet-qt/data/*
        ukui-volume-control-applet-qt/translations/*
