@@ -27,6 +27,9 @@ Files: ukui-volume-control-applet-qt/customstyle.cpp
        ukui-volume-control-applet-qt/data/*
        ukui-volume-control-applet-qt/translations/*
        data/images/*
+       data/org.ukui.media.sound.gschema.xml
+       scripts/detection_output_mode.sh
+       .github/workflows/build.yml
 Copyright: 2020, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
