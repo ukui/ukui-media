@@ -88,6 +88,14 @@ int main(int argc, char *argv[])
             qDebug() << "Load translations file" << locale << "failed!";
         }
     }
+      if (locale == "tr_TR") {
+        if (translator.load("/usr/share/ukui-media/translations/ukui-volume-control-applet-qt-tr.qm")) {
+            app.installTranslator(&translator);
+        }
+        else {
+            qDebug() << "Load translations file" << locale << "failed!";
+        }
+    }
     //4k屏自动放大字体
     QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps) ;
