@@ -1,3 +1,10 @@
+ukui-media (2.0.4-2) unstable; urgency=medium
+
+  [ Helmut Grohne ]
+  * Fix FTCBFS: Let dh_auto_configure use a cross qmake. (Closes: #965229)
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Sat, 18 Jul 2020 20:51:51 +0800
+
 ukui-media (2.0.4-1) unstable; urgency=medium
 
   * New upstream release.
