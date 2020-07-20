@@ -78,7 +78,7 @@ TRANSLATIONS += \
 
 system("lrelease translations/*.ts")
 
-qm_file.files = translations/*.qm
+qm_file.files = $$files(translations/*.qm, true)
 qm_file.path = $${PREFIX}/translations/
 
 data_files.files = data/*

@@ -26,6 +26,5 @@ override_dh_auto_configure:
 
 override_dh_auto_build:
 	dh_auto_build
-	mkdir -p ukui-volume-control-applet-qt/build/
-	cd ukui-volume-control-applet-qt/build/ && qmake ../
+	dh_auto_configure --sourcedirectory=ukui-volume-control-applet-qt --builddirectory=ukui-volume-control-applet-qt/build -- ..
 	make -C ukui-volume-control-applet-qt/build/

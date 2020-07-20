@@ -17,14 +17,15 @@ Build-Depends: debhelper-compat (= 12),
                libxml2-dev,
                mate-common (>= 1.18),
                libqt5svg5-dev,
-	       libqt5multimedia5-plugins,
-	       qtmultimedia5-dev
-
+               libqt5multimedia5-plugins,
+               qtmultimedia5-dev,
+               qttools5-dev-tools,
 Standards-Version: 4.5.0
 Rules-Requires-Root: no
 Homepage: http://www.ukui.org/
 Vcs-Git: https://github.com/ukui/ukui-media.git
 Vcs-Browser: https://github.com/ukui/ukui-media
+
 Package: ukui-media
 Architecture: any
 Depends: mate-desktop-common (>= 1.18),
