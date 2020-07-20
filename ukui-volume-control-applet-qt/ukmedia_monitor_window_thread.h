@@ -32,6 +32,7 @@
 #include <X11/Xutil.h>
 #include <stdio.h>
 #include <X11/Xatom.h>
+#include <QVector>
 
 //#include <libwnck/libwnck.h>
 
@@ -42,6 +43,9 @@ public:
     void get_window_nameAndid();
     //结束线程标志位
     bool bStopThread;
+    bool bCreateWindow;
+    bool bFirstEnterSystem;
+    QVector<unsigned long> windowId;
     void run();
 };
 

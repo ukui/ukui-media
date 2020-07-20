@@ -190,7 +190,6 @@ private Q_SLOTS:
     void osdDisplayWidgetHide();
 private:
 
-
     QPushButton *deviceBtn;
     QPushButton *appVolumeBtn;
     UkuiMediaButton *switchToMiniBtn;

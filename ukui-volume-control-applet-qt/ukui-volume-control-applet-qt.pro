@@ -42,7 +42,8 @@ PKGCONFIG += \
     Qt5Multimedia \
     dconf \
     x11 \
-    libcanberra
+    libcanberra \
+#    libwnck-1.0
 
 HEADERS += \
     customstyle.h \
@@ -54,7 +55,6 @@ HEADERS += \
     ukmedia_osd_display_widget.h \
     ukmedia_slider_tip_label_helper.h \
     ukmedia_volume_slider.h
-
 
 SOURCES += \
     customstyle.cpp \
@@ -78,7 +78,7 @@ TRANSLATIONS += \
 
 system("lrelease translations/*.ts")
 
-qm_file.files = $$files(translations/*.qm, true)
+qm_file.files = translations/*.qm
 qm_file.path = $${PREFIX}/translations/
 
 data_files.files = data/*

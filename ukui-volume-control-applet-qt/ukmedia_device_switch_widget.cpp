@@ -103,7 +103,7 @@ void DeviceSwitchWidget::paintEvent(QPaintEvent *event)
     QStyleOption opt;
     opt.init(this);
     QPainter p(this);
-    p.setBrush(QBrush(QColor(0x13,0x13,0x14,0xB2)));
+//    p.setBrush(QBrush(QColor(0x13,0x13,0x14,0xB2)));
     p.setPen(Qt::NoPen);
     QPainterPath path;
     opt.rect.adjust(0,0,0,0);
@@ -493,6 +493,7 @@ void DeviceSwitchWidget::miniMastrerSliderChangedSlot(int value)
         control = mate_mixer_stream_get_default_control(stream);
     QString percent;
     percent = QString::number(value);
+    qDebug() << "mini sider changed" << value;
     //音量值改变时添加提示音
     if (firstEnterSystem != true) {
         mate_mixer_stream_control_set_mute(control,FALSE);
@@ -903,7 +904,7 @@ void DeviceSwitchWidget::outputVolumeDarkThemeImage(int value,bool status)
     else {
         iconStr = "audio-volume-high-symbolic";
     }
-    qDebug() << "主题名" << mThemeName << endl;
+//    qDebug() << "主题名" << mThemeName << endl;
     if (mThemeName == UKUI_THEME_WHITE) {
         miniWidget->muteBtn->themeIcon.color = QColor(255,255,255,216);
         devWidget->outputMuteBtn->themeIcon.color = QColor(255,255,255,216);
@@ -1003,7 +1004,7 @@ void DeviceSwitchWidget::themeChangeIcons()
     
     inputVolumeDarkThemeImage(nInputValue,inputStatus);
     outputVolumeDarkThemeImage(nOutputValue,outputStatus);
-    qDebug() << "----" << nInputValue << nOutputValue << inputStatus << outputStatus;
+//    qDebug() << "----" << nInputValue << nOutputValue << inputStatus << outputStatus;
     miniWidget->muteBtn->repaint();
     devWidget->inputMuteButton->repaint();
 //    appWidget->appMuteBtn->repaint();
@@ -1116,13 +1117,13 @@ void DeviceSwitchWidget::activatedSystemTrayIconSlot(QSystemTrayIcon::Activation
     //获取透明度
     if (QGSettings::isSchemaInstalled(UKUI_THEME_SETTING)){
         if (m_pTransparencySetting->keys().contains("transparency")) {
-            transparency = m_pTransparencySetting->get("transparency").toInt();
+            transparency = m_pTransparencySetting->get("transparency").toDouble();
         }
     }
 #endif
-    menu->setWindowOpacity(transparency);
-    osdWidget->setWindowOpacity(transparency);
-    miniWidget->setWindowOpacity(transparency);
+    QString sheet = QString("QWidget{background-color:rgba(19,19,20,%1);}").arg(transparency);
+    miniWidget->setStyleSheet(sheet);
+    this->setStyleSheet(sheet);
     switch(reason) {
     //鼠标中间键点击图标
     case QSystemTrayIcon::MiddleClick: {
@@ -1437,7 +1438,7 @@ void DeviceSwitchWidget::add_stream (DeviceSwitchWidget *w, MateMixerStream *str
             MateMixerSwitchOption *opt = mate_mixer_switch_get_active_option(swt);
             const char *name = mate_mixer_switch_option_get_name(opt);
             const char *label = mate_mixer_switch_option_get_label(opt);
-            qDebug() << "name is :" << name << "label is" << label;
+//            qDebug() << "name is :" << name << "label is" << label;
             switchList = switchList->next;
         }
         /*w->device_name_list->append(name);
@@ -1714,7 +1715,7 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
     volume = int(mate_mixer_stream_control_get_volume(control));
     normal = mate_mixer_stream_control_get_normal_volume(control);
     int display_volume = int(100 * volume / normal);
-    qDebug() << "app name" << app_name << "app icon name:" << app_icon_name;
+//    qDebug() << "app name" << app_name << "app icon name:" << app_icon_name;
     //设置应用的图标
     QString iconName = "/usr/share/applications/";
 
@@ -1752,7 +1753,7 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
 //    QString xdgicon(xdg.localizedValue("Icon").toString());
 
     w->appWidget->app_volume_list->append(app_icon_name);
-    qDebug() << "应用名为:" << pAppName << "desktop 名：" << iconName;
+//    qDebug() << "应用名为:" << pAppName << "desktop 名：" << iconName;
     //widget显示应用音量
     QWidget *app_widget = new QWidget(w->appWidget->displayAppVolumeWidget);
     app_widget->setFixedSize(306,60);
@@ -2332,7 +2333,7 @@ void DeviceSwitchWidget::on_context_default_output_stream_notify (MateMixerConte
     if (stream == nullptr) {
         return;
     }
-    qDebug() << "默认的输出流改变" << mate_mixer_stream_get_label(stream);
+//    qDebug() << "默认的输出流改变" << mate_mixer_stream_get_label(stream);
     update_icon_output(w,context);
 //    set_output_stream (w, stream);
 }
@@ -2372,7 +2373,7 @@ void DeviceSwitchWidget::update_icon_input (DeviceSwitchWidget *w,MateMixerStrea
     const gchar *app_id;
     gboolean show = FALSE;
 
-    qDebug() << "update icon input";
+//    qDebug() << "update icon input";
     const GList *inputs =mate_mixer_stream_list_controls(stream);
     control = mate_mixer_stream_get_default_control(stream);
 
@@ -2630,7 +2631,7 @@ void DeviceSwitchWidget::on_stream_control_volume_notify (MateMixerStreamControl
     MateMixerStream *stream = mate_mixer_stream_control_get_stream(control);
     if (MATE_MIXER_IS_STREAM(stream)) {
 
-        qDebug() << "get stream correct " << mate_mixer_stream_control_get_label(control) << mate_mixer_stream_get_label(stream);
+//        qDebug() << "get stream correct " << mate_mixer_stream_control_get_label(control) << mate_mixer_stream_get_label(stream);
     }
     else {
         stream = w->stream;
@@ -2655,7 +2656,6 @@ void DeviceSwitchWidget::on_stream_control_volume_notify (MateMixerStreamControl
         w->appWidget->systemVolumeSlider->setValue(value);
         w->miniWidget->masterVolumeSlider->setValue(value);
         w->updateSystemTrayIcon(value,muted);
-        qDebug() << "set output volume";
         //设置调节输入音量的提示音
         const gchar *id = NULL;
         const gchar *desc = NULL;
@@ -2688,13 +2688,12 @@ void DeviceSwitchWidget::on_stream_control_volume_notify (MateMixerStreamControl
                     break;
                 }
             }
-
         }
         const QByteArray text = filenameStr.toLocal8Bit();
         id = text.data();
         desc = "Volume Changed";
         const gchar *eventId =id;
-        qDebug() << "****" << id << eventId;
+//        qDebug() << "****" << id << eventId;
         ca_context_create(&context);
         retval = ca_context_play (context, 0,
                                  CA_PROP_EVENT_ID, eventId,

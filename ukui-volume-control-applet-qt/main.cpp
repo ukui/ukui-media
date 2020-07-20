@@ -26,6 +26,7 @@
 #include <QDateTime>
 #include <QMutex>
 #include <QFile>
+#include <QDesktopWidget>
 #include <QDir>
 
 /*! The ukui-media is the media of UKUI.
@@ -86,14 +87,6 @@ int main(int argc, char *argv[])
 
     if (locale == "zh_CN") {
         if (translator.load("/usr/share/ukui-media/translations/ukui-volume-control-applet-qt-zh_CN.qm")) {
-            app.installTranslator(&translator);
-        }
-        else {
-            qDebug() << "Load translations file" << locale << "failed!";
-        }
-    }
-      if (locale == "tr_TR") {
-        if (translator.load("/usr/share/ukui-media/translations/ukui-volume-control-applet-qt-tr.qm")) {
             app.installTranslator(&translator);
         }
         else {

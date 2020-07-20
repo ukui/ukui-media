@@ -128,7 +128,7 @@ void UkmediaMiniMasterVolumeWidget::paintEvent(QPaintEvent *event)
     QStyleOption opt;
     opt.init(this);
     QPainter p(this);
-    p.setBrush(QBrush(QColor(0x13,0x13,0x14,0xB2)));
+//    p.setBrush(QBrush(QColor(0x13,0x13,0x14,0xB2)));
     p.setPen(Qt::NoPen);
     QPainterPath path;
     opt.rect.adjust(0,0,0,0);
