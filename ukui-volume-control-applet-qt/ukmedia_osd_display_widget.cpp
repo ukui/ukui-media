@@ -105,9 +105,9 @@ void UkmediaOsdDisplayWidget::UkmediaOsdDisplayWidgetInit()
 void UkmediaOsdDisplayWidget::UkmediaOsdSetIcon(QString iconStr)
 {
     QIcon icon = QIcon::fromTheme(iconStr);
-//    if (iconStr == "audio-headphones") {
-//        icon = QIcon("/usr/share/ukui-media/img/audio-headphones.svg");
-//    }
+    if (iconStr == "audio-headphones") {
+        icon = QIcon("/usr/share/ukui-media/img/audio-headphones.svg");
+    }
     this->iconButton->setIcon(icon);
 }
 

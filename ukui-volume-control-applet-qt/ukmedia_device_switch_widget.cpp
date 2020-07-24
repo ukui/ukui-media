@@ -2448,36 +2448,6 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
 {
     MateMixerStream *stream;
     MateMixerStreamControl *control = nullptr;
-
-    //osd widget显示
-    QFileInfo fileInfo(SOUND_MODE_SCRIPTS);
-    if (fileInfo.exists()) {
-        int ret = system(SOUND_MODE_SCRIPTS);
-        if (ret != w->osdWidget->ret) {
-            if (ret == 0) {
-                w->osdWidget->UkmediaOsdSetIcon("audio-card");
-            }
-            else if (ret == 256) {
-                w->osdWidget->UkmediaOsdSetIcon("audio-headphones");
-            }
-            w->osdWidget->ret = ret;
-            #if (QT_VERSION <= QT_VERSION_CHECK(5,6,1))
-                //获取透明度
-                if (QGSettings::isSchemaInstalled(UKUI_THEME_SETTING)){
-                    if (m_pTransparencySetting->keys().contains("transparency")) {
-                        transparency = m_pTransparencySetting->get("transparency").toDouble();
-                    }
-                }
-            #endif
-            //    QString sheet = QString("QWidget{background-color:rgba(19,19,20,%1);}").arg(transparency);
-            //    miniWidget->setStyleSheet(sheet);
-            w->osdWidget->setWindowOpacity(w->transparency);
-            w->osdWidget->show();
-            w->timer = new QTimer(w->osdWidget); //this 为parent类, 表示当前窗口
-            connect(w->timer, SIGNAL(timeout()), w, SLOT(osdDisplayWidgetHide())); // SLOT填入一个槽函数
-            w->timer->start(2000);
-        }
-    }
     stream = mate_mixer_context_get_default_output_stream (context);
     if (stream != nullptr)
         control = mate_mixer_stream_get_default_control (stream);
@@ -2543,6 +2513,40 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
     w->miniWidget->displayVolumeLabel->setText(percent);
     w->appWidget->systemVolumeDisplayLabel->setText(percent);
 
+    //osd widget显示
+    QFileInfo fileInfo(SOUND_MODE_SCRIPTS);
+    if (fileInfo.exists()) {
+        int ret = system(SOUND_MODE_SCRIPTS);
+        qDebug() << "ret " << ret << w->osdWidget->ret;
+        if (ret != w->osdWidget->ret) {
+            if (ret == 0) {
+                w->osdWidget->UkmediaOsdSetIcon("audio-card");
+            }
+            else if (ret == 256) {
+                w->osdWidget->UkmediaOsdSetIcon("audio-headphones");
+            }
+            else {
+                w->osdWidget->ret = ret;
+                return;
+            }
+            w->osdWidget->ret = ret;
+            #if (QT_VERSION <= QT_VERSION_CHECK(5,6,1))
+                //获取透明度
+                if (QGSettings::isSchemaInstalled(UKUI_THEME_SETTING)){
+                    if (m_pTransparencySetting->keys().contains("transparency")) {
+                        transparency = m_pTransparencySetting->get("transparency").toDouble();
+                    }
+                }
+            #endif
+            //    QString sheet = QString("QWidget{background-color:rgba(19,19,20,%1);}").arg(transparency);
+            //    miniWidget->setStyleSheet(sheet);
+            w->osdWidget->setWindowOpacity(w->transparency);
+            w->osdWidget->show();
+            w->timer = new QTimer(w->osdWidget); //this 为parent类, 表示当前窗口
+            connect(w->timer, SIGNAL(timeout()), w, SLOT(osdDisplayWidgetHide())); // SLOT填入一个槽函数
+            w->timer->start(2000);
+        }
+    }
     if (control != nullptr) {
             g_debug ("Output icon enabled");
     }
@@ -2556,9 +2560,9 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
 void DeviceSwitchWidget::osdDisplayWidgetHide()
 {
     if(timer->isActive()){
-        timer->stop();
+        timer->destroyed();
 //        if (!this->osdWidget->isHidden())
-            this->osdWidget->hide();
+        this->osdWidget->hide();
     }
 }
 
