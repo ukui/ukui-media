@@ -28,6 +28,8 @@
 #include <QFile>
 #include <QDesktopWidget>
 #include <QDir>
+#include <KWindowEffects>
+#include <X11/Xlib.h>
 
 /*! The ukui-media is the media of UKUI.
 
@@ -69,17 +71,23 @@ void outputMessage(QtMsgType type, const QMessageLogContext &context, const QStr
 
 int main(int argc, char *argv[])
 {
-//    QApplication app(argc,argv);
-    QtSingleApplication app("ukui-volume-control-applet",argc,argv);
-    if (app.isRunning()) {
-       app.sendMessage("raise_window_noop");
-       return EXIT_SUCCESS;
+    Display *display = XOpenDisplay(NULL);
+    Screen *scrn = DefaultScreenOfDisplay(display);
+    if(scrn == nullptr) {
+        return 0;
     }
-    if (QApplication::desktop()->width() >= 2560) {
+    int width = scrn->width;
+//    QApplication app(argc,argv);
+    if (width >= 2560) {
     #if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
             QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
             QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
     #endif
+    }
+    QtSingleApplication app("ukui-volume-control-applet",argc,argv);
+    if (app.isRunning()) {
+       app.sendMessage("raise_window_noop");
+       return EXIT_SUCCESS;
     }
     //加载qm翻译文件o
     QString locale = QLocale::system().name();
@@ -105,8 +113,9 @@ int main(int argc, char *argv[])
     qApp->setStyleSheet(qss.readAll());
     qss.close();
     DeviceSwitchWidget w;
+    KWindowEffects::enableBlurBehind(w.winId(),true);
 //    w.show();
-
+    XCloseDisplay(display);
     return app.exec();
 }
 
