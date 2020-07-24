@@ -39,6 +39,7 @@ extern "C" {
 #include <QScrollBar>
 #include <QtCore/qmath.h>
 #include <QDebug>
+#include <QFileInfo>
 #include <QList>
 #include <QFrame>
 
@@ -103,7 +104,7 @@ void DeviceSwitchWidget::paintEvent(QPaintEvent *event)
     QStyleOption opt;
     opt.init(this);
     QPainter p(this);
-//    p.setBrush(QBrush(QColor(0x13,0x13,0x14,0xB2)));
+    p.setBrush(QBrush(QColor(0x13,0x13,0x14,0xB2)));
     p.setPen(Qt::NoPen);
     QPainterPath path;
     opt.rect.adjust(0,0,0,0);
@@ -493,7 +494,6 @@ void DeviceSwitchWidget::miniMastrerSliderChangedSlot(int value)
         control = mate_mixer_stream_get_default_control(stream);
     QString percent;
     percent = QString::number(value);
-    qDebug() << "mini sider changed" << value;
     //音量值改变时添加提示音
     if (firstEnterSystem != true) {
         mate_mixer_stream_control_set_mute(control,FALSE);
@@ -904,7 +904,7 @@ void DeviceSwitchWidget::outputVolumeDarkThemeImage(int value,bool status)
     else {
         iconStr = "audio-volume-high-symbolic";
     }
-//    qDebug() << "主题名" << mThemeName << endl;
+
     if (mThemeName == UKUI_THEME_WHITE) {
         miniWidget->muteBtn->themeIcon.color = QColor(255,255,255,216);
         devWidget->outputMuteBtn->themeIcon.color = QColor(255,255,255,216);
@@ -1121,9 +1121,14 @@ void DeviceSwitchWidget::activatedSystemTrayIconSlot(QSystemTrayIcon::Activation
         }
     }
 #endif
-    QString sheet = QString("QWidget{background-color:rgba(19,19,20,%1);}").arg(transparency);
-    miniWidget->setStyleSheet(sheet);
-    this->setStyleSheet(sheet);
+//    QString sheet = QString("QWidget{background-color:rgba(19,19,20,%1);}").arg(transparency);
+//    miniWidget->setStyleSheet(sheet);
+
+    miniWidget->setWindowOpacity(transparency);
+    this->setWindowOpacity(transparency);
+    menu->setWindowOpacity(transparency);
+    osdWidget->setWindowOpacity(transparency);
+//    this->setStyleSheet(sheet);
     switch(reason) {
     //鼠标中间键点击图标
     case QSystemTrayIcon::MiddleClick: {
@@ -1867,7 +1872,7 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
         QSlider *slider = w->findChild<QSlider*>(appSliderStr);
         if (slider == nullptr)
             return;
-        slider->setValue(value);
+//        slider->setValue(value);
         QPushButton *btn = w->findChild<QPushButton*>(appMuteBtnlStr);
         if (btn == nullptr)
             return;
@@ -1947,46 +1952,7 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
             muteButtonStr = "audio-volume-high-symbolic";
             btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-high.svg"));
         }
-//        w->drawImagColorFromTheme(btn,audioIconStr);
         muteButtonIcon = QIcon::fromTheme(muteButtonStr);
-//        btn->setIcon(muteButtonIcon);
-    });
-
-    connect(w,&DeviceSwitchWidget::app_volume_changed,[=](bool is_mute,int volume,QString app_name,QString appBtnName){
-        Q_UNUSED(is_mute);
-        QString slider_str = app_name;
-        QString sliderMuteButtonStr;
-        QIcon sliderMuteButtonIcon;
-        QSlider *slider = w->findChild<QSlider*>(slider_str);
-        if (slider == nullptr)
-            return;
-        slider->setValue(volume);
-        QPushButton *btn = w->findChild<QPushButton *>(appBtnName);
-        if (btn == nullptr)
-            return;
-        if (is_mute) {
-            btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
-            sliderMuteButtonStr = "audio-volume-muted";
-        }
-        else if (volume <= 0) {
-            btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
-            sliderMuteButtonStr = "audio-volume-muted";
-        }
-        else if (volume > 0 && volume <= 33) {
-            sliderMuteButtonStr = "audio-volume-low";
-            btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-low.svg"));
-        }
-        else if(volume > 33 && volume <= 66) {
-            sliderMuteButtonStr = "audio-volume-medium";
-            btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-medium.svg"));
-        }
-        else if (volume > 66) {
-            sliderMuteButtonStr = "audio-volume-high";
-            btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-high.svg"));
-        }
-        sliderMuteButtonIcon = QIcon::fromTheme(sliderMuteButtonStr);
-//        btn->setIcon(sliderMuteButtonIcon);
-//        w->drawImagColorFromTheme(btn,audioIconStr);
     });
 
     connect(w,&DeviceSwitchWidget::system_muted_signal,[=](bool isMute){
@@ -2092,7 +2058,38 @@ void DeviceSwitchWidget::update_app_volume(MateMixerStreamControl *control, QStr
     const gchar *app_name = mate_mixer_app_info_get_name(info);*/
     QString appName = w->app_name_list->at(index);
     QString appBtnName = w->appBtnNameList->at(index);
-    Q_EMIT w->app_volume_changed(is_mute,int(volume),appName,appBtnName);
+
+    QString slider_str = appName;
+    QString sliderMuteButtonStr;
+    QIcon sliderMuteButtonIcon;
+    QSlider *slider = w->findChild<QSlider*>(slider_str);
+    if (slider == nullptr)
+        return;
+    slider->setValue(volume);
+    QPushButton *btn = w->findChild<QPushButton *>(appBtnName);
+    if (btn == nullptr)
+        return;
+    if (is_mute) {
+        btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
+        sliderMuteButtonStr = "audio-volume-muted";
+    }
+    else if (volume <= 0) {
+        btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
+        sliderMuteButtonStr = "audio-volume-muted";
+    }
+    else if (volume > 0 && volume <= 33) {
+        sliderMuteButtonStr = "audio-volume-low";
+        btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-low.svg"));
+    }
+    else if(volume > 33 && volume <= 66) {
+        sliderMuteButtonStr = "audio-volume-medium";
+        btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-medium.svg"));
+    }
+    else if (volume > 66) {
+        sliderMuteButtonStr = "audio-volume-high";
+        btn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-high.svg"));
+    }
+    sliderMuteButtonIcon = QIcon::fromTheme(sliderMuteButtonStr);
 }
 
 /*!
@@ -2136,11 +2133,6 @@ void DeviceSwitchWidget::app_volume_mute (MateMixerStreamControl *control, QStri
  */
 void DeviceSwitchWidget::set_context(DeviceSwitchWidget *w,MateMixerContext *context)
 {
-    g_signal_connect (G_OBJECT (context),
-                      "stream-added",
-                      G_CALLBACK (on_context_stream_added),
-                      w);
-
     g_signal_connect (G_OBJECT (context),
                     "stream-removed",
                     G_CALLBACK (on_context_stream_removed),
@@ -2374,6 +2366,7 @@ void DeviceSwitchWidget::update_icon_input (DeviceSwitchWidget *w,MateMixerStrea
     gboolean show = FALSE;
 
 //    qDebug() << "update icon input";
+    stream = mate_mixer_context_get_default_input_stream(w->context);
     const GList *inputs =mate_mixer_stream_list_controls(stream);
     control = mate_mixer_stream_get_default_control(stream);
 
@@ -2457,21 +2450,34 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
     MateMixerStreamControl *control = nullptr;
 
     //osd widget显示
-    int ret = system(SOUND_MODE_SCRIPTS);
-    if (ret != w->osdWidget->ret) {
-        if (ret == 0) {
-            w->osdWidget->UkmediaOsdSetIcon("audio-speakers-symbolic");
+    QFileInfo fileInfo(SOUND_MODE_SCRIPTS);
+    if (fileInfo.exists()) {
+        int ret = system(SOUND_MODE_SCRIPTS);
+        if (ret != w->osdWidget->ret) {
+            if (ret == 0) {
+                w->osdWidget->UkmediaOsdSetIcon("audio-card");
+            }
+            else if (ret == 256) {
+                w->osdWidget->UkmediaOsdSetIcon("audio-headphones");
+            }
+            w->osdWidget->ret = ret;
+            #if (QT_VERSION <= QT_VERSION_CHECK(5,6,1))
+                //获取透明度
+                if (QGSettings::isSchemaInstalled(UKUI_THEME_SETTING)){
+                    if (m_pTransparencySetting->keys().contains("transparency")) {
+                        transparency = m_pTransparencySetting->get("transparency").toDouble();
+                    }
+                }
+            #endif
+            //    QString sheet = QString("QWidget{background-color:rgba(19,19,20,%1);}").arg(transparency);
+            //    miniWidget->setStyleSheet(sheet);
+            w->osdWidget->setWindowOpacity(w->transparency);
+            w->osdWidget->show();
+            w->timer = new QTimer(w->osdWidget); //this 为parent类, 表示当前窗口
+            connect(w->timer, SIGNAL(timeout()), w, SLOT(osdDisplayWidgetHide())); // SLOT填入一个槽函数
+            w->timer->start(2000);
         }
-        else if (ret == 256) {
-            w->osdWidget->UkmediaOsdSetIcon("headphones-symbolic");
-        }
-        w->osdWidget->ret = ret;
-        w->osdWidget->show();
-        QTimer *timer = new QTimer(w->osdWidget); //this 为parent类, 表示当前窗口
-        connect(timer, SIGNAL(timeout()), w, SLOT(osdDisplayWidgetHide())); // SLOT填入一个槽函数
-        timer->start(2000);
     }
-
     stream = mate_mixer_context_get_default_output_stream (context);
     if (stream != nullptr)
         control = mate_mixer_stream_get_default_control (stream);
@@ -2549,8 +2555,11 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
 //osd超时隐藏
 void DeviceSwitchWidget::osdDisplayWidgetHide()
 {
-    if (!this->osdWidget->isHidden())
-        this->osdWidget->hide();
+    if(timer->isActive()){
+        timer->stop();
+//        if (!this->osdWidget->isHidden())
+            this->osdWidget->hide();
+    }
 }
 
 void DeviceSwitchWidget::gvc_stream_status_icon_set_control (DeviceSwitchWidget *w,MateMixerStreamControl *control)

@@ -39,6 +39,7 @@
 #include <QGSettings>
 #include <QMediaPlayer>
 #include <QTimer>
+
 extern "C" {
 #include <libmatemixer/matemixer.h>
 #include <gio/gio.h>
@@ -49,8 +50,8 @@ extern "C" {
 #define UKUI_THEME_SETTING "org.ukui.style"
 #define UKUI_TRANSPARENCY_SETTING "org.ukui.control-center.personalise"
 #define UKUI_THEME_NAME "style-name"
-#define UKUI_THEME_WHITE "ukui-white"
-#define UKUI_THEME_BLACK "ukui-black"
+#define UKUI_THEME_WHITE "ukui-default"
+#define UKUI_THEME_BLACK "ukui-dark"
 
 #define UKUI_PANEL_SETTING "org.ukui.panel.settings"
 #define MATE_DESKTOP_USE_UNSTABLE_API
@@ -214,6 +215,7 @@ private:
     QStringList *stream_control_list;
     QStringList *app_name_list;
 
+    QTimer *timer;
     QMenu *menu;
     QGSettings *m_pThemeSetting;
 #if (QT_VERSION <= QT_VERSION_CHECK(5,6,1))
@@ -227,8 +229,7 @@ private:
     QProcess *m_process;
     QString mThemeName;
     bool firstEnterSystem = true;
-    double transparency = 0.7;
-
+    double transparency = 0.8;
 
 protected:
     void paintEvent(QPaintEvent *event);

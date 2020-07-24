@@ -26,6 +26,7 @@
 #include <QtDBus/QDBusObjectPath>
 #include <QDBusReply>
 #include "customstyle.h"
+#include "ukmedia_volume_slider.h"
 class UkmediaOsdDisplayWidget : public QWidget
 {
 public:
@@ -39,6 +40,7 @@ public:
     friend class DeviceSwitchWidget;
 private:
     QWidget *osdWidget;
+    double size;
     QPushButton *iconButton;
     int ret;
 protected:

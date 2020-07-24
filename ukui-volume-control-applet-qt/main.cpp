@@ -80,8 +80,8 @@ int main(int argc, char *argv[])
 //    QApplication app(argc,argv);
     if (width >= 2560) {
     #if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
-            QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-            QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+        QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+        QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
     #endif
     }
     QtSingleApplication app("ukui-volume-control-applet",argc,argv);
@@ -101,9 +101,6 @@ int main(int argc, char *argv[])
             qDebug() << "Load translations file" << locale << "failed!";
         }
     }
-    //4k屏自动放大字体
-    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-    QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
     //注册MessageHandler
 //    qInstallMessageHandler(outputMessage);
     //加载qss文件

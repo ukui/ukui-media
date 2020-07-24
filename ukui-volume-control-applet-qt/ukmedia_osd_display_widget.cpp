@@ -84,7 +84,7 @@ void UkmediaOsdDisplayWidget::UkmediaOsdDisplayWidgetInit()
     height = screenHeight/480.0;
     scale = width > height ? height:width;
     temp = scale > 1 ? scale : 1;
-    double size = temp * 130;
+    size = temp * 130;
     int margin = (0.35*size)/2;
     osdWidget->layout()->setContentsMargins(margin,margin,margin,margin);
     this->setFixedSize(size,size);
@@ -105,6 +105,9 @@ void UkmediaOsdDisplayWidget::UkmediaOsdDisplayWidgetInit()
 void UkmediaOsdDisplayWidget::UkmediaOsdSetIcon(QString iconStr)
 {
     QIcon icon = QIcon::fromTheme(iconStr);
+//    if (iconStr == "audio-headphones") {
+//        icon = QIcon("/usr/share/ukui-media/img/audio-headphones.svg");
+//    }
     this->iconButton->setIcon(icon);
 }
 

@@ -56,6 +56,7 @@ public:
     void draw(QPaintEvent* e);
     void init(QImage image ,QColor color);
     friend class DeviceSwitchWidget;
+    friend class UkmediaOsdDisplayWidget;
 
 protected:
     void paintEvent(QPaintEvent *event);

@@ -1,7 +1,7 @@
 usr/bin/
 usr/share/applications/
 ukui-volume-control-applet-qt/build/ukui-volume-control-applet-qt usr/bin/
-ukui-volume-control-applet-qt/translations/*.qm usr/share/ukui-media/translations/
+#ukui-volume-control-applet-qt/translations/*.qm usr/share/ukui-media/translations/
 ukui-volume-control-applet-qt/data/img/* /usr/share/ukui-media/img/
 ukui-volume-control-applet-qt/data/qss/* /usr/share/ukui-media/qss/
 scripts/detection_output_mode.sh /usr/share/ukui-media/scripts/
