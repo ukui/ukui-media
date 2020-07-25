@@ -23,7 +23,7 @@ jobs:
       - name: Refresh pacman repository
         run: pacman -Sy
       - name: Install build dependencies
-        run: pacman -S --noconfirm base-devel gsettings-qt libmatemixer libqtxdg mate-desktop qt5-svg autoconf-archive intltool mate-common qt5-tools qt5-multimedia qt5-svg libqtxdg libxml2
+        run: pacman -S --noconfirm base-devel gsettings-qt libmatemixer libqtxdg mate-desktop qt5-svg autoconf-archive intltool mate-common qt5-tools qt5-multimedia qt5-svg libqtxdg libxml2 libkf5windowsystem-dev
       - name: Configure & Make
         run: |
           ./autogen.sh;
@@ -45,7 +45,7 @@ jobs:
       - name: Update apt repository
         run: apt-get update -y
       - name: Install build dependcies
-        run: apt-get install -y build-essential qt5-default qttools5-dev-tools intltool qtbase5-dev libcanberra-gtk3-dev libgsettings-qt-dev libglib2.0-dev libgtk-3-dev libmate-desktop-dev libmatemixer-dev libxml2-dev mate-common libqt5svg5-dev libqt5xdg-dev libqt5multimedia5-plugins qtmultimedia5-dev
+        run: apt-get install -y build-essential qt5-default qttools5-dev-tools intltool qtbase5-dev libcanberra-gtk3-dev libgsettings-qt-dev libglib2.0-dev libgtk-3-dev libmate-desktop-dev libmatemixer-dev libxml2-dev mate-common libqt5svg5-dev libqt5xdg-dev libqt5multimedia5-plugins qtmultimedia5-dev libkf5windowsystem-dev
       - name: Configure & Make
         run: |
           ./autogen.sh;
@@ -63,7 +63,7 @@ jobs:
       - name: Checkout ukui-media source code
         uses: actions/checkout@v2
       - name: Install build dependencies
-        run: dnf install -y make gcc gcc-c++ which cmake cmake-rpm-macros autoconf automake intltool rpm-build qt5-devel qt5-rpm-macros qt5-qtbase-devel qt5-qttools-devel qt5-qtbase-devel libcanberra-devel gsettings-qt-devel glib2-devel gtk3-devel mate-desktop-devel libmatemixer-devel libxml2-devel mate-common qt5-qtsvg-devel qt5-qtmultimedia-devel qt5-qtx11extras-devel bamf-devel libXrandr-devel libXtst-devel libX11-devel
+        run: dnf install -y make gcc gcc-c++ which cmake cmake-rpm-macros autoconf automake intltool rpm-build qt5-devel qt5-rpm-macros qt5-qtbase-devel qt5-qttools-devel qt5-qtbase-devel libcanberra-devel gsettings-qt-devel glib2-devel gtk3-devel mate-desktop-devel libmatemixer-devel libxml2-devel mate-common qt5-qtsvg-devel qt5-qtmultimedia-devel qt5-qtx11extras-devel bamf-devel libXrandr-devel libXtst-devel libX11-devel libkf5windowsystem-dev
       - name: Configure & Make
         run: |
           ln -sf /usr/bin/lrelease-qt5 /usr/bin/lrelease;
@@ -85,7 +85,7 @@ jobs:
       - name: Update apt repository
         run: apt-get update -y
       - name: Install build dependcies
-        run: apt-get install -y build-essential qt5-default qttools5-dev-tools intltool qtbase5-dev libcanberra-gtk3-dev libgsettings-qt-dev libglib2.0-dev libgtk-3-dev libmate-desktop-dev libmatemixer-dev libxml2-dev mate-common libqt5svg5-dev libqt5xdg-dev libqt5multimedia5-plugins qtmultimedia5-dev
+        run: apt-get install -y build-essential qt5-default qttools5-dev-tools intltool qtbase5-dev libcanberra-gtk3-dev libgsettings-qt-dev libglib2.0-dev libgtk-3-dev libmate-desktop-dev libmatemixer-dev libxml2-dev mate-common libqt5svg5-dev libqt5xdg-dev libqt5multimedia5-plugins qtmultimedia5-dev libkf5windowsystem-dev
       - name: Configure & Make
         run: |
           ./autogen.sh;

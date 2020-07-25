@@ -24,4 +24,4 @@ for USER in $(who | grep tty | awk '{print $1}' | sort | uniq);do
 done
 
 rm -rf /tmp/kylin_headphone.tmp
-
+exit -1

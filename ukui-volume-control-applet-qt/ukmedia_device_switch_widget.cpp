@@ -2513,6 +2513,12 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
     w->miniWidget->displayVolumeLabel->setText(percent);
     w->appWidget->systemVolumeDisplayLabel->setText(percent);
 
+    if (control != nullptr) {
+            g_debug ("Output icon enabled");
+    }
+    else {
+            g_debug ("There is no output stream/control, output icon disabled");
+    }
     //osd widget显示
     QFileInfo fileInfo(SOUND_MODE_SCRIPTS);
     if (fileInfo.exists()) {
@@ -2533,27 +2539,22 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
             #if (QT_VERSION <= QT_VERSION_CHECK(5,6,1))
                 //获取透明度
                 if (QGSettings::isSchemaInstalled(UKUI_THEME_SETTING)){
-                    if (m_pTransparencySetting->keys().contains("transparency")) {
-                        transparency = m_pTransparencySetting->get("transparency").toDouble();
+                    if (w->m_pTransparencySetting->keys().contains("transparency")) {
+                        w->transparency = w->m_pTransparencySetting->get("transparency").toDouble();
                     }
                 }
             #endif
-            //    QString sheet = QString("QWidget{background-color:rgba(19,19,20,%1);}").arg(transparency);
-            //    miniWidget->setStyleSheet(sheet);
+            /*QString sheet = QString("QWidget{background-color:rgba(19,19,20,%1);}").arg(transparency);
+            miniWidget->setStyleSheet(sheet);*/
             w->osdWidget->setWindowOpacity(w->transparency);
             w->osdWidget->show();
             w->timer = new QTimer(w->osdWidget); //this 为parent类, 表示当前窗口
-            connect(w->timer, SIGNAL(timeout()), w, SLOT(osdDisplayWidgetHide())); // SLOT填入一个槽函数
+//            connect(w->timer, SIGNAL(timeout()), w, SLOT(osdDisplayWidgetHide())); // SLOT填入一个槽函数
+            QTimer::singleShot(2000,w,SLOT(osdDisplayWidgetHide()));
+//            w->timer->setSingleShot(true);
             w->timer->start(2000);
         }
     }
-    if (control != nullptr) {
-            g_debug ("Output icon enabled");
-    }
-    else {
-            g_debug ("There is no output stream/control, output icon disabled");
-    }
-
 }
 
 //osd超时隐藏
@@ -2689,14 +2690,6 @@ void DeviceSwitchWidget::on_stream_control_volume_notify (MateMixerStreamControl
                 QGSettings * settings = new QGSettings(ba, bba);
                 filenameStr = settings->get(FILENAME_KEY).toString();
                 QString nameStr = settings->get(NAME_KEY).toString();
-//                int index;
-//                for (int i=0;i<w->m_pSoundList->count();i++) {
-//                    QString str = m_pWidget->m_pSoundList->at(i);
-//                    if (str.contains(filenameStr,Qt::CaseSensitive)) {
-//                        index = i;
-//                        break;
-//                    }
-//                }
                if (nameStr == "volume-changed") {
                     break;
                 }
@@ -2721,7 +2714,6 @@ void DeviceSwitchWidget::on_stream_control_volume_notify (MateMixerStreamControl
         w->devWidget->inputDeviceSlider->setValue(value);
         w->updateMicrophoneIcon(value,muted);
     }
-
 }
 
 /*!

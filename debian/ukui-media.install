@@ -1,9 +1,11 @@
 usr/bin/
 usr/share/applications/
-ukui-volume-control-applet-qt/build/ukui-volume-control-applet-qt usr/bin/
+ukui-volume-control-applet-qt/build/ukui-volume-control-applet-qt usr/bin
 #ukui-volume-control-applet-qt/translations/*.qm usr/share/ukui-media/translations/
-ukui-volume-control-applet-qt/data/img/* /usr/share/ukui-media/img/
-ukui-volume-control-applet-qt/data/qss/* /usr/share/ukui-media/qss/
-scripts/detection_output_mode.sh /usr/share/ukui-media/scripts/
+ukui-volume-control-applet-qt/data/img/* /usr/share/ukui-media/img
+ukui-volume-control-applet-qt/data/qss/* /usr/share/ukui-media/qss
+ukui-volume-control-applet-qt/data/sounds/*.ogg /usr/share/sounds
+ukui-volume-control-applet-qt/data/sounds/ukui-sounds-default.xml /usr/share/ukui-media/sounds
+scripts/detection_output_mode.sh /usr/share/ukui-media/scripts
 data/org.ukui.media.sound.gschema.xml /usr/share/glib-2.0/schemas
 debian/ukui-media.postinst /var/lib/dpkg/info
