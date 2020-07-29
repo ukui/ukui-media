@@ -20,7 +20,7 @@ Build-Depends: debhelper-compat (= 12),
                libqt5multimedia5-plugins,
                qtmultimedia5-dev,
                qttools5-dev-tools,
-               libkf5windowsystem-dev	
+               libkf5windowsystem-dev,
 Standards-Version: 4.5.0
 Rules-Requires-Root: no
 Homepage: http://www.ukui.org/
@@ -33,6 +33,7 @@ Depends: mate-desktop-common (>= 1.18),
          ukui-media-common (= ${source:Version}),
          ${misc:Depends},
          ${shlibs:Depends},
+         libglib2.0-bin,
 Recommends: alsa-utils,
             sound-theme-freedesktop,
 Description: UKUI media utilities
