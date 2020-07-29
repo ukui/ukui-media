@@ -31,6 +31,8 @@
 #include <KWindowEffects>
 #include <X11/Xlib.h>
 
+#include <gtk/gtk.h>
+
 /*! The ukui-media is the media of UKUI.
 
   Usage: ukui-media [CONFIG_ID]
@@ -71,6 +73,7 @@ void outputMessage(QtMsgType type, const QMessageLogContext &context, const QStr
 
 int main(int argc, char *argv[])
 {
+    gtk_init(nullptr,nullptr);
     Display *display = XOpenDisplay(NULL);
     Screen *scrn = DefaultScreenOfDisplay(display);
     if(scrn == nullptr) {

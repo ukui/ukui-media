@@ -22,7 +22,10 @@
 #include <QPainterPath>
 #include <QSpacerItem>
 #include <QApplication>
-UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QFrame *parent) : QFrame(parent)
+#include <QDebug>
+
+extern double transparency;
+UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QWidget *parent) : QWidget(parent)
 {
     masterWidget = new QFrame(this);
     muteBtn = new UkuiButtonDrawSvg(masterWidget);
@@ -97,6 +100,7 @@ UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QFrame *parent) : Q
     deviceBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
                              "padding-left:0px;}");
     deviceLabel->setStyleSheet("QLabel{font-size:14px;font-family:Noto Sans CJK SC;"
+                               "background-color:transparent;"
                                "font-weight:400;color:rgba(255,255,255,0.97);"
                                "line-height:34px;}");
 //    displayVolumeLabel->setStyleSheet("QLabel{font-size:20px;font-family:Noto Sans CJK SC;"
@@ -120,6 +124,8 @@ UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QFrame *parent) : Q
                                       "height: 20px;"
                                       "background: rgb(61,107,229);"
                                       "border-radius:10px;}");
+//    masterWidget->setStyleSheet("QWidget{background-color:transparent;"
+//                                "border-radius:15px;}");
 
 }
 
@@ -128,7 +134,8 @@ void UkmediaMiniMasterVolumeWidget::paintEvent(QPaintEvent *event)
     QStyleOption opt;
     opt.init(this);
     QPainter p(this);
-    p.setBrush(QBrush(QColor(0x13,0x13,0x14,0xB2)));
+    double transparence = transparency * 255;
+    p.setBrush(QBrush(QColor(19, 19, 20, transparence)));
     p.setPen(Qt::NoPen);
     QPainterPath path;
     opt.rect.adjust(0,0,0,0);

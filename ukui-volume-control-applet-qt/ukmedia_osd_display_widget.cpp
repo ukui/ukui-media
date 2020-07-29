@@ -24,6 +24,7 @@
 #include <QPainter>
 #include <QPainterPath>
 
+extern double transparency;
 UkmediaOsdDisplayWidget::UkmediaOsdDisplayWidget(QWidget *parent) : QWidget (parent)
 {
     osdWidget = new QWidget(this);
@@ -117,7 +118,8 @@ void UkmediaOsdDisplayWidget::paintEvent(QPaintEvent *event)
     int rounded;
     opt.init(this);
     QPainter p(this);
-    p.setBrush(QBrush(QColor(0x13,0x13,0x14,0xB2)));
+    double transparence = transparency * 255;
+    p.setBrush(QBrush(QColor(19, 19, 20, transparence)));
     p.setPen(Qt::NoPen);
     QPainterPath path;
     opt.rect.adjust(0,0,0,0);

@@ -28,11 +28,11 @@
 #include "customstyle.h"
 
 #define UKUI_TRANSPARENCY_SETTING "org.ukui.control-center.personalise"
-class UkmediaMiniMasterVolumeWidget : public QFrame
+class UkmediaMiniMasterVolumeWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit UkmediaMiniMasterVolumeWidget(QFrame *parent = nullptr);
+    explicit UkmediaMiniMasterVolumeWidget(QWidget *parent = nullptr);
     ~UkmediaMiniMasterVolumeWidget();
     friend class DeviceSwitchWidget;
 Q_SIGNALS:

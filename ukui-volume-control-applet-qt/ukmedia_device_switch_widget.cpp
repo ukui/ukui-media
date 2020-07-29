@@ -50,7 +50,7 @@ extern "C" {
 
 #define FILENAME_KEY "filename"
 #define NAME_KEY "name"
-
+double transparency = 0.8;
 typedef enum {
     DEVICE_VOLUME_BUTTON,
     APP_VOLUME_BUTTON
@@ -104,10 +104,12 @@ void DeviceSwitchWidget::paintEvent(QPaintEvent *event)
     QStyleOption opt;
     opt.init(this);
     QPainter p(this);
-    p.setBrush(QBrush(QColor(0x13,0x13,0x14,0xB2)));
+    double transparence = transparency * 255;
+    p.setBrush(QBrush(QColor(19, 19, 20, transparence)));
     p.setPen(Qt::NoPen);
     QPainterPath path;
     opt.rect.adjust(0,0,0,0);
+
     path.addRoundedRect(opt.rect,6,6);
     p.setRenderHint(QPainter::Antialiasing);  // 反锯齿;
     p.drawRoundedRect(opt.rect,6,6);
@@ -217,7 +219,6 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     miniWidget = new UkmediaMiniMasterVolumeWidget();
     osdWidget = new UkmediaOsdDisplayWidget();
 
-    miniWidget->setFrameShape(QFrame::Shape::Box);
     appWidget->appArea = new QScrollArea(appWidget);
     appWidget->displayAppVolumeWidget = new UkuiApplicationWidget(appWidget->appArea);
     appWidget->appArea->setWidget(appWidget->displayAppVolumeWidget);
@@ -317,7 +318,6 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
         connect(m_pThemeSetting, SIGNAL(changed(const QString &)),this,SLOT(ukuiThemeChangedSlot(const QString &)));
     }
 
-#if (QT_VERSION <= QT_VERSION_CHECK(5,6,1))
     //获取透明度
     if (QGSettings::isSchemaInstalled(UKUI_THEME_SETTING)){
         m_pTransparencySetting = new QGSettings(UKUI_TRANSPARENCY_SETTING);
@@ -325,7 +325,6 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
             transparency = m_pTransparencySetting->get("transparency").toInt();
         }
     }
-#endif
 
     UkmediaMonitorWindowThread *m_pThread = new UkmediaMonitorWindowThread();
     m_pThread->start();
@@ -874,6 +873,7 @@ void DeviceSwitchWidget::drawImagColorFromTheme(UkuiButtonDrawSvg *button, QStri
 {
     button->themeIcon.image = QIcon::fromTheme(iconStr).pixmap(24,24).toImage();
     button->themeIcon.color = QColor(0,0,0,216);
+
     if (mThemeName == UKUI_THEME_WHITE) {
 //        button->themeIcon.color = QColor(0,0,0,216);
         button->themeIcon.color = QColor(255,255,255,216);
@@ -904,8 +904,7 @@ void DeviceSwitchWidget::outputVolumeDarkThemeImage(int value,bool status)
     else {
         iconStr = "audio-volume-high-symbolic";
     }
-
-    if (mThemeName == UKUI_THEME_WHITE) {
+    if (mThemeName == UKUI_THEME_WHITE || mThemeName == "ukui-white") {
         miniWidget->muteBtn->themeIcon.color = QColor(255,255,255,216);
         devWidget->outputMuteBtn->themeIcon.color = QColor(255,255,255,216);
         appWidget->systemVolumeBtn->themeIcon.color = QColor(255,255,255,216);
@@ -915,7 +914,7 @@ void DeviceSwitchWidget::outputVolumeDarkThemeImage(int value,bool status)
         appWidget->systemVolumeBtn->themeIcon.image = QIcon::fromTheme(iconStr).pixmap(32,32).toImage();
 
     }
-    else if (mThemeName == UKUI_THEME_BLACK) {
+    else if (mThemeName == UKUI_THEME_BLACK || mThemeName == "ukui-black") {
         miniWidget->muteBtn->themeIcon.color = QColor(255,255,255,216);
         devWidget->outputMuteBtn->themeIcon.color = QColor(255,255,255,216);
         appWidget->systemVolumeBtn->themeIcon.color = QColor(255,255,255,216);
@@ -1113,22 +1112,15 @@ void DeviceSwitchWidget::primaryScreenChangedSlot(QScreen *screen)
  */
 void DeviceSwitchWidget::activatedSystemTrayIconSlot(QSystemTrayIcon::ActivationReason reason)
 {
-#if (QT_VERSION <= QT_VERSION_CHECK(5,6,1))
     //获取透明度
     if (QGSettings::isSchemaInstalled(UKUI_THEME_SETTING)){
         if (m_pTransparencySetting->keys().contains("transparency")) {
             transparency = m_pTransparencySetting->get("transparency").toDouble();
         }
     }
-#endif
-//    QString sheet = QString("QWidget{background-color:rgba(19,19,20,%1);}").arg(transparency);
-//    miniWidget->setStyleSheet(sheet);
+    QString sheet = QString("QWidget{background-color:rgba(19,19,20,%1);"
+                            "border-radius:6px;}").arg(transparency);
 
-    miniWidget->setWindowOpacity(transparency);
-    this->setWindowOpacity(transparency);
-    menu->setWindowOpacity(transparency);
-    osdWidget->setWindowOpacity(transparency);
-//    this->setStyleSheet(sheet);
     switch(reason) {
     //鼠标中间键点击图标
     case QSystemTrayIcon::MiddleClick: {
@@ -2536,22 +2528,20 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
                 return;
             }
             w->osdWidget->ret = ret;
-            #if (QT_VERSION <= QT_VERSION_CHECK(5,6,1))
-                //获取透明度
-                if (QGSettings::isSchemaInstalled(UKUI_THEME_SETTING)){
-                    if (w->m_pTransparencySetting->keys().contains("transparency")) {
-                        w->transparency = w->m_pTransparencySetting->get("transparency").toDouble();
-                    }
+
+            //获取透明度
+            if (QGSettings::isSchemaInstalled(UKUI_THEME_SETTING)){
+                if (w->m_pTransparencySetting->keys().contains("transparency")) {
+                    transparency = w->m_pTransparencySetting->get("transparency").toDouble();
                 }
-            #endif
+            }
+
             /*QString sheet = QString("QWidget{background-color:rgba(19,19,20,%1);}").arg(transparency);
             miniWidget->setStyleSheet(sheet);*/
-            w->osdWidget->setWindowOpacity(w->transparency);
+            w->osdWidget->setWindowOpacity(transparency);
             w->osdWidget->show();
             w->timer = new QTimer(w->osdWidget); //this 为parent类, 表示当前窗口
-//            connect(w->timer, SIGNAL(timeout()), w, SLOT(osdDisplayWidgetHide())); // SLOT填入一个槽函数
-            QTimer::singleShot(2000,w,SLOT(osdDisplayWidgetHide()));
-//            w->timer->setSingleShot(true);
+            connect(w->timer, SIGNAL(timeout()), w, SLOT(osdDisplayWidgetHide())); // SLOT填入一个槽函数
             w->timer->start(2000);
         }
     }
@@ -2704,8 +2694,12 @@ void DeviceSwitchWidget::on_stream_control_volume_notify (MateMixerStreamControl
         retval = ca_context_play (context, 0,
                                  CA_PROP_EVENT_ID, eventId,
                                  CA_PROP_EVENT_DESCRIPTION, desc, NULL);
-        if (retval < 0)
-            qDebug() << "fail to play " << eventId << ca_strerror(retval);
+        if (retval < 0) {
+            qDebug() << "fail to play " << eventId << ca_strerror(retval) << retval;
+            retval = ca_context_play (context, 0,
+                                     CA_PROP_EVENT_ID, eventId,
+                                     CA_PROP_EVENT_DESCRIPTION, desc, NULL);
+        }
 
     }
     else if (direction == MATE_MIXER_DIRECTION_INPUT) {

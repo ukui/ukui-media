@@ -285,4 +285,3 @@ QPixmap UkuiButtonDrawSvg::filledSymbolicColoredPixmap(QImage &img, QColor &base
 
     return QPixmap::fromImage(img);
 }
-

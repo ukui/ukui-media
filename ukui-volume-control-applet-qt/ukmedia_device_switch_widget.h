@@ -39,7 +39,6 @@
 #include <QGSettings>
 #include <QMediaPlayer>
 #include <QTimer>
-
 extern "C" {
 #include <libmatemixer/matemixer.h>
 #include <gio/gio.h>
@@ -218,9 +217,8 @@ private:
     QTimer *timer;
     QMenu *menu;
     QGSettings *m_pThemeSetting;
-#if (QT_VERSION <= QT_VERSION_CHECK(5,6,1))
     QGSettings *m_pTransparencySetting;
-#endif
+
     QAction *m_pMuteAction;
     QAction *m_pSoundPreferenceAction;
     QString outputControlName;
@@ -229,7 +227,6 @@ private:
     QProcess *m_process;
     QString mThemeName;
     bool firstEnterSystem = true;
-    double transparency = 0.8;
 
 protected:
     void paintEvent(QPaintEvent *event);
