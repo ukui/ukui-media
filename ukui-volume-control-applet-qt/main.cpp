@@ -104,6 +104,14 @@ int main(int argc, char *argv[])
             qDebug() << "Load translations file" << locale << "failed!";
         }
     }
+      if (locale == "tr_TR") {
+        if (translator.load("/usr/share/ukui-media/translations/ukui-volume-control-applet-qt-tr.qm")) {
+            app.installTranslator(&translator);
+        }
+        else {
+            qDebug() << "Load translations file" << locale << "failed!";
+        }
+    }
     //注册MessageHandler
 //    qInstallMessageHandler(outputMessage);
     //加载qss文件
