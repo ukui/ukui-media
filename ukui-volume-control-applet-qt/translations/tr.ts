@@ -17,32 +17,34 @@
 <context>
     <name>DeviceSwitchWidget</name>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="224"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="237"/>
         <source>Go Into Mini Mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="422"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="455"/>
         <source>Output volume control</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="423"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="457"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="460"/>
         <source>Mute</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="424"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="458"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="461"/>
         <source>Sound preference(S)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="993"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="1254"/>
         <source>Device Volume</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="994"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="1255"/>
         <source>Application Volume</source>
         <translation type="unfinished"></translation>
     </message>
@@ -78,12 +80,12 @@
 <context>
     <name>UkmediaMiniMasterVolumeWidget</name>
     <message>
-        <location filename="../ukmedia_mini_master_volume_widget.cpp" line="37"/>
+        <location filename="../ukmedia_mini_master_volume_widget.cpp" line="42"/>
         <source>Speaker (Realtek Audio)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ukmedia_mini_master_volume_widget.cpp" line="95"/>
+        <location filename="../ukmedia_mini_master_volume_widget.cpp" line="98"/>
         <source>Go Into Full Mode</source>
         <translation type="unfinished"></translation>
     </message>

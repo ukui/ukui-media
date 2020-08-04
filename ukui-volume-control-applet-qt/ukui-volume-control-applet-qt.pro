@@ -11,8 +11,6 @@ TARGET = ukui-volume-control-applet-qt
 INCLUDEPATH += .
 QMAKE_CXXFLAGS += -std=c++11
 
-PREFIX = /usr/share/ukui-media
-
 include(QtSingleApplication/qtsingleapplication.pri)
 
 DEFINES += QT_DEPRECATED_WARNINGS
@@ -24,10 +22,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 # Default rules for deployment.
 target.path = /usr/bin
-
-#inst.path += /usr/share/ukui-media/translations
-#inst.files += translations/ukui-volume-control-applet-qt_zh_CN.qm
-#              translations/1
 
 CONFIG += \
     c++11 \
@@ -42,8 +36,7 @@ PKGCONFIG += \
     Qt5Multimedia \
     dconf \
     x11 \
-    libcanberra \
-    gtk+-3.0
+    libcanberra
 #    libwnck-1.0
 
 HEADERS += \
@@ -73,9 +66,9 @@ RESOURCES += \
     res.qrc
 
 TRANSLATIONS += \
-    translations/ukui-volume-control-applet-qt-zh_CN.ts \
-    translations/ukui-volume-control-applet-qt-tr.ts \
-    translations/ukui-volume-control-applet-qt-bo.ts
+    translations/zh_CN.ts \
+    translations/tr.ts \
+    translations/bo.ts
 
 system("lrelease translations/*.ts")
 

@@ -45,6 +45,7 @@ extern "C" {
 #include <dconf/dconf.h>
 #include <canberra.h>
 }
+
 #define SOUND_MODE_SCRIPTS "/usr/share/ukui-media/scripts/detection_output_mode.sh"
 #define UKUI_THEME_SETTING "org.ukui.style"
 #define UKUI_TRANSPARENCY_SETTING "org.ukui.control-center.personalise"

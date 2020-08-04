@@ -31,8 +31,6 @@
 #include <KWindowEffects>
 #include <X11/Xlib.h>
 
-#include <gtk/gtk.h>
-
 /*! The ukui-media is the media of UKUI.
 
   Usage: ukui-media [CONFIG_ID]
@@ -73,7 +71,6 @@ void outputMessage(QtMsgType type, const QMessageLogContext &context, const QStr
 
 int main(int argc, char *argv[])
 {
-    gtk_init(nullptr,nullptr);
     Display *display = XOpenDisplay(NULL);
     Screen *scrn = DefaultScreenOfDisplay(display);
     if(scrn == nullptr) {
@@ -92,18 +89,11 @@ int main(int argc, char *argv[])
        app.sendMessage("raise_window_noop");
        return EXIT_SUCCESS;
     }
-    //加载qm翻译文件o
-    QString locale = QLocale::system().name();
+    //加载qm文件
     QTranslator translator;
+    translator.load("/usr/share/ukui-media/translations/" + QLocale::system().name());
+    app.installTranslator(&translator);
 
-    if (locale == "zh_CN") {
-        if (translator.load("/usr/share/ukui-media/translations/ukui-volume-control-applet-qt-zh_CN.qm")) {
-            app.installTranslator(&translator);
-        }
-        else {
-            qDebug() << "Load translations file" << locale << "failed!";
-        }
-    }
     //注册MessageHandler
 //    qInstallMessageHandler(outputMessage);
     //加载qss文件
