@@ -1,3 +1,11 @@
+ukui-media (3.0.0-1) unstable; urgency=medium
+
+  * New upstream release.
+  * debian/control:
+    - Add libglib2.0-bin to depends.
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Wed, 29 Jul 2020 07:41:17 +0000
+
 ukui-media (2.0.4-2) unstable; urgency=medium
 
   [ Helmut Grohne ]
