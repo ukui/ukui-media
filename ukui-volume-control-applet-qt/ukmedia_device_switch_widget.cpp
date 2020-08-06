@@ -1453,10 +1453,9 @@ void DeviceSwitchWidget::add_stream (DeviceSwitchWidget *w, MateMixerStream *str
             if (m_pAppInfo != nullptr) {
                 const gchar *m_pAppName = mate_mixer_app_info_get_name(m_pAppInfo);
                 if (strcmp(m_pAppName,"ukui-session") != 0 && strcmp(m_pAppName,"ukui-volume-control-applet-qt") != 0 && strcmp(m_pAppName,"Volume Control") && strcmp(m_pAppName,"ALSA plug-in [mate-screenshot]") ) {
-                    w->stream_control_list->append(m_pStreamControlName);
                     if G_UNLIKELY (w->control == nullptr)
                         return;
-                    add_application_control (w, w->control);
+                    add_application_control (w, w->control,m_pStreamControlName);
                 }
             }
             else
@@ -1481,7 +1480,7 @@ void DeviceSwitchWidget::add_stream (DeviceSwitchWidget *w, MateMixerStream *str
  * \details
  * 当有应用播放或录制时会执行此函数
  */
-void DeviceSwitchWidget::add_application_control (DeviceSwitchWidget *w, MateMixerStreamControl *control)
+void DeviceSwitchWidget::add_application_control (DeviceSwitchWidget *w, MateMixerStreamControl *control,const gchar *name)
 {
     MateMixerStreamControlMediaRole media_role;
     MateMixerAppInfo *info;
@@ -1497,8 +1496,9 @@ void DeviceSwitchWidget::add_application_control (DeviceSwitchWidget *w, MateMix
     /* Add stream to the applications page, but make sure the stream qualifies
      * for the inclusion */
     info = mate_mixer_stream_control_get_app_info (control);
-    if (info == nullptr)
+    if (info == nullptr) {
         return;
+    }
 
     /* Skip streams with roles we don't care about */
     if (media_role == MATE_MIXER_STREAM_CONTROL_MEDIA_ROLE_EVENT ||
@@ -1518,6 +1518,8 @@ void DeviceSwitchWidget::add_application_control (DeviceSwitchWidget *w, MateMix
 
     QString app_icon_name = mate_mixer_app_info_get_icon(info);
     app_name = mate_mixer_app_info_get_name (info);
+    w->stream_control_list->append(name);
+    qDebug() << "add application control ,app name :" << app_name ;
     if (app_name == nullptr) {
         app_name = mate_mixer_stream_control_get_label(control);
     }
@@ -1570,8 +1572,8 @@ void DeviceSwitchWidget::on_stream_control_added (MateMixerStream *stream,const 
 
             role = mate_mixer_stream_control_get_role (w->control);
             if (role == MATE_MIXER_STREAM_CONTROL_ROLE_APPLICATION) {
-                w->stream_control_list->append(name);
-                add_application_control (w, w->control);
+
+                add_application_control (w, w->control,name);
             }
         }
     }
@@ -1611,6 +1613,7 @@ void DeviceSwitchWidget::remove_application_control (DeviceSwitchWidget *w,const
     /* We could call bar_set_stream_control here, but that would pointlessly
      * invalidate the channel bar, so just remove it ourselves */
     int index = -1;
+    qDebug() << "remove application control" << m_pAppName;
     if (w->stream_control_list->contains(m_pAppName)) {
         index = w->stream_control_list->indexOf(m_pAppName);
     }
@@ -1812,6 +1815,7 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
     appVolumeLabelStr.append(QString::number(app_count));
 
     w->app_name_list->append(appSliderStr);
+    qDebug() << "app name appenr ------" << appSliderStr;
     w->appBtnNameList->append(appMuteBtnlStr);
     w->appWidget->appMuteBtn->setObjectName(appMuteBtnlStr);
     w->appWidget->appSlider->setObjectName(appSliderStr);

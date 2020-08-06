@@ -115,7 +115,7 @@ public:
     static void on_context_stream_removed (MateMixerContext *context,const gchar *name,DeviceSwitchWidget *w);
     static void remove_stream (DeviceSwitchWidget *w, const gchar *name);
     static void add_stream (DeviceSwitchWidget *w, MateMixerStream *stream,MateMixerContext *context);
-    static void add_application_control (DeviceSwitchWidget *w, MateMixerStreamControl *control);
+    static void add_application_control (DeviceSwitchWidget *w, MateMixerStreamControl *control,const gchar *name);
     static void on_stream_control_added (MateMixerStream *stream,const gchar *name,DeviceSwitchWidget  *w);
     static void on_stream_control_removed (MateMixerStream *stream,const gchar *name,DeviceSwitchWidget *w);
     static void remove_application_control (DeviceSwitchWidget *w,const gchar *name);
