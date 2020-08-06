@@ -2695,9 +2695,9 @@ void DeviceSwitchWidget::on_stream_control_volume_notify (MateMixerStreamControl
         const gchar *eventId =id;
 //        qDebug() << "****" << id << eventId;
         ca_context_create(&context);
-        retval = ca_context_play (context, 0,
-                                 CA_PROP_EVENT_ID, eventId,
-                                 CA_PROP_EVENT_DESCRIPTION, desc, NULL);
+//        retval = ca_context_play (context, 0,
+//                                 CA_PROP_EVENT_ID, eventId,
+//                                 CA_PROP_EVENT_DESCRIPTION, desc, NULL);
         if (retval < 0) {
             qDebug() << "fail to play " << eventId << ca_strerror(retval) << retval;
 //            retval = ca_context_play (context, 0,

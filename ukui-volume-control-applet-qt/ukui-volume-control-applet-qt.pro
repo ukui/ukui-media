@@ -36,8 +36,7 @@ PKGCONFIG += \
     Qt5Multimedia \
     dconf \
     x11 \
-    libcanberra \
-    gtk+-3.0
+    libcanberra
 #    libwnck-1.0
 
 HEADERS += \
