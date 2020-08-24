@@ -2544,9 +2544,14 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
             miniWidget->setStyleSheet(sheet);*/
             w->osdWidget->setWindowOpacity(transparency);
             w->osdWidget->show();
-            w->timer = new QTimer(w->osdWidget); //this 为parent类, 表示当前窗口
-            connect(w->timer, SIGNAL(timeout()), w, SLOT(osdDisplayWidgetHide())); // SLOT填入一个槽函数
-            w->timer->start(2000);
+
+            if (w->timer != nullptr) {
+                w->timer = nullptr;
+                delete w->timer;
+            }
+            w->timer = new MyTimer(w->osdWidget); //this 为parent类, 表示当前窗口
+            connect(w->timer, SIGNAL(timeOut()), w, SLOT(osdDisplayWidgetHide())); // SLOT填入一个槽函数
+//            w->timer->start(2000);
         }
     }
 }
@@ -2554,11 +2559,11 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
 //osd超时隐藏
 void DeviceSwitchWidget::osdDisplayWidgetHide()
 {
-    if(timer->isActive()){
-        timer->destroyed();
+//    if(timer->isActive()){
+//        timer->destroyed();
 //        if (!this->osdWidget->isHidden())
         this->osdWidget->hide();
-    }
+//    }
 }
 
 void DeviceSwitchWidget::gvc_stream_status_icon_set_control (DeviceSwitchWidget *w,MateMixerStreamControl *control)
@@ -3172,23 +3177,32 @@ void DeviceSwitchWidget::addValue(QString name,QString filename)
         }
 
     }
-//    QString availablepath = findFreePath();
-
-//    qDebug() << "Add Path" << availablepath;
-
-//    const QByteArray id(KEYBINDINGS_CUSTOM_SCHEMA);
-//    const QByteArray idd(availablepath.toUtf8().data());
-//    if(QGSettings::isSchemaInstalled(id))
-//    {
-//        QGSettings * settings = new QGSettings(id, idd);
-//        settings->set(FILENAME_KEY, filename);
-//        settings->set(NAME_KEY, name);
-//    }
-
-
-//    delete settings;
 }
 
+MyTimer::MyTimer(QObject *parent)
+    :QObject(parent)
+{
+    m_nTimerID = this->startTimer(TIMER_TIMEOUT);
+}
+
+MyTimer::~MyTimer()
+{
+
+}
+
+void MyTimer::timerEvent(QTimerEvent *event)
+{
+    if(event->timerId() == m_nTimerID){
+        handleTimeout();
+        Q_EMIT timeOut();
+    }
+}
+
+void MyTimer::handleTimeout()
+{
+    qDebug()<<"Enter timeout processing function\n";
+    killTimer(m_nTimerID);
+}
 
 DeviceSwitchWidget::~DeviceSwitchWidget()
 {

@@ -39,6 +39,7 @@
 #include <QGSettings>
 #include <QMediaPlayer>
 #include <QTimer>
+#include <QTime>
 extern "C" {
 #include <libmatemixer/matemixer.h>
 #include <gio/gio.h>
@@ -58,6 +59,7 @@ extern "C" {
 #define VERSION "1.12.1"
 #define GVC_APPLET_DBUS_NAME    "org.mate.VolumeControlApplet"
 #define KEY_SOUNDS_SCHEMA   "org.mate.sound"
+#define TIMER_TIMEOUT   (1*1000)
 
 class UkmediaTrayIcon : public QSystemTrayIcon
 {
@@ -71,6 +73,21 @@ Q_SIGNALS:
 
 protected:
     bool event(QEvent *e) ;
+};
+
+class MyTimer : public QObject
+{
+  Q_OBJECT
+
+public:
+  MyTimer(QObject* parent = NULL);
+  ~MyTimer();
+  void  handleTimeout();  //超时处理函数
+  virtual void timerEvent( QTimerEvent *event);
+private:
+  int m_nTimerID;
+Q_SIGNALS:
+  void timeOut();
 };
 
 class DeviceSwitchWidget:public QWidget
@@ -215,7 +232,7 @@ private:
     QStringList *stream_control_list;
     QStringList *app_name_list;
 
-    QTimer *timer;
+    MyTimer *timer;
     QMenu *menu;
     QGSettings *m_pThemeSetting;
     QGSettings *m_pTransparencySetting;
