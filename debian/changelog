@@ -1,3 +1,11 @@
+ukui-media (3.0.1-1) unstable; urgency=medium
+
+  * New upstream release.
+  * d/ukui-media.posinst: drop the execute permission.
+  * d/copyright: update copyright.
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Tue, 25 Aug 2020 13:41:32 +0800
+
 ukui-media (3.0.0-1) unstable; urgency=medium
 
   * New upstream release.
