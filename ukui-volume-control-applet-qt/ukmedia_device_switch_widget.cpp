@@ -250,6 +250,7 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     app_name_list = new QStringList;
     appBtnNameList = new QStringList;
 
+    ca_context_create(&caContext);
     /*!
      * \brief
      * \details
@@ -2540,15 +2541,20 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
                 }
             }
 
+            if (!w->osdWidget->isHidden()) {
+                w->osdWidget->hide();
+
+                if (w->timer != nullptr) {
+                    w->timer->disconnect();
+                    w->timer = nullptr;
+                    delete w->timer;
+                }
+            }
             /*QString sheet = QString("QWidget{background-color:rgba(19,19,20,%1);}").arg(transparency);
             miniWidget->setStyleSheet(sheet);*/
             w->osdWidget->setWindowOpacity(transparency);
             w->osdWidget->show();
 
-            if (w->timer != nullptr) {
-                w->timer = nullptr;
-                delete w->timer;
-            }
             w->timer = new MyTimer(w->osdWidget); //this 为parent类, 表示当前窗口
             connect(w->timer, SIGNAL(timeOut()), w, SLOT(osdDisplayWidgetHide())); // SLOT填入一个槽函数
 //            w->timer->start(2000);
@@ -2663,6 +2669,8 @@ void DeviceSwitchWidget::on_stream_control_volume_notify (MateMixerStreamControl
 
     direction = mate_mixer_stream_get_direction(MATE_MIXER_STREAM(stream));
     //设置输出滑动条的值
+//    ca_context *context;
+//    ca_context_create(&context);
     int value = int(volume*100/65536.0 + 0.5);
     if (direction == MATE_MIXER_DIRECTION_OUTPUT) {
         w->devWidget->outputDeviceSlider->setValue(value);
@@ -2673,7 +2681,6 @@ void DeviceSwitchWidget::on_stream_control_volume_notify (MateMixerStreamControl
         const gchar *id = NULL;
         const gchar *desc = NULL;
         gint retval;
-        ca_context *context;
 
         QList<char *> existsPath = w->listExistsPath();
         QString filenameStr;
@@ -2698,18 +2705,13 @@ void DeviceSwitchWidget::on_stream_control_volume_notify (MateMixerStreamControl
         id = text.data();
         desc = "Volume Changed";
         const gchar *eventId =id;
-//        qDebug() << "****" << id << eventId;
-        ca_context_create(&context);
-//        retval = ca_context_play (context, 0,
-//                                 CA_PROP_EVENT_ID, eventId,
-//                                 CA_PROP_EVENT_DESCRIPTION, desc, NULL);
+        qDebug() << "****" << id << eventId;
+        retval = ca_context_play (w->caContext, 0,
+                                 CA_PROP_EVENT_ID, eventId,
+                                 CA_PROP_EVENT_DESCRIPTION, desc, NULL);
         if (retval < 0) {
             qDebug() << "fail to play " << eventId << ca_strerror(retval) << retval;
-//            retval = ca_context_play (context, 0,
-//                                     CA_PROP_EVENT_ID, eventId,
-//                                     CA_PROP_EVENT_DESCRIPTION, desc, NULL);
         }
-
     }
     else if (direction == MATE_MIXER_DIRECTION_INPUT) {
         qDebug() << "stream get label:" << mate_mixer_stream_control_get_label(control) << mate_mixer_stream_get_label(stream);

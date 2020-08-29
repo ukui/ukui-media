@@ -59,7 +59,7 @@ extern "C" {
 #define VERSION "1.12.1"
 #define GVC_APPLET_DBUS_NAME    "org.mate.VolumeControlApplet"
 #define KEY_SOUNDS_SCHEMA   "org.mate.sound"
-#define TIMER_TIMEOUT   (1*1000)
+#define TIMER_TIMEOUT   (2*1000)
 
 class UkmediaTrayIcon : public QSystemTrayIcon
 {
@@ -245,6 +245,7 @@ private:
     QProcess *m_process;
     QString mThemeName;
     bool firstEnterSystem = true;
+    ca_context *caContext;
 
 protected:
     void paintEvent(QPaintEvent *event);
