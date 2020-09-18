@@ -306,9 +306,9 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     /*connect(miniWidget->deviceCombox,SIGNAL(currentIndexChanged(QString)),this,SLOT(deviceComboxIndexChanged(QString)));*/
     context_set_property(this);
     g_signal_connect (G_OBJECT (context),
-                     "notify::state",
-                     G_CALLBACK (on_context_state_notify),
-                     this);
+                      "notify::state",
+                      G_CALLBACK (on_context_state_notify),
+                      this);
 
     //检测系统主题
     if (QGSettings::isSchemaInstalled(UKUI_THEME_SETTING)){
@@ -320,11 +320,30 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     }
 
     //获取透明度
-    if (QGSettings::isSchemaInstalled(UKUI_THEME_SETTING)){
+    if (QGSettings::isSchemaInstalled(UKUI_TRANSPARENCY_SETTING)){
         m_pTransparencySetting = new QGSettings(UKUI_TRANSPARENCY_SETTING);
         if (m_pTransparencySetting->keys().contains("transparency")) {
             transparency = m_pTransparencySetting->get("transparency").toInt();
         }
+    }
+
+    //给侧边栏提供音量之设置
+    if (QGSettings::isSchemaInstalled(UKUI_VOLUME_BRIGHTNESS_GSETTING_ID)) {
+        m_pVolumeSetting = new QGSettings(UKUI_VOLUME_BRIGHTNESS_GSETTING_ID);
+        connect(m_pVolumeSetting,&QGSettings::changed,[=](){
+        MateMixerStream *stream;
+        MateMixerStreamControl *control = nullptr;
+        stream = mate_mixer_context_get_default_output_stream (context);
+        if (stream != nullptr)
+            control = mate_mixer_stream_get_default_control (stream);
+        if (m_pVolumeSetting->keys().contains("volumesize")) {
+            int valueSetting = m_pVolumeSetting->get(UKUI_VOLUME_KEY).toInt();
+            qDebug() << "获取的settings 值为" << valueSetting;
+            int value = int(valueSetting *65536/100);
+            mate_mixer_stream_control_set_volume(control,value);
+
+        }
+    });
     }
 
     UkmediaMonitorWindowThread *m_pThread = new UkmediaMonitorWindowThread();
@@ -494,6 +513,12 @@ void DeviceSwitchWidget::miniMastrerSliderChangedSlot(int value)
         control = mate_mixer_stream_get_default_control(stream);
     QString percent;
     percent = QString::number(value);
+    //设置gsettings的值
+    if (QGSettings::isSchemaInstalled(UKUI_VOLUME_BRIGHTNESS_GSETTING_ID)) {
+        if (m_pVolumeSetting->keys().contains("volumesize")) {
+            m_pVolumeSetting->set(UKUI_VOLUME_KEY,value);
+        }
+    }
     //音量值改变时添加提示音
     if (firstEnterSystem != true) {
         mate_mixer_stream_control_set_mute(control,FALSE);
@@ -2470,6 +2495,12 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
     QIcon trayIcon;
     QIcon audioIcon;
 
+//    //设置gsettings的值
+//    if (QGSettings::isSchemaInstalled(UKUI_VOLUME_BRIGHTNESS_GSETTING_ID)) {
+//        if (w->m_pVolumeSetting->keys().contains("volumesize")) {
+//            w->m_pVolumeSetting->set(UKUI_VOLUME_KEY,value);
+//        }
+//    }
     if (state) {
         systemTrayIcon = "audio-volume-muted-symbolic";
         audioIconStr = "audio-volume-muted-symbolic";
@@ -2556,8 +2587,7 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
             w->osdWidget->show();
 
             w->timer = new MyTimer(w->osdWidget); //this 为parent类, 表示当前窗口
-            connect(w->timer, SIGNAL(timeOut()), w, SLOT(osdDisplayWidgetHide())); // SLOT填入一个槽函数
-//            w->timer->start(2000);
+            connect(w->timer, SIGNAL(timeOut()), w, SLOT(osdDisplayWidgetHide()));
         }
     }
 }
@@ -2631,6 +2661,7 @@ void DeviceSwitchWidget::on_stream_control_volume_notify (MateMixerStreamControl
     gdouble decibel = 0.0;
     guint volume = 0;
 
+    qDebug() << "volume changed *******";
     QString decscription;
     MateMixerDirection direction = MATE_MIXER_DIRECTION_OUTPUT;
     if (control != nullptr)
@@ -2676,6 +2707,7 @@ void DeviceSwitchWidget::on_stream_control_volume_notify (MateMixerStreamControl
         w->devWidget->outputDeviceSlider->setValue(value);
         w->appWidget->systemVolumeSlider->setValue(value);
         w->miniWidget->masterVolumeSlider->setValue(value);
+
         w->updateSystemTrayIcon(value,muted);
         //设置调节输入音量的提示音
         const gchar *id = NULL;
@@ -2718,6 +2750,49 @@ void DeviceSwitchWidget::on_stream_control_volume_notify (MateMixerStreamControl
 
         w->devWidget->inputDeviceSlider->setValue(value);
         w->updateMicrophoneIcon(value,muted);
+    }
+    //osd widget显示
+    QFileInfo fileInfo(SOUND_MODE_SCRIPTS);
+    if (fileInfo.exists()) {
+        int ret = system(SOUND_MODE_SCRIPTS);
+        qDebug() << "ret " << ret << w->osdWidget->ret;
+        if (ret != w->osdWidget->ret) {
+            if (ret == 0) {
+                w->osdWidget->UkmediaOsdSetIcon("audio-card");
+            }
+            else if (ret == 256) {
+                w->osdWidget->UkmediaOsdSetIcon("audio-headphones");
+            }
+            else {
+                w->osdWidget->ret = ret;
+                return;
+            }
+            w->osdWidget->ret = ret;
+
+            //获取透明度
+            if (QGSettings::isSchemaInstalled(UKUI_THEME_SETTING)){
+                if (w->m_pTransparencySetting->keys().contains("transparency")) {
+                    transparency = w->m_pTransparencySetting->get("transparency").toDouble();
+                }
+            }
+
+            if (!w->osdWidget->isHidden()) {
+                w->osdWidget->hide();
+
+                if (w->timer != nullptr) {
+                    w->timer->disconnect();
+                    w->timer = nullptr;
+                    delete w->timer;
+                }
+            }
+            /*QString sheet = QString("QWidget{background-color:rgba(19,19,20,%1);}").arg(transparency);
+            miniWidget->setStyleSheet(sheet);*/
+            w->osdWidget->setWindowOpacity(transparency);
+            w->osdWidget->show();
+
+            w->timer = new MyTimer(w->osdWidget); //this 为parent类, 表示当前窗口
+            connect(w->timer, SIGNAL(timeOut()), w, SLOT(osdDisplayWidgetHide()));
+        }
     }
 }
 

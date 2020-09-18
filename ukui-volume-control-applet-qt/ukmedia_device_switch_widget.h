@@ -54,8 +54,12 @@ extern "C" {
 #define UKUI_THEME_WHITE "ukui-default"
 #define UKUI_THEME_BLACK "ukui-dark"
 
+//为平板模式提供设置音量值
+#define UKUI_VOLUME_BRIGHTNESS_GSETTING_ID "org.ukui.quick-operation.panel"
+#define UKUI_VOLUME_KEY "volumesize"
+
 #define UKUI_PANEL_SETTING "org.ukui.panel.settings"
-#define MATE_DESKTOP_USE_UNSTABLE_API
+#define dsdasdasdasda
 #define VERSION "1.12.1"
 #define GVC_APPLET_DBUS_NAME    "org.mate.VolumeControlApplet"
 #define KEY_SOUNDS_SCHEMA   "org.mate.sound"
@@ -236,6 +240,7 @@ private:
     QMenu *menu;
     QGSettings *m_pThemeSetting;
     QGSettings *m_pTransparencySetting;
+    QGSettings *m_pVolumeSetting;
 
     QAction *m_pMuteAction;
     QAction *m_pSoundPreferenceAction;

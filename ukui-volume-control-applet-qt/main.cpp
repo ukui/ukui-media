@@ -29,6 +29,7 @@
 #include <QDesktopWidget>
 #include <QDir>
 #include <KWindowEffects>
+#include <QMessageBox>
 #include <X11/Xlib.h>
 
 /*! The ukui-media is the media of UKUI.
@@ -89,6 +90,14 @@ int main(int argc, char *argv[])
        app.sendMessage("raise_window_noop");
        return EXIT_SUCCESS;
     }
+    if (!QSystemTrayIcon::isSystemTrayAvailable()) {
+        qDebug()<<" ukui can't load system tray icon";
+        QMessageBox::critical(0, QObject::tr("Systray"),
+                              QObject::tr("I couldn't detect any system tray "
+                                          "on this system."));
+        return 1;
+    }
+
     //加载qm文件
     QTranslator translator;
     translator.load("/usr/share/ukui-media/translations/" + QLocale::system().name());
