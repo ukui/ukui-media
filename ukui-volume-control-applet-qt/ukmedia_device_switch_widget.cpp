@@ -148,67 +148,6 @@ void DeviceSwitchWidget::hideWindow()
 //    isShow = true;
 }
 
-/*!
- * \brief
- * \details
- * 右击托盘图标显示菜单
- */
-void DeviceSwitchWidget::showMenu()
-{
-    int panelHeight = getPanelHeight("panelheight");
-    int panelPosition = getPanelPosition("panelposition");
-
-    if (panelHeight <= 0 || panelPosition <= 0) {
-        /*!
-         * \brief
-         * \details
-         * 给定任务栏高度
-         */
-         panelHeight = 46;
-         panelPosition = 0;
-    }
-
-    int totalHeight = qApp->primaryScreen()->size().height() + qApp->primaryScreen()->geometry().y();
-    int totalWidth = qApp->primaryScreen()->size().width() + qApp->primaryScreen()->geometry().x();
-    int localX = 0;
-    int localY = 0;
-    /*!
-     * \brief
-     * \details
-     * 任务栏位置 ，0,1,2,3分别代表任务栏在下、上、左、右
-     * 其中任务栏在上下时考虑当前鼠标位置不能完全显示菜单时靠边显示菜单
-     */
-    if (panelPosition == 0) {
-        if (totalWidth -  cursor().pos().x() < menu->width()) {
-            localX = totalWidth - menu->width();
-            localY = totalHeight - panelHeight - menu->height() ;
-        }
-        else {
-            localX = cursor().pos().x();
-            localY = totalHeight - panelHeight - menu->height();
-        }
-    }
-    else if (panelPosition == 1) {
-        if (totalWidth - cursor().pos().x() < menu->width()) {
-            localX = totalWidth - menu->width();
-            localY = qApp->primaryScreen()->geometry().y() + panelHeight + 2;
-        }
-        else {
-            localX = cursor().pos().x();
-            localY = qApp->primaryScreen()->geometry().y() + panelHeight + 2;
-        }
-    }
-    else if (panelPosition == 2) {
-        localX = qApp->primaryScreen()->geometry().x() + panelHeight + 2;
-        localY = cursor().pos().y();
-    }
-    else if (panelPosition == 3) {
-        localX = totalWidth - menu->width() - panelHeight - 2;
-        localY = cursor().pos().y();
-    }
-//    menu->setGeometry(localX,localY,menu->width(),menu->height());
-}
-
 DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
 {
     setAttribute(Qt::WA_TranslucentBackground);
@@ -497,8 +436,6 @@ void DeviceSwitchWidget::systemTrayMenuInit()
             this,SLOT(activatedSystemTrayIconSlot(QSystemTrayIcon::ActivationReason)));
     connect(m_pSoundPreferenceAction,SIGNAL(triggered()),this,SLOT(jumpControlPanelSlot()));
 
-    menu->setWindowFlags(Qt::WindowStaysOnTopHint|Qt::Popup);       //重要
-    menu->setAttribute(Qt::WA_TranslucentBackground);    //重要
 }
 
 /*!
@@ -599,7 +536,6 @@ void DeviceSwitchWidget::devWidgetMuteButtonClickedSlot()
     }
     themeChangeIcons();
     Q_EMIT system_muted_signal(status);
-    menu->hide();
 }
 
 /*!
@@ -631,7 +567,6 @@ void DeviceSwitchWidget::miniWidgetMuteButtonClickedSlot()
     }
     Q_EMIT system_muted_signal(status);
     themeChangeIcons();
-    menu->hide();
 }
 
 /*!
@@ -663,7 +598,6 @@ void DeviceSwitchWidget::appWidgetMuteButtonCLickedSlot()
     }
     themeChangeIcons();
     Q_EMIT system_muted_signal(status);
-    menu->hide();
 }
 
 /*!
@@ -695,7 +629,6 @@ void DeviceSwitchWidget::muteCheckBoxReleasedSlot()
     }
     themeChangeIcons();
     Q_EMIT system_muted_signal(status);
-    menu->hide();
 }
 
 /*!
@@ -1188,10 +1121,6 @@ void DeviceSwitchWidget::activatedSystemTrayIconSlot(QSystemTrayIcon::Activation
     //鼠标左键双击图标
     case QSystemTrayIcon::DoubleClick: {
         hideWindow();
-        break;
-    }
-    case QSystemTrayIcon::Context: {
-        showMenu();
         break;
     }
     default:

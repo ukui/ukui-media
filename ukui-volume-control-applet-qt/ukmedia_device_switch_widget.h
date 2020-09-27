@@ -108,7 +108,6 @@ public:
     void systemTrayMenuInit();
     void showWindow();
     void hideWindow();
-    void showMenu();
     void updateMicrophoneIcon(int volume,bool status);
     void updateSystemTrayIcon(int volume,bool status);
     int getPanelPosition(QString str);
