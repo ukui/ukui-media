@@ -266,25 +266,6 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
         }
     }
 
-    //给侧边栏提供音量之设置
-    if (QGSettings::isSchemaInstalled(UKUI_VOLUME_BRIGHTNESS_GSETTING_ID)) {
-        m_pVolumeSetting = new QGSettings(UKUI_VOLUME_BRIGHTNESS_GSETTING_ID);
-        connect(m_pVolumeSetting,&QGSettings::changed,[=](){
-        MateMixerStream *stream;
-        MateMixerStreamControl *control = nullptr;
-        stream = mate_mixer_context_get_default_output_stream (context);
-        if (stream != nullptr)
-            control = mate_mixer_stream_get_default_control (stream);
-        if (m_pVolumeSetting->keys().contains("volumesize")) {
-            int valueSetting = m_pVolumeSetting->get(UKUI_VOLUME_KEY).toInt();
-            qDebug() << "获取的settings 值为" << valueSetting;
-            int value = int(valueSetting *65536/100);
-            mate_mixer_stream_control_set_volume(control,value);
-
-        }
-    });
-    }
-
     UkmediaMonitorWindowThread *m_pThread = new UkmediaMonitorWindowThread();
     m_pThread->start();
     /*!
@@ -450,12 +431,7 @@ void DeviceSwitchWidget::miniMastrerSliderChangedSlot(int value)
         control = mate_mixer_stream_get_default_control(stream);
     QString percent;
     percent = QString::number(value);
-    //设置gsettings的值
-    if (QGSettings::isSchemaInstalled(UKUI_VOLUME_BRIGHTNESS_GSETTING_ID)) {
-        if (m_pVolumeSetting->keys().contains("volumesize")) {
-            m_pVolumeSetting->set(UKUI_VOLUME_KEY,value);
-        }
-    }
+
     //音量值改变时添加提示音
     if (firstEnterSystem != true) {
         mate_mixer_stream_control_set_mute(control,FALSE);
@@ -2424,12 +2400,6 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
     QIcon trayIcon;
     QIcon audioIcon;
 
-//    //设置gsettings的值
-//    if (QGSettings::isSchemaInstalled(UKUI_VOLUME_BRIGHTNESS_GSETTING_ID)) {
-//        if (w->m_pVolumeSetting->keys().contains("volumesize")) {
-//            w->m_pVolumeSetting->set(UKUI_VOLUME_KEY,value);
-//        }
-//    }
     if (state) {
         systemTrayIcon = "audio-volume-muted-symbolic";
         audioIconStr = "audio-volume-muted-symbolic";

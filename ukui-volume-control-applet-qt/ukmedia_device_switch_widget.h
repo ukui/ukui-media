@@ -239,7 +239,6 @@ private:
     QMenu *menu;
     QGSettings *m_pThemeSetting;
     QGSettings *m_pTransparencySetting;
-    QGSettings *m_pVolumeSetting;
 
     QAction *m_pMuteAction;
     QAction *m_pSoundPreferenceAction;
