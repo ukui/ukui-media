@@ -188,6 +188,14 @@ void UkmediaMiniMasterVolumeWidget::keyPressEvent(QKeyEvent *event)
         volumeGain = 1;
         Q_EMIT keyboard_pressed_signal(volumeGain);
     }
+    else if (event->key() == Qt::Key_Plus){
+        volumeGain = 1;
+        Q_EMIT keyboard_pressed_signal(volumeGain);
+    }
+    else if (event->key() == Qt::Key_Minus) {
+        volumeGain = -1;
+        Q_EMIT keyboard_pressed_signal(volumeGain);
+    }
 }
 
 /*
