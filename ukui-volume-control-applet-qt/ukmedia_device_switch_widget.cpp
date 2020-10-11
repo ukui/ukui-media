@@ -160,7 +160,12 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     appWidget = new ApplicationVolumeWidget(this);//appScrollWidget->area);
     miniWidget = new UkmediaMiniMasterVolumeWidget();
     osdWidget = new UkmediaOsdDisplayWidget();
-
+    dividerFrame = new QFrame(this);
+    dividerFrame->setFrameShape(QFrame::NoFrame);
+    dividerFrame->setFrameStyle(QFrame::VLine);
+    dividerFrame->setFixedSize(1,320);
+    dividerFrame->setParent(this);
+    dividerFrame->move(40,0);
     appWidget->appArea = new QScrollArea(appWidget);
     appWidget->displayAppVolumeWidget = new UkuiApplicationWidget(appWidget->appArea);
     appWidget->appArea->setWidget(appWidget->displayAppVolumeWidget);
@@ -1144,7 +1149,6 @@ void DeviceSwitchWidget::deviceSwitchWidgetInit()
     const QSize iconSize(19,19);
     QWidget *deviceWidget = new QWidget(this);
     deviceWidget->setFixedSize(40,320);
-
     deviceBtn = new QPushButton(deviceWidget);
     appVolumeBtn = new QPushButton(deviceWidget);
 

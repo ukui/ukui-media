@@ -40,7 +40,7 @@
 #include <QMediaPlayer>
 #include <QTimer>
 #include <QTime>
-#include <QLine>
+#include <QFrame>
 extern "C" {
 #include <libmatemixer/matemixer.h>
 #include <gio/gio.h>
@@ -239,6 +239,7 @@ private:
     QStringList *stream_control_list;
     QStringList *app_name_list;
 
+    QFrame *dividerFrame;
     MyTimer *timer;
     QMenu *menu;
     QGSettings *m_pThemeSetting;
