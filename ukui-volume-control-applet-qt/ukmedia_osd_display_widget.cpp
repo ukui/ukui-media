@@ -96,11 +96,11 @@ void UkmediaOsdDisplayWidget::UkmediaOsdDisplayWidgetInit()
     positionY = (screenHeight/2) + (screenHeight/2 - this->height())/2;
     this->move(positionX,positionY);
 //    this->setStyleSheet("QWidget{background:rgba(255,0,0,0.7);}");
-    this->osdWidget->setStyleSheet("QWidget{background:rgba(255,0,0,0);}");
-    this->iconButton->setStyleSheet("QPushButton::hover{background:rgba(255,255,255,0);"
-                                    "border-radius:4px;}"
-                                    "QPushButton::pressed{background:rgba(61,107,229,0);"
-                                    "border-radius:4px;padding-left:0px;}");
+//    this->osdWidget->setStyleSheet("QWidget{background:rgba(255,0,0,0);}");
+//    this->iconButton->setStyleSheet("QPushButton::hover{background:rgba(255,255,255,0);"
+//                                    "border-radius:4px;}"
+//                                    "QPushButton::pressed{background:rgba(61,107,229,0);"
+//                                    "border-radius:4px;padding-left:0px;}");
 }
 
 void UkmediaOsdDisplayWidget::UkmediaOsdSetIcon(QString iconStr)
@@ -119,7 +119,10 @@ void UkmediaOsdDisplayWidget::paintEvent(QPaintEvent *event)
     opt.init(this);
     QPainter p(this);
     double transparence = transparency * 255;
-    p.setBrush(QBrush(QColor(19, 19, 20, transparence)));
+    QColor color = palette().color(QPalette::Base);
+    color.setAlpha(transparence);
+    QBrush brush = QBrush(color);
+    p.setBrush(brush);
     p.setPen(Qt::NoPen);
     QPainterPath path;
     opt.rect.adjust(0,0,0,0);

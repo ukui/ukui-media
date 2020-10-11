@@ -35,11 +35,14 @@ void UkuiApplicationWidget::paintEvent(QPaintEvent *e)
     QStyleOption opt;
     opt.init(this);
     QPainter p(this);
-    p.setBrush(QBrush(QColor(0x00,0x00,0x00,0x00)));
+//    double transparence = transparency * 255;
+    p.setBrush(this->palette().base());
     p.setPen(Qt::NoPen);
     QPainterPath path;
     opt.rect.adjust(0,0,0,0);
+    path.addRoundedRect(opt.rect,6,6);
     p.setRenderHint(QPainter::Antialiasing);  // 反锯齿;
+    p.drawRoundedRect(opt.rect,6,6);
     setProperty("blurRegion",QRegion(path.toFillPolygon().toPolygon()));
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 }
@@ -67,30 +70,20 @@ UkuiMediaButton::~UkuiMediaButton()
  */
 //void UkuiMediaButton::paintEvent(QPaintEvent *event)
 //{
-//    QStyleOption opt;
+//    QStyleOptionComplex opt;
 //    opt.init(this);
 //    QPainter p(this);
-//    if (buttonState == SWITCH_BUTTON_NORMAL) {
-//         p.setBrush(QColor(0xff,0xff,0xff,0x00));
-////         qDebug() << "正常";
-//    }
-//    else if (buttonState == SWITCH_BUTTON_HOVER) {
-//        p.setBrush(QColor(0xff,0xff,0xff,0x1f));
-//        qDebug() << "悬停";
-//    }
-//    else if (buttonState == SWITCH_BUTTON_PRESS) {
-//        p.setBrush(QColor(0xff,0xff,0xff,0x14));
-//        qDebug() << "点击";
-//    }
+////    double transparence = transparency * 255;
+//    p.setBrush(this->palette().base());
 //    p.setPen(Qt::NoPen);
 //    QPainterPath path;
-////    opt.rect.adjust(0,0,0,0);
-////    path.addRoundedRect(opt.rect,4,4);
-////    p.setRenderHint(QPainter::Antialiasing);  // 反锯齿;
-//    p.drawRoundedRect(opt.rect,4,4);
-////    this->setIcon(QIcon("/usr/share/ukui-media/img/complete-module.svg"));
-////    setProperty("blurRegion",QRegion(path.toFillPolygon().toPolygon()));
-//    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+//    opt.rect.adjust(0,0,0,0);
+//    path.addRoundedRect(opt.rect,6,6);
+//    p.setRenderHint(QPainter::Antialiasing);  // 反锯齿;
+//    p.drawRoundedRect(opt.rect,6,6);
+//    setProperty("blurRegion",QRegion(path.toFillPolygon().toPolygon()));
+////    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+//    style()->drawComplexControl(QStyle::CC_ToolButton,&opt,&p,this);
 //}
 
 void UkuiMediaButton::enterEvent(QEvent *event)

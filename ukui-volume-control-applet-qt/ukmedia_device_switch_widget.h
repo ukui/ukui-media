@@ -40,6 +40,7 @@
 #include <QMediaPlayer>
 #include <QTimer>
 #include <QTime>
+#include <QLine>
 extern "C" {
 #include <libmatemixer/matemixer.h>
 #include <gio/gio.h>
@@ -124,7 +125,8 @@ public:
     void outputVolumeDarkThemeImage(int value,bool status);
     void drawImagColorFromTheme(UkuiButtonDrawSvg *button, QString iconStr);
     void themeChangeIcons();
-
+    QPixmap drawDarkColoredPixmap(const QPixmap &source);
+    QPixmap drawLightColoredPixmap(const QPixmap &source);
     QString getAppName(QString desktopfp);
     QString getAppIcon(QString desktopfp);
     static void list_device(DeviceSwitchWidget *w,MateMixerContext *context);
@@ -182,6 +184,7 @@ Q_SIGNALS:
     void mouse_wheel_signal(bool step);
     void app_name_signal(QString app_name);
     void system_muted_signal(bool status);
+    void theme_change();
 //    void appvolume_mute_change_mastervolume_status();
 private Q_SLOTS:
     void deviceButtonClickedSlot();
@@ -226,6 +229,7 @@ private:
     MateMixerStreamControl *m_pOutputBarStreamControl;
     MateMixerStreamControl *m_pInputBarStreamControl;
 
+    QLine *dividLine;
     QStringList *soundlist;
     QStringList *appBtnNameList;
     QStringList *device_name_list;

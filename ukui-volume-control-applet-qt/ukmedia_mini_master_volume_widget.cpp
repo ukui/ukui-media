@@ -36,7 +36,7 @@ UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QWidget *parent) : 
     deviceCombox = new QComboBox(this);
     switchBtn = new UkuiMediaButton(this);
     switchBtn->setParent(this);
-    switchBtn->setStyle(new CustomStyle());
+//    switchBtn->setStyle(new CustomStyle());
 
     deviceBtn = new QPushButton(this);
     deviceLabel = new QLabel(tr("Speaker (Realtek Audio)"),this);
@@ -44,13 +44,6 @@ UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QWidget *parent) : 
     QSpacerItem *item2 = new QSpacerItem(13,20);
     QSpacerItem *item3 = new QSpacerItem(15,20);
     QSpacerItem *item4 = new QSpacerItem(19,20);
-
-    QIcon icon;
-    QSize deviceIconSize(16,16);
-    QString deviceBtnIcon = "audio-card";
-    icon = QIcon::fromTheme(deviceBtnIcon);
-    deviceBtn->setIconSize(deviceIconSize);
-    deviceBtn->setIcon(QIcon(icon));
 
     masterVolumeSlider->setOrientation(Qt::Horizontal);
     masterVolumeSlider->setRange(0,100);
@@ -75,6 +68,18 @@ UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QWidget *parent) : 
     muteBtn->setIconSize(iconSize);
     switchBtn->setIconSize(switchSize);
     deviceBtn->setIconSize(deviceSize);
+    switchBtn->setProperty("useIconHighlightEffect",true);
+    switchBtn->setProperty("iconHighlightEffectMode",true);
+    QIcon icon;
+    QSize deviceIconSize(16,16);
+    QString deviceBtnIcon = "audio-card";
+    icon = QIcon::fromTheme(deviceBtnIcon);
+    deviceBtn->setIconSize(deviceIconSize);
+    deviceBtn->setIcon(QIcon(icon));
+    QPalette palete = deviceBtn->palette();
+    palete.setColor(QPalette::Highlight,Qt::transparent);
+    palete.setBrush(QPalette::Button,QBrush(QColor(1,1,1,0)));
+    deviceBtn->setPalette(palete);
 
     switchBtn->setIcon(QIcon("/usr/share/ukui-media/img/complete-module.svg"));
     this->setFixedSize(345,100);
@@ -99,34 +104,6 @@ UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QWidget *parent) : 
     connect(switchBtn,SIGNAL(moveMiniSwitchBtnSignale()),this,SLOT(moveMiniSwitchBtnSlot()));
     deviceBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
                              "padding-left:0px;}");
-    deviceLabel->setStyleSheet("QLabel{font-size:14px;font-family:Noto Sans CJK SC;"
-                               "background-color:transparent;"
-                               "font-weight:400;color:rgba(255,255,255,0.97);"
-                               "line-height:34px;}");
-//    displayVolumeLabel->setStyleSheet("QLabel{font-size:20px;font-family:Noto Sans CJK SC;"
-//                                      "font-weight:400;color:rgba(255,255,255,0.91);"
-//                                      "line-height:24px;opacity:0.91;}");
-    muteBtn->setStyleSheet("QPushButton{background:transparent;border:0px;}");
-    masterVolumeSlider->setStyleSheet("QSlider::groove:horizontal {border: 0px solid #bbb;}"
-                                      "QSlider::sub-page:horizontal {"
-                                      "background: rgb(107,142,235);"
-                                      "border-radius: 2px;"
-                                      "margin-top:9px;"
-                                      "margin-bottom:9px;}"
-                                      "QSlider::add-page:horizontal {"
-                                      "background:  rgba(255,255,255,0.1);"
-                                      "border: 0px solid #777;"
-                                      "border-radius: 2px;"
-                                      "margin-top:9px;"
-                                      "margin-bottom:9px;}"
-                                      "QSlider::handle:horizontal {"
-                                      "width: 20px;"
-                                      "height: 20px;"
-                                      "background: rgb(61,107,229);"
-                                      "border-radius:10px;}");
-//    masterWidget->setStyleSheet("QWidget{background-color:transparent;"
-//                                "border-radius:15px;}");
-
 }
 
 void UkmediaMiniMasterVolumeWidget::paintEvent(QPaintEvent *event)
@@ -135,7 +112,10 @@ void UkmediaMiniMasterVolumeWidget::paintEvent(QPaintEvent *event)
     opt.init(this);
     QPainter p(this);
     double transparence = transparency * 255;
-    p.setBrush(QBrush(QColor(19, 19, 20, transparence)));
+    QColor color = palette().color(QPalette::Base);
+    color.setAlpha(transparence);
+    QBrush brush = QBrush(color);
+    p.setBrush(brush);
     p.setPen(Qt::NoPen);
     QPainterPath path;
     opt.rect.adjust(0,0,0,0);
@@ -186,14 +166,6 @@ void UkmediaMiniMasterVolumeWidget::keyPressEvent(QKeyEvent *event)
     }
     else if (event->key() == Qt::Key_Right) {
         volumeGain = 1;
-        Q_EMIT keyboard_pressed_signal(volumeGain);
-    }
-    else if (event->key() == Qt::Key_Plus){
-        volumeGain = 1;
-        Q_EMIT keyboard_pressed_signal(volumeGain);
-    }
-    else if (event->key() == Qt::Key_Minus) {
-        volumeGain = -1;
         Q_EMIT keyboard_pressed_signal(volumeGain);
     }
 }

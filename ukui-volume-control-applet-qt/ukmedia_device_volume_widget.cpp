@@ -49,8 +49,10 @@ UkmediaDeviceWidget::UkmediaDeviceWidget(QWidget *parent) : QWidget (parent)
     noInputDeviceLabel = new QLabel(tr("Input device can not be detected"),this);
     outputDisplayVolumeLabel = new QLabel(this);
 
-    inputDeviceSlider->setStyle(new CustomStyle());
-    outputDeviceSlider->setStyle(new CustomStyle());
+    QPalette palete = outputDeviceBtn->palette();
+    palete.setColor(QPalette::Highlight,Qt::transparent);
+    palete.setBrush(QPalette::Button,QBrush(QColor(1,1,1,0)));
+    outputDeviceBtn->setPalette(palete);
     outputMuteBtn->setFixedSize(24,24);
     inputMuteButton->setFixedSize(24,24);
     QSize iconSize(24,24);
@@ -59,71 +61,11 @@ UkmediaDeviceWidget::UkmediaDeviceWidget(QWidget *parent) : QWidget (parent)
     inputDeviceBtn->setFocusPolicy(Qt::NoFocus);
     outputDeviceBtn->setFocusPolicy(Qt::NoFocus);
     noInputWidgetInit();
-    inputMuteButton->setStyleSheet("QPushButton{background:transparent;border:0px;"
-                                                   "padding-left:0px;}");
-    outputMuteBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
-                                "padding-left:0px;}");
+
     inputDeviceBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
                                 "padding-left:0px;}");
     outputDeviceBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
                                  "padding-left:0px;}");
-    outputDeviceSlider->setStyleSheet("QSlider::groove:horizontal {border: 0px solid #bbb;}"
-                                      "QSlider::sub-page:horizontal {"
-                                      "background: rgb(107,142,235);"
-                                      "border-radius: 2px;"
-                                      "margin-top:9px;"
-                                      "margin-bottom:9px;}"
-                                      "QSlider::add-page:horizontal {"
-                                      "background:  rgba(255,255,255,0.1);"
-                                      "border: 0px solid #777;"
-                                      "border-radius: 2px;"
-                                      "margin-top:9px;"
-                                      "margin-bottom:9px;}"
-                                      "QSlider::handle:horizontal {"
-                                      "width: 20px;"
-                                      "height: 20px;"
-                                      "background: rgb(61,107,229);"
-                                      "border-radius:10px;}");
-
-    inputDeviceSlider->setStyleSheet("QSlider::groove:horizontal {border: 0px solid #bbb;}"
-                                      "QSlider::sub-page:horizontal {"
-                                      "background: rgb(107,142,235);"
-                                      "border-radius: 2px;"
-                                      "margin-top:9px;"
-                                      "margin-bottom:9px;}"
-                                      "QSlider::add-page:horizontal {"
-                                      "background:  rgba(255,255,255,0.1);"
-                                      "border: 0px solid #777;"
-                                      "border-radius: 2px;"
-                                      "margin-top:9px;"
-                                      "margin-bottom:9px;}"
-                                      "QSlider::handle:horizontal {"
-                                      "width: 20px;"
-                                      "height: 20px;"
-                                      "background: rgb(61,107,229);"
-                                      "border-radius:10px;}");
-    outputDeviceLabel->setStyleSheet("QLabel{background:transparent;"
-                                     "border:0px;color:#ffffff;"
-                                     "font-family:Noto Sans CJK SC;"
-                                     "font-weight:400;"
-                                     "color:rgba(255,255,255,0.97);"
-                                     "line-height:34px;"
-                                     "font-size:20px;}");
-    outputDeviceDisplayLabel->setStyleSheet("font-size:14px;font-family:Noto Sans CJK SC;"
-                                            "font-weight:400;"
-                                            "color:rgba(255,255,255,0.91);"
-                                            "line-height:28px;");
-    inputDeviceLabel->setStyleSheet("QLabel{background:transparent;"
-                                    "border:0px;color:#ffffff;"
-                                    "font-family:Noto Sans CJK SC;"
-                                    "font-weight:400;"
-                                    "color:rgba(255,255,255,0.97);"
-                                    "line-height:34px;"
-                                    "font-size:20px;}");
-    inputDeviceDisplayLabel->setStyleSheet("QLabel{font-family:Noto Sans CJK SC;"
-                                           "font-size:14px;"
-                                           "color:rgba(255,255,255,0.91);"
-                                           "line-height:28px;}");
 }
 
 
@@ -177,12 +119,6 @@ void UkmediaDeviceWidget::noInputWidgetInit()
     outputDeviceLabel->move(18,22);
     outputWidget->move(18,62);
     noInputDeviceLabel->move(18,154);
-    noInputDeviceLabel->setStyleSheet("QLabel{width:126px;"
-                                      "height:14px;"
-                                      "font-family:Noto Sans CJK SC;"
-                                      "font-size:14px;"
-                                      "color:rgba(255,255,255,0.57);"
-                                      "line-height:28px;}");
 }
 
 void UkmediaDeviceWidget::inputWidgetShow()
