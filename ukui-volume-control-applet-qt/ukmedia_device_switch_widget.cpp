@@ -160,6 +160,24 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     appWidget = new ApplicationVolumeWidget(this);//appScrollWidget->area);
     miniWidget = new UkmediaMiniMasterVolumeWidget();
     osdWidget = new UkmediaOsdDisplayWidget();
+
+    soundSystemTrayIcon = new UkmediaTrayIcon(this);
+
+    //为系统托盘图标添加菜单静音和声音首选项
+    soundSystemTrayIcon->setToolTip(tr("Output volume control"));
+#if (QT_VERSION <= QT_VERSION_CHECK(5,6,1))
+    m_pMuteAction = new QAction(QIcon(""),tr("Mute"),this);
+    m_pSoundPreferenceAction = new QAction(tr("Sound preference(S)"),this);
+#elif (QT_VERSION > QT_VERSION_CHECK(5,6,1))
+    m_pMuteAction = new QAction(QIcon(""),tr("Mute"));
+    m_pSoundPreferenceAction = new QAction(tr("Sound preference(S)"));
+#endif
+    QString settingsIconStr = "document-page-setup";
+    QIcon settingsIcon = QIcon::fromTheme(settingsIconStr);
+    m_pSoundPreferenceAction->setIcon(settingsIcon);
+
+    soundSystemTrayIcon->setVisible(true);
+
     dividerFrame = new QFrame(this);
     dividerFrame->setFrameShape(QFrame::NoFrame);
     dividerFrame->setFrameStyle(QFrame::VLine);
@@ -184,6 +202,9 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
 
     switchToMiniBtn = new UkuiMediaButton(this);
     switchToMiniBtn->setParent(this);
+
+    switchToMiniBtn->setFlat(true);
+    switchToMiniBtn->setCheckable(false);
     switchToMiniBtn->setProperty("useIconHighlightEffect",true);
     switchToMiniBtn->setProperty("iconHighlightEffectMode",true);
     
@@ -382,6 +403,11 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     //主屏改变
     connect(qApp,SIGNAL(primaryScreenChanged(QScreen *)),this,SLOT(primaryScreenChangedSlot(QScreen *)));
 
+    connect(soundSystemTrayIcon,SIGNAL(activated(QSystemTrayIcon::ActivationReason)),\
+            this,SLOT(activatedSystemTrayIconSlot(QSystemTrayIcon::ActivationReason)));
+    connect(m_pSoundPreferenceAction,SIGNAL(triggered()),this,SLOT(jumpControlPanelSlot()));
+
+
     trayRect = soundSystemTrayIcon->geometry();
     appWidget->displayAppVolumeWidget->setLayout(appWidget->m_pVlayout);
 
@@ -410,34 +436,13 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
  */
 void DeviceSwitchWidget::systemTrayMenuInit()
 {
-    menu = new QMenu();
-    soundSystemTrayIcon = new UkmediaTrayIcon(this);
-
-    //为系统托盘图标添加菜单静音和声音首选项
-    soundSystemTrayIcon->setToolTip(tr("Output volume control"));
-#if (QT_VERSION <= QT_VERSION_CHECK(5,6,1))
-    m_pMuteAction = new QAction(QIcon(""),tr("Mute"),this);
-    m_pSoundPreferenceAction = new QAction(tr("Sound preference(S)"),this);
-#elif (QT_VERSION > QT_VERSION_CHECK(5,6,1))
-    m_pMuteAction = new QAction(QIcon(""),tr("Mute"));
-    m_pSoundPreferenceAction = new QAction(tr("Sound preference(S)"));
-#endif
-    QString settingsIconStr = "document-page-setup";
-    QIcon settingsIcon = QIcon::fromTheme(settingsIconStr);
-    m_pSoundPreferenceAction->setIcon(settingsIcon);
-
+    QMenu *menu = new QMenu();
+    menu->setAttribute(Qt::WA_DeleteOnClose);
+    soundSystemTrayIcon->setContextMenu(menu);
     //设置右键菜单
     menu->addAction(m_pMuteAction);
     menu->addAction(m_pSoundPreferenceAction);
     menu->setObjectName("outputSoundMenu");
-    soundSystemTrayIcon->setContextMenu(menu);
-
-    soundSystemTrayIcon->setVisible(true);
-
-    connect(soundSystemTrayIcon,SIGNAL(activated(QSystemTrayIcon::ActivationReason)),\
-            this,SLOT(activatedSystemTrayIconSlot(QSystemTrayIcon::ActivationReason)));
-    connect(m_pSoundPreferenceAction,SIGNAL(triggered()),this,SLOT(jumpControlPanelSlot()));
-
 }
 
 /*!
@@ -786,6 +791,9 @@ void DeviceSwitchWidget::miniToAdvancedWidget()
     miniWidget->switchBtn->setIconSize(iconSize);
     miniWidget->switchBtn->setIcon(QIcon("/usr/share/ukui-media/img/complete-module.svg"));
     advancedWidgetShow();
+//    miniWidget->switchBtn->setChecked(false);
+
+
     miniWidget->hide();
     displayMode = ADVANCED_MODE;
 }
@@ -798,7 +806,12 @@ void DeviceSwitchWidget::miniToAdvancedWidget()
 void DeviceSwitchWidget::advancedToMiniWidget()
 {
     miniWidgetShow();
+    switchToMiniBtn->hide();
     this->hide();
+    bool state = switchToMiniBtn->isCheckable();
+    qDebug() << "state is :" << state;
+//    switchToMiniBtn->setChecked(false);
+
     displayMode = MINI_MODE;
 }
 
@@ -1095,6 +1108,9 @@ void DeviceSwitchWidget::activatedSystemTrayIconSlot(QSystemTrayIcon::Activation
     case QSystemTrayIcon::DoubleClick: {
         hideWindow();
         break;
+    }
+    case QSystemTrayIcon::Context:{
+        systemTrayMenuInit();
     }
     default:
         break;
@@ -2885,16 +2901,16 @@ void DeviceSwitchWidget::miniWidgetShow()
     int totalHeight = qApp->primaryScreen()->size().height() + qApp->primaryScreen()->geometry().y();
     int totalWidth = qApp->primaryScreen()->size().width() + qApp->primaryScreen()->geometry().x();
     if (panelPosition == 0) { //任务栏在下
-        miniWidget->setGeometry(totalWidth-miniWidget->width(),totalHeight-panelHeight-miniWidget->height()-2,miniWidget->width(),miniWidget->height());
+        miniWidget->setGeometry(totalWidth-miniWidget->width(),totalHeight-panelHeight-miniWidget->height()-8,miniWidget->width(),miniWidget->height());
     }
     else if (panelPosition == 1) { //任务栏在上
-        miniWidget->setGeometry(totalWidth-miniWidget->width(),qApp->primaryScreen()->geometry().y()+panelHeight+2,miniWidget->width(),miniWidget->height());
+        miniWidget->setGeometry(totalWidth-miniWidget->width(),qApp->primaryScreen()->geometry().y()+panelHeight+8,miniWidget->width(),miniWidget->height());
     }
     else if (panelPosition == 2) {//任务栏在左
-        miniWidget->setGeometry(qApp->primaryScreen()->geometry().x()+panelHeight+2,totalHeight-miniWidget->height(),miniWidget->width(),miniWidget->height());
+        miniWidget->setGeometry(qApp->primaryScreen()->geometry().x()+panelHeight+8,totalHeight-miniWidget->height(),miniWidget->width(),miniWidget->height());
     }
     else if (panelPosition == 3) { //任务栏在右
-        miniWidget->setGeometry(totalWidth-panelHeight-miniWidget->width()-2,totalHeight-miniWidget->height(),miniWidget->width(),miniWidget->height());
+        miniWidget->setGeometry(totalWidth-panelHeight-miniWidget->width()-8,totalHeight-miniWidget->height(),miniWidget->width(),miniWidget->height());
     }
     miniWidget->show();
 }
@@ -2916,18 +2932,19 @@ void DeviceSwitchWidget::advancedWidgetShow()
     int totalHeight = qApp->primaryScreen()->size().height() + qApp->primaryScreen()->geometry().y();
     int totalWidth = qApp->primaryScreen()->size().width() + qApp->primaryScreen()->geometry().x();
     if (panelPosition == 0) { //任务栏在下
-        this->setGeometry(totalWidth-this->width(),totalHeight-panelHeight-this->height()-2,this->width(),this->height());
+        this->setGeometry(totalWidth-this->width(),totalHeight-panelHeight-this->height()-8,this->width(),this->height());
     }
     else if (panelPosition == 1) { //任务栏在上
-        this->setGeometry(totalWidth-this->width(),qApp->primaryScreen()->geometry().y()+panelHeight+2,this->width(),this->height());
+        this->setGeometry(totalWidth-this->width(),qApp->primaryScreen()->geometry().y()+panelHeight+8,this->width(),this->height());
     }
     else if (panelPosition == 2) {//任务栏在左
-        this->setGeometry(qApp->primaryScreen()->geometry().x()+panelHeight+2,totalHeight-this->height(),this->width(),this->height());
+        this->setGeometry(qApp->primaryScreen()->geometry().x()+panelHeight+8,totalHeight-this->height(),this->width(),this->height());
     }
     else if (panelPosition == 3) { //任务栏在右
-        this->setGeometry(totalWidth-panelHeight-this->width()-2,totalHeight-this->height(),this->width(),this->height());
+        this->setGeometry(totalWidth-panelHeight-this->width()-8,totalHeight-this->height(),this->width(),this->height());
     }
     this->show();
+    switchToMiniBtn->show();
 }
 
 /*!

@@ -99,7 +99,7 @@ void UkuiMediaButton::leaveEvent(QEvent *event)
 void UkuiMediaButton::mouseMoveEvent(QMouseEvent *e)
 {
     buttonState = SWITCH_BUTTON_HOVER;
-    QToolButton::mouseMoveEvent(e);
+    QPushButton::mouseMoveEvent(e);
 }
 
 void UkuiMediaButton::mousePressEvent(QMouseEvent *e)
@@ -122,7 +122,7 @@ void UkuiMediaButton::mousePressEvent(QMouseEvent *e)
         this->setIcon(QIcon("/usr/share/ukui-media/img/mini-module.svg"));
         Q_EMIT moveAdvanceSwitchBtnSignal();
     }
-    QToolButton::mousePressEvent(e);
+    QPushButton::mousePressEvent(e);
 }
 
 void UkuiMediaButton::mouseReleaseEvent(QMouseEvent *e)
@@ -143,7 +143,7 @@ void UkuiMediaButton::mouseReleaseEvent(QMouseEvent *e)
         qDebug() << "设置图标2";
         this->setIcon(QIcon("/usr/share/ukui-media/img/mini-module.svg"));
     }
-    QToolButton::mouseReleaseEvent(e);
+    QPushButton::mouseReleaseEvent(e);
 }
 
 UkmediaVolumeSlider::UkmediaVolumeSlider(QWidget *parent)

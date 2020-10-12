@@ -37,7 +37,8 @@ UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QWidget *parent) : 
     switchBtn = new UkuiMediaButton(this);
     switchBtn->setParent(this);
 //    switchBtn->setStyle(new CustomStyle());
-
+    switchBtn->setFlat(true);
+    switchBtn->setCheckable(false);
     deviceBtn = new QPushButton(this);
     deviceLabel = new QLabel(tr("Speaker (Realtek Audio)"),this);
     QSpacerItem *item1 = new QSpacerItem(16,20);
@@ -189,6 +190,7 @@ bool UkmediaMiniMasterVolumeWidget:: event(QEvent *event)
 void UkmediaMiniMasterVolumeWidget::moveMiniSwitchBtnSlot()
 {
     switchBtn->move(306,7);
+
 }
 
 UkmediaMiniMasterVolumeWidget::~UkmediaMiniMasterVolumeWidget()

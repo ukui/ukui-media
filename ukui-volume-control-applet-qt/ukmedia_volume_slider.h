@@ -75,7 +75,7 @@ protected:
     void paintEvent(QPaintEvent*);
 };
 
-class UkuiMediaButton:public QToolButton
+class UkuiMediaButton:public QPushButton
 {
     Q_OBJECT
 public:
