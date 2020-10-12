@@ -50,7 +50,7 @@ private:
     QScrollArea *appArea;
     QVBoxLayout *m_pVlayout;
 protected:
-    void paintEvent(QPaintEvent *event);
+//    void paintEvent(QPaintEvent *event);
 
 };
 

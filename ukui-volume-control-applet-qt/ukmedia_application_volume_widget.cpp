@@ -72,26 +72,25 @@ ApplicationVolumeWidget::ApplicationVolumeWidget(QWidget *parent) : QWidget (par
     vLayout->setSpacing(0);
     systemVolumeWidget->setLayout(vLayout);
     systemVolumeWidget->layout()->setContentsMargins(0,0,0,0);
-    this->setStyleSheet("QWidget{background:rgba(0,0,0,0);}");
 }
 
-void ApplicationVolumeWidget::paintEvent(QPaintEvent *event)
-{
-    QStyleOption opt;
-    opt.init(this);
-    QPainter p(this);
-//    double transparence = transparency * 255;
-    p.setBrush(this->palette().base());
-    p.setPen(Qt::NoPen);
-    QPainterPath path;
-    opt.rect.adjust(0,0,0,0);
-    path.addRoundedRect(opt.rect,6,6);
-    p.setRenderHint(QPainter::Antialiasing);  // 反锯齿;
-    p.drawRoundedRect(opt.rect,6,6);
-    setProperty("blurRegion",QRegion(path.toFillPolygon().toPolygon()));
-    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
-//    QWidget::paintEvent(event);
-}
+//void ApplicationVolumeWidget::paintEvent(QPaintEvent *event)
+//{
+//    QStyleOption opt;
+//    opt.init(this);
+//    QPainter p(this);
+////    double transparence = transparency * 255;
+////    p.setBrush(this->palette().base());
+//    p.setPen(Qt::NoPen);
+//    QPainterPath path;
+//    opt.rect.adjust(0,0,0,0);
+//    path.addRoundedRect(opt.rect,6,6);
+//    p.setRenderHint(QPainter::Antialiasing);  // 反锯齿;
+//    p.drawRoundedRect(opt.rect,6,6);
+//    setProperty("blurRegion",QRegion(path.toFillPolygon().toPolygon()));
+//    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+////    QWidget::paintEvent(event);
+//}
 
 ApplicationVolumeWidget::~ApplicationVolumeWidget()
 {

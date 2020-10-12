@@ -165,6 +165,11 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     dividerFrame->setFrameStyle(QFrame::VLine);
     dividerFrame->setFixedSize(1,320);
     dividerFrame->setParent(this);
+    QPalette palette = dividerFrame->palette();
+    QColor color = palette.color(palette.Button);
+    color.setAlphaF(0.5);
+    palette.setColor(QPalette::WindowText, color);
+    dividerFrame->setPalette(palette);
     dividerFrame->move(40,0);
     appWidget->appArea = new QScrollArea(appWidget);
     appWidget->displayAppVolumeWidget = new UkuiApplicationWidget(appWidget->appArea);
@@ -424,7 +429,6 @@ void DeviceSwitchWidget::systemTrayMenuInit()
     //设置右键菜单
     menu->addAction(m_pMuteAction);
     menu->addAction(m_pSoundPreferenceAction);
-
     menu->setObjectName("outputSoundMenu");
     soundSystemTrayIcon->setContextMenu(menu);
 
@@ -980,6 +984,11 @@ void DeviceSwitchWidget::ukuiThemeChangedSlot(const QString &themeStr)
         mThemeName = m_pThemeSetting->get(UKUI_THEME_NAME).toString();
      }
     themeChangeIcons();
+    QPalette palette = dividerFrame->palette();
+    QColor color = palette.color(palette.Button);
+    color.setAlphaF(0.5);
+    palette.setColor(QPalette::WindowText, color);
+    dividerFrame->setPalette(palette);
     Q_EMIT theme_change();
 }
 
