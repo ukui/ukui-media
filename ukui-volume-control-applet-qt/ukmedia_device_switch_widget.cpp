@@ -436,7 +436,8 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
  */
 void DeviceSwitchWidget::systemTrayMenuInit()
 {
-    QMenu *menu = new QMenu();
+    menu = new QMenu();
+    qDebug() << "new menu";
     menu->setAttribute(Qt::WA_DeleteOnClose);
     soundSystemTrayIcon->setContextMenu(menu);
     //设置右键菜单

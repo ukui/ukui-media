@@ -72,6 +72,8 @@ ApplicationVolumeWidget::ApplicationVolumeWidget(QWidget *parent) : QWidget (par
     vLayout->setSpacing(0);
     systemVolumeWidget->setLayout(vLayout);
     systemVolumeWidget->layout()->setContentsMargins(0,0,0,0);
+//    this->setStyleSheet("QWidget{background:rgb(0,0,0);}");
+    this->setAttribute(Qt::WA_TranslucentBackground);
 }
 
 //void ApplicationVolumeWidget::paintEvent(QPaintEvent *event)
