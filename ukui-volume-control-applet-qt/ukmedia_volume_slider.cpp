@@ -27,6 +27,7 @@ DisplayerMode displayMode = MINI_MODE;
 SwitchButtonState buttonState = SWITCH_BUTTON_NORMAL;
 UkuiApplicationWidget::UkuiApplicationWidget(QWidget *parent)
 {
+    this->setAttribute(Qt::WA_TranslucentBackground);
     Q_UNUSED(parent);
 }
 
@@ -45,6 +46,7 @@ void UkuiApplicationWidget::paintEvent(QPaintEvent *e)
     p.drawRoundedRect(opt.rect,6,6);
     setProperty("blurRegion",QRegion(path.toFillPolygon().toPolygon()));
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+
 }
 
 UkuiApplicationWidget::~UkuiApplicationWidget()

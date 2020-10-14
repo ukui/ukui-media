@@ -417,7 +417,9 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     appWidget->appArea->setStyleSheet("QScrollArea{border:none;}");
     appWidget->appArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     appWidget->appArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-    appWidget->appArea->viewport()->setStyleSheet("background-color:transparent;");
+    appWidget->appArea->viewport()->setStyleSheet("background-color:rgba(0,0,0,0);");
+//    appWidget->appArea->viewport()->setAutoFillBackground(true);
+//    appWidget->appArea->viewport()->setAttribute(Qt::WA_TranslucentBackground);
 
     if (appnum <= 0) {
         appWidget->upWidget->hide();
@@ -1646,13 +1648,18 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
     if (strcmp(app_name,"Chromium") == 0 && strcmp(app_icon_name.toLatin1().data(),"chromium-browser") == 0) {
         app_icon_name = "TencentVideo";
     }
+
+    if (strcmp(app_name,"ALSA plug-in [kylin-music]") == 0 && strcmp(app_icon_name.toLatin1().data(),"/usr/share/pixmaps/kylin-music.png") == 0) {
+        app_icon_name = "kylin-music";
+    }
+
     iconName.append(app_icon_name);
     iconName.append(".desktop");
     QString pAppName = w->getAppName(iconName);
     QString pAppIcon = w->getAppIcon(iconName);
 
     w->appWidget->app_volume_list->append(app_icon_name);
-//    qDebug() << "应用名为:" << pAppName << "desktop 名：" << iconName;
+    qDebug() << "应用名为:" << pAppName << "desktop 名：" << iconName << "app icon name" << app_icon_name << "app name " << app_name;
     //widget显示应用音量
     QWidget *app_widget = new QWidget(w->appWidget->displayAppVolumeWidget);
     app_widget->setFixedSize(306,60);
@@ -1691,7 +1698,7 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
     app_widget->layout()->setContentsMargins(0,0,0,0);
 
     //设置每项的固定大小
-    w->appWidget->appLabel->setFixedSize(220,18);
+    w->appWidget->appLabel->setFixedSize(260,18);
 
     QSize icon_size(32,32);
     w->appWidget->appIconBtn->setIconSize(icon_size);
@@ -1716,7 +1723,7 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
     appVolumeLabelStr.append(QString::number(app_count));
 
     w->app_name_list->append(appSliderStr);
-    qDebug() << "app name appenr ------" << appSliderStr;
+//    qDebug() << "app name appenr ------" << appSliderStr;
     w->appBtnNameList->append(appMuteBtnlStr);
     w->appWidget->appMuteBtn->setObjectName(appMuteBtnlStr);
     w->appWidget->appSlider->setObjectName(appSliderStr);
