@@ -21,14 +21,24 @@
 #include <QPainterPath>
 #include <QWidget>
 #include <QStyleOptionComplex>
+#include <QStylePainter>
 #include <QDebug>
 
 DisplayerMode displayMode = MINI_MODE;
 SwitchButtonState buttonState = SWITCH_BUTTON_NORMAL;
+extern double transparency;
 UkuiApplicationWidget::UkuiApplicationWidget(QWidget *parent)
 {
-    this->setAttribute(Qt::WA_TranslucentBackground);
+//    this->setAttribute(Qt::WA_TranslucentBackground);
+//    this->setStyleSheet("QWiget{background:rgba(0,0,0,0);}");
     Q_UNUSED(parent);
+}
+
+UkuiMediaSliderTipLabel::UkuiMediaSliderTipLabel(){
+    setAttribute(Qt::WA_TranslucentBackground);
+}
+
+UkuiMediaSliderTipLabel::~UkuiMediaSliderTipLabel(){
 }
 
 void UkuiApplicationWidget::paintEvent(QPaintEvent *e)
@@ -36,14 +46,19 @@ void UkuiApplicationWidget::paintEvent(QPaintEvent *e)
     QStyleOption opt;
     opt.init(this);
     QPainter p(this);
-//    double transparence = transparency * 255;
-    p.setBrush(this->palette().base());
+    double transparence = transparency * 255;
+    QColor color = palette().color(QPalette::Base);
+    color.setAlpha(transparence);
+    QBrush brush = QBrush(color);
+    p.setBrush(brush);
+//    p.setBrush(this->palette().base());
+//    p.setBrush(QBrush(QColor(19, 19, 20, 0)));
     p.setPen(Qt::NoPen);
     QPainterPath path;
     opt.rect.adjust(0,0,0,0);
-    path.addRoundedRect(opt.rect,6,6);
+    path.addRoundedRect(opt.rect,0,0);
     p.setRenderHint(QPainter::Antialiasing);  // 反锯齿;
-    p.drawRoundedRect(opt.rect,6,6);
+    p.drawRoundedRect(opt.rect,0,0);
     setProperty("blurRegion",QRegion(path.toFillPolygon().toPolygon()));
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 
@@ -52,6 +67,24 @@ void UkuiApplicationWidget::paintEvent(QPaintEvent *e)
 UkuiApplicationWidget::~UkuiApplicationWidget()
 {
 
+}
+
+void UkuiMediaSliderTipLabel::paintEvent(QPaintEvent *e)
+{
+    QStyleOptionFrame opt;
+    initStyleOption(&opt);
+    QStylePainter p(this);
+//    p.setBrush(QBrush(QColor(0x1A,0x1A,0x1A,0x4C)));
+    p.setBrush(QBrush(QColor(0xFF,0xFF,0xFF,0x33)));
+    p.setPen(Qt::NoPen);
+    p.drawRoundedRect(this->rect(), 1, 1);
+    QPainterPath path;
+    path.addRoundedRect(opt.rect,6,6);
+    p.setRenderHint(QPainter::Antialiasing);
+    setProperty("blurRegion",QRegion(path.toFillPolygon().toPolygon()));
+    p.drawPrimitive(QStyle::PE_PanelTipLabel, opt);
+    this->setProperty("blurRegion", QRegion(QRect(0, 0, 1, 1)));
+    QLabel::paintEvent(e);
 }
 
 UkuiMediaButton::UkuiMediaButton(QWidget *parent)
@@ -148,13 +181,24 @@ void UkuiMediaButton::mouseReleaseEvent(QMouseEvent *e)
     QPushButton::mouseReleaseEvent(e);
 }
 
-UkmediaVolumeSlider::UkmediaVolumeSlider(QWidget *parent)
+UkmediaVolumeSlider::UkmediaVolumeSlider(QWidget *parent,bool needTip)
 {
     Q_UNUSED(parent);  
+    if (needTip) {
+        state = needTip;
+        m_pTiplabel = new UkuiMediaSliderTipLabel();
+        m_pTiplabel->setWindowFlags(Qt::ToolTip);
+    //    qApp->installEventFilter(new AppEventFilter(this));
+        m_pTiplabel->setFixedSize(52,30);
+        m_pTiplabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    }
 }
 
 void UkmediaVolumeSlider::mousePressEvent(QMouseEvent *ev)
 {
+    if (state) {
+        m_pTiplabel->show();
+    }
     //注意应先调用父类的鼠标点击处理事件，这样可以不影响拖动的情况
     QSlider::mousePressEvent(ev);
     //获取鼠标的位置，这里并不能直接从ev中取值（因为如果是拖动的话，鼠标开始点击的位置没有意义了）
@@ -168,6 +212,40 @@ void UkmediaVolumeSlider::mousePressEvent(QMouseEvent *ev)
 void UkmediaVolumeSlider::initStyleOption(QStyleOptionSlider *option)
 {
     QSlider::initStyleOption(option);
+}
+
+void UkmediaVolumeSlider::leaveEvent(QEvent *e)
+{
+    if (state) {
+        m_pTiplabel->hide();
+    }
+}
+
+void UkmediaVolumeSlider::enterEvent(QEvent *e)
+{
+    if (state) {
+        m_pTiplabel->show();
+    }
+}
+
+void UkmediaVolumeSlider::paintEvent(QPaintEvent *e)
+{
+    QRect rect;
+    QStyleOptionSlider m_option;
+    QSlider::paintEvent(e);
+    if (state) {
+
+        this->initStyleOption(&m_option);
+        rect = this->style()->subControlRect(QStyle::CC_Slider, &m_option,QStyle::SC_SliderHandle,this);
+        QPoint gPos = this->mapToGlobal(rect.topLeft());
+        QString percent;
+        percent = QString::number(this->value());
+        percent.append("%");
+        m_pTiplabel->setText(percent);
+        m_pTiplabel->move(gPos.x()-(m_pTiplabel->width()/2)+9,gPos.y()-m_pTiplabel->height()-1);
+    }
+
+
 }
 
 UkmediaVolumeSlider::~UkmediaVolumeSlider()
@@ -279,4 +357,32 @@ QPixmap UkuiButtonDrawSvg::filledSymbolicColoredPixmap(QImage &img, QColor &base
     }
 
     return QPixmap::fromImage(img);
+}
+
+UkuiScrollArea::UkuiScrollArea(QWidget *parent){
+}
+
+UkuiScrollArea::~UkuiScrollArea(){
+}
+
+void UkuiScrollArea::paintEvent(QPaintEvent *event)
+{
+    QStyleOption opt;
+    opt.init(this);
+    QPainter p(this);
+//    double transparence = transparency * 255;
+//    QColor color = palette().color(QPalette::Base);
+//    color.setAlpha(transparence);
+//    QBrush brush = QBrush(color);
+//    p.setBrush(brush);
+    p.setBrush(this->palette().base());
+    p.setPen(Qt::NoPen);
+    QPainterPath path;
+    opt.rect.adjust(0,0,0,0);
+    path.addRoundedRect(opt.rect,6,6);
+    p.setRenderHint(QPainter::Antialiasing);  // 反锯齿;
+    p.drawRoundedRect(opt.rect,6,6);
+    setProperty("blurRegion",QRegion(path.toFillPolygon().toPolygon()));
+    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+//    QWidget::paintEvent(event);
 }

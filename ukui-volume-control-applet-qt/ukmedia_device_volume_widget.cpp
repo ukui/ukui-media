@@ -45,7 +45,7 @@ UkmediaDeviceWidget::UkmediaDeviceWidget(QWidget *parent) : QWidget (parent)
     outputDeviceLabel = new QLabel(tr("Output Device"),this);
     outputDeviceDisplayLabel = new QLabel(tr("Speaker Realtek Audio"),outputWidget);
     outputDeviceBtn = new QPushButton(outputWidget);
-    outputDeviceSlider = new UkmediaVolumeSlider(outputSliderWidget);
+    outputDeviceSlider = new UkmediaVolumeSlider(outputSliderWidget,true);
     noInputDeviceLabel = new QLabel(tr("Input device can not be detected"),this);
     outputDisplayVolumeLabel = new QLabel(this);
 

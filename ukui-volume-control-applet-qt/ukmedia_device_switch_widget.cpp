@@ -194,7 +194,9 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     appWidget->appArea->setWidget(appWidget->displayAppVolumeWidget);
     appWidget->m_pVlayout = new QVBoxLayout(appWidget->displayAppVolumeWidget);
 
-    appWidget->appArea->setBackgroundRole(QPalette::Background);
+//    appWidget->displayAppVolumeWidget->setStyleSheet("QWidget{background:rgba(255,0,0,0);}");
+    appWidget->displayAppVolumeWidget->setAttribute(Qt::WA_TranslucentBackground);
+//    appWidget->appArea->setBackgroundRole(QPalette::Background);
     appWidget->appArea->setFixedSize(358,177);
     appWidget->appArea->move(0,143);
     appWidget->displayAppVolumeWidget->setFixedWidth(358);
@@ -417,9 +419,9 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     appWidget->appArea->setStyleSheet("QScrollArea{border:none;}");
     appWidget->appArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     appWidget->appArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-    appWidget->appArea->viewport()->setStyleSheet("background-color:rgba(0,0,0,0);");
+//    appWidget->appArea->viewport()->setStyleSheet("background:transparent;");
 //    appWidget->appArea->viewport()->setAutoFillBackground(true);
-//    appWidget->appArea->viewport()->setAttribute(Qt::WA_TranslucentBackground);
+    appWidget->appArea->viewport()->setAttribute(Qt::WA_TranslucentBackground);
 
     if (appnum <= 0) {
         appWidget->upWidget->hide();
@@ -440,7 +442,8 @@ void DeviceSwitchWidget::systemTrayMenuInit()
 {
     menu = new QMenu();
     qDebug() << "new menu";
-    menu->setAttribute(Qt::WA_DeleteOnClose);
+//    menu->setAttribute(Qt::WA_DeleteOnClose);
+//    menu->setAttribute();
     soundSystemTrayIcon->setContextMenu(menu);
     //设置右键菜单
     menu->addAction(m_pMuteAction);
@@ -1113,7 +1116,9 @@ void DeviceSwitchWidget::activatedSystemTrayIconSlot(QSystemTrayIcon::Activation
         break;
     }
     case QSystemTrayIcon::Context:{
-        systemTrayMenuInit();
+//        systemTrayMenuInit();
+        qDebug() << "123123123";
+//        menu->hide();
     }
     default:
         break;
@@ -1649,8 +1654,13 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
         app_icon_name = "TencentVideo";
     }
 
-    if (strcmp(app_name,"ALSA plug-in [kylin-music]") == 0 && strcmp(app_icon_name.toLatin1().data(),"/usr/share/pixmaps/kylin-music.png") == 0) {
+    if (strcmp(app_name,"ALSA plug-in [kylin-music]") == 0 ) {
         app_icon_name = "kylin-music";
+    }
+
+
+    if (strcmp(app_name,"ALSA plug-in [ukui-sidebar]") == 0) {
+        app_icon_name = "";
     }
 
     iconName.append(app_icon_name);
@@ -1667,15 +1677,27 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
     QVBoxLayout *vlayout = new QVBoxLayout();
     QSpacerItem *item1 = new QSpacerItem(18,20);
     QSpacerItem *item2 = new QSpacerItem(12,20);
-    UkuiApplicationWidget *wid = new UkuiApplicationWidget(app_widget);
+    QWidget *wid = new QWidget(app_widget);
+    wid->setAttribute(Qt::WA_TranslucentBackground);
+//    wid->setStyleSheet("QWidget{background:transparent;}");
     wid->setFixedSize(306,38);
     w->appWidget->appLabel = new QLabel(app_widget);
     w->appWidget->appIconBtn = new QPushButton(wid);
-    w->appWidget->appSlider = new UkmediaVolumeSlider(wid);
+    w->appWidget->appSlider = new UkmediaVolumeSlider(wid,true);
     w->appWidget->appMuteBtn = new QPushButton(wid);
     w->appWidget->appSlider->setOrientation(Qt::Horizontal);
     w->appWidget->appIconBtn->setFixedSize(38,38);
     w->appWidget->appMuteBtn->setFixedSize(24,24);
+//    w->appWidget->appSlider->setStyle(new CustomStyle());
+    QPalette paleteAppIcon =  w->appWidget->appIconBtn->palette();
+    paleteAppIcon.setColor(QPalette::Highlight,Qt::transparent);
+    paleteAppIcon.setBrush(QPalette::Button,QBrush(QColor(1,1,1,0)));
+    w->appWidget->appIconBtn->setPalette(paleteAppIcon);
+
+    QPalette paleteMuteIcon =  w->appWidget->appMuteBtn->palette();
+    paleteMuteIcon.setColor(QPalette::Highlight,Qt::transparent);
+    paleteMuteIcon.setBrush(QPalette::Button,QBrush(QColor(1,1,1,0)));
+    w->appWidget->appMuteBtn->setPalette(paleteMuteIcon);
 
     w->appWidget->appMuteBtn->setProperty("useIconHighlightEffect",true);
     w->appWidget->appMuteBtn->setProperty("iconHighlightEffectMode",true);
@@ -1737,10 +1759,7 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
     QPushButton *btn = w->appWidget->findChild<QPushButton *>(appMuteBtnlStr);
     if (btn == nullptr)
         return;
-    QPalette paleteBtn = btn->palette();
-    paleteBtn.setColor(QPalette::Highlight,Qt::transparent);
-    paleteBtn.setBrush(QPalette::Button,QBrush(QColor(1,1,1,0)));
-    btn->setPalette(paleteBtn);
+
     QString audioIconStr;
     QIcon audioIcon;
     QPixmap btnPixmap;
@@ -1774,7 +1793,6 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
     else {
         w->appWidget->appLabel->setText(pAppName);
     }
-
     //主题更改
     connect(w,&DeviceSwitchWidget::theme_change,[=](){
         if ( w->mThemeName == "ukui-white" || w->mThemeName == "ukui-light") {
@@ -1871,6 +1889,10 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
         else if (w->mThemeName == UKUI_THEME_BLACK || w->mThemeName == "ukui-black" || w->mThemeName == "ukui-default") {
             btn->setIcon(QIcon(w->drawLightColoredPixmap((QIcon::fromTheme(muteButtonStr).pixmap(iconSize)))));
         }
+        QPalette paleteBtn = btn->palette();
+        paleteBtn.setColor(QPalette::Highlight,Qt::transparent);
+        paleteBtn.setBrush(QPalette::Button,QBrush(QColor(1,1,1,0)));
+        btn->setPalette(paleteBtn);
     });
 
     connect(w,&DeviceSwitchWidget::system_muted_signal,[=](bool isMute){
@@ -1905,6 +1927,11 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
         else if (w->mThemeName == UKUI_THEME_BLACK || w->mThemeName == "ukui-black" || w->mThemeName == "ukui-default") {
             btn->setIcon(QIcon(w->drawLightColoredPixmap((QIcon::fromTheme(audioIconStr).pixmap(iconSize)))));
         }
+
+        QPalette paleteBtn = btn->palette();
+        paleteBtn.setColor(QPalette::Highlight,Qt::transparent);
+        paleteBtn.setBrush(QPalette::Button,QBrush(QColor(1,1,1,0)));
+        btn->setPalette(paleteBtn);
     });
 
     if (appnum <= 0) {
@@ -1921,6 +1948,8 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
     w->appWidget->m_pVlayout->setContentsMargins(18,14,34,18);
     w->appWidget->m_pVlayout->update();
 
+    w->appWidget->appMuteBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
+                                           "padding-left:0px;}");
 }
 
 /*!

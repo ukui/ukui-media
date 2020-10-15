@@ -41,7 +41,7 @@ private:
     QWidget *upWidget;
     QWidget *systemVolumeWidget;
     QWidget *systemVolumeSliderWidget;
-    UkuiApplicationWidget *displayAppVolumeWidget;
+    QWidget *displayAppVolumeWidget;
     QStringList *app_volume_list;
     QLabel *appLabel;
     QPushButton *appMuteBtn;

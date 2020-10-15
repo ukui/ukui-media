@@ -25,6 +25,8 @@
 #include <QToolButton>
 #include <QFrame>
 #include <QDebug>
+#include <QLabel>
+#include <QScrollArea>
 
 typedef struct UkuiThemeIcon
 {
@@ -41,10 +43,16 @@ enum SwitchButtonState{
     SWITCH_BUTTON_PRESS
 };
 static QColor symbolic_color = Qt::gray;
-//class UkuiDeviceButton:public QPushButton
-//{
 
-//}
+class UkuiMediaSliderTipLabel:public QLabel
+{
+  public:
+    UkuiMediaSliderTipLabel();
+    ~UkuiMediaSliderTipLabel();
+protected:
+    void paintEvent(QPaintEvent*);
+};
+
 class UkuiButtonDrawSvg:public QPushButton
 {
     Q_OBJECT
@@ -102,10 +110,13 @@ class UkmediaVolumeSlider : public QSlider
 {
     Q_OBJECT
 public:
-    UkmediaVolumeSlider(QWidget *parent = nullptr);
+//    UkmediaVolumeSlider(QWidget *parent = nullptr);
+    UkmediaVolumeSlider(QWidget *parent = nullptr,bool needTip = false);
     void initStyleOption(QStyleOptionSlider *option);
     ~UkmediaVolumeSlider();
-
+private:
+    UkuiMediaSliderTipLabel *m_pTiplabel;
+    bool state = false;
 Q_SIGNALS:
     void silderPressedSignal(int);
 
@@ -117,6 +128,22 @@ protected:
 //        m_displayLabel->move((this->width()-m_displayLabel->width())*this->value()/(this->maximum()-this->minimum()),3);
         QSlider::mouseMoveEvent(e);
     }
+    void leaveEvent(QEvent *e);
+
+    void enterEvent(QEvent *e);
+    void paintEvent(QPaintEvent *e);
+};
+
+class UkuiScrollArea : public QScrollArea
+{
+    Q_OBJECT
+public:
+    UkuiScrollArea(QWidget *parent = nullptr);
+    ~UkuiScrollArea();
+
+protected:
+    void paintEvent(QPaintEvent *e);
+
 };
 
 #endif // UKMEDIAVOLUMESLIDER_H

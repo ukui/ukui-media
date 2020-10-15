@@ -24,7 +24,6 @@
 #include <QPainter>
 ApplicationVolumeWidget::ApplicationVolumeWidget(QWidget *parent) : QWidget (parent)
 {
-    setAttribute(Qt::WA_TranslucentBackground);
     upWidget = new QWidget(this);
     applicationLabel = new QLabel(tr("Application Volume"),this);
     app_volume_list = new QStringList;
@@ -72,7 +71,6 @@ ApplicationVolumeWidget::ApplicationVolumeWidget(QWidget *parent) : QWidget (par
     vLayout->setSpacing(0);
     systemVolumeWidget->setLayout(vLayout);
     systemVolumeWidget->layout()->setContentsMargins(0,0,0,0);
-//    this->setStyleSheet("QWidget{background:rgb(0,0,0);}");
     this->setAttribute(Qt::WA_TranslucentBackground);
 }
 
@@ -83,6 +81,7 @@ ApplicationVolumeWidget::ApplicationVolumeWidget(QWidget *parent) : QWidget (par
 //    QPainter p(this);
 ////    double transparence = transparency * 255;
 ////    p.setBrush(this->palette().base());
+//    p.setBrush(QBrush(QColor(19, 19, 20, 0)));
 //    p.setPen(Qt::NoPen);
 //    QPainterPath path;
 //    opt.rect.adjust(0,0,0,0);

@@ -108,6 +108,7 @@ void SliderTipLabelHelper::mouseMoveEvent(QObject *obj, QMouseEvent *e)
     QRect rect;
     QStyleOptionSlider m_option;
     auto slider = qobject_cast<UkmediaVolumeSlider *>(obj);
+//    auto slider = qobject_cast<QSlider *>(obj);
     slider->initStyleOption(&m_option);
     rect = slider->style()->subControlRect(QStyle::CC_Slider, &m_option,QStyle::SC_SliderHandle,slider);
     QPoint gPos = slider->mapToGlobal(rect.topLeft());
