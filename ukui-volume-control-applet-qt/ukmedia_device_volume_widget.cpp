@@ -39,7 +39,7 @@ UkmediaDeviceWidget::UkmediaDeviceWidget(QWidget *parent) : QWidget (parent)
     inputDeviceSlider = new UkmediaVolumeSlider(inputSliderWidget);
     inputMuteButton = new UkuiButtonDrawSvg(inputSliderWidget);
 
-    outputWidget->setFixedSize(340,60);
+    outputWidget->setFixedSize(340,66);
     outputSliderWidget->setFixedSize(306,32);
     outputMuteBtn = new UkuiButtonDrawSvg(outputSliderWidget);
     outputDeviceLabel = new QLabel(tr("Output Device"),this);
@@ -49,6 +49,7 @@ UkmediaDeviceWidget::UkmediaDeviceWidget(QWidget *parent) : QWidget (parent)
     noInputDeviceLabel = new QLabel(tr("Input device can not be detected"),this);
     outputDisplayVolumeLabel = new QLabel(this);
 
+    noInputDeviceLabel->setFixedSize(320,24);
     QPalette palete = outputDeviceBtn->palette();
     palete.setColor(QPalette::Highlight,Qt::transparent);
     palete.setBrush(QPalette::Button,QBrush(QColor(1,1,1,0)));
@@ -87,8 +88,8 @@ void UkmediaDeviceWidget::noInputWidgetInit()
     outputDeviceBtn->setIcon(QIcon("/usr/share/ukui-media/img/audiocard.svg"));
 #endif
   //设置滑动条的范围和取向
-    outputDeviceLabel->setFixedSize(140,20);
-    outputDeviceDisplayLabel->setFixedSize(220,16);
+    outputDeviceLabel->setFixedSize(140,24);
+    outputDeviceDisplayLabel->setFixedSize(300,24);
 
     outputDeviceSlider->setRange(0,100);
     outputDeviceSlider->setOrientation(Qt::Horizontal);
@@ -115,7 +116,6 @@ void UkmediaDeviceWidget::noInputWidgetInit()
     vlayout->setSpacing(12);
     outputWidget->setLayout(vlayout);
     outputWidget->layout()->setContentsMargins(0,0,0,0);
-
     outputDeviceLabel->move(18,22);
     outputWidget->move(18,62);
     noInputDeviceLabel->move(18,154);

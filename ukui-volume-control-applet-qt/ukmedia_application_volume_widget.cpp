@@ -37,13 +37,13 @@ ApplicationVolumeWidget::ApplicationVolumeWidget(QWidget *parent) : QWidget (par
     systemVolumeSlider->setOrientation(Qt::Horizontal);
     systemVolumeSlider->setRange(0,100);
     upWidget->setFixedSize(358,140);
-    systemVolumeWidget->setFixedSize(312,60);
+    systemVolumeWidget->setFixedSize(312,66);
     systemVolumeSliderWidget->setFixedSize(312,32);
-    systemVolumeLabel->setFixedSize(220,16);
+    systemVolumeLabel->setFixedSize(220,24);
     systemVolumeBtn->setFixedSize(32,32);
     systemVolumeSlider->setFixedSize(220,22);
     systemVolumeDisplayLabel->setFixedSize(32,32);
-    applicationLabel->setFixedSize(200,20);
+    applicationLabel->setFixedSize(200,24);
     QSize iconSize(32,32);
     systemVolumeBtn->setIconSize(iconSize);
 
