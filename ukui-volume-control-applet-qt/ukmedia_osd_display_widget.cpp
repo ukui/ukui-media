@@ -95,6 +95,11 @@ void UkmediaOsdDisplayWidget::UkmediaOsdDisplayWidgetInit()
     positionX = (screenWidth - this->width())/2;
     positionY = (screenHeight/2) + (screenHeight/2 - this->height())/2;
     this->move(positionX,positionY);
+    this->setAttribute(Qt::WA_TranslucentBackground);
+    QPalette palete = iconButton->palette();
+    palete.setColor(QPalette::Highlight,Qt::transparent);
+    palete.setBrush(QPalette::Button,QBrush(QColor(1,1,1,0)));
+    iconButton->setPalette(palete);
 //    this->setStyleSheet("QWidget{background:rgba(255,0,0,0.7);}");
 //    this->osdWidget->setStyleSheet("QWidget{background:rgba(255,0,0,0);}");
 //    this->iconButton->setStyleSheet("QPushButton::hover{background:rgba(255,255,255,0);"
