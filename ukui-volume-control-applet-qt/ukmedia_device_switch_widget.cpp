@@ -2388,12 +2388,12 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
     QIcon trayIcon;
     QIcon audioIcon;
 
-//    //设置gsettings的值
-//    if (QGSettings::isSchemaInstalled(UKUI_VOLUME_BRIGHTNESS_GSETTING_ID)) {
-//        if (w->m_pVolumeSetting->keys().contains("volumesize")) {
-//            w->m_pVolumeSetting->set(UKUI_VOLUME_KEY,value);
-//        }
-//    }
+    //设置gsettings的值
+    if (QGSettings::isSchemaInstalled(UKUI_VOLUME_BRIGHTNESS_GSETTING_ID)) {
+        if (w->m_pVolumeSetting->keys().contains("volumesize")) {
+            w->m_pVolumeSetting->set(UKUI_VOLUME_KEY,value);
+        }
+    }
     if (state) {
         systemTrayIcon = "audio-volume-muted-symbolic";
         audioIconStr = "audio-volume-muted-symbolic";
@@ -2645,8 +2645,8 @@ void DeviceSwitchWidget::on_stream_control_volume_notify (MateMixerStreamControl
 
     direction = mate_mixer_stream_get_direction(MATE_MIXER_STREAM(stream));
     //设置输出滑动条的值
-//    ca_context *context;
-//    ca_context_create(&context);
+    ca_context *context;
+    ca_context_create(&context);
     int value = int(volume*100/65536.0 + 0.5);
     if (direction == MATE_MIXER_DIRECTION_OUTPUT) {
         w->devWidget->outputDeviceSlider->setValue(value);
@@ -2683,12 +2683,13 @@ void DeviceSwitchWidget::on_stream_control_volume_notify (MateMixerStreamControl
         desc = "Volume Changed";
         const gchar *eventId =id;
         qDebug() << "****" << id << eventId;
-//        retval = ca_context_play (w->caContext, 0,
-//                                 CA_PROP_EVENT_ID, eventId,
-//                                 CA_PROP_EVENT_DESCRIPTION, desc, NULL);
-//        if (retval < 0) {
-//            qDebug() << "fail to play " << eventId << ca_strerror(retval) << retval;
-//        }
+        retval = ca_context_play (w->caContext, 0,
+                                 CA_PROP_EVENT_ID, eventId,
+                                 CA_PROP_EVENT_DESCRIPTION, desc, NULL);
+
+        if (retval < 0) {
+            qDebug() << "fail to play " << eventId << ca_strerror(retval) << retval;
+        }
     }
     else if (direction == MATE_MIXER_DIRECTION_INPUT) {
         qDebug() << "stream get label:" << mate_mixer_stream_control_get_label(control) << mate_mixer_stream_get_label(stream);
