@@ -1640,8 +1640,7 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
      */
     if (strcmp(app_name,"KylinVideo") == 0) {
         app_icon_name = "kylin-video";
-    }
-
+    }   
     /*!
      * \brief
      * \details
@@ -1650,17 +1649,17 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
      * 相关，特定添加以下判断，来使得用户使用腾讯视频观看
      * 视频的时候不会出现应用名和图标显示不正确的问题
      */
-    if (strcmp(app_name,"Chromium") == 0 && strcmp(app_icon_name.toLatin1().data(),"chromium-browser") == 0) {
+    else if (strcmp(app_name,"Chromium") == 0 && strcmp(app_icon_name.toLatin1().data(),"chromium-browser") == 0) {
         app_icon_name = "TencentVideo";
     }
-
-    if (strcmp(app_name,"ALSA plug-in [kylin-music]") == 0 ) {
+    else if (strcmp(app_name,"ALSA plug-in [kylin-music]") == 0 ) {
         app_icon_name = "kylin-music";
     }
-
-
-    if (strcmp(app_name,"ALSA plug-in [ukui-sidebar]") == 0) {
+    else if (strcmp(app_name,"ALSA plug-in [ukui-sidebar]") == 0) {
         app_icon_name = "";
+    }
+    else if (strcmp(app_name,"Clock") == 0) {
+        app_icon_name = "ukui-clock";
     }
 
     iconName.append(app_icon_name);
