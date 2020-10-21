@@ -33,6 +33,7 @@ ApplicationVolumeWidget::ApplicationVolumeWidget(QWidget *parent) : QWidget (par
     systemVolumeDisplayLabel = new QLabel(this);
     systemVolumeWidget = new QWidget(this);
     systemVolumeSliderWidget = new QWidget();
+    appLabel = new QLabel;
 
     systemVolumeSlider->setOrientation(Qt::Horizontal);
     systemVolumeSlider->setRange(0,100);

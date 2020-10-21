@@ -288,8 +288,19 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     //检测系统主题
     if (QGSettings::isSchemaInstalled(UKUI_THEME_SETTING)){
         m_pThemeSetting = new QGSettings(UKUI_THEME_SETTING);
+        QString fontType;
         if (m_pThemeSetting->keys().contains("styleName")) {
             mThemeName = m_pThemeSetting->get(UKUI_THEME_NAME).toString();
+        }
+        if (m_pThemeSetting->keys().contains("systemFont")) {
+            fontType = m_pThemeSetting->get("systemFont").toString();
+        }
+        if (m_pThemeSetting->keys().contains("systemFontSize")) {
+            int font = m_pThemeSetting->get("system-font-size").toInt();
+            QFont fontSize(fontType,font);
+            devWidget->outputDeviceDisplayLabel->setFont(fontSize);
+            appWidget->systemVolumeLabel->setFont(fontSize);
+            appWidget->appLabel->setFont(fontSize);
         }
         connect(m_pThemeSetting, SIGNAL(changed(const QString &)),this,SLOT(ukuiThemeChangedSlot(const QString &)));
     }
@@ -1002,6 +1013,17 @@ void DeviceSwitchWidget::ukuiThemeChangedSlot(const QString &themeStr)
     if (m_pThemeSetting->keys().contains("styleName")) {
         mThemeName = m_pThemeSetting->get(UKUI_THEME_NAME).toString();
      }
+    QString fontType;
+    if (m_pThemeSetting->keys().contains("systemFont")) {
+        fontType = m_pThemeSetting->get("systemFont").toString();
+    }
+    if (m_pThemeSetting->keys().contains("systemFontSize")) {
+        int font = m_pThemeSetting->get("system-font-size").toInt();
+        QFont fontSize(fontType,font);
+        devWidget->outputDeviceDisplayLabel->setFont(fontSize);
+        appWidget->systemVolumeLabel->setFont(fontSize);
+        appWidget->appLabel->setFont(fontSize);
+    }
     themeChangeIcons();
     QPalette palette = dividerFrame->palette();
     QColor color = palette.color(palette.Button);
@@ -1531,6 +1553,7 @@ void DeviceSwitchWidget::remove_application_control (DeviceSwitchWidget *w,const
         return;
     }
 
+    qDebug() << "删除应用名：" << w->app_name_list->at(index);
     w->stream_control_list->removeAt(index);
     w->app_name_list->removeAt(index);
     w->appBtnNameList->removeAt(index);
@@ -1540,6 +1563,7 @@ void DeviceSwitchWidget::remove_application_control (DeviceSwitchWidget *w,const
         QWidget *wid = item->widget();
         w->appWidget->m_pVlayout->removeWidget(wid);
         wid->setParent(nullptr);
+//        delete wid->c
         delete wid;
         delete item;
     }
@@ -1680,7 +1704,7 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
     wid->setAttribute(Qt::WA_TranslucentBackground);
 //    wid->setStyleSheet("QWidget{background:transparent;}");
     wid->setFixedSize(306,38);
-    w->appWidget->appLabel = new QLabel(app_widget);
+    w->appWidget->appLabel->setParent(app_widget);
     w->appWidget->appIconBtn = new QPushButton(wid);
     w->appWidget->appSlider = new UkmediaVolumeSlider(wid,true);
     w->appWidget->appMuteBtn = new QPushButton(wid);

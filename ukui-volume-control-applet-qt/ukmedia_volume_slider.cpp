@@ -250,7 +250,7 @@ void UkmediaVolumeSlider::paintEvent(QPaintEvent *e)
 
 UkmediaVolumeSlider::~UkmediaVolumeSlider()
 {
-
+    delete m_pTiplabel;
 }
 
 void UkuiButtonDrawSvg::init(QImage img, QColor color)
