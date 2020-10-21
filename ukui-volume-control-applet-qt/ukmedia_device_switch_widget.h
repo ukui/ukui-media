@@ -185,6 +185,7 @@ Q_SIGNALS:
     void app_name_signal(QString app_name);
     void system_muted_signal(bool status);
     void theme_change();
+    void font_change();
 //    void appvolume_mute_change_mastervolume_status();
 private Q_SLOTS:
     void deviceButtonClickedSlot();
@@ -211,6 +212,7 @@ private Q_SLOTS:
     void inputWidgetMuteButtonClicked();
     void inputWidgetSliderChangedSlot(int value);
     void ukuiThemeChangedSlot(const QString &themeStr);
+    void fontSizeChangedSlot(const QString &themeStr);
     void osdDisplayWidgetHide();
 private:
 
@@ -245,6 +247,7 @@ private:
     QGSettings *m_pThemeSetting;
     QGSettings *m_pTransparencySetting;
     QGSettings *m_pVolumeSetting;
+    QGSettings *m_pFontSetting;
 
     QAction *m_pMuteAction;
     QAction *m_pSoundPreferenceAction;

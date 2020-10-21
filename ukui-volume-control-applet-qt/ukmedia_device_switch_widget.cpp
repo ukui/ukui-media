@@ -288,20 +288,21 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     //检测系统主题
     if (QGSettings::isSchemaInstalled(UKUI_THEME_SETTING)){
         m_pThemeSetting = new QGSettings(UKUI_THEME_SETTING);
+        m_pFontSetting = new QGSettings(UKUI_THEME_SETTING);
         QString fontType;
         if (m_pThemeSetting->keys().contains("styleName")) {
             mThemeName = m_pThemeSetting->get(UKUI_THEME_NAME).toString();
         }
-        if (m_pThemeSetting->keys().contains("systemFont")) {
-            fontType = m_pThemeSetting->get("systemFont").toString();
+        if (m_pFontSetting->keys().contains("systemFont")) {
+            fontType = m_pFontSetting->get("systemFont").toString();
         }
-        if (m_pThemeSetting->keys().contains("systemFontSize")) {
-            int font = m_pThemeSetting->get("system-font-size").toInt();
+        if (m_pFontSetting->keys().contains("systemFontSize")) {
+            int font = m_pFontSetting->get("system-font-size").toInt();
             QFont fontSize(fontType,font);
             devWidget->outputDeviceDisplayLabel->setFont(fontSize);
             appWidget->systemVolumeLabel->setFont(fontSize);
-            appWidget->appLabel->setFont(fontSize);
         }
+        connect(m_pFontSetting,SIGNAL(changed(const QString &)),this,SLOT(fontSizeChangedSlot(const QString &)));
         connect(m_pThemeSetting, SIGNAL(changed(const QString &)),this,SLOT(ukuiThemeChangedSlot(const QString &)));
     }
 
@@ -1003,6 +1004,20 @@ void DeviceSwitchWidget::themeChangeIcons()
     appWidget->systemVolumeBtn->repaint();
 }
 
+void DeviceSwitchWidget::fontSizeChangedSlot(const QString &themeStr)
+{
+    QString fontType;
+    if (m_pFontSetting->keys().contains("systemFont")) {
+        fontType = m_pFontSetting->get("systemFont").toString();
+    }
+    if (m_pFontSetting->keys().contains("systemFontSize")) {
+        int font = m_pFontSetting->get("system-font-size").toInt();
+        QFont fontSize(fontType,font);
+        devWidget->outputDeviceDisplayLabel->setFont(fontSize);
+        appWidget->systemVolumeLabel->setFont(fontSize);
+    }
+    Q_EMIT font_change();
+}
 /*!
  * \brief
  * \details
@@ -1013,17 +1028,6 @@ void DeviceSwitchWidget::ukuiThemeChangedSlot(const QString &themeStr)
     if (m_pThemeSetting->keys().contains("styleName")) {
         mThemeName = m_pThemeSetting->get(UKUI_THEME_NAME).toString();
      }
-    QString fontType;
-    if (m_pThemeSetting->keys().contains("systemFont")) {
-        fontType = m_pThemeSetting->get("systemFont").toString();
-    }
-    if (m_pThemeSetting->keys().contains("systemFontSize")) {
-        int font = m_pThemeSetting->get("system-font-size").toInt();
-        QFont fontSize(fontType,font);
-        devWidget->outputDeviceDisplayLabel->setFont(fontSize);
-        appWidget->systemVolumeLabel->setFont(fontSize);
-        appWidget->appLabel->setFont(fontSize);
-    }
     themeChangeIcons();
     QPalette palette = dividerFrame->palette();
     QColor color = palette.color(palette.Button);
@@ -1384,7 +1388,7 @@ void DeviceSwitchWidget::add_stream (DeviceSwitchWidget *w, MateMixerStream *str
             MateMixerAppInfo *m_pAppInfo = mate_mixer_stream_control_get_app_info(w->control);
             if (m_pAppInfo != nullptr) {
                 const gchar *m_pAppName = mate_mixer_app_info_get_name(m_pAppInfo);
-                if (strcmp(m_pAppName,"ukui-session") != 0 && strcmp(m_pAppName,"ukui-volume-control-applet-qt") != 0 && strcmp(m_pAppName,"Volume Control") && strcmp(m_pAppName,"ALSA plug-in [mate-screenshot]") ) {
+                if (strcmp(m_pAppName,"ukui-session") != 0 && strcmp(m_pAppName,"ukui-volume-control-applet-qt") != 0 && strcmp(m_pAppName,"Volume Control") && strcmp(m_pAppName,"ALSA plug-in [mate-screenshot]") && strcmp(m_pAppName,"Clock")) {
                     if G_UNLIKELY (w->control == nullptr)
                         return;
                     add_application_control (w, w->control,m_pStreamControlName);
@@ -1498,7 +1502,7 @@ void DeviceSwitchWidget::on_stream_control_added (MateMixerStream *stream,const 
     MateMixerAppInfo *m_pAppInfo = mate_mixer_stream_control_get_app_info(w->control);
     if (m_pAppInfo != nullptr) {
         const gchar *m_pAppName = mate_mixer_app_info_get_name(m_pAppInfo);
-        if (strcmp(m_pAppName,"ukui-session") != 0 && strcmp(m_pAppName,"ukui-volume-control-applet-qt") != 0 && strcmp(m_pAppName,"Volume Control") && strcmp(m_pAppName,"ALSA plug-in [mate-screenshot]") ) {
+        if (strcmp(m_pAppName,"ukui-session") != 0 && strcmp(m_pAppName,"ukui-volume-control-applet-qt") != 0 && strcmp(m_pAppName,"Volume Control") && strcmp(m_pAppName,"ALSA plug-in [mate-screenshot]") && strcmp(m_pAppName,"Clock")) {
             if G_UNLIKELY (w->control == nullptr)
                 return;
 
@@ -1704,6 +1708,7 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
     wid->setAttribute(Qt::WA_TranslucentBackground);
 //    wid->setStyleSheet("QWidget{background:transparent;}");
     wid->setFixedSize(306,38);
+    w->appWidget->appLabel = new QLabel(app_widget);
     w->appWidget->appLabel->setParent(app_widget);
     w->appWidget->appIconBtn = new QPushButton(wid);
     w->appWidget->appSlider = new UkmediaVolumeSlider(wid,true);
@@ -1818,14 +1823,28 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
     }
     //主题更改
     connect(w,&DeviceSwitchWidget::theme_change,[=](){
-        if ( w->mThemeName == "ukui-white" || w->mThemeName == "ukui-light") {
-            btn->setIcon(QIcon(w->drawDarkColoredPixmap((QIcon::fromTheme(audioIconStr).pixmap(iconSize)))));
-        }
-        else if (w->mThemeName == UKUI_THEME_BLACK || w->mThemeName == "ukui-black" || w->mThemeName == "ukui-default") {
-            btn->setIcon(QIcon(w->drawLightColoredPixmap((QIcon::fromTheme(audioIconStr).pixmap(iconSize)))));
+        if (btn != nullptr) {
+            if ( w->mThemeName == "ukui-white" || w->mThemeName == "ukui-light") {
+                btn->setIcon(QIcon(w->drawDarkColoredPixmap((QIcon::fromTheme(audioIconStr).pixmap(iconSize)))));
+            }
+            else if (w->mThemeName == UKUI_THEME_BLACK || w->mThemeName == "ukui-black" || w->mThemeName == "ukui-default") {
+                qDebug()<< "11111111111111" << btn->objectName();
+                btn->setIcon(QIcon(w->drawLightColoredPixmap((QIcon::fromTheme(audioIconStr).pixmap(iconSize)))));
+            }
         }
     });
+    connect(w,&DeviceSwitchWidget::font_change,[=](){
+        QString fontType;
+        if (w->m_pFontSetting->keys().contains("systemFont")) {
+            fontType = w->m_pFontSetting->get("systemFont").toString();
+        }
+        if (w->m_pFontSetting->keys().contains("systemFontSize")) {
+            int font = w->m_pFontSetting->get("system-font-size").toInt();
+            QFont fontSize(fontType,font);
 
+            w->appWidget->appLabel->setFont(fontSize);
+        }
+    });
     /*滑动条控制应用音量*/
     connect(w->appWidget->appSlider,&QSlider::valueChanged,[=](int value){
         application_name = appSliderStr;
