@@ -2395,8 +2395,7 @@ void DeviceSwitchWidget::update_icon_input (DeviceSwitchWidget *w,MateMixerStrea
         w->devWidget->inputWidgetShow();
     }
     else {
-//        w->devWidget->inputWidgetHide();
-        w->devWidget->inputWidgetShow();
+        w->devWidget->inputWidgetHide();
     }
 }
 
