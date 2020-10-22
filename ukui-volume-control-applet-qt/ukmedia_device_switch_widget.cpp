@@ -301,6 +301,7 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
             QFont fontSize(fontType,font);
             devWidget->outputDeviceDisplayLabel->setFont(fontSize);
             appWidget->systemVolumeLabel->setFont(fontSize);
+            devWidget->inputDeviceDisplayLabel->setFont(fontSize);
         }
         connect(m_pFontSetting,SIGNAL(changed(const QString &)),this,SLOT(fontSizeChangedSlot(const QString &)));
         connect(m_pThemeSetting, SIGNAL(changed(const QString &)),this,SLOT(ukuiThemeChangedSlot(const QString &)));
@@ -942,12 +943,13 @@ void DeviceSwitchWidget::inputVolumeDarkThemeImage(int value,bool status)
     else {
         inputIconStr = "microphone-sensitivity-high-symbolic";
     }
-    if (mThemeName == UKUI_THEME_WHITE || mThemeName == "ukui-white" || mThemeName == "ukui-light") {
-        devWidget->inputMuteButton->themeIcon.color = QColor(255,255,255,190);
+
+    if (mThemeName == "ukui-white" || mThemeName == "ukui-light") {
+        devWidget->inputMuteButton->themeIcon.color = QColor(0,0,0,216);
         devWidget->inputMuteButton->themeIcon.image = QIcon::fromTheme(inputIconStr).pixmap(24,24).toImage();
     }
-    else if (mThemeName == UKUI_THEME_BLACK) {
-        devWidget->inputMuteButton->themeIcon.color = QColor(255,255,255,190);
+    else if (mThemeName == UKUI_THEME_BLACK || mThemeName == "ukui-black" || mThemeName == "ukui-default") {
+        devWidget->inputMuteButton->themeIcon.color = QColor(255,255,255,216);
         devWidget->inputMuteButton->themeIcon.image = QIcon::fromTheme(inputIconStr).pixmap(24,24).toImage();
     }
 }
@@ -1015,6 +1017,7 @@ void DeviceSwitchWidget::fontSizeChangedSlot(const QString &themeStr)
         QFont fontSize(fontType,font);
         devWidget->outputDeviceDisplayLabel->setFont(fontSize);
         appWidget->systemVolumeLabel->setFont(fontSize);
+        devWidget->inputDeviceDisplayLabel->setFont(fontSize);
     }
     Q_EMIT font_change();
 }
@@ -2392,7 +2395,8 @@ void DeviceSwitchWidget::update_icon_input (DeviceSwitchWidget *w,MateMixerStrea
         w->devWidget->inputWidgetShow();
     }
     else {
-        w->devWidget->inputWidgetHide();
+//        w->devWidget->inputWidgetHide();
+        w->devWidget->inputWidgetShow();
     }
 }
 
