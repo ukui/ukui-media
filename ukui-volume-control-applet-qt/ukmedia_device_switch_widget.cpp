@@ -2785,6 +2785,7 @@ void DeviceSwitchWidget::on_stream_control_volume_notify (MateMixerStreamControl
             connect(w->timer, SIGNAL(timeOut()), w, SLOT(osdDisplayWidgetHide()));
         }
     }
+    Q_EMIT w->system_muted_signal(muted);
 }
 
 /*!
