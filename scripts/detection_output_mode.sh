@@ -13,6 +13,11 @@ for USER in $(who | grep tty | awk '{print $1}' | sort | uniq);do
     if [ -n "$index" ];then
       OUTPUT_MODE=${index#*usec, }
       OUTPUT_MODE=${OUTPUT_MODE%%)}
+      if [[ $OUTPUT_MODE =~ "not available" ]];then
+        OUTPUT_MODE="not available"
+      elif [[ $OUTPUT_MODE =~ "available" ]];then
+        OUTPUT_MODE="available"
+      fi
       echo "输出模式为"  $OUTPUT_MODE
     fi
     if [[ $line =~ "analog-output-speaker" ]] && [[ $OUTPUT_MODE == "available" ]];then

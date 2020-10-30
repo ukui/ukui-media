@@ -4,12 +4,12 @@
 <context>
     <name>ApplicationVolumeWidget</name>
     <message>
-        <location filename="../ukmedia_application_volume_widget.cpp" line="27"/>
+        <location filename="../ukmedia_application_volume_widget.cpp" line="28"/>
         <source>Application Volume</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ukmedia_application_volume_widget.cpp" line="29"/>
+        <location filename="../ukmedia_application_volume_widget.cpp" line="30"/>
         <source>System Volume</source>
         <translation type="unfinished"></translation>
     </message>
@@ -17,35 +17,49 @@
 <context>
     <name>DeviceSwitchWidget</name>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="237"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="213"/>
         <source>Go Into Mini Mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="455"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="167"/>
         <source>Output volume control</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="457"/>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="460"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="169"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="172"/>
         <source>Mute</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="458"/>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="461"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="170"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="173"/>
         <source>Sound preference(S)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="1254"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="1234"/>
         <source>Device Volume</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="1255"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="1235"/>
         <source>Application Volume</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="2495"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="2502"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="2757"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="2765"/>
+        <source>Speaker (Realtek Audio)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="2498"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="2761"/>
+        <source>Headphone</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -80,12 +94,7 @@
 <context>
     <name>UkmediaMiniMasterVolumeWidget</name>
     <message>
-        <location filename="../ukmedia_mini_master_volume_widget.cpp" line="42"/>
-        <source>Speaker (Realtek Audio)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ukmedia_mini_master_volume_widget.cpp" line="98"/>
+        <location filename="../ukmedia_mini_master_volume_widget.cpp" line="115"/>
         <source>Go Into Full Mode</source>
         <translation type="unfinished"></translation>
     </message>

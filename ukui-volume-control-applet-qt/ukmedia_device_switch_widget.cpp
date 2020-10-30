@@ -2492,11 +2492,14 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
         if (ret != w->osdWidget->ret) {
             if (ret == 0) {
                 w->osdWidget->UkmediaOsdSetIcon("audio-card");
+                w->miniWidget->deviceLabel->setText(tr("Speaker (Realtek Audio)"));
             }
             else if (ret == 256) {
+                w->miniWidget->deviceLabel->setText(tr("Headphone"));
                 w->osdWidget->UkmediaOsdSetIcon("audio-headphones");
             }
             else {
+                w->miniWidget->deviceLabel->setText(tr("Speaker (Realtek Audio)"));
                 w->osdWidget->ret = ret;
                 return;
             }
@@ -2751,12 +2754,15 @@ void DeviceSwitchWidget::on_stream_control_volume_notify (MateMixerStreamControl
         qDebug() << "ret " << ret << w->osdWidget->ret;
         if (ret != w->osdWidget->ret) {
             if (ret == 0) {
+                w->miniWidget->deviceLabel->setText(tr("Speaker (Realtek Audio)"));
                 w->osdWidget->UkmediaOsdSetIcon("audio-card");
             }
             else if (ret == 256) {
+                w->miniWidget->deviceLabel->setText(tr("Headphone"));
                 w->osdWidget->UkmediaOsdSetIcon("audio-headphones");
             }
             else {
+                w->miniWidget->deviceLabel->setText(tr("Speaker (Realtek Audio)"));
                 w->osdWidget->ret = ret;
                 return;
             }

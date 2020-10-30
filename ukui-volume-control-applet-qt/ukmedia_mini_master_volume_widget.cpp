@@ -43,7 +43,7 @@ UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QWidget *parent) : 
     switchBtn->setFlat(true);
     switchBtn->setCheckable(false);
     deviceBtn = new QPushButton(displayWidget);
-    deviceLabel = new QLabel(tr("Speaker (Realtek Audio)"),displayWidget);
+    deviceLabel = new QLabel(displayWidget);
 
     displayWidget->setFixedSize(260,40);
     QHBoxLayout *hLayout = new QHBoxLayout();
