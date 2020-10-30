@@ -42,6 +42,7 @@ private Q_SLOTS:
     void moveMiniSwitchBtnSlot();
 private:
     QFrame *masterWidget;
+    QFrame *displayWidget;
     UkmediaVolumeSlider *masterVolumeSlider;
     QLabel *displayVolumeLabel;
     UkuiButtonDrawSvg *muteBtn;

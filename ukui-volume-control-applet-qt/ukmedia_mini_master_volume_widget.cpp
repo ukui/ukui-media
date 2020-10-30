@@ -28,6 +28,7 @@ extern double transparency;
 UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QWidget *parent) : QWidget(parent)
 {
     masterWidget = new QFrame(this);
+    displayWidget = new QFrame(this);
     muteBtn = new UkuiButtonDrawSvg(masterWidget);
     displayVolumeLabel = new QLabel(masterWidget);
     masterVolumeSlider = new UkmediaVolumeSlider(masterWidget);
@@ -41,8 +42,17 @@ UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QWidget *parent) : 
 //    switchBtn->setStyle(new CustomStyle());
     switchBtn->setFlat(true);
     switchBtn->setCheckable(false);
-    deviceBtn = new QPushButton(this);
-    deviceLabel = new QLabel(tr("Speaker (Realtek Audio)"),this);
+    deviceBtn = new QPushButton(displayWidget);
+    deviceLabel = new QLabel(tr("Speaker (Realtek Audio)"),displayWidget);
+
+    displayWidget->setFixedSize(260,40);
+    QHBoxLayout *hLayout = new QHBoxLayout();
+    hLayout->addWidget(deviceBtn);
+    hLayout->addWidget(deviceLabel);
+    hLayout->setSpacing(4);
+    displayWidget->setLayout(hLayout);
+    hLayout->setContentsMargins(16,16,0,0);
+
     QSpacerItem *item1 = new QSpacerItem(16,20);
     QSpacerItem *item2 = new QSpacerItem(13,20);
     QSpacerItem *item3 = new QSpacerItem(15,20);
@@ -57,8 +67,7 @@ UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QWidget *parent) : 
     deviceCombox->setFixedSize(300,36);
     displayVolumeLabel->setFixedSize(32,20);
 
-    deviceBtn->move(16,16);
-    deviceLabel->move(36,18);
+    displayWidget->move(0,0);
     deviceCombox->move(2,6);
     switchBtn->move(305,6);
     masterWidget->move(0,59);
