@@ -94,7 +94,12 @@
 <context>
     <name>UkmediaMiniMasterVolumeWidget</name>
     <message>
-        <location filename="../ukmedia_mini_master_volume_widget.cpp" line="115"/>
+        <location filename="../ukmedia_mini_master_volume_widget.cpp" line="48"/>
+        <source>Speaker (Realtek Audio)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ukmedia_mini_master_volume_widget.cpp" line="116"/>
         <source>Go Into Full Mode</source>
         <translation type="unfinished"></translation>
     </message>
