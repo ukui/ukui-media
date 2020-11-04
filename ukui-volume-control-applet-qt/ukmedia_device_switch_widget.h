@@ -215,7 +215,6 @@ private Q_SLOTS:
     void ukuiThemeChangedSlot(const QString &themeStr);
     void fontSizeChangedSlot(const QString &themeStr);
     void osdDisplayWidgetHide();
-    void volumeSetSettingValue();
     void volumeSettingChangedSlot();
 private:
 
@@ -261,6 +260,7 @@ private:
     QString mThemeName;
     bool firstEnterSystem = true;
     ca_context *caContext;
+    bool setVolume = false;
 
 protected:
     void paintEvent(QPaintEvent *event);
