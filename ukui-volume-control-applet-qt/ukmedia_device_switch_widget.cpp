@@ -50,6 +50,8 @@ extern "C" {
 
 #define FILENAME_KEY "filename"
 #define NAME_KEY "name"
+bool volumeStates = false;
+bool setVolumeSettings = true;
 double transparency = 0.8;
 typedef enum {
     DEVICE_VOLUME_BUTTON,
@@ -140,6 +142,7 @@ void DeviceSwitchWidget::hideWindow()
 {
     switch (displayMode) {
     case MINI_MODE:
+        volumeStates = false;
         miniWidget->hide();
         break;
     case ADVANCED_MODE:
@@ -318,20 +321,23 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     //给侧边栏提供音量之设置
     if (QGSettings::isSchemaInstalled(UKUI_VOLUME_BRIGHTNESS_GSETTING_ID)) {
         m_pVolumeSetting = new QGSettings(UKUI_VOLUME_BRIGHTNESS_GSETTING_ID);
-        connect(m_pVolumeSetting,&QGSettings::changed,[=](){
-        MateMixerStream *stream;
-        MateMixerStreamControl *control = nullptr;
-        stream = mate_mixer_context_get_default_output_stream (context);
-        if (stream != nullptr)
-            control = mate_mixer_stream_get_default_control (stream);
+        connect(m_pVolumeSetting,SIGNAL(changed(const QString &)),this,SLOT(volumeSettingChangedSlot()));
+//        connect(m_pVolumeSetting,&QGSettings::changed,[=](){
+//        MateMixerStream *stream;
+//        MateMixerStreamControl *control = nullptr;
+//        stream = mate_mixer_context_get_default_output_stream (context);
+//        if (stream != nullptr)
+//            control = mate_mixer_stream_get_default_control (stream);
 
-        if (m_pVolumeSetting->keys().contains("volumesize")) {
-            int valueSetting = m_pVolumeSetting->get(UKUI_VOLUME_KEY).toInt();
-            int value = int(valueSetting *65536/100);
-            mate_mixer_stream_control_set_volume(control,value);
+//        if (m_pVolumeSetting->keys().contains("volumesize")) {
+//            int valueSetting = m_pVolumeSetting->get(UKUI_VOLUME_KEY).toInt();
+//            int value = int(valueSetting *65536/100);
+//            mate_mixer_stream_control_set_volume(control,value);
+//            qDebug() << "settings 值改变－－－－";
+////            miniWidget->masterVolumeSlider->setValue(valueSetting);
 
-        }
-    });
+//        }
+//    });
     }
 
     UkmediaMonitorWindowThread *m_pThread = new UkmediaMonitorWindowThread();
@@ -342,12 +348,14 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
      * mini模式下,当滑动条值改变时更改系统音量
      */
     connect(miniWidget->masterVolumeSlider,SIGNAL(valueChanged(int)),this,SLOT(miniMastrerSliderChangedSlot(int)));
+//    connect(miniWidget->masterVolumeSlider,SIGNAL(sliderReleased()),this,SLOT(volumeSetSettingValue()));
+
     /*!
      * \brief
      * \details
      * 完整模式下,应用音量节面，当滑动条值改变时更改系统音量
      */
-    connect(appWidget->systemVolumeSlider,SIGNAL(valueChanged(int)),this,SLOT(advancedSystemSliderChangedSlot(int)));
+    connect(appWidget->systemVolumeSlider,SIGNAL(valueChanged(int)),this,SLOT( advancedSystemSliderChangedSlot(int)));
     /*!
      * \brief
      * \details
@@ -476,18 +484,13 @@ void DeviceSwitchWidget::miniMastrerSliderChangedSlot(int value)
         control = mate_mixer_stream_get_default_control(stream);
     QString percent;
     percent = QString::number(value);
-    //设置gsettings的值
-    if (QGSettings::isSchemaInstalled(UKUI_VOLUME_BRIGHTNESS_GSETTING_ID)) {
-        if (m_pVolumeSetting->keys().contains("volumesize")) {
-            m_pVolumeSetting->set(UKUI_VOLUME_KEY,value);
-            qDebug() << "设置音量值为:" << value;
-        }
-    }
     //音量值改变时添加提示音
     if (firstEnterSystem != true) {
         mate_mixer_stream_control_set_mute(control,FALSE);
     }
     int volume = value*65536/100;
+//    devWidget->outputDeviceSlider->setValue(value);
+//    appWidget->systemVolumeSlider->setValue(value);
     mate_mixer_stream_control_set_volume(control,guint(volume));
     miniWidget->displayVolumeLabel->setText(percent);
     themeChangeIcons();
@@ -532,6 +535,7 @@ void DeviceSwitchWidget::outputDeviceSliderChangedSlot(int value)
     }
     int volume = value*65536/100;
     mate_mixer_stream_control_set_volume(control,guint(volume));
+//    miniWidget->masterVolumeSlider->setValue(value);
 }
 
 /*!
@@ -785,8 +789,11 @@ void DeviceSwitchWidget::miniWidgetKeyboardPressedSlot(int volumeGain)
  */
 void DeviceSwitchWidget::jumpControlPanelSlot()
 {
-    m_process = new QProcess(this);
+    m_process = new QProcess(0);
     m_process->start("ukui-control-center -s");
+    m_process->waitForStarted();
+    //    system("ukui-control-center -s");
+    return;
 }
 
 /*!
@@ -989,6 +996,16 @@ bool DeviceSwitchWidget::getOutputMuteStatus()
     MateMixerStream *pStream = mate_mixer_context_get_default_output_stream(context);
     MateMixerStreamControl *pControl = mate_mixer_stream_get_default_control(pStream);
     return mate_mixer_stream_control_get_mute(pControl);
+}
+
+void DeviceSwitchWidget::setVolumeSettingValue(int value)
+{
+    if (QGSettings::isSchemaInstalled(UKUI_VOLUME_BRIGHTNESS_GSETTING_ID)) {
+        if (m_pVolumeSetting->keys().contains("volumesize")) {
+           m_pVolumeSetting->set(UKUI_VOLUME_KEY,value);
+           qDebug() << "设置音量值为:"  ;
+        }
+    }
 }
 
 void DeviceSwitchWidget::themeChangeIcons()
@@ -2424,10 +2441,19 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
     QSlider *slider1 = w->miniWidget->findChild<QSlider *>(w->outputControlName);
     if (slider1 == nullptr)
         return;
-//    w->devWidget->outputDeviceSlider->setValue(value);
-//    w->miniWidget->masterVolumeSlider->setValue(value);
-//    w->appWidget->systemVolumeSlider->setValue(value);
-    slider1->setValue(value);
+    w->devWidget->outputDeviceSlider->blockSignals(true);
+    w->appWidget->systemVolumeSlider->blockSignals(true);
+    w->miniWidget->masterVolumeSlider->blockSignals(true);
+    w->devWidget->outputDeviceSlider->setValue(value);
+    w->appWidget->systemVolumeSlider->setValue(value);
+    w->miniWidget->masterVolumeSlider->setValue(value);
+    QString percentStr = QString::number(value) ;
+    w->miniWidget->displayVolumeLabel->setText(percentStr);
+    w->appWidget->systemVolumeDisplayLabel->setText(percentStr);
+    w->devWidget->outputDeviceSlider->blockSignals(false);
+    w->appWidget->systemVolumeSlider->blockSignals(false);
+    w->miniWidget->masterVolumeSlider->blockSignals(false);
+//    slider1->setValue(value);
     QString percent = QString::number(value);
     QString systemTrayIcon;
     QString audioIconStr;
@@ -2480,8 +2506,7 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
     //osd widget显示
     QFileInfo fileInfo(SOUND_MODE_SCRIPTS);
     if (fileInfo.exists()) {
-//        int ret = system(SOUND_MODE_SCRIPTS);
-        int ret;
+        int ret = system(SOUND_MODE_SCRIPTS);
         if (ret != w->osdWidget->ret) {
             if (ret == 0) {
                 w->osdWidget->UkmediaOsdSetIcon("audio-card");
@@ -2517,7 +2542,7 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
             /*QString sheet = QString("QWidget{background-color:rgba(19,19,20,%1);}").arg(transparency);
             miniWidget->setStyleSheet(sheet);*/
             w->osdWidget->setWindowOpacity(transparency);
-//            w->osdWidget->show();
+            w->osdWidget->show();
 
             w->timer = new MyTimer(w->osdWidget); //this 为parent类, 表示当前窗口
             connect(w->timer, SIGNAL(timeOut()), w, SLOT(osdDisplayWidgetHide()));
@@ -2528,11 +2553,39 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
 //osd超时隐藏
 void DeviceSwitchWidget::osdDisplayWidgetHide()
 {
-//    if(timer->isActive()){
-//        timer->destroyed();
-//        if (!this->osdWidget->isHidden())
-        this->osdWidget->hide();
-//    }
+    this->osdWidget->hide();
+}
+
+
+void DeviceSwitchWidget::volumeSettingChangedSlot()
+{
+    qDebug() << "setting changed" << volumeStates;
+    if (volumeStates == false) {
+        MateMixerStream *stream;
+        MateMixerStreamControl *control = nullptr;
+        stream = mate_mixer_context_get_default_output_stream (context);
+        if (stream != nullptr)
+            control = mate_mixer_stream_get_default_control (stream);
+
+        if (m_pVolumeSetting->keys().contains("volumesize")) {
+            int valueSetting = m_pVolumeSetting->get(UKUI_VOLUME_KEY).toInt();
+            miniWidget->masterVolumeSlider->setValue(valueSetting);
+            setVolumeSettings = false;
+            qDebug() << "settings 值改变－－－－";
+        }
+    }
+}
+
+void DeviceSwitchWidget::volumeSetSettingValue()
+{
+    //设置gsettings的值
+    int value = miniWidget->masterVolumeSlider->value();
+    if (QGSettings::isSchemaInstalled(UKUI_VOLUME_BRIGHTNESS_GSETTING_ID)) {
+        if (m_pVolumeSetting->keys().contains("volumesize")) {
+            m_pVolumeSetting->set(UKUI_VOLUME_KEY,value);
+            qDebug() << "设置音量值为:" << value;
+        }
+    }
 }
 
 void DeviceSwitchWidget::gvc_stream_status_icon_set_control (DeviceSwitchWidget *w,MateMixerStreamControl *control)
@@ -2692,9 +2745,42 @@ void DeviceSwitchWidget::on_stream_control_volume_notify (MateMixerStreamControl
     ca_context_create(&context);
     int value = int(volume*100/65536.0 + 0.5);
     if (direction == MATE_MIXER_DIRECTION_OUTPUT) {
-//        w->devWidget->outputDeviceSlider->setValue(value);
-//        w->appWidget->systemVolumeSlider->setValue(value);
-//        w->miniWidget->masterVolumeSlider->setValue(value);
+        w->devWidget->outputDeviceSlider->blockSignals(true);
+        w->appWidget->systemVolumeSlider->blockSignals(true);
+        w->miniWidget->masterVolumeSlider->blockSignals(true);
+        w->devWidget->outputDeviceSlider->setValue(value);
+        w->appWidget->systemVolumeSlider->setValue(value);
+        w->miniWidget->masterVolumeSlider->setValue(value);
+        QString percentStr = QString::number(value) ;
+        w->miniWidget->displayVolumeLabel->setText(percentStr);
+        w->appWidget->systemVolumeDisplayLabel->setText(percentStr);
+        w->devWidget->outputDeviceSlider->blockSignals(false);
+        w->appWidget->systemVolumeSlider->blockSignals(false);
+        w->miniWidget->masterVolumeSlider->blockSignals(false);
+        //设置gsettings的值
+        if (setVolumeSettings) {
+            w->setVolumeSettingValue(value);
+        }
+        else {
+            setVolumeSettings = true;
+        }
+//        bool oldStates = w->m_pVolumeSetting->blockSignals(false);
+//        if (QGSettings::isSchemaInstalled(UKUI_VOLUME_BRIGHTNESS_GSETTING_ID)) {
+//            if (w->m_pVolumeSetting->keys().contains("volumesize")) {
+////                if (w->m_pVolumeSetting->signalsBlocked()) {
+////                    qDebug() << "锁住信号";
+////                disconnect(w->m_pVolumeSetting,0,w,0);
+////               QObject::disconnect(w->m_pVolumeSetting,SIGNAL(changed(const QString &)),w,SLOT(volumeSettingChangedSlot()));
+
+//                w->m_pVolumeSetting->set(UKUI_VOLUME_KEY,value);
+
+////            }
+////                QObject::connect(w->m_pVolumeSetting,SIGNAL(changed(const QString &)),w,SLOT(volumeSettingChangedSlot()));
+
+////              w->m_pVolumeSetting->blockSignals(FALSE);
+//               qDebug() << "设置音量值为:" << value << oldStates;
+//            }
+//        }
 
         w->updateSystemTrayIcon(value,muted);
         //设置调节输入音量的提示音
@@ -2725,7 +2811,7 @@ void DeviceSwitchWidget::on_stream_control_volume_notify (MateMixerStreamControl
         id = text.data();
         desc = "Volume Changed";
         const gchar *eventId =id;
-        qDebug() << "****" << id << eventId;
+//        qDebug() << "****" << id << eventId;
         retval = ca_context_play (w->caContext, 0,
                                  CA_PROP_EVENT_ID, eventId,
                                  CA_PROP_EVENT_DESCRIPTION, desc, NULL);
@@ -2743,8 +2829,7 @@ void DeviceSwitchWidget::on_stream_control_volume_notify (MateMixerStreamControl
     //osd widget显示
     QFileInfo fileInfo(SOUND_MODE_SCRIPTS);
     if (fileInfo.exists()) {
-//        int ret = system(SOUND_MODE_SCRIPTS);
-        int ret;
+        int ret = system(SOUND_MODE_SCRIPTS);
         if (ret != w->osdWidget->ret) {
             if (ret == 0) {
                 w->miniWidget->deviceLabel->setText(tr("Speaker (Realtek Audio)"));
@@ -2780,12 +2865,13 @@ void DeviceSwitchWidget::on_stream_control_volume_notify (MateMixerStreamControl
             /*QString sheet = QString("QWidget{background-color:rgba(19,19,20,%1);}").arg(transparency);
             miniWidget->setStyleSheet(sheet);*/
             w->osdWidget->setWindowOpacity(transparency);
-//            w->osdWidget->show();
+            w->osdWidget->show();
 
             w->timer = new MyTimer(w->osdWidget); //this 为parent类, 表示当前窗口
             connect(w->timer, SIGNAL(timeOut()), w, SLOT(osdDisplayWidgetHide()));
         }
     }
+
     Q_EMIT w->system_muted_signal(muted);
 }
 

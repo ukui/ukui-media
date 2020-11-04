@@ -125,6 +125,7 @@ public:
     void outputVolumeDarkThemeImage(int value,bool status);
     void drawImagColorFromTheme(UkuiButtonDrawSvg *button, QString iconStr);
     void themeChangeIcons();
+    void setVolumeSettingValue(int value);
     QPixmap drawDarkColoredPixmap(const QPixmap &source);
     QPixmap drawLightColoredPixmap(const QPixmap &source);
     QString getAppName(QString desktopfp);
@@ -214,6 +215,8 @@ private Q_SLOTS:
     void ukuiThemeChangedSlot(const QString &themeStr);
     void fontSizeChangedSlot(const QString &themeStr);
     void osdDisplayWidgetHide();
+    void volumeSetSettingValue();
+    void volumeSettingChangedSlot();
 private:
 
     QPushButton *deviceBtn;

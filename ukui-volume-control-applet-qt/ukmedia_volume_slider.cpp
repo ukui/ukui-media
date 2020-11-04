@@ -23,9 +23,11 @@
 #include <QStyleOptionComplex>
 #include <QStylePainter>
 #include <QDebug>
+#include <QGSettings>
 
 DisplayerMode displayMode = MINI_MODE;
 SwitchButtonState buttonState = SWITCH_BUTTON_NORMAL;
+extern bool volumeStates;
 extern double transparency;
 UkuiApplicationWidget::UkuiApplicationWidget(QWidget *parent)
 {
@@ -145,15 +147,12 @@ void UkuiMediaButton::mousePressEvent(QMouseEvent *e)
         this->setFixedSize(34,34);
         QSize iconSize(14,14);
         this->setIconSize(iconSize);
-//        qDebug() << "设置tub ";
-        qDebug() << "设置图标3";
         this->setIcon(QIcon("/usr/share/ukui-media/img/complete-module.svg"));
     }
     else {
         this->setFixedSize(34,34);
         QSize iconSize(14,14);
         this->setIconSize(iconSize);
-        qDebug() << "设置图标4";
         this->setIcon(QIcon("/usr/share/ukui-media/img/mini-module.svg"));
         Q_EMIT moveAdvanceSwitchBtnSignal();
     }
@@ -216,6 +215,7 @@ void UkmediaVolumeSlider::initStyleOption(QStyleOptionSlider *option)
 
 void UkmediaVolumeSlider::leaveEvent(QEvent *e)
 {
+    volumeStates = false;
     if (state) {
         m_pTiplabel->hide();
     }
@@ -223,6 +223,7 @@ void UkmediaVolumeSlider::leaveEvent(QEvent *e)
 
 void UkmediaVolumeSlider::enterEvent(QEvent *e)
 {
+    volumeStates = true;
     if (state) {
         m_pTiplabel->show();
     }

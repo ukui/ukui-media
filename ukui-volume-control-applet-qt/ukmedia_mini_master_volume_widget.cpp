@@ -24,6 +24,7 @@
 #include <QApplication>
 #include <QDebug>
 
+extern bool volumeStates;
 extern double transparency;
 UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QWidget *parent) : QWidget(parent)
 {
@@ -145,6 +146,7 @@ void UkmediaMiniMasterVolumeWidget::paintEvent(QPaintEvent *event)
 */
 void UkmediaMiniMasterVolumeWidget::wheelEvent(QWheelEvent *event)
 {
+    volumeStates = true;
     bool step;
     if (event->delta() >0 ) {
         step = true;
