@@ -26,6 +26,9 @@
 #include <QFrame>
 #include <QDebug>
 #include <QLabel>
+#include <QMenu>
+#include <QEvent>
+#include <QHideEvent>
 #include <QScrollArea>
 
 typedef struct UkuiThemeIcon
@@ -143,6 +146,19 @@ public:
 
 protected:
     void paintEvent(QPaintEvent *e);
+
+};
+
+class UkuiQMenu:public QMenu
+{
+    Q_OBJECT
+public:
+    UkuiQMenu(QMenu *parent = nullptr);
+    ~UkuiQMenu();
+protected:
+    void hideEvent(QHideEvent *e);
+    virtual bool event(QEvent *e) override;
+
 
 };
 

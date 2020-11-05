@@ -371,11 +371,6 @@ void UkuiScrollArea::paintEvent(QPaintEvent *event)
     QStyleOption opt;
     opt.init(this);
     QPainter p(this);
-//    double transparence = transparency * 255;
-//    QColor color = palette().color(QPalette::Base);
-//    color.setAlpha(transparence);
-//    QBrush brush = QBrush(color);
-//    p.setBrush(brush);
     p.setBrush(this->palette().base());
     p.setPen(Qt::NoPen);
     QPainterPath path;
@@ -386,4 +381,31 @@ void UkuiScrollArea::paintEvent(QPaintEvent *event)
     setProperty("blurRegion",QRegion(path.toFillPolygon().toPolygon()));
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 //    QWidget::paintEvent(event);
+}
+
+UkuiQMenu::UkuiQMenu(QMenu *parent){
+}
+
+bool UkuiQMenu::event(QEvent *e)
+{
+//    qDebug() << "事件类型" << e->type() << "show";
+    if (e->type() == QEvent::ContextMenu) {
+        this->show();
+    }
+    else if (e->type() == QEvent::WinIdChange) {
+        qDebug() << "winid changed";
+    }
+    else if(e->type() == QEvent::MouseButtonRelease) {
+//        this->hide();
+        qDebug() << "事件类型" << e->type();
+    }
+     return QMenu::event(e);
+}
+
+void UkuiQMenu::hideEvent(QHideEvent *e)
+{
+//    qDebug() << "菜单隐藏" << e->type();
+}
+
+UkuiQMenu::~UkuiQMenu(){
 }

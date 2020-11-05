@@ -166,23 +166,32 @@ void UkmediaMiniMasterVolumeWidget::keyPressEvent(QKeyEvent *event)
     int volumeGain ;
     if (event->key() == Qt::Key_Escape) {
         this->hide();
+        return;
+    }
+    else if (event->key() == Qt::Key_Minus) {
+        volumeGain = -1;
+    }
+    else if (event->key() == Qt::Key_Plus) {
+        volumeGain = 1;
     }
     else if (event->key() == Qt::Key_Up) {
         volumeGain = 1;
-        Q_EMIT keyboard_pressed_signal(volumeGain);
     }
     else if (event->key() == Qt::Key_Down) {
         volumeGain = -1;
-        Q_EMIT keyboard_pressed_signal(volumeGain);
     }
     else if (event->key() == Qt::Key_Left) {
         volumeGain = -1;
-        Q_EMIT keyboard_pressed_signal(volumeGain);
+
     }
     else if (event->key() == Qt::Key_Right) {
         volumeGain = 1;
-        Q_EMIT keyboard_pressed_signal(volumeGain);
     }
+    else {
+        return;
+    }
+
+    Q_EMIT keyboard_pressed_signal(volumeGain);
 }
 
 /*

@@ -322,22 +322,6 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     if (QGSettings::isSchemaInstalled(UKUI_VOLUME_BRIGHTNESS_GSETTING_ID)) {
         m_pVolumeSetting = new QGSettings(UKUI_VOLUME_BRIGHTNESS_GSETTING_ID);
         connect(m_pVolumeSetting,SIGNAL(changed(const QString &)),this,SLOT(volumeSettingChangedSlot()));
-//        connect(m_pVolumeSetting,&QGSettings::changed,[=](){
-//        MateMixerStream *stream;
-//        MateMixerStreamControl *control = nullptr;
-//        stream = mate_mixer_context_get_default_output_stream (context);
-//        if (stream != nullptr)
-//            control = mate_mixer_stream_get_default_control (stream);
-
-//        if (m_pVolumeSetting->keys().contains("volumesize")) {
-//            int valueSetting = m_pVolumeSetting->get(UKUI_VOLUME_KEY).toInt();
-//            int value = int(valueSetting *65536/100);
-//            mate_mixer_stream_control_set_volume(control,value);
-//            qDebug() << "settings 值改变－－－－";
-////            miniWidget->masterVolumeSlider->setValue(valueSetting);
-
-//        }
-//    });
     }
 
     UkmediaMonitorWindowThread *m_pThread = new UkmediaMonitorWindowThread();
@@ -354,13 +338,13 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
      * \details
      * 完整模式下,应用音量节面，当滑动条值改变时更改系统音量
      */
-//    connect(appWidget->systemVolumeSlider,SIGNAL(valueChanged(int)),this,SLOT( advancedSystemSliderChangedSlot(int)));
+    connect(appWidget->systemVolumeSlider,SIGNAL(valueChanged(int)),this,SLOT( advancedSystemSliderChangedSlot(int)));
     /*!
      * \brief
      * \details
      * 完整模式下,系统音量界面，当滑动条值改变时更改系统音量
      */
-//    connect(devWidget->outputDeviceSlider,SIGNAL(valueChanged(int)),this,SLOT(outputDeviceSliderChangedSlot(int)));
+    connect(devWidget->outputDeviceSlider,SIGNAL(valueChanged(int)),this,SLOT(outputDeviceSliderChangedSlot(int)));
     /*!
      * \brief
      * \details
@@ -462,13 +446,10 @@ void DeviceSwitchWidget::systemTrayMenuInit()
 {
     menu = new QMenu();
     qDebug() << "new menu";
-//    menu->setAttribute(Qt::WA_DeleteOnClose);
-//    menu->setAttribute();
     soundSystemTrayIcon->setContextMenu(menu);
     //设置右键菜单
     menu->addAction(m_pMuteAction);
     menu->addAction(m_pSoundPreferenceAction);
-    menu->setObjectName("outputSoundMenu");
 }
 
 /*!
@@ -1159,10 +1140,11 @@ void DeviceSwitchWidget::activatedSystemTrayIconSlot(QSystemTrayIcon::Activation
         hideWindow();
         break;
     }
-    case QSystemTrayIcon::Context:{
-//        systemTrayMenuInit();
-//        menu->hide();
-    }
+//    case QSystemTrayIcon::Context:{
+////        systemTrayMenuInit();
+//        qDebug() <<  "context menu";
+//        menu->show();
+//    }
     default:
         break;
     }
@@ -2422,6 +2404,7 @@ void DeviceSwitchWidget::update_icon_input (DeviceSwitchWidget *w,MateMixerStrea
 void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerContext *context)
 {
     MateMixerStream *stream;
+    qDebug() << "update icon output";
     MateMixerStreamControl *control = nullptr;
     stream = mate_mixer_context_get_default_output_stream (context);
     if (stream != nullptr)
@@ -2455,17 +2438,19 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
     QString percent = QString::number(value);
     QString systemTrayIcon;
     QString audioIconStr;
+    QString muteComboxStr;
     QIcon trayIcon;
     QIcon audioIcon;
 
     if (state) {
         systemTrayIcon = "audio-volume-muted-symbolic";
         audioIconStr = "audio-volume-muted-symbolic";
+        muteComboxStr = "object-select-symbolic";
     }
     else if (value <= 0) {
         systemTrayIcon = "audio-volume-muted-symbolic";
         audioIconStr = "audio-volume-muted-symbolic";
-        w->m_pMuteAction->setIcon(QIcon(""));
+        muteComboxStr = "";
         //如果主主音量处于静音状态，应用音量取消静音则设置主音量取消静音
         /*if (state) {
             connect(w,&DeviceSwitchWidget::appvolume_mute_change_mastervolume_status,[=](){
@@ -2476,20 +2461,22 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
     else if (value > 0 && value <= 33) {
         systemTrayIcon = "audio-volume-low-symbolic";
         audioIconStr = "audio-volume-low-symbolic";
+        muteComboxStr = "";
     }
     else if(value > 33 && value <= 66) {
         systemTrayIcon = "audio-volume-medium-symbolic";
         audioIconStr = "audio-volume-medium-symbolic";
-        w->m_pMuteAction->setIcon(QIcon(""));
+        muteComboxStr = "";
     }
     else if (value > 66) {
         systemTrayIcon = "audio-volume-high-symbolic";
         audioIconStr = "audio-volume-high-symbolic";
-        w->m_pMuteAction->setIcon(QIcon(""));
+        muteComboxStr = "";
     }
 
     w->themeChangeIcons();
     trayIcon = QIcon::fromTheme(systemTrayIcon);
+    w->m_pMuteAction->setIcon(QIcon::fromTheme(muteComboxStr));
     w->soundSystemTrayIcon->setIcon(QIcon(trayIcon));
     w->appWidget->systemVolumeBtn->setIcon(QIcon(audioIcon));
     w->miniWidget->displayVolumeLabel->setText(percent);
@@ -2756,23 +2743,6 @@ void DeviceSwitchWidget::on_stream_control_volume_notify (MateMixerStreamControl
         else {
             setVolumeSettings = true;
         }
-//        bool oldStates = w->m_pVolumeSetting->blockSignals(false);
-//        if (QGSettings::isSchemaInstalled(UKUI_VOLUME_BRIGHTNESS_GSETTING_ID)) {
-//            if (w->m_pVolumeSetting->keys().contains("volumesize")) {
-////                if (w->m_pVolumeSetting->signalsBlocked()) {
-////                    qDebug() << "锁住信号";
-////                disconnect(w->m_pVolumeSetting,0,w,0);
-////               QObject::disconnect(w->m_pVolumeSetting,SIGNAL(changed(const QString &)),w,SLOT(volumeSettingChangedSlot()));
-
-//                w->m_pVolumeSetting->set(UKUI_VOLUME_KEY,value);
-
-////            }
-////                QObject::connect(w->m_pVolumeSetting,SIGNAL(changed(const QString &)),w,SLOT(volumeSettingChangedSlot()));
-
-////              w->m_pVolumeSetting->blockSignals(FALSE);
-//               qDebug() << "设置音量值为:" << value << oldStates;
-//            }
-//        }
 
         w->updateSystemTrayIcon(value,muted);
         //设置调节输入音量的提示音
