@@ -98,7 +98,7 @@ UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QWidget *parent) : 
     switchBtn->setIcon(QIcon("/usr/share/ukui-media/img/complete-module.svg"));
     this->setFixedSize(345,100);
     setWindowFlags(Qt::WindowStaysOnTopHint | Qt::Popup);
-    setAttribute(Qt::WA_TranslucentBackground);
+    setAttribute(Qt::WA_NoMouseReplay);
     QHBoxLayout *hlayout  = new QHBoxLayout(masterWidget);
 
     hlayout->addItem(item1);

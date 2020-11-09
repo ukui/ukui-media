@@ -153,7 +153,7 @@ class UkuiQMenu:public QMenu
 {
     Q_OBJECT
 public:
-    UkuiQMenu(QMenu *parent = nullptr);
+    UkuiQMenu();
     ~UkuiQMenu();
 protected:
     void hideEvent(QHideEvent *e);

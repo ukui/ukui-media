@@ -49,12 +49,11 @@ private:
     MediaSliderTipLabel *m_pTiplabel;
 };
 
-class AppEventFilter : public QObject
+class AppEventFilter
 {
     friend class SliderTipLabelHelper;
-    Q_OBJECT
 private:
-    explicit AppEventFilter(SliderTipLabelHelper *parent);
+    explicit AppEventFilter();
     ~AppEventFilter() {}
 
     bool eventFilter(QObject *obj, QEvent *e);

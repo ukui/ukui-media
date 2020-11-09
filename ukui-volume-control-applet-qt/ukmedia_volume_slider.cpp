@@ -383,12 +383,12 @@ void UkuiScrollArea::paintEvent(QPaintEvent *event)
 //    QWidget::paintEvent(event);
 }
 
-UkuiQMenu::UkuiQMenu(QMenu *parent){
+UkuiQMenu::UkuiQMenu(){
 }
 
 bool UkuiQMenu::event(QEvent *e)
 {
-//    qDebug() << "事件类型" << e->type() << "show";
+    qDebug() << "事件类型" << e->type() << "show";
     if (e->type() == QEvent::ContextMenu) {
         this->show();
     }
@@ -404,7 +404,9 @@ bool UkuiQMenu::event(QEvent *e)
 
 void UkuiQMenu::hideEvent(QHideEvent *e)
 {
-//    qDebug() << "菜单隐藏" << e->type();
+    this->activateWindow();
+    this->setAttribute(Qt::WA_NoMouseReplay);
+    qDebug() << "菜单隐藏" << e->type();
 }
 
 UkuiQMenu::~UkuiQMenu(){

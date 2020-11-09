@@ -58,7 +58,6 @@ SliderTipLabelHelper::SliderTipLabelHelper(QObject *parent) :QObject(parent)
 {
     m_pTiplabel = new MediaSliderTipLabel();
     m_pTiplabel->setWindowFlags(Qt::ToolTip);
-    qApp->installEventFilter(new AppEventFilter(this));
     m_pTiplabel->setFixedSize(52,30);
     m_pTiplabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 }
@@ -155,9 +154,8 @@ void SliderTipLabelHelper::mousePressedEvent(QObject *obj, QMouseEvent *e)
 }
 
 // AppEventFilter
-AppEventFilter::AppEventFilter(SliderTipLabelHelper *parent) : QObject(parent)
+AppEventFilter::AppEventFilter()
 {
-    m_wm = parent;
 }
 
 bool AppEventFilter::eventFilter(QObject *obj, QEvent *e)

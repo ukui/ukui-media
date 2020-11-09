@@ -157,6 +157,7 @@ void DeviceSwitchWidget::hideWindow()
 DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
 {
     setAttribute(Qt::WA_TranslucentBackground);
+    setAttribute(Qt::WA_NoMouseReplay);
     setWindowFlags(Qt::WindowStaysOnTopHint|Qt::Popup);
     mThemeName = UKUI_THEME_WHITE;
     devWidget = new UkmediaDeviceWidget(this);
@@ -445,7 +446,7 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
 void DeviceSwitchWidget::systemTrayMenuInit()
 {
     menu = new QMenu();
-    qDebug() << "new menu";
+    menu->setAttribute(Qt::WA_NoMouseReplay);
     soundSystemTrayIcon->setContextMenu(menu);
     //设置右键菜单
     menu->addAction(m_pMuteAction);
@@ -471,6 +472,8 @@ void DeviceSwitchWidget::miniMastrerSliderChangedSlot(int value)
     int volume = value*65536/100;
     mate_mixer_stream_control_set_volume(control,guint(volume));
     miniWidget->displayVolumeLabel->setText(percent);
+    appWidget->systemVolumeSlider->setValue(value);
+    devWidget->outputDeviceSlider->setValue(value);
     themeChangeIcons();
     firstEnterSystem = false;
 }
@@ -492,6 +495,7 @@ void DeviceSwitchWidget::advancedSystemSliderChangedSlot(int value)
     }
     int volume = value*65536/100;
     mate_mixer_stream_control_set_volume(control,guint(volume));
+    miniWidget->masterVolumeSlider->setValue(value);
     appWidget->systemVolumeDisplayLabel->setText(percent);
 }
 
@@ -513,7 +517,7 @@ void DeviceSwitchWidget::outputDeviceSliderChangedSlot(int value)
     }
     int volume = value*65536/100;
     mate_mixer_stream_control_set_volume(control,guint(volume));
-//    miniWidget->masterVolumeSlider->setValue(value);
+    miniWidget->masterVolumeSlider->setValue(value);
 }
 
 /*!
@@ -770,7 +774,6 @@ void DeviceSwitchWidget::jumpControlPanelSlot()
     m_process = new QProcess(0);
     m_process->start("ukui-control-center -s");
     m_process->waitForStarted();
-    //    system("ukui-control-center -s");
     return;
 }
 
@@ -1140,11 +1143,8 @@ void DeviceSwitchWidget::activatedSystemTrayIconSlot(QSystemTrayIcon::Activation
         hideWindow();
         break;
     }
-//    case QSystemTrayIcon::Context:{
-////        systemTrayMenuInit();
-//        qDebug() <<  "context menu";
-//        menu->show();
-//    }
+    case QSystemTrayIcon::Context:{
+    }
     default:
         break;
     }
@@ -2944,11 +2944,9 @@ bool DeviceSwitchWidget:: event(QEvent *event)
         if (QApplication::activeWindow() != this) {
             if (displayMode == MINI_MODE) {
                 miniWidget->hide();
-//                isShow = true;
             }
             else if (displayMode == ADVANCED_MODE) {
                 this->hide();
-//                isShow = true;
             }
         }
     }
@@ -3319,7 +3317,6 @@ void MyTimer::timerEvent(QTimerEvent *event)
 
 void MyTimer::handleTimeout()
 {
-    qDebug()<<"Enter timeout processing function\n";
     killTimer(m_nTimerID);
 }
 

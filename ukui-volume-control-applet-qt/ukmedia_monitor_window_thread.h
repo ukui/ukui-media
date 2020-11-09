@@ -34,8 +34,6 @@
 #include <X11/Xatom.h>
 #include <QVector>
 
-//#include <libwnck/libwnck.h>
-
 class UkmediaMonitorWindowThread : public QThread
 {
 public:
