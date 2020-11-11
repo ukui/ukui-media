@@ -45,7 +45,8 @@ extern "C" {
 
 #define KEYBINDINGS_CUSTOM_SCHEMA "org.ukui.media.sound"
 #define KEYBINDINGS_CUSTOM_DIR "/org/ukui/sound/keybindings/"
-
+#define KEY_SOUNDS_SCHEMA   "org.mate.sound"
+#define EVENT_SOUNDS_KEY "event-sounds"
 #define MAX_CUSTOM_SHORTCUTS 1000
 
 #define FILENAME_KEY "filename"
@@ -289,6 +290,8 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
                       G_CALLBACK (on_context_state_notify),
                       this);
 
+    //获取声音gsettings值
+    m_pSoundSettings = g_settings_new (KEY_SOUNDS_SCHEMA);
     //检测系统主题
     if (QGSettings::isSchemaInstalled(UKUI_THEME_SETTING)){
         m_pThemeSetting = new QGSettings(UKUI_THEME_SETTING);
@@ -2719,6 +2722,7 @@ void DeviceSwitchWidget::on_stream_control_volume_notify (MateMixerStreamControl
 
     direction = mate_mixer_stream_get_direction(MATE_MIXER_STREAM(stream));
     //设置输出滑动条的值
+
     ca_context *context;
     ca_context_create(&context);
     int value = int(volume*100/65536.0 + 0.5);
@@ -2774,12 +2778,15 @@ void DeviceSwitchWidget::on_stream_control_volume_notify (MateMixerStreamControl
         desc = "Volume Changed";
         const gchar *eventId =id;
 //        qDebug() << "****" << id << eventId;
-        retval = ca_context_play (w->caContext, 0,
-                                 CA_PROP_EVENT_ID, eventId,
-                                 CA_PROP_EVENT_DESCRIPTION, desc, NULL);
+        bool status = g_settings_get_boolean(w->m_pSoundSettings, EVENT_SOUNDS_KEY);
+        if (status) {
+            retval = ca_context_play (w->caContext, 0,
+                                     CA_PROP_EVENT_ID, eventId,
+                                     CA_PROP_EVENT_DESCRIPTION, desc, NULL);
 
-        if (retval < 0) {
-            qDebug() << "fail to play " << eventId << ca_strerror(retval) << retval;
+            if (retval < 0) {
+                qDebug() << "fail to play " << eventId << ca_strerror(retval) << retval;
+            }
         }
     }
     else if (direction == MATE_MIXER_DIRECTION_INPUT) {

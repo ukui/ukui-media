@@ -246,6 +246,7 @@ private:
     QFrame *dividerFrame;
     MyTimer *timer;
     QMenu *menu;
+    GSettings *m_pSoundSettings;
     QGSettings *m_pThemeSetting;
     QGSettings *m_pTransparencySetting;
     QGSettings *m_pVolumeSetting;
