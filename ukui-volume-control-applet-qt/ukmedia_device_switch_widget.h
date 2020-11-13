@@ -109,7 +109,6 @@ public:
     void systemTrayMenuInit();
     void showWindow();
     void hideWindow();
-    void updateMicrophoneIcon(int volume,bool status);
     void updateSystemTrayIcon(int volume,bool status);
     int getPanelPosition(QString str);
     int getPanelHeight(QString str);
@@ -261,7 +260,8 @@ private:
     QString mThemeName;
     bool firstEnterSystem = true;
     ca_context *caContext;
-    bool setVolume = false;
+    bool setOutputVolume = false;
+    bool setInputVolume = false;
 
 protected:
     void paintEvent(QPaintEvent *event);

@@ -36,7 +36,7 @@ UkmediaDeviceWidget::UkmediaDeviceWidget(QWidget *parent) : QWidget (parent)
     inputDeviceLabel = new QLabel(tr("Input Device"),this);
     inputDeviceDisplayLabel = new QLabel(tr("Microphone"),inputWidget);
     inputDeviceBtn = new QPushButton(inputWidget);
-    inputDeviceSlider = new UkmediaVolumeSlider(inputSliderWidget);
+    inputDeviceSlider = new UkmediaVolumeSlider(inputSliderWidget,true);
     inputMuteButton = new UkuiButtonDrawSvg(inputSliderWidget);
 
     outputWidget->setFixedSize(340,66);
@@ -126,7 +126,7 @@ void UkmediaDeviceWidget::inputWidgetShow()
     //设置noinputlabel隐藏
     noInputDeviceLabel->hide();
     const QSize iconSize(32,32);
-    inputWidget->setFixedSize(340,60);
+    inputWidget->setFixedSize(340,74);
     inputSliderWidget->setFixedSize(306,32);
 
     //设置输入输出音量图标
@@ -138,8 +138,8 @@ void UkmediaDeviceWidget::inputWidgetShow()
     inputDeviceBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-input-microphone.svg"));
 #endif
     //设置滑动条的范围和取向
-    inputDeviceLabel->setFixedSize(140,20);
-    inputDeviceDisplayLabel->setFixedSize(220,14);
+    inputDeviceLabel->setFixedSize(140,24);
+    inputDeviceDisplayLabel->setFixedSize(220,24);
 
     inputDeviceSlider->setRange(0,100);
     inputDeviceSlider->setOrientation(Qt::Horizontal);
