@@ -1341,25 +1341,24 @@ void DeviceSwitchWidget::add_stream (DeviceSwitchWidget *w, MateMixerStream *str
     MateMixerDirection direction;
     const gchar *name = "";
     const gchar *label = "";
-//    qDebug() << "add stream name "
     direction = mate_mixer_stream_get_direction (stream);
     if (direction == MATE_MIXER_DIRECTION_INPUT) {
         MateMixerStream *input;
         input = mate_mixer_context_get_default_input_stream (context);
         if (stream == input) {
-            qDebug() << "add stream set input stream"  << mate_mixer_stream_get_name(stream);
             bar_set_stream (w, stream);
             MateMixerStreamControl *c = mate_mixer_stream_get_default_control(stream);
             update_input_settings (w,c);
         }
-//        else {
-//            mate_mixer_context_set_default_input_stream(w->context,stream);
-//            qDebug() << "add stream set input stream 1"  << mate_mixer_stream_get_name(stream);
-//            bar_set_stream (w, stream);
-//        }
-        name  = mate_mixer_stream_get_name (stream);
-        label = mate_mixer_stream_get_label (stream);
-        w->input_stream_list->append(name);
+        else {
+            mate_mixer_context_set_default_input_stream(w->context,stream);
+            qDebug() << "add stream set input stream 1"  << mate_mixer_stream_get_name(stream);
+            bar_set_stream (w, stream);
+            name  = mate_mixer_stream_get_name (stream);
+            label = mate_mixer_stream_get_label (stream);
+            qDebug() << "add stream set input stream"  << name;
+            w->input_stream_list->append(name);
+        }
     }
     else if (direction == MATE_MIXER_DIRECTION_OUTPUT) {
         MateMixerStream        *output;
@@ -2386,8 +2385,7 @@ void DeviceSwitchWidget::update_icon_input (DeviceSwitchWidget *w,MateMixerStrea
                      * control for the icon */
                     control = input;
                 }
-                show = true;
-                qDebug() << "设置输入为111111111 " << show;
+//                show = true;
                 break;
             }
 
@@ -2399,7 +2397,6 @@ void DeviceSwitchWidget::update_icon_input (DeviceSwitchWidget *w,MateMixerStrea
                 if G_UNLIKELY (control == nullptr)
                     control = input;
                 show = true;
-                qDebug() << "设置输入为22222 " << show;
                 break;
             }
         }
