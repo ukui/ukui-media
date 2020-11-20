@@ -266,6 +266,8 @@ private:
 protected:
     void paintEvent(QPaintEvent *event);
     bool event(QEvent *event);//重写窗口事件
+
+//    void mouseReleaseEvent(QMouseEvent *event);
 };
 
 #endif // DEICESWITCHWIDGET_H

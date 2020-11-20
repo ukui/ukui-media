@@ -102,10 +102,10 @@ int main(int argc, char *argv[])
     QFile qss(":/data/qss/ukuimedia.qss");
     qss.open(QFile::ReadOnly);
 
-//    qApp->setStyleSheet(qss.readAll());
     qss.close();
     DeviceSwitchWidget w;
     KWindowEffects::enableBlurBehind(w.winId(),true);
+    w.raise();
 //    w.show();
     XCloseDisplay(display);
     return app.exec();
