@@ -58,6 +58,7 @@ extern "C" {
 //为平板模式提供设置音量值
 #define UKUI_VOLUME_BRIGHTNESS_GSETTING_ID "org.ukui.quick-operation.panel"
 #define UKUI_VOLUME_KEY "volumesize"
+#define UKUI_VOLUME_STATE "soundstate"
 
 #define UKUI_PANEL_SETTING "org.ukui.panel.settings"
 #define dsdasdasdasda

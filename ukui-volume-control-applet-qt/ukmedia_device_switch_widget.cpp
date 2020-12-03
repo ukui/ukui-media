@@ -581,6 +581,12 @@ void DeviceSwitchWidget::miniWidgetMuteButtonClickedSlot()
         mate_mixer_stream_control_set_mute(control,status);
 //        updateSystemTrayIcon(volume,status);
     }
+
+    if (QGSettings::isSchemaInstalled(UKUI_VOLUME_BRIGHTNESS_GSETTING_ID)) {
+        if (m_pVolumeSetting->keys().contains("soundstate")) {
+           m_pVolumeSetting->set(UKUI_VOLUME_STATE,status);
+        }
+    }
     Q_EMIT system_muted_signal(status);
     themeChangeIcons();
 }
@@ -2588,7 +2594,13 @@ void DeviceSwitchWidget::volumeSettingChangedSlot()
             int valueSetting = m_pVolumeSetting->get(UKUI_VOLUME_KEY).toInt();
             miniWidget->masterVolumeSlider->setValue(valueSetting);
             setVolumeSettings = false;
-            qDebug() << "settings 值改变－－－－";
+        }
+
+        if (QGSettings::isSchemaInstalled(UKUI_VOLUME_BRIGHTNESS_GSETTING_ID)) {
+            if (m_pVolumeSetting->keys().contains("soundstate")) {
+               bool status = m_pVolumeSetting->get(UKUI_VOLUME_STATE).toBool();
+               mate_mixer_stream_control_set_mute(control,status);
+            }
         }
     }
 }
