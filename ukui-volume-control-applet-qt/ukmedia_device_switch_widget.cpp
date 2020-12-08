@@ -325,6 +325,7 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     //给侧边栏提供音量之设置
     if (QGSettings::isSchemaInstalled(UKUI_VOLUME_BRIGHTNESS_GSETTING_ID)) {
         m_pVolumeSetting = new QGSettings(UKUI_VOLUME_BRIGHTNESS_GSETTING_ID);
+
         connect(m_pVolumeSetting,SIGNAL(changed(const QString &)),this,SLOT(volumeSettingChangedSlot()));
     }
 
@@ -584,7 +585,8 @@ void DeviceSwitchWidget::miniWidgetMuteButtonClickedSlot()
 
     if (QGSettings::isSchemaInstalled(UKUI_VOLUME_BRIGHTNESS_GSETTING_ID)) {
         if (m_pVolumeSetting->keys().contains("soundstate")) {
-           m_pVolumeSetting->set(UKUI_VOLUME_STATE,status);
+           m_pVolumeSetting->set(UKUI_VOLUME_STATE,!status);
+           qDebug() <<"设置静音设置值is  "  << !status;
         }
     }
     Q_EMIT system_muted_signal(status);
@@ -2447,6 +2449,13 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
     if (stream != nullptr)
         control = mate_mixer_stream_get_default_control (stream);
 
+    //初始化个setting值
+    if (QGSettings::isSchemaInstalled(UKUI_VOLUME_BRIGHTNESS_GSETTING_ID)) {
+        if (w->m_pVolumeSetting->keys().contains("soundstate")) {
+            bool status = mate_mixer_stream_control_get_mute(control);
+            w->m_pVolumeSetting->set(UKUI_VOLUME_STATE,status);
+        }
+    }
 //    w->stream = stream;
     w->outputControlName = mate_mixer_stream_control_get_name(control);
     w->miniWidget->masterVolumeSlider->setObjectName(w->outputControlName);
@@ -2600,6 +2609,7 @@ void DeviceSwitchWidget::volumeSettingChangedSlot()
             if (m_pVolumeSetting->keys().contains("soundstate")) {
                bool status = m_pVolumeSetting->get(UKUI_VOLUME_STATE).toBool();
                mate_mixer_stream_control_set_mute(control,status);
+               qDebug() << "设置静音状态"  <<status;
             }
         }
     }
