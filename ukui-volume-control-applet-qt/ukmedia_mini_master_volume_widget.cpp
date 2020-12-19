@@ -133,9 +133,9 @@ void UkmediaMiniMasterVolumeWidget::paintEvent(QPaintEvent *event)
     p.setPen(Qt::NoPen);
     QPainterPath path;
     opt.rect.adjust(0,0,0,0);
-    path.addRoundedRect(opt.rect,12,12);
+    path.addRoundedRect(opt.rect,6,6);
     p.setRenderHint(QPainter::Antialiasing);  // 反锯齿;
-    p.drawRoundedRect(opt.rect,12,12);
+    p.drawRoundedRect(opt.rect,6,6);
     setProperty("blurRegion",QRegion(path.toFillPolygon().toPolygon()));
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 //    QWidget::paintEvent(event);

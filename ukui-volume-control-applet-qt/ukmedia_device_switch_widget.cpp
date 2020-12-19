@@ -1409,7 +1409,7 @@ void DeviceSwitchWidget::add_stream (DeviceSwitchWidget *w, MateMixerStream *str
                 const gchar *m_pAppName = mate_mixer_app_info_get_name(m_pAppInfo);
                 if (strcmp(m_pAppName,"ukui-session") != 0 && strcmp(m_pAppName,"ukui-volume-control-applet-qt") != 0 && strcmp(m_pAppName,"Volume Control") && \
                     strcmp(m_pAppName,"ALSA plug-in [mate-screenshot]") && strcmp(m_pAppName,"ALSA plug-in [ukui-volume-control-applet-qt]") && \
-                    strcmp(m_pAppName,"Ukui Volume Control App") && !strstr(m_pAppName,"QtPulseAudio")) {
+                    strcmp(m_pAppName,"Ukui Volume Control App") && !strstr(m_pAppName,"QtPulseAudio") && strcmp(m_pAppName,"ukuimedia-volume-control") != 0) {
                     if G_UNLIKELY (w->control == nullptr)
                         return;
                     add_application_control (w, w->control,m_pStreamControlName);
@@ -1526,7 +1526,7 @@ void DeviceSwitchWidget::on_stream_control_added (MateMixerStream *stream,const 
         const gchar *m_pAppName = mate_mixer_app_info_get_name(m_pAppInfo);
         if (strcmp(m_pAppName,"ukui-session") != 0 && strcmp(m_pAppName,"ukui-volume-control-applet-qt") != 0 && strcmp(m_pAppName,"Volume Control") && \
             strcmp(m_pAppName,"ALSA plug-in [mate-screenshot]") && strcmp(m_pAppName,"ALSA plug-in [ukui-volume-control-applet-qt]") && \
-            strcmp(m_pAppName,"Ukui Volume Control App") && !strstr(m_pAppName,"QtPulseAudio")) {
+            strcmp(m_pAppName,"Ukui Volume Control App") && !strstr(m_pAppName,"QtPulseAudio") && strcmp(m_pAppName,"ukuimedia-volume-control") != 0) {
             if G_UNLIKELY (w->control == nullptr)
                 return;
 
@@ -3065,20 +3065,31 @@ void DeviceSwitchWidget::miniWidgetShow()
 
     panelHeight = getPanelHeight("panelheight");
     panelPosition = getPanelPosition("panelposition");
-
+    trayRect = soundSystemTrayIcon->geometry();
+    int trayHeight = trayRect.y() + trayRect.width();
     int totalHeight = qApp->primaryScreen()->size().height() + qApp->primaryScreen()->geometry().y();
     int totalWidth = qApp->primaryScreen()->size().width() + qApp->primaryScreen()->geometry().x();
+    if (panelHeight < 50) {
+        trayHeight += 7;
+    }
+    else if (panelHeight >= 50 && panelHeight < 75) {
+        trayHeight += 11;
+    }
+    else if (panelHeight >= 75 && panelHeight <95) {
+        trayHeight += 14;
+    }
+
     if (panelPosition == 0) { //任务栏在下
-        miniWidget->setGeometry(totalWidth-miniWidget->width(),totalHeight-panelHeight-miniWidget->height()-8,miniWidget->width(),miniWidget->height());
+        miniWidget->setGeometry(totalWidth-miniWidget->width()-4,totalHeight-panelHeight-miniWidget->height()-4,miniWidget->width(),miniWidget->height());
     }
     else if (panelPosition == 1) { //任务栏在上
-        miniWidget->setGeometry(totalWidth-miniWidget->width(),qApp->primaryScreen()->geometry().y()+panelHeight+8,miniWidget->width(),miniWidget->height());
+        miniWidget->setGeometry(totalWidth-miniWidget->width()-4,qApp->primaryScreen()->geometry().y()+panelHeight+4,miniWidget->width(),miniWidget->height());
     }
     else if (panelPosition == 2) {//任务栏在左
-        miniWidget->setGeometry(qApp->primaryScreen()->geometry().x()+panelHeight+8,totalHeight-miniWidget->height(),miniWidget->width(),miniWidget->height());
+        miniWidget->setGeometry(qApp->primaryScreen()->geometry().x()+panelHeight+4,trayHeight - miniWidget->height(),miniWidget->width(),miniWidget->height());
     }
     else if (panelPosition == 3) { //任务栏在右
-        miniWidget->setGeometry(totalWidth-panelHeight-miniWidget->width()-8,totalHeight-miniWidget->height(),miniWidget->width(),miniWidget->height());
+        miniWidget->setGeometry(totalWidth-panelHeight-miniWidget->width()-4,trayHeight - miniWidget->height(),miniWidget->width(),miniWidget->height());
     }
     miniWidget->show();
 }
@@ -3096,20 +3107,30 @@ void DeviceSwitchWidget::advancedWidgetShow()
 
     panelHeight = getPanelHeight("panelheight");
     panelPosition = getPanelPosition("panelposition");
-
+    trayRect = soundSystemTrayIcon->geometry();
+    int trayHeight = trayRect.y() + trayRect.width();
     int totalHeight = qApp->primaryScreen()->size().height() + qApp->primaryScreen()->geometry().y();
     int totalWidth = qApp->primaryScreen()->size().width() + qApp->primaryScreen()->geometry().x();
+    if (panelHeight < 50) {
+        trayHeight += 7;
+    }
+    else if (panelHeight >= 50 && panelHeight < 75) {
+        trayHeight += 11;
+    }
+    else if (panelHeight >= 75 && panelHeight <95) {
+        trayHeight += 14;
+    }
     if (panelPosition == 0) { //任务栏在下
-        this->setGeometry(totalWidth-this->width(),totalHeight-panelHeight-this->height()-8,this->width(),this->height());
+        this->setGeometry(totalWidth-this->width()-4,totalHeight-panelHeight-this->height()-4,this->width(),this->height());
     }
     else if (panelPosition == 1) { //任务栏在上
-        this->setGeometry(totalWidth-this->width(),qApp->primaryScreen()->geometry().y()+panelHeight+8,this->width(),this->height());
+        this->setGeometry(totalWidth-this->width()-4,qApp->primaryScreen()->geometry().y()+panelHeight+4,this->width(),this->height());
     }
     else if (panelPosition == 2) {//任务栏在左
-        this->setGeometry(qApp->primaryScreen()->geometry().x()+panelHeight+8,totalHeight-this->height(),this->width(),this->height());
+        this->setGeometry(qApp->primaryScreen()->geometry().x()+panelHeight+4,trayHeight-this->height(),this->width(),this->height());
     }
     else if (panelPosition == 3) { //任务栏在右
-        this->setGeometry(totalWidth-panelHeight-this->width()-8,totalHeight-this->height(),this->width(),this->height());
+        this->setGeometry(totalWidth-panelHeight-this->width()-4,trayHeight-this->height(),this->width(),this->height());
     }
     this->showNormal();
     this->raise();
