@@ -474,6 +474,7 @@ void DeviceSwitchWidget::miniMastrerSliderChangedSlot(int value)
         mate_mixer_stream_control_set_mute(control,FALSE);
     }
     int volume = value*65536/100;
+    qDebug() << "设置输出音量为:" << value;
     mate_mixer_stream_control_set_volume(control,guint(volume));
     miniWidget->displayVolumeLabel->setText(percent);
     appWidget->systemVolumeSlider->setValue(value);
@@ -585,8 +586,8 @@ void DeviceSwitchWidget::miniWidgetMuteButtonClickedSlot()
 
     if (QGSettings::isSchemaInstalled(UKUI_VOLUME_BRIGHTNESS_GSETTING_ID)) {
         if (m_pVolumeSetting->keys().contains("soundstate")) {
-           m_pVolumeSetting->set(UKUI_VOLUME_STATE,!status);
-           qDebug() <<"设置静音设置值is  "  << !status;
+//           m_pVolumeSetting->set(UKUI_VOLUME_STATE,!status);
+//           qDebug() <<"设置静音设置值is  "  << !status;
         }
     }
     Q_EMIT system_muted_signal(status);
@@ -919,6 +920,7 @@ void DeviceSwitchWidget::outputVolumeDarkThemeImage(int value,bool status)
         devWidget->outputMuteBtn->themeIcon.image = QIcon::fromTheme(iconStr).pixmap(24,24).toImage();
         appWidget->systemVolumeBtn->themeIcon.image = QIcon::fromTheme(iconStr).pixmap(32,32).toImage();
     }
+    soundSystemTrayIcon->setIcon(QIcon::fromTheme(iconStr));
 }
 
 /*
@@ -2608,7 +2610,7 @@ void DeviceSwitchWidget::volumeSettingChangedSlot()
         if (QGSettings::isSchemaInstalled(UKUI_VOLUME_BRIGHTNESS_GSETTING_ID)) {
             if (m_pVolumeSetting->keys().contains("soundstate")) {
                bool status = m_pVolumeSetting->get(UKUI_VOLUME_STATE).toBool();
-               mate_mixer_stream_control_set_mute(control,status);
+//               mate_mixer_stream_control_set_mute(control,status);
                qDebug() << "设置静音状态"  <<status;
             }
         }
