@@ -1325,22 +1325,27 @@ void DeviceSwitchWidget::on_context_stream_added (MateMixerContext *context,cons
 
 void DeviceSwitchWidget::list_device(DeviceSwitchWidget *w,MateMixerContext *context)
 {
-    const GList *list;
-    list = mate_mixer_context_list_streams (context);
+    const GList *m_pList;
+    m_pList = mate_mixer_context_list_streams (context);
+    while (m_pList != nullptr) {
+        const gchar *pStreamName = mate_mixer_stream_get_name( MATE_MIXER_STREAM (m_pList->data));
+        const gchar *pStreamLabel = mate_mixer_stream_get_label( MATE_MIXER_STREAM (m_pList->data));
+        if (!strstr(pStreamName,"monitor") && !strstr(pStreamLabel,"Monitor")) {
 
-    while (list != nullptr) {
-        add_stream (w, MATE_MIXER_STREAM (list->data),context);
-        w->stream = MATE_MIXER_STREAM(list->data);
-        const gchar *stream_name = mate_mixer_stream_get_name(w->stream);
-        MateMixerDirection direction = mate_mixer_stream_get_direction(w->stream);
-        if (direction == MATE_MIXER_DIRECTION_OUTPUT) {
-            w->output_stream_list->append(stream_name);
-            /*w->miniWidget->deviceCombox->addItem(label);*/
+            add_stream (w, MATE_MIXER_STREAM (m_pList->data),context);
+            MateMixerDirection direction = mate_mixer_stream_get_direction(MATE_MIXER_STREAM (m_pList->data));
+            if (direction == MATE_MIXER_DIRECTION_OUTPUT) {
+                w->output_stream_list->append(pStreamName);
+                /*w->miniWidget->deviceCombox->addItem(label);*/
+            }
+            else if (direction == MATE_MIXER_DIRECTION_INPUT) {
+                w->input_stream_list->append(pStreamName);
+            }
+            if (strstr(pStreamName,"alsa_input")) {
+                mate_mixer_context_set_default_input_stream(context,MATE_MIXER_STREAM (m_pList->data));
+            }
         }
-        else if (direction == MATE_MIXER_DIRECTION_INPUT) {
-            w->input_stream_list->append(stream_name);
-        }
-        list = list->next;
+        m_pList = m_pList->next;
     }
 }
 
