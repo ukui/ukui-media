@@ -471,6 +471,7 @@ void DeviceSwitchWidget::miniMastrerSliderChangedSlot(int value)
     percent = QString::number(value);
     //音量值改变时添加提示音
     if (firstEnterSystem != true) {
+        qDebug() <<111111;
         mate_mixer_stream_control_set_mute(control,FALSE);
     }
     int volume = value*65536/100;
@@ -1320,6 +1321,11 @@ void DeviceSwitchWidget::on_context_stream_added (MateMixerContext *context,cons
     /* If the newly added stream belongs to the currently selected device and
      * the test button is hidden, this stream may be the one to allow the
      * sound test and therefore we may need to enable the button */
+    //为了防止监听监视流
+    if (strstr(name,".monitor")) {
+        return;
+    }
+    qDebug() << "stream  ^^^^^^^^^^^ add " << name;
     add_stream (w, w->stream,context);
 }
 
@@ -1366,8 +1372,9 @@ void DeviceSwitchWidget::add_stream (DeviceSwitchWidget *w, MateMixerStream *str
             update_input_settings (w,c);
         }
         else {
+            const gchar *streamName = mate_mixer_stream_get_name(stream);
+            qDebug() << "add stream set input stream 1"  << streamName;
             mate_mixer_context_set_default_input_stream(w->context,stream);
-            qDebug() << "add stream set input stream 1"  << mate_mixer_stream_get_name(stream);
             bar_set_stream (w, stream);
             name  = mate_mixer_stream_get_name (stream);
             label = mate_mixer_stream_get_label (stream);
@@ -2277,10 +2284,10 @@ void DeviceSwitchWidget::set_input_stream (DeviceSwitchWidget *w, MateMixerStrea
         }
 
         /* Enable/disable the peak level monitor according to mute state */
-        g_signal_connect (G_OBJECT (stream),
-                          "notify::mute",
-                          G_CALLBACK (on_stream_control_mute_notify),
-                          w);
+//        g_signal_connect (G_OBJECT (stream),
+//                          "notify::mute",
+//                          G_CALLBACK (on_stream_control_mute_notify),
+//                          w);
     }
     MateMixerStreamControl *control = mate_mixer_stream_get_default_control(stream);
 //    update_input_settings (w,w->m_pInputBarStreamControl);
@@ -2296,6 +2303,7 @@ void DeviceSwitchWidget::on_stream_control_mute_notify (MateMixerStreamControl *
 {
     Q_UNUSED(pspec);
     Q_UNUSED(w);
+    qDebug() <<"静音通知 *****" << mate_mixer_stream_control_get_mute (control);
     /*
     update_icon_output(w,w->context);
     Stop monitoring the input stream when it gets muted */
@@ -2427,13 +2435,6 @@ void DeviceSwitchWidget::update_icon_input (DeviceSwitchWidget *w,MateMixerStrea
 
     gvc_stream_status_icon_set_control (w, control);
 
-    if (control != nullptr) {
-        qDebug() << "Output icon enabled";
-    }
-    else {
-        qDebug() << "There is no output stream/control, output icon disabled";
-    }
-
     if(show) {
         w->devWidget->inputWidgetShow();
     }
@@ -2450,7 +2451,6 @@ void DeviceSwitchWidget::update_icon_input (DeviceSwitchWidget *w,MateMixerStrea
 void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerContext *context)
 {
     MateMixerStream *stream;
-    qDebug() << "update icon output";
     MateMixerStreamControl *control = nullptr;
     stream = mate_mixer_context_get_default_output_stream (context);
     if (stream != nullptr)
@@ -2495,6 +2495,9 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
     QIcon trayIcon;
     QIcon audioIcon;
 
+    //设置为输出音量为的状态
+    mate_mixer_stream_control_set_mute(control,state);
+    qDebug() << "update icon output" << value << state;
     if (state) {
         systemTrayIcon = "audio-volume-muted-symbolic";
         audioIconStr = "audio-volume-muted-symbolic";

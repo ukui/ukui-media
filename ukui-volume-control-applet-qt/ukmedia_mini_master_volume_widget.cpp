@@ -33,14 +33,12 @@ UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QWidget *parent) : 
     muteBtn = new UkuiButtonDrawSvg(masterWidget);
     displayVolumeLabel = new QLabel(masterWidget);
     masterVolumeSlider = new UkmediaVolumeSlider(masterWidget);
-//    masterWidget->setFrameShape(QFrame::Shape::Box);
     this->setProperty("useSystemStyleBlur",true);
     this->setWindowTitle("whole window blur");
     this->setAttribute(Qt::WA_TranslucentBackground);
     deviceCombox = new QComboBox(this);
     switchBtn = new UkuiMediaButton(this);
     switchBtn->setParent(this);
-//    switchBtn->setStyle(new CustomStyle());
     switchBtn->setFlat(true);
     switchBtn->setCheckable(false);
     deviceBtn = new QPushButton(displayWidget);
