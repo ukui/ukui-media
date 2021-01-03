@@ -449,7 +449,7 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
  */
 void DeviceSwitchWidget::systemTrayMenuInit()
 {
-    menu = new QMenu();
+    menu = new QMenu(this);
     menu->setAttribute(Qt::WA_NoMouseReplay);
     soundSystemTrayIcon->setContextMenu(menu);
     //设置右键菜单
