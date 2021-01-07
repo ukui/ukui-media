@@ -28,6 +28,7 @@
 #include <QMenu>
 #include <QCheckBox>
 #include <QWidgetAction>
+#include <QMessageBox>
 #include <QFrame>
 #include <QtDBus/QDBusConnection>
 #include <QtDBus/QDBusMessage>
@@ -46,6 +47,11 @@ extern "C" {
 #include <gio/gio.h>
 #include <dconf/dconf.h>
 #include <canberra.h>
+#include <glib/gmain.h>
+#include <pulse/ext-stream-restore.h>
+#include <pulse/glib-mainloop.h>
+#include <pulse/error.h>
+#include <pulse/subscribe.h>
 }
 
 #define SOUND_MODE_SCRIPTS "/usr/share/ukui-media/scripts/detection_output_mode.sh"
@@ -96,13 +102,18 @@ Q_SIGNALS:
   void timeOut();
 };
 
+
 class DeviceSwitchWidget:public QWidget
 {
     Q_OBJECT
 public:
     DeviceSwitchWidget(QWidget *parent = nullptr);
     ~DeviceSwitchWidget();
+
+    static gboolean connect_to_pulse(gpointer userdata);
+    static void context_state_callback(pa_context *c, void *userdata);
     void get_window_nameAndid();
+    void pulseDisconnectMseeageBox();
     QList<char *> listExistsPath();
     QString findFreePath();
     void addValue(QString name,QString filename);
@@ -263,6 +274,14 @@ private:
     ca_context *caContext;
     bool setOutputVolume = false;
     bool setInputVolume = false;
+
+    QByteArray role;
+    QByteArray device;
+    pa_channel_map channelMap;
+    pa_cvolume volume;
+    pa_context* m_paContext ;
+    pa_mainloop_api* api;
+    pa_ext_stream_restore_info info;
 
 protected:
     void paintEvent(QPaintEvent *event);

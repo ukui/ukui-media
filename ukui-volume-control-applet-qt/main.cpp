@@ -30,6 +30,7 @@
 #include <QDir>
 #include <KWindowEffects>
 #include <QMessageBox>
+#include <QLibraryInfo>
 #include <X11/Xlib.h>
 
 /*! The ukui-media is the media of UKUI.
@@ -90,6 +91,14 @@ int main(int argc, char *argv[])
        app.sendMessage("raise_window_noop");
        return EXIT_SUCCESS;
     }
+
+#ifndef QT_NO_TRANSLATION
+    QString translatorFileName = QLatin1String("qt_");
+    translatorFileName += QLocale::system().name();
+    QTranslator *pTranslator = new QTranslator();
+    if (pTranslator->load(translatorFileName, QLibraryInfo::location(QLibraryInfo::TranslationsPath)))
+        app.installTranslator(pTranslator);
+#endif
 
     //加载qm文件
     QTranslator translator;

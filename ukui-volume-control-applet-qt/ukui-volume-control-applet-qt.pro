@@ -36,7 +36,9 @@ PKGCONFIG += \
     Qt5Multimedia \
     dconf \
     x11 \
-    libcanberra
+    libcanberra \
+    libpulse \
+    libpulse-mainloop-glib
 #    libwnck-1.0
 
 HEADERS += \

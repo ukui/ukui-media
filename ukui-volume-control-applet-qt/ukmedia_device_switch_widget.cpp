@@ -155,8 +155,71 @@ void DeviceSwitchWidget::hideWindow()
 //    isShow = true;
 }
 
+
+gboolean DeviceSwitchWidget::connect_to_pulse(gpointer userdata)
+{
+    //连接到pulseaudio
+    pa_glib_mainloop *m = pa_glib_mainloop_new(g_main_context_default());
+    DeviceSwitchWidget *w = static_cast<DeviceSwitchWidget*>(userdata);
+    w->api = pa_glib_mainloop_get_api(m);
+
+    pa_proplist *proplist = pa_proplist_new();
+    pa_proplist_sets(proplist, PA_PROP_APPLICATION_NAME, QObject::tr("PulseAudio Volume Control").toUtf8().constData());
+    pa_proplist_sets(proplist, PA_PROP_APPLICATION_ID, "org.PulseAudio.pavucontrol");
+    pa_proplist_sets(proplist, PA_PROP_APPLICATION_ICON_NAME, "audio-card");
+    pa_proplist_sets(proplist, PA_PROP_APPLICATION_VERSION, "PACKAGE_VERSION");
+    w->m_paContext = pa_context_new_with_proplist(w->api, nullptr, proplist);
+    g_assert(w->m_paContext);
+
+    pa_proplist_free(proplist);
+//    qDebug() <<"123123" << pa_context_connect(m_paContext, nullptr, PA_CONTEXT_NOFAIL, nullptr) ;
+
+    pa_context_set_state_callback(w->m_paContext, context_state_callback, w);
+    if (pa_context_connect(w->m_paContext, nullptr, PA_CONTEXT_NOFAIL, nullptr) < 0) {
+        if (pa_context_errno(w->m_paContext) == PA_ERR_INVALID) {
+//            w->setConnectingMessage(QObject::tr("Connection to PulseAudio failed. Automatic retry in 5s\n\n"
+//                "In this case this is likely because PULSE_SERVER in the Environment/X11 Root Window Properties\n"
+//                "or default-server in client.conf is misconfigured.\n"
+//                "This situation can also arrise when PulseAudio crashed and left stale details in the X11 Root Window.\n"
+//                "If this is the case, then PulseAudio should autospawn again, or if this is not configured you should\n"
+//                "run start-pulseaudio-x11 manually.").toUtf8().constData());
+            qDebug() << "连接pulseaudio error";
+        }
+        else {
+            g_timeout_add_seconds(5,connect_to_pulse,w);
+        }
+    }
+
+    return false;
+}
+
+void DeviceSwitchWidget::context_state_callback(pa_context *c, void *userdata) {
+    DeviceSwitchWidget *w = static_cast<DeviceSwitchWidget*>(userdata);
+    g_assert(c);
+
+    switch (pa_context_get_state(c)) {
+        case PA_CONTEXT_UNCONNECTED:
+        case PA_CONTEXT_CONNECTING:
+        case PA_CONTEXT_AUTHORIZING:
+        case PA_CONTEXT_SETTING_NAME:
+            break;
+
+        case PA_CONTEXT_READY: {
+            pa_operation *o;
+            break;
+        }
+        case PA_CONTEXT_FAILED:
+            w->pulseDisconnectMseeageBox();
+            break;
+        case PA_CONTEXT_TERMINATED:
+        default:
+            break;
+    }
+}
+
 DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
 {
+    connect_to_pulse(this);
     setAttribute(Qt::WA_TranslucentBackground);
     setMouseTracking(true);
     setWindowFlags(Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint|Qt::Popup);
@@ -260,6 +323,7 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     if G_UNLIKELY (mate_mixer_context_open(context) == FALSE) {
         g_warning ("Failed to connect to a sound system**********************");
     }
+
     appWidget->setFixedSize(358,320);
     devWidget->setFixedSize(358,320);
 
@@ -449,7 +513,7 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
  */
 void DeviceSwitchWidget::systemTrayMenuInit()
 {
-    menu = new QMenu(this);
+    menu = new QMenu();
     menu->setAttribute(Qt::WA_NoMouseReplay);
     soundSystemTrayIcon->setContextMenu(menu);
     //设置右键菜单
@@ -1289,6 +1353,7 @@ void DeviceSwitchWidget::on_context_state_notify (MateMixerContext *context,GPar
     }
     else if (state == MATE_MIXER_STATE_FAILED) {
         g_warning("Failed to connect a sound system");
+        qDebug() << "Failed to connect a sound system";
     }
 }
 
@@ -2123,6 +2188,12 @@ void DeviceSwitchWidget::app_volume_mute (MateMixerStreamControl *control, QStri
     Q_EMIT w->appvolume_mute_change_mastervolume_status();*/
 }
 
+void DeviceSwitchWidget::pulseDisconnectMseeageBox()
+{
+    QMessageBox::critical(NULL, tr("Error"), tr("Unable to connect to the sound system, please check whether the pulseaudio service is running!"),  QMessageBox::Abort);
+    exit(-1);
+}
+
 /*!
  * \brief
  * \details
@@ -2130,6 +2201,12 @@ void DeviceSwitchWidget::app_volume_mute (MateMixerStreamControl *control, QStri
  */
 void DeviceSwitchWidget::set_context(DeviceSwitchWidget *w,MateMixerContext *context)
 {
+    MateMixerStream *pOutputStream = mate_mixer_context_get_default_output_stream(context);
+    MateMixerState state =  mate_mixer_context_get_state(context);
+    if (pOutputStream != nullptr) {
+        w->pulseDisconnectMseeageBox();
+    }
+    qDebug() << "output stream" << mate_mixer_stream_get_name(pOutputStream) << state;
     g_signal_connect (G_OBJECT (context),
                       "stream-added",
                       G_CALLBACK (on_context_stream_added),
@@ -2497,7 +2574,7 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
 
     //设置为输出音量为的状态
     mate_mixer_stream_control_set_mute(control,state);
-    qDebug() << "update icon output" << value << state;
+    qDebug() << "update icon output" << value << state << mate_mixer_stream_control_get_name(control);
     if (state) {
         systemTrayIcon = "audio-volume-muted-symbolic";
         audioIconStr = "audio-volume-muted-symbolic";
@@ -3209,7 +3286,7 @@ gboolean DeviceSwitchWidget::update_default_input_stream (DeviceSwitchWidget *w)
 {
     MateMixerStream *stream;
     stream = mate_mixer_context_get_default_input_stream (w->context);
-
+    qDebug() << "111111111";
     if (w->input == nullptr) {
         qDebug() << "input stream is null ";
     }

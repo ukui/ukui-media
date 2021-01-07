@@ -17,49 +17,67 @@
 <context>
     <name>DeviceSwitchWidget</name>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="213"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="281"/>
         <source>Go Into Mini Mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="167"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="235"/>
         <source>Output volume control</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="169"/>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="172"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="237"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="240"/>
         <source>Mute</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="170"/>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="173"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="238"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="241"/>
         <source>Sound preference(S)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="1234"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="1309"/>
         <source>Device Volume</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="1235"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="1310"/>
         <source>Application Volume</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="2495"/>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="2502"/>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="2757"/>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="2765"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="2193"/>
+        <source>Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="2193"/>
+        <source>Unable to connect to the sound system, please check whether the pulseaudio service is running!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="2632"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="2639"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="2949"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="2957"/>
         <source>Speaker (Realtek Audio)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="2498"/>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="2761"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="2635"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="2953"/>
         <source>Headphone</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QObject</name>
+    <message>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="167"/>
+        <source>PulseAudio Volume Control</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -94,12 +112,12 @@
 <context>
     <name>UkmediaMiniMasterVolumeWidget</name>
     <message>
-        <location filename="../ukmedia_mini_master_volume_widget.cpp" line="48"/>
+        <location filename="../ukmedia_mini_master_volume_widget.cpp" line="47"/>
         <source>Speaker (Realtek Audio)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ukmedia_mini_master_volume_widget.cpp" line="116"/>
+        <location filename="../ukmedia_mini_master_volume_widget.cpp" line="115"/>
         <source>Go Into Full Mode</source>
         <translation type="unfinished"></translation>
     </message>
