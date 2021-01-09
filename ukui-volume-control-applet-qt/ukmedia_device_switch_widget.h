@@ -54,7 +54,6 @@ extern "C" {
 #include <pulse/subscribe.h>
 }
 
-#define SOUND_MODE_SCRIPTS "/usr/share/ukui-media/scripts/detection_output_mode.sh"
 #define UKUI_THEME_SETTING "org.ukui.style"
 #define UKUI_TRANSPARENCY_SETTING "org.ukui.control-center.personalise"
 #define UKUI_THEME_NAME "style-name"
@@ -122,6 +121,17 @@ public:
     void showWindow();
     void hideWindow();
     void updateSystemTrayIcon(int volume,bool status);
+    MateMixerSwitch * findDeviceProfileSwitch(DeviceSwitchWidget *w,MateMixerDevice *device);
+    static void onOutputSwitchActiveOptionNotify (MateMixerSwitch *swtch,GParamSpec *pspec,DeviceSwitchWidget *w);
+    static void onDeviceProfileActiveOptionNotify (MateMixerDeviceSwitch *swtch,GParamSpec *pspec,DeviceSwitchWidget *w);
+    static void onInputSwitchActiveOptionNotify (MateMixerSwitch *swtch,GParamSpec *pspec,DeviceSwitchWidget *w);
+    void osdWidgetShow(const gchar *portName);
+    void updateOutputDeviceLabel(MateMixerDevice *device);
+    void updateInputDeviceLabel();
+    void setOutputLabelDummyOutput();
+    void setInputLabelDummyOutput();
+
+
     int getPanelPosition(QString str);
     int getPanelHeight(QString str);
     void miniWidgetShow();
@@ -137,6 +147,8 @@ public:
     void drawImagColorFromTheme(UkuiButtonDrawSvg *button, QString iconStr);
     void themeChangeIcons();
     void setVolumeSettingValue(int value);
+    MateMixerSwitch* findStreamPortSwitch (DeviceSwitchWidget *widget,MateMixerStream *stream);
+
     QPixmap drawDarkColoredPixmap(const QPixmap &source);
     QPixmap drawLightColoredPixmap(const QPixmap &source);
     QString getAppName(QString desktopfp);
@@ -253,6 +265,7 @@ private:
     QStringList *input_stream_list;
     QStringList *stream_control_list;
     QStringList *app_name_list;
+    QStringList *m_pOutputPortList;
 
     QFrame *dividerFrame;
     MyTimer *timer;

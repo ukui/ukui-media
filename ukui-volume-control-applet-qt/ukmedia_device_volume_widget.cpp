@@ -34,7 +34,7 @@ UkmediaDeviceWidget::UkmediaDeviceWidget(QWidget *parent) : QWidget (parent)
     inputSliderWidget = new QWidget(inputWidget);
 
     inputDeviceLabel = new QLabel(tr("Input Device"),this);
-    inputDeviceDisplayLabel = new QLabel(tr("Microphone"),inputWidget);
+    inputDeviceDisplayLabel = new QLabel(inputWidget);
     inputDeviceBtn = new QPushButton(inputWidget);
     inputDeviceSlider = new UkmediaVolumeSlider(inputSliderWidget,true);
     inputMuteButton = new UkuiButtonDrawSvg(inputSliderWidget);
@@ -43,7 +43,7 @@ UkmediaDeviceWidget::UkmediaDeviceWidget(QWidget *parent) : QWidget (parent)
     outputSliderWidget->setFixedSize(306,32);
     outputMuteBtn = new UkuiButtonDrawSvg(outputSliderWidget);
     outputDeviceLabel = new QLabel(tr("Output Device"),this);
-    outputDeviceDisplayLabel = new QLabel(tr("Speaker Realtek Audio"),outputWidget);
+    outputDeviceDisplayLabel = new QLabel(outputWidget);
     outputDeviceBtn = new QPushButton(outputWidget);
     outputDeviceSlider = new UkmediaVolumeSlider(outputSliderWidget,true);
     noInputDeviceLabel = new QLabel(tr("Input device can not be detected"),this);

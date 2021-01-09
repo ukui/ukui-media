@@ -26,7 +26,6 @@
 #include <QCoreApplication>
 #include "ukmedia_volume_slider.h"
 
-
 class UkmediaDeviceWidget:public QWidget
 {
     Q_OBJECT
