@@ -27,7 +27,6 @@
 
 DisplayerMode displayMode = MINI_MODE;
 SwitchButtonState buttonState = SWITCH_BUTTON_NORMAL;
-extern bool volumeStates;
 extern double transparency;
 UkuiApplicationWidget::UkuiApplicationWidget(QWidget *parent)
 {
@@ -215,7 +214,6 @@ void UkmediaVolumeSlider::initStyleOption(QStyleOptionSlider *option)
 
 void UkmediaVolumeSlider::leaveEvent(QEvent *e)
 {
-    volumeStates = false;
     if (state) {
         m_pTiplabel->hide();
     }
@@ -223,7 +221,6 @@ void UkmediaVolumeSlider::leaveEvent(QEvent *e)
 
 void UkmediaVolumeSlider::enterEvent(QEvent *e)
 {
-    volumeStates = true;
     if (state) {
         m_pTiplabel->show();
     }

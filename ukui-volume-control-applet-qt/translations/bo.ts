@@ -17,24 +17,24 @@
 <context>
     <name>DeviceSwitchWidget</name>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="281"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="280"/>
         <source>Go Into Mini Mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="235"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="234"/>
         <source>Output volume control</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="236"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="239"/>
+        <source>Mute</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../ukmedia_device_switch_widget.cpp" line="237"/>
         <location filename="../ukmedia_device_switch_widget.cpp" line="240"/>
-        <source>Mute</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="238"/>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="241"/>
         <source>Sound preference(S)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -49,27 +49,19 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="2193"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="2245"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="2193"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="2245"/>
         <source>Unable to connect to the sound system, please check whether the pulseaudio service is running!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="2632"/>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="2639"/>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="2949"/>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="2957"/>
-        <source>Speaker (Realtek Audio)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="2635"/>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="2953"/>
-        <source>Headphone</source>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="2472"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="2473"/>
+        <source>Dummy output</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -89,18 +81,8 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_volume_widget.cpp" line="37"/>
-        <source>Microphone</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../ukmedia_device_volume_widget.cpp" line="45"/>
         <source>Output Device</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../ukmedia_device_volume_widget.cpp" line="46"/>
-        <source>Speaker Realtek Audio</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -111,11 +93,6 @@
 </context>
 <context>
     <name>UkmediaMiniMasterVolumeWidget</name>
-    <message>
-        <location filename="../ukmedia_mini_master_volume_widget.cpp" line="47"/>
-        <source>Speaker (Realtek Audio)</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message>
         <location filename="../ukmedia_mini_master_volume_widget.cpp" line="115"/>
         <source>Go Into Full Mode</source>

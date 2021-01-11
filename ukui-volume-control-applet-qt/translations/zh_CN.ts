@@ -17,24 +17,24 @@
 <context>
     <name>DeviceSwitchWidget</name>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="281"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="280"/>
         <source>Go Into Mini Mode</source>
         <translation>进入Mini模式</translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="235"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="234"/>
         <source>Output volume control</source>
         <translation>输出音量控制</translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="237"/>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="240"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="236"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="239"/>
         <source>Mute</source>
         <translation>静音</translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="238"/>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="241"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="237"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="240"/>
         <source>Sound preference(S)</source>
         <translation>声音首选项</translation>
     </message>
@@ -49,28 +49,28 @@
         <translation>应用音量</translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="2193"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="2245"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="2193"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="2245"/>
         <source>Unable to connect to the sound system, please check whether the pulseaudio service is running!</source>
         <translation>无法连接到系统声音，请检查pulseaudio服务是否正在运行！</translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="2632"/>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="2639"/>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="2949"/>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="2957"/>
-        <source>Speaker (Realtek Audio)</source>
-        <translation>扬声器(Realtek Audio)</translation>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="2472"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="2473"/>
+        <source>Dummy output</source>
+        <translation>伪输出</translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="2635"/>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="2953"/>
+        <source>Speaker (Realtek Audio)</source>
+        <translation type="vanished">扬声器(Realtek Audio)</translation>
+    </message>
+    <message>
         <source>Headphone</source>
-        <translation>模拟耳机</translation>
+        <translation type="vanished">模拟耳机</translation>
     </message>
 </context>
 <context>
@@ -89,9 +89,8 @@
         <translation>输入设备</translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_volume_widget.cpp" line="37"/>
         <source>Microphone</source>
-        <translation>麦克风</translation>
+        <translation type="vanished">麦克风</translation>
     </message>
     <message>
         <location filename="../ukmedia_device_volume_widget.cpp" line="45"/>
@@ -99,9 +98,8 @@
         <translation>输出设备</translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_volume_widget.cpp" line="46"/>
         <source>Speaker Realtek Audio</source>
-        <translation>扬声器(Realtek Audio)</translation>
+        <translation type="vanished">扬声器(Realtek Audio)</translation>
     </message>
     <message>
         <location filename="../ukmedia_device_volume_widget.cpp" line="49"/>
@@ -112,9 +110,8 @@
 <context>
     <name>UkmediaMiniMasterVolumeWidget</name>
     <message>
-        <location filename="../ukmedia_mini_master_volume_widget.cpp" line="47"/>
         <source>Speaker (Realtek Audio)</source>
-        <translation>扬声器(Realtek Audio)</translation>
+        <translation type="vanished">扬声器(Realtek Audio)</translation>
     </message>
     <message>
         <location filename="../ukmedia_mini_master_volume_widget.cpp" line="115"/>

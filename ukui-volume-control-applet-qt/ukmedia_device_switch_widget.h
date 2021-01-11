@@ -126,11 +126,9 @@ public:
     static void onDeviceProfileActiveOptionNotify (MateMixerDeviceSwitch *swtch,GParamSpec *pspec,DeviceSwitchWidget *w);
     static void onInputSwitchActiveOptionNotify (MateMixerSwitch *swtch,GParamSpec *pspec,DeviceSwitchWidget *w);
     void osdWidgetShow(const gchar *portName);
-    void updateOutputDeviceLabel(MateMixerDevice *device);
+    void updateOutputDeviceLabel();
     void updateInputDeviceLabel();
     void setOutputLabelDummyOutput();
-    void setInputLabelDummyOutput();
-
 
     int getPanelPosition(QString str);
     int getPanelHeight(QString str);
@@ -185,6 +183,7 @@ public:
     static void update_icon_input (DeviceSwitchWidget *w,MateMixerStream *stream);
     static void update_icon_output (DeviceSwitchWidget *w,MateMixerContext *contetx);
     static void on_stream_control_volume_notify (MateMixerStreamControl *control,GParamSpec *pspec,DeviceSwitchWidget *w);
+    static void on_control_volume_notify (MateMixerStreamControl *control,GParamSpec *pspec,DeviceSwitchWidget *w);
     static void update_output_settings (DeviceSwitchWidget *w,MateMixerStreamControl *control);
 
     static void on_key_changed (GSettings *settings,gchar *key,DeviceSwitchWidget *w);
@@ -253,6 +252,7 @@ private:
     MateMixerStream *input;
     MateMixerContext *context;
     MateMixerStreamControl *control;
+    MateMixerStreamControl *currentControl;
     MateMixerStreamControl *m_pOutputBarStreamControl;
     MateMixerStreamControl *m_pInputBarStreamControl;
 
