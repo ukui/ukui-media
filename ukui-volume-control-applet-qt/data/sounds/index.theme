@@ -1,0 +1,6 @@
+[Sound Theme]
+Name=Kylin
+Directories=stereo
+
+[stereo]
+OutputProfile=stereo
