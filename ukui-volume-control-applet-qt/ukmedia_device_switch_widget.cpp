@@ -583,7 +583,6 @@ void DeviceSwitchWidget::outputDeviceSliderChangedSlot(int value)
     QString percent;
 
     percent = QString::number(value);
-    qDebug() << "滑动条更改 ：" <<value;
     if (firstEnterSystem != true) {
         mate_mixer_stream_control_set_mute(control,FALSE);
     }
@@ -1510,11 +1509,17 @@ void DeviceSwitchWidget::add_stream (DeviceSwitchWidget *w, MateMixerStream *str
             MateMixerAppInfo *m_pAppInfo = mate_mixer_stream_control_get_app_info(w->control);
             if (m_pAppInfo != nullptr) {
                 const gchar *m_pAppName = mate_mixer_app_info_get_name(m_pAppInfo);
+                const gchar *app_icon_name = mate_mixer_app_info_get_icon(m_pAppInfo);
+                if (strstr(app_icon_name,"recording")) {
+                    m_pAppName = "kylin-recorder";
+                    app_icon_name = "kylin-recorder";
+                }
+
                 if (strcmp(m_pAppName,"ukui-session") != 0 && strcmp(m_pAppName,"ukui-volume-control-applet-qt") != 0 && strcmp(m_pAppName,"Volume Control") && \
                     strcmp(m_pAppName,"ALSA plug-in [mate-screenshot]") && strcmp(m_pAppName,"ALSA plug-in [ukui-volume-control-applet-qt]") && \
                     strcmp(m_pAppName,"Ukui Volume Control App") && !strstr(m_pAppName,"QtPulseAudio") && strcmp(m_pAppName,"ukuimedia-volume-control") != 0) {
                     if G_UNLIKELY (w->control == nullptr)
-                        return;
+                            return;
                     add_application_control (w, w->control,m_pStreamControlName);
                 }
             }
@@ -1576,7 +1581,7 @@ void DeviceSwitchWidget::add_application_control (DeviceSwitchWidget *w, MateMix
         !g_strcmp0 (app_id, "org.PulseAudio.pavucontrol"))
         return;
 
-    QString app_icon_name = mate_mixer_app_info_get_icon(info);
+    const gchar *app_icon_name = mate_mixer_app_info_get_icon(info);
     app_name = mate_mixer_app_info_get_name (info);
     w->stream_control_list->append(name);
     qDebug() << "add application control ,app name :" << app_name ;
@@ -1588,6 +1593,10 @@ void DeviceSwitchWidget::add_application_control (DeviceSwitchWidget *w, MateMix
     }
     if (app_name == nullptr) {
         return;
+    }
+    if (strstr(app_icon_name,"recording")) {
+        app_name = "kylin-recorder";
+        app_icon_name = "kylin-recorder";
     }
     //添加应用添加到应用音量中
     add_app_to_appwidget(w,app_name,app_icon_name,control);
@@ -1622,10 +1631,8 @@ void DeviceSwitchWidget::add_application_control (DeviceSwitchWidget *w, MateMix
 void DeviceSwitchWidget::on_stream_control_added (MateMixerStream *stream,const gchar *name,DeviceSwitchWidget *w)
 {
     MateMixerStreamControlRole role;
-    if (strstr(name,"pulse-output-control")) {
-        return;
-        qDebug() << "stream control add" << name;
-    }
+    qDebug() << "stream control add" << name;
+
     w->control = mate_mixer_stream_get_control (stream, name);
     MateMixerAppInfo *m_pAppInfo = mate_mixer_stream_control_get_app_info(w->control);
     if (m_pAppInfo != nullptr) {
@@ -1817,8 +1824,12 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
     else if (strcmp(app_name,"Clock") == 0) {
         app_icon_name = "ukui-clock";
     }
-    else if (strcmp(app_name,"wechat")) {
+    else if (strcmp(app_name,"wechat") == 0) {
+        qDebug() << "0000000000000000000";
         app_icon_name = "electronic-wechat";
+    }
+    else if (strcmp(app_name,"Firefox") == 0) {
+        app_icon_name = "firefox";
     }
 
     iconName.append(app_icon_name);
@@ -1827,7 +1838,7 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
     QString pAppIcon = w->getAppIcon(iconName);
 
     w->appWidget->app_volume_list->append(app_icon_name);
-    qDebug() << "应用名为:" << pAppName << "desktop 名：" << iconName << "app icon name" << app_icon_name << "app name " << app_name;
+    qDebug() << "应用名为:" << pAppName << "desktop 名：" << iconName << "app icon name" << app_icon_name << "app name " << app_name << mate_mixer_stream_control_get_volume(control) << mate_mixer_stream_control_get_mute(control);
     //widget显示应用音量
     QWidget *app_widget = new QWidget(w->appWidget->displayAppVolumeWidget);
     app_widget->setFixedSize(306,60);
@@ -2009,6 +2020,8 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
         else if (w->mThemeName == UKUI_THEME_BLACK || w->mThemeName == "ukui-black" || w->mThemeName == "ukui-default") {
             btn->setIcon(QIcon(w->drawLightColoredPixmap((QIcon::fromTheme(audioIconStr).pixmap(iconSize)))));
         }
+
+        qDebug() << "应用音量更改" << audioIconStr;
         Q_EMIT w->app_name_signal(appSliderStr);
     });
     /*应用音量同步*/
@@ -2095,6 +2108,7 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
         else if (w->mThemeName == UKUI_THEME_BLACK || w->mThemeName == "ukui-black" || w->mThemeName == "ukui-default") {
             btn->setIcon(QIcon(w->drawLightColoredPixmap((QIcon::fromTheme(audioIconStr).pixmap(iconSize)))));
         }
+        qDebug() << "系统音量改变" << volume << muteButtonStr;
 
         QPalette paleteBtn = btn->palette();
         paleteBtn.setColor(QPalette::Highlight,Qt::transparent);
@@ -2165,6 +2179,7 @@ void DeviceSwitchWidget::update_app_volume(MateMixerStreamControl *control, QStr
     else if (volume > 66) {
         sliderMuteButtonStr = "audio-volume-high-symbolic";
     }
+    qDebug() << "应用音量图标更改：" << sliderMuteButtonStr;
     QSize iconSize(24,24);
     if ( w->mThemeName == "ukui-white" || w->mThemeName == "ukui-light") {
         btn->setIcon(QIcon(w->drawDarkColoredPixmap((QIcon::fromTheme(sliderMuteButtonStr).pixmap(iconSize)))));
@@ -2187,9 +2202,10 @@ void DeviceSwitchWidget::app_volume_mute (MateMixerStreamControl *control, QStri
     MateMixerAppInfo *app_info = mate_mixer_stream_control_get_app_info(control);
     if (app_info == nullptr)
         return;
-    /*bool is_mute = mate_mixer_stream_control_get_mute(control);*/
+    bool is_mute = mate_mixer_stream_control_get_mute(control);
     int volume = mate_mixer_stream_control_get_volume(control);
     volume = volume*100/65536.0+0.5;
+    qDebug() << "应用音量静音通知" << is_mute;
     /*if (is_mute) {
         w->appWidget->appMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
     }
@@ -2992,6 +3008,7 @@ void DeviceSwitchWidget::on_control_mute_notify (MateMixerStreamControl *control
         }
     }
     w->themeChangeIcons();
+    Q_EMIT w->system_muted_signal(mute);
 }
 
 /*!
@@ -3121,8 +3138,6 @@ void DeviceSwitchWidget::on_stream_control_volume_notify (MateMixerStreamControl
         w->devWidget->inputDeviceSlider->setValue(value);
         w->devWidget->inputDeviceSlider->blockSignals(false);
     }
-
-    Q_EMIT w->system_muted_signal(muted);
 }
 
 MateMixerSwitch* DeviceSwitchWidget::findStreamPortSwitch (DeviceSwitchWidget *widget,MateMixerStream *stream)
