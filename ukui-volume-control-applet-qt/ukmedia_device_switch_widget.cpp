@@ -45,7 +45,7 @@ extern "C" {
 
 #define KEYBINDINGS_CUSTOM_SCHEMA "org.ukui.media.sound"
 #define KEYBINDINGS_CUSTOM_DIR "/org/ukui/sound/keybindings/"
-#define KEY_SOUNDS_SCHEMA   "org.mate.sound"
+#define KEY_SOUNDS_SCHEMA   "org.ukui.sound"
 #define EVENT_SOUNDS_KEY "event-sounds"
 #define MAX_CUSTOM_SHORTCUTS 1000
 
@@ -1510,7 +1510,7 @@ void DeviceSwitchWidget::add_stream (DeviceSwitchWidget *w, MateMixerStream *str
             if (m_pAppInfo != nullptr) {
                 const gchar *m_pAppName = mate_mixer_app_info_get_name(m_pAppInfo);
                 const gchar *app_icon_name = mate_mixer_app_info_get_icon(m_pAppInfo);
-                if (strstr(app_icon_name,"recording")) {
+                if (app_icon_name && strstr(app_icon_name,"recording")) {
                     m_pAppName = "kylin-recorder";
                     app_icon_name = "kylin-recorder";
                 }
