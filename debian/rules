@@ -28,3 +28,6 @@ override_dh_auto_build:
 	dh_auto_build
 	dh_auto_configure --sourcedirectory=ukui-volume-control-applet-qt --builddirectory=ukui-volume-control-applet-qt/build -- ..
 	make -C ukui-volume-control-applet-qt/build/
+	mkdir -p ukui-volume-control-applet-qt/ukui-media-control-led/build/
+	dh_auto_configure --sourcedirectory=ukui-volume-control-applet-qt/ukui-media-control-led --builddirectory=ukui-volume-control-applet-qt/ukui-media-control-led/build -- ..
+	make -C ukui-volume-control-applet-qt/ukui-media-control-led/build/

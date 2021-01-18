@@ -1321,12 +1321,12 @@ void DeviceSwitchWidget::on_context_state_notify (MateMixerContext *context,GPar
     MateMixerState state = mate_mixer_context_get_state (context);
     MateMixerStream *pDefaultOutputStream = mate_mixer_context_get_default_output_stream(context);
     MateMixerStreamControl *pDefaultOutputControl = mate_mixer_stream_get_default_control(pDefaultOutputStream);
-    gboolean bMuteState = mate_mixer_stream_control_get_mute(pDefaultOutputControl);
+    gboolean bOutputMuteState = mate_mixer_stream_control_get_mute(pDefaultOutputControl);
     //初始化gsetting值
     if (QGSettings::isSchemaInstalled(UKUI_VOLUME_BRIGHTNESS_GSETTING_ID)) {
         if (w->m_pVolumeSetting->keys().contains("soundstate")) {
             w->m_pVolumeSetting->blockSignals(true);
-            w->m_pVolumeSetting->set(UKUI_VOLUME_STATE,bMuteState);
+            w->m_pVolumeSetting->set(UKUI_VOLUME_STATE,bOutputMuteState);
             w->m_pVolumeSetting->blockSignals(false);
         }
     }
@@ -1438,6 +1438,30 @@ void DeviceSwitchWidget::list_device(DeviceSwitchWidget *w,MateMixerContext *con
         }
         pDeviceList = pDeviceList->next;
     }
+
+    MateMixerStream *pDefaultOutputStream = mate_mixer_context_get_default_output_stream(context);
+    MateMixerStreamControl *pDefaultOutputControl = mate_mixer_stream_get_default_control(pDefaultOutputStream);
+    gboolean bOutputMuteState = mate_mixer_stream_control_get_mute(pDefaultOutputControl);
+
+    MateMixerStream *pDefaultInputStream = mate_mixer_context_get_default_input_stream(context);
+    MateMixerStreamControl *pDefaultInputControl = mate_mixer_stream_get_default_control(pDefaultInputStream);
+    gboolean bInputMuteState = mate_mixer_stream_control_get_mute(pDefaultInputControl);
+
+    if (bOutputMuteState) {
+        system("echo mute > /tmp/kylin_output_muted.log");
+    }
+    else {
+        system("echo no > /tmp/kylin_output_muted.log");
+    }
+    qDebug() << "初始输出静音状态为 :" << bOutputMuteState;
+
+    if (bInputMuteState) {
+        system("echo mute > /tmp/kylin_input_muted.log");
+    }
+    else {
+        system("echo no > /tmp/kylin_input_muted.log");
+    }
+    qDebug() << "初始输入静音状态为 :" << bInputMuteState << mate_mixer_stream_control_get_name(pDefaultInputControl);
 }
 
 void DeviceSwitchWidget::add_stream (DeviceSwitchWidget *w, MateMixerStream *stream,MateMixerContext *context)
@@ -2997,8 +3021,22 @@ void DeviceSwitchWidget::on_control_mute_notify (MateMixerStreamControl *control
     }
     if (direction == MATE_MIXER_DIRECTION_OUTPUT) {
         w->updateSystemTrayIcon(volume,mute);
+        if (mute) {
+            system("echo mute > /tmp/kylin_output_muted.log");
+        }
+        else {
+            system("echo no > /tmp/kylin_output_muted.log");
+        }
+        qDebug() << "输出静音状态为 :" << mute;
     }
     else if (direction == MATE_MIXER_DIRECTION_INPUT) {
+        if (mute) {
+            system("echo mute > /tmp/kylin_input_muted.log");
+        }
+        else {
+            system("echo no > /tmp/kylin_input_muted.log");
+        }
+        qDebug() << "输入静音状态为 :" << mute;
     }
     if (QGSettings::isSchemaInstalled(UKUI_VOLUME_BRIGHTNESS_GSETTING_ID)) {
         if (w->m_pVolumeSetting->keys().contains("soundstate")) {
