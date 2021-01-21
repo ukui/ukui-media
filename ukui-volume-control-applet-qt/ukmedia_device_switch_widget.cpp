@@ -237,7 +237,7 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     m_pMuteAction = new QAction(QIcon(""),tr("Mute"));
     m_pSoundPreferenceAction = new QAction(tr("Sound preference(S)"));
 #endif
-    QString settingsIconStr = "document-page-setup";
+    QString settingsIconStr = "document-page-setup-symbolic";
     QIcon settingsIcon = QIcon::fromTheme(settingsIconStr);
     m_pSoundPreferenceAction->setIcon(settingsIcon);
 
