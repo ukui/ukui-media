@@ -2422,7 +2422,7 @@ void DeviceSwitchWidget::updateOutputDeviceLabel()
         else {
             miniWidget->deviceLabel->setText(outputPortLabel);
             devWidget->outputDeviceDisplayLabel->setText(outputPortLabel);
-            osdWidgetShow(outputPortName);
+//            osdWidgetShow(outputPortName);
         }
         g_signal_connect (G_OBJECT (outputPortSwitch),
                           "notify::active-option",
@@ -2907,8 +2907,8 @@ void DeviceSwitchWidget::volumeSettingChangedSlot()
 
     if (QGSettings::isSchemaInstalled(UKUI_VOLUME_BRIGHTNESS_GSETTING_ID)) {
         if (m_pVolumeSetting->keys().contains("soundstate")) {
-           bool status = m_pVolumeSetting->get(UKUI_VOLUME_STATE).toBool();
-               //mate_mixer_stream_control_set_mute(control,status);
+            bool status = m_pVolumeSetting->get(UKUI_VOLUME_STATE).toBool();
+            mate_mixer_stream_control_set_mute(control,status);
         }
     }
 }
@@ -3027,7 +3027,6 @@ void DeviceSwitchWidget::on_control_mute_notify (MateMixerStreamControl *control
         else {
             system("echo no > /tmp/kylin_output_muted.log");
         }
-        qDebug() << "输出静音状态为 :" << mute;
     }
     else if (direction == MATE_MIXER_DIRECTION_INPUT) {
         if (mute) {
@@ -3036,12 +3035,11 @@ void DeviceSwitchWidget::on_control_mute_notify (MateMixerStreamControl *control
         else {
             system("echo no > /tmp/kylin_input_muted.log");
         }
-        qDebug() << "输入静音状态为 :" << mute;
     }
     if (QGSettings::isSchemaInstalled(UKUI_VOLUME_BRIGHTNESS_GSETTING_ID)) {
         if (w->m_pVolumeSetting->keys().contains("soundstate")) {
             w->m_pVolumeSetting->blockSignals(true);
-//            w->m_pVolumeSetting->set(UKUI_VOLUME_STATE,mute);
+            w->m_pVolumeSetting->set(UKUI_VOLUME_STATE,mute);
             w->m_pVolumeSetting->blockSignals(false);
         }
     }
