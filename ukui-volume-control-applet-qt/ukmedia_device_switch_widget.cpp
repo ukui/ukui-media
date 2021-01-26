@@ -1541,7 +1541,8 @@ void DeviceSwitchWidget::add_stream (DeviceSwitchWidget *w, MateMixerStream *str
 
                 if (strcmp(m_pAppName,"ukui-session") != 0 && strcmp(m_pAppName,"ukui-volume-control-applet-qt") != 0 && strcmp(m_pAppName,"Volume Control") && \
                     strcmp(m_pAppName,"ALSA plug-in [mate-screenshot]") && strcmp(m_pAppName,"ALSA plug-in [ukui-volume-control-applet-qt]") && \
-                    strcmp(m_pAppName,"Ukui Volume Control App") && !strstr(m_pAppName,"QtPulseAudio") && strcmp(m_pAppName,"ukuimedia-volume-control") != 0) {
+                    strcmp(m_pAppName,"Ukui Volume Control App") && !strstr(m_pAppName,"QtPulseAudio") && strcmp(m_pAppName,"ukuimedia-volume-control") != 0 && \
+                    !strstr(m_pAppName,"ukui-settings-daemon")) {
                     if G_UNLIKELY (w->control == nullptr)
                             return;
                     add_application_control (w, w->control,m_pStreamControlName);
@@ -1661,9 +1662,16 @@ void DeviceSwitchWidget::on_stream_control_added (MateMixerStream *stream,const 
     MateMixerAppInfo *m_pAppInfo = mate_mixer_stream_control_get_app_info(w->control);
     if (m_pAppInfo != nullptr) {
         const gchar *m_pAppName = mate_mixer_app_info_get_name(m_pAppInfo);
+        const gchar *appIconName = mate_mixer_app_info_get_icon(m_pAppInfo);
+        if (appIconName && strstr(appIconName,"recording")) {
+            m_pAppName = "kylin-recorder";
+            appIconName = "kylin-recorder";
+        }
+
         if (strcmp(m_pAppName,"ukui-session") != 0 && strcmp(m_pAppName,"ukui-volume-control-applet-qt") != 0 && strcmp(m_pAppName,"Volume Control") && \
             strcmp(m_pAppName,"ALSA plug-in [mate-screenshot]") && strcmp(m_pAppName,"ALSA plug-in [ukui-volume-control-applet-qt]") && \
-            strcmp(m_pAppName,"Ukui Volume Control App") && !strstr(m_pAppName,"QtPulseAudio") && strcmp(m_pAppName,"ukuimedia-volume-control") != 0) {
+            strcmp(m_pAppName,"Ukui Volume Control App") && !strstr(m_pAppName,"QtPulseAudio") && strcmp(m_pAppName,"ukuimedia-volume-control") != 0 && \
+            !strstr(m_pAppName,"ukui-settings-daemon")) {
             if G_UNLIKELY (w->control == nullptr)
                 return;
 
