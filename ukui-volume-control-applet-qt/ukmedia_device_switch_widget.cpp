@@ -1538,6 +1538,11 @@ void DeviceSwitchWidget::add_stream (DeviceSwitchWidget *w, MateMixerStream *str
                     m_pAppName = "kylin-recorder";
                     app_icon_name = "kylin-recorder";
                 }
+                else if (!app_icon_name){
+                    if (strstr(m_pAppName,"MPlayer")) {
+                        app_icon_name = "kylin-video";
+                    }
+                }
 
                 if (strcmp(m_pAppName,"ukui-session") != 0 && strcmp(m_pAppName,"ukui-volume-control-applet-qt") != 0 && strcmp(m_pAppName,"Volume Control") && \
                     strcmp(m_pAppName,"ALSA plug-in [mate-screenshot]") && strcmp(m_pAppName,"ALSA plug-in [ukui-volume-control-applet-qt]") && \
@@ -1609,7 +1614,6 @@ void DeviceSwitchWidget::add_application_control (DeviceSwitchWidget *w, MateMix
     const gchar *app_icon_name = mate_mixer_app_info_get_icon(info);
     app_name = mate_mixer_app_info_get_name (info);
     w->stream_control_list->append(name);
-    qDebug() << "add application control ,app name :" << app_name ;
     if (app_name == nullptr) {
         app_name = mate_mixer_stream_control_get_label(control);
     }
@@ -1619,9 +1623,17 @@ void DeviceSwitchWidget::add_application_control (DeviceSwitchWidget *w, MateMix
     if (app_name == nullptr) {
         return;
     }
-    if (strstr(app_icon_name,"recording")) {
-        app_name = "kylin-recorder";
-        app_icon_name = "kylin-recorder";
+    qDebug() << "add application control ,app name :" << app_name <<"appIconname" <<app_icon_name ;
+    if (app_icon_name) {
+        if (strstr(app_icon_name,"recording")) {
+            app_name = "kylin-recorder";
+            app_icon_name = "kylin-recorder";
+        }
+    }
+    else {
+        if (strstr(app_name,"MPlayer")) {
+            app_icon_name = "kylin-video";
+        }
     }
     //添加应用添加到应用音量中
     add_app_to_appwidget(w,app_name,app_icon_name,control);
@@ -1666,6 +1678,11 @@ void DeviceSwitchWidget::on_stream_control_added (MateMixerStream *stream,const 
         if (appIconName && strstr(appIconName,"recording")) {
             m_pAppName = "kylin-recorder";
             appIconName = "kylin-recorder";
+        }
+        else if (!appIconName){
+            if (strstr(m_pAppName,"MPlayer")) {
+                appIconName = "kylin-video";
+            }
         }
 
         if (strcmp(m_pAppName,"ukui-session") != 0 && strcmp(m_pAppName,"ukui-volume-control-applet-qt") != 0 && strcmp(m_pAppName,"Volume Control") && \
