@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<sounds> 
-  <sound deleted="false">
-    <name>jinggle</name>
-    <name xml:lang="zh_CN">到达</name>
-    <filename>/usr/share/ukui-media/sounds/jinggle.ogg</filename>
-  </sound>
-
+<sounds>
   <sound deleted="false">
     <name>flop</name>
     <name xml:lang="zh_CN">电波回音</name>
@@ -49,18 +43,6 @@
   </sound>
 
   <sound deleted="false">
-    <name>kaca</name>
-    <name xml:lang="zh_CN">咔嚓</name>
-    <filename>/usr/share/sounds/kaca.ogg</filename>
-  </sound>
-
-  <sound deleted="false">
-    <name>creak</name>
-    <name xml:lang="zh_CN">脉冲</name>
-    <filename>/usr/share/ukui-media/ukui-media/sounds/creak.ogg</filename>
-  </sound>
-
-  <sound deleted="false">
     <name>sonar</name>
     <name xml:lang="zh_CN">山谷</name>
     <filename>/usr/share/ukui-media/sounds/sonar.ogg</filename>
@@ -100,5 +82,29 @@
     <name>splash</name>
     <name xml:lang="zh_CN">电磁</name>
     <filename>/usr/share/ukui-media/sounds/splash.ogg</filename>
+  </sound>
+
+  <sound deleted="false">
+    <name>bark</name>
+    <name xml:lang="zh_CN">犬吠</name>
+    <filename>/usr/share/ukui-media/sounds/bark.ogg</filename>
+  </sound>
+
+  <sound deleted="false">  
+    <name>drip</name>
+    <name xml:lang="zh_CN">雨滴</name>
+    <filename>/usr/share/ukui-media/sounds/drip.ogg</filename>
+  </sound>
+  
+  <sound deleted="false">
+    <name>glass</name>
+    <name xml:lang="zh_CN">玻璃</name>
+    <filename>/usr/share/ukui-media/sounds/glass.ogg</filename>
+  </sound>
+
+  <sound deleted="false">
+    <name>sonar</name>
+    <name xml:lang="zh_CN">声纳</name>
+    <filename>/usr/share/ukui-media/sounds/sonar.ogg</filename>
   </sound>
 </sounds>
