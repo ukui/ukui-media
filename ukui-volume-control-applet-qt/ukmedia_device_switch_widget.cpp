@@ -2445,8 +2445,15 @@ void DeviceSwitchWidget::updateOutputDeviceLabel()
             setOutputLabelDummyOutput();
         }
         else {
-            miniWidget->deviceLabel->setText(outputPortLabel);
-            devWidget->outputDeviceDisplayLabel->setText(outputPortLabel);
+            const gchar *outputStreamName = mate_mixer_stream_get_name(outputStream);
+            if (strstr(outputStreamName,"bluez")) {
+                miniWidget->deviceLabel->setText(tr("Bluetooth"));
+                devWidget->outputDeviceDisplayLabel->setText(tr("Bluetooth"));
+            }
+            else {
+                miniWidget->deviceLabel->setText(outputPortLabel);
+                devWidget->outputDeviceDisplayLabel->setText(outputPortLabel);
+            }
 //            osdWidgetShow(outputPortName);
         }
         g_signal_connect (G_OBJECT (outputPortSwitch),
@@ -2506,8 +2513,16 @@ void DeviceSwitchWidget::onOutputSwitchActiveOptionNotify (MateMixerSwitch *swtc
         w->setOutputLabelDummyOutput();
     }
     else {
-        w->miniWidget->deviceLabel->setText(outputPortLabel);
-        w->devWidget->outputDeviceDisplayLabel->setText(outputPortLabel);
+        MateMixerStream *outputStream = mate_mixer_context_get_default_output_stream(w->context);
+        const gchar *outputStreamName = mate_mixer_stream_get_name(outputStream);
+        if (strstr(outputStreamName,"bluez")) {
+            w->miniWidget->deviceLabel->setText(tr("Bluetooth"));
+            w->devWidget->outputDeviceDisplayLabel->setText(tr("Bluetooth"));
+        }
+        else {
+            w->miniWidget->deviceLabel->setText(outputPortLabel);
+            w->devWidget->outputDeviceDisplayLabel->setText(outputPortLabel);
+        }
     }
     w->osdWidgetShow(outputPortName);
 }

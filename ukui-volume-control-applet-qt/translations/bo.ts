@@ -17,50 +17,58 @@
 <context>
     <name>DeviceSwitchWidget</name>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="280"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="276"/>
         <source>Go Into Mini Mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="234"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="232"/>
         <source>Output volume control</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="236"/>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="239"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="234"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="237"/>
         <source>Mute</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="237"/>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="240"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="235"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="238"/>
         <source>Sound preference(S)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="1309"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="1284"/>
         <source>Device Volume</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="1310"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="1285"/>
         <source>Application Volume</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="2245"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="2279"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="2245"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="2279"/>
         <source>Unable to connect to the sound system, please check whether the pulseaudio service is running!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="2472"/>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="2473"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="2450"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="2451"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="2519"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="2520"/>
+        <source>Bluetooth</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="2500"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="2501"/>
         <source>Dummy output</source>
         <translation type="unfinished"></translation>
     </message>
@@ -68,7 +76,7 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="167"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="165"/>
         <source>PulseAudio Volume Control</source>
         <translation type="unfinished"></translation>
     </message>
@@ -94,7 +102,7 @@
 <context>
     <name>UkmediaMiniMasterVolumeWidget</name>
     <message>
-        <location filename="../ukmedia_mini_master_volume_widget.cpp" line="115"/>
+        <location filename="../ukmedia_mini_master_volume_widget.cpp" line="114"/>
         <source>Go Into Full Mode</source>
         <translation type="unfinished"></translation>
     </message>
