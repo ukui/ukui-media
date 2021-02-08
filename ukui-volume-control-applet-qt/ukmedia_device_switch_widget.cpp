@@ -1534,7 +1534,7 @@ void DeviceSwitchWidget::add_stream (DeviceSwitchWidget *w, MateMixerStream *str
             if (m_pAppInfo != nullptr) {
                 const gchar *m_pAppName = mate_mixer_app_info_get_name(m_pAppInfo);
                 const gchar *app_icon_name = mate_mixer_app_info_get_icon(m_pAppInfo);
-                if (app_icon_name && strstr(app_icon_name,"recording")) {
+                if (app_icon_name && strstr(app_icon_name,"recorder")) {
                     m_pAppName = "kylin-recorder";
                     app_icon_name = "kylin-recorder";
                 }
@@ -1585,9 +1585,8 @@ void DeviceSwitchWidget::add_application_control (DeviceSwitchWidget *w, MateMix
     const gchar *app_name;
     const gchar *app_icon;
     app_count = appnum;
-
+    qDebug() << "add application control -----------------";
     media_role = mate_mixer_stream_control_get_media_role (control);
-
     /* Add stream to the applications page, but make sure the stream qualifies
      * for the inclusion */
     info = mate_mixer_stream_control_get_app_info (control);
@@ -1613,6 +1612,7 @@ void DeviceSwitchWidget::add_application_control (DeviceSwitchWidget *w, MateMix
 
     const gchar *app_icon_name = mate_mixer_app_info_get_icon(info);
     app_name = mate_mixer_app_info_get_name (info);
+    qDebug() << "add application control ,app name :" << app_name <<"appIconname" <<app_icon_name ;
     w->stream_control_list->append(name);
     if (app_name == nullptr) {
         app_name = mate_mixer_stream_control_get_label(control);
@@ -1623,7 +1623,6 @@ void DeviceSwitchWidget::add_application_control (DeviceSwitchWidget *w, MateMix
     if (app_name == nullptr) {
         return;
     }
-    qDebug() << "add application control ,app name :" << app_name <<"appIconname" <<app_icon_name ;
     if (app_icon_name) {
         if (strstr(app_icon_name,"recording")) {
             app_name = "kylin-recorder";
@@ -1668,14 +1667,14 @@ void DeviceSwitchWidget::add_application_control (DeviceSwitchWidget *w, MateMix
 void DeviceSwitchWidget::on_stream_control_added (MateMixerStream *stream,const gchar *name,DeviceSwitchWidget *w)
 {
     MateMixerStreamControlRole role;
-    qDebug() << "stream control add" << name;
 
     w->control = mate_mixer_stream_get_control (stream, name);
     MateMixerAppInfo *m_pAppInfo = mate_mixer_stream_control_get_app_info(w->control);
     if (m_pAppInfo != nullptr) {
         const gchar *m_pAppName = mate_mixer_app_info_get_name(m_pAppInfo);
         const gchar *appIconName = mate_mixer_app_info_get_icon(m_pAppInfo);
-        if (appIconName && strstr(appIconName,"recording")) {
+        qDebug() << "stream control add" << name << m_pAppName << appIconName;
+        if (appIconName && strstr(appIconName,"recorder")) {
             m_pAppName = "kylin-recorder";
             appIconName = "kylin-recorder";
         }
@@ -1874,7 +1873,6 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
         app_icon_name = "ukui-clock";
     }
     else if (strcmp(app_name,"wechat") == 0) {
-        qDebug() << "0000000000000000000";
         app_icon_name = "electronic-wechat";
     }
     else if (strcmp(app_name,"Firefox") == 0) {
@@ -1883,6 +1881,10 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
 
     iconName.append(app_icon_name);
     iconName.append(".desktop");
+    if (strcmp(iconName.toLatin1().data(),"/usr/share/applications/firefox.desktop") == 0) {
+        iconName = "/usr/share/applications/firefox-esr.desktop";
+    }
+
     QString pAppName = w->getAppName(iconName);
     QString pAppIcon = w->getAppIcon(iconName);
 
@@ -2010,6 +2012,10 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
     }
     //主题更改
     connect(w,&DeviceSwitchWidget::theme_change,[=](){
+        QPushButton *btn = w->appWidget->findChild<QPushButton *>(appMuteBtnlStr);
+        if (btn == nullptr)
+            return;
+        qDebug() << "主题更改为:" << w->mThemeName;
         if (btn != nullptr) {
             if ( w->mThemeName == "ukui-white" || w->mThemeName == "ukui-light") {
                 btn->setIcon(QIcon(w->drawDarkColoredPixmap((QIcon::fromTheme(audioIconStr).pixmap(iconSize)))));
