@@ -2457,6 +2457,19 @@ void DeviceSwitchWidget::updateOutputDeviceLabel()
                 devWidget->outputDeviceDisplayLabel->setText(tr("Bluetooth"));
             }
             else {
+                QString str =(QString)outputPortLabel;
+                if(str == "多声道输出")
+                {
+                    qDebug()<<"当前设备名:"<<outputPortLabel;
+                    devWidget->outputDeviceBtn->setIcon(QIcon("/usr/share/ukui-media/img/audiocard.svg"));
+                    miniWidget->deviceBtn->setIcon(QIcon("/usr/share/ukui-media/img/audiocard.svg"));
+                }
+                else if(str == "模拟耳机")
+                {
+                    qDebug()<<"当前设备名:"<<outputPortLabel;
+                    devWidget->outputDeviceBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-headphones.svg"));
+                    miniWidget->deviceBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-headphones.svg"));
+                }
                 miniWidget->deviceLabel->setText(outputPortLabel);
                 devWidget->outputDeviceDisplayLabel->setText(outputPortLabel);
             }
