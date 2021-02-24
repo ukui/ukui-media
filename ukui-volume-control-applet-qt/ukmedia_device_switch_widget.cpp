@@ -369,7 +369,7 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
             appWidget->systemVolumeLabel->setFont(fontSize);
             devWidget->inputDeviceDisplayLabel->setFont(fontSize);
         }
-        connect(m_pFontSetting,SIGNAL(changed(const QString &)),this,SLOT(fontSizeChangedSlot(const QString &)));
+        connect(m_pFontSetting , SIGNAL(changed(const QString &)),this,SLOT(fontSizeChangedSlot(const QString &)));
         connect(m_pThemeSetting, SIGNAL(changed(const QString &)),this,SLOT(ukuiThemeChangedSlot(const QString &)));
     }
 
