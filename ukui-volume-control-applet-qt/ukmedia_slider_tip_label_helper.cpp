@@ -103,6 +103,7 @@ bool SliderTipLabelHelper::eventFilter(QObject *obj, QEvent *e)
 
 void SliderTipLabelHelper::mouseMoveEvent(QObject *obj, QMouseEvent *e)
 {
+
     Q_UNUSED(e);
     QRect rect;
     QStyleOptionSlider m_option;

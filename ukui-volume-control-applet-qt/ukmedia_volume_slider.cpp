@@ -36,7 +36,7 @@ UkuiApplicationWidget::UkuiApplicationWidget(QWidget *parent)
 }
 
 UkuiMediaSliderTipLabel::UkuiMediaSliderTipLabel(){
-    setAttribute(Qt::WA_TranslucentBackground);
+//    setAttribute(Qt::WA_TranslucentBackground);//bug:37375 此句注释即可将m_pTiplabel的外边尖角小框去掉
 }
 
 UkuiMediaSliderTipLabel::~UkuiMediaSliderTipLabel(){
