@@ -7,19 +7,22 @@
 # José Vieira <jvieira33@sapo.pt>, 2017
 # Manuela Silva <manuela.silva@sky.com>, 2016-2017
 # Sérgio Marques <smarquespt@gmail.com>, 2012
+# Hugo Carvalho <hugokarvalho@hotmail.com>, 2021.
 msgid ""
 msgstr ""
 "Project-Id-Version: UKUI Desktop Environment\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-12-20 11:02+0800\n"
-"PO-Revision-Date: 2017-09-23 18:12+0000\n"
-"Last-Translator: José Vieira <jvieira33@sapo.pt>\n"
-"Language-Team: Portuguese (http://wiki.ukui.org/trans/pt/)\n"
+"PO-Revision-Date: 2021-03-01 15:59+0000\n"
+"Last-Translator: Hugo Carvalho <hugokarvalho@hotmail.com>\n"
+"Language-Team: Portuguese <https://weblate.ubuntukylin.com/projects/"
+"ukui-media/ukui-media/pt/>\n"
 "Language: pt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Weblate 4.3.2\n"
 
 #: ../data/ukui-volume-control.desktop.in.in.h:1
 msgid "Sound"
@@ -51,9 +54,8 @@ msgid "Enable debug"
 msgstr "Ativar depuração"
 
 #: ../ukui-volume-control/applet-main.c:55
-#, fuzzy
 msgid " — UKUI Volume Control Applet"
-msgstr " — Applet do controlo de volume MATE"
+msgstr " — Applet do controlo de volume UKUI"
 
 #: ../ukui-volume-control/dialog-main.c:143
 msgid "Sound system is not available"
@@ -72,9 +74,8 @@ msgid "Startup page"
 msgstr "Página inicial"
 
 #: ../ukui-volume-control/dialog-main.c:202
-#, fuzzy
 msgid " — UKUI Volume Control"
-msgstr " — Controlo de volume MATE"
+msgstr " — Controlo de volume UKUI"
 
 #: ../ukui-volume-control/gvc-applet.c:322
 #: ../ukui-volume-control/gvc-mixer-dialog.c:1999
@@ -95,9 +96,8 @@ msgid "Sound Output Volume"
 msgstr "Volume da saída de som"
 
 #: ../ukui-volume-control/gvc-applet.c:333
-#, fuzzy
 msgid "UKUI Volume Control Applet"
-msgstr "Applet do controlo de volume MATE"
+msgstr "Applet do controlo de volume UKUI"
 
 #: ../ukui-volume-control/gvc-balance-bar.c:140
 msgctxt "balance"
@@ -232,7 +232,7 @@ msgstr "Definições do dispositivo escolhido:"
 
 #: ../ukui-volume-control/gvc-mixer-dialog.c:2008
 msgid "_Input volume: "
-msgstr "Volume de _entrada:"
+msgstr "Volume de _entrada: "
 
 #: ../ukui-volume-control/gvc-mixer-dialog.c:2033
 msgid "Input level:"
@@ -316,7 +316,7 @@ msgstr "Testar"
 #: ../ukui-volume-control/gvc-stream-status-icon.c:240
 #, c-format
 msgid "Failed to start Sound Preferences: %s"
-msgstr "Failed to start Sound Preferences: %s"
+msgstr "Falha ao iniciar Preferências de som: %s"
 
 #: ../ukui-volume-control/gvc-stream-status-icon.c:291
 msgid "_Mute"
@@ -324,7 +324,7 @@ msgstr "_Silenciar"
 
 #: ../ukui-volume-control/gvc-stream-status-icon.c:301
 msgid "_Horizontal"
-msgstr ""
+msgstr "_Horizontal"
 
 #: ../ukui-volume-control/gvc-stream-status-icon.c:310
 msgid "_Sound Preferences"
@@ -401,7 +401,7 @@ msgstr "Frente ao centro superior"
 
 #: ../ukui-volume-control/gvc-utils.c:75
 msgid "Top Center"
-msgstr "Topo ao Centro "
+msgstr "Topo ao Centro"
 
 #: ../ukui-volume-control/gvc-utils.c:76
 msgid "Top Rear Left"
