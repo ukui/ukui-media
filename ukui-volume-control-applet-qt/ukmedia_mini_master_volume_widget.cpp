@@ -64,7 +64,8 @@ UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QWidget *parent) : 
     masterWidget->setFixedSize(345,31);
     switchBtn->resize(36,36);
     deviceCombox->setFixedSize(300,36);
-    displayVolumeLabel->setFixedSize(32,20);
+    displayVolumeLabel->setFixedSize(34,20);
+//    displayVolumeLabel->setStyleSheet("background-color:pink;");
 
     displayWidget->move(0,0);
     deviceCombox->move(2,6);

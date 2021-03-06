@@ -30,13 +30,13 @@ SwitchButtonState buttonState = SWITCH_BUTTON_NORMAL;
 extern double transparency;
 UkuiApplicationWidget::UkuiApplicationWidget(QWidget *parent)
 {
-//    this->setAttribute(Qt::WA_TranslucentBackground);
+    this->setAttribute(Qt::WA_TranslucentBackground);
 //    this->setStyleSheet("QWiget{background:rgba(0,0,0,0);}");
     Q_UNUSED(parent);
 }
 
 UkuiMediaSliderTipLabel::UkuiMediaSliderTipLabel(){
-//    setAttribute(Qt::WA_TranslucentBackground);//bug:37375 此句注释即可将m_pTiplabel的外边尖角小框去掉
+    setAttribute(Qt::WA_TranslucentBackground);
 }
 
 UkuiMediaSliderTipLabel::~UkuiMediaSliderTipLabel(){
@@ -76,7 +76,7 @@ void UkuiMediaSliderTipLabel::paintEvent(QPaintEvent *e)
     initStyleOption(&opt);
     QStylePainter p(this);
 //    p.setBrush(QBrush(QColor(0x1A,0x1A,0x1A,0x4C)));
-    p.setBrush(QBrush(QColor(0xFF,0xFF,0xFF,0x33)));
+    p.setBrush(QBrush(QColor(0xFF,0xFF,0xFF,0x00)));
     p.setPen(Qt::NoPen);
     p.drawRoundedRect(this->rect(), 1, 1);
     QPainterPath path;
@@ -188,6 +188,7 @@ UkmediaVolumeSlider::UkmediaVolumeSlider(QWidget *parent,bool needTip)
         m_pTiplabel->setWindowFlags(Qt::ToolTip);
     //    qApp->installEventFilter(new AppEventFilter(this));
         m_pTiplabel->setFixedSize(52,30);
+//        m_pTiplabel->setAttribute(Qt::WA_TranslucentBackground);
         m_pTiplabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     }
 }

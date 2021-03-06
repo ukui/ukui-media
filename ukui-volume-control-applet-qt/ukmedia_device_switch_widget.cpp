@@ -216,6 +216,11 @@ void DeviceSwitchWidget::context_state_callback(pa_context *c, void *userdata) {
 
 DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
 {
+
+    QDBusConnection::sessionBus().unregisterService("org.ukui.media");
+    QDBusConnection::sessionBus().registerService("org.ukui.media");
+    QDBusConnection::sessionBus().registerObject("/", this,QDBusConnection :: ExportAllSlots | QDBusConnection :: ExportAllSignals);
+    qDebug()<<"dbus绑定成功!";
     connect_to_pulse(this);
     setAttribute(Qt::WA_TranslucentBackground);
     setMouseTracking(true);
@@ -259,10 +264,15 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     appWidget->appArea->setWidget(appWidget->displayAppVolumeWidget);
     appWidget->m_pVlayout = new QVBoxLayout(appWidget->displayAppVolumeWidget);
 
-    appWidget->displayAppVolumeWidget->setAttribute(Qt::WA_TranslucentBackground);
-    appWidget->appArea->setFixedSize(358,177);
+//    appWidget->displayAppVolumeWidget->setAttribute(Qt::WA_TranslucentBackground);
+    appWidget->appArea->setAttribute(Qt::WA_TranslucentBackground);
+    appWidget->appArea->setFixedSize(355,168);
     appWidget->appArea->move(0,143);
-    appWidget->displayAppVolumeWidget->setFixedWidth(358);
+
+
+//    appWidget->appArea->setStyleSheet("background-color:purple;");
+    appWidget->displayAppVolumeWidget->setFixedWidth(355);
+//    appWidget->displayAppVolumeWidget->setStyleSheet("background-color:pink;");
     appWidget->displayAppVolumeWidget->move(0,143);
 
     switchToMiniBtn = new UkuiMediaButton(this);
@@ -481,13 +491,15 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     trayRect = soundSystemTrayIcon->geometry();
     appWidget->displayAppVolumeWidget->setLayout(appWidget->m_pVlayout);
 
-    this->setObjectName("mainWidget");
-    appWidget->setObjectName("appWidget");
+//    this->setObjectName("mainWidget");
+//    appWidget->setObjectName("appWidget");
+    appWidget->appArea->setFrameShape(QFrame::NoFrame);//bjc去掉appArea的边框
+    appWidget->appArea->setWindowOpacity(0);
+//    appWidget->appArea->setStyleSheet("QScrollArea{border:none;}");//此句代码导致其widget内部的字体不随主题变化了
+//    appWidget->appArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-    appWidget->appArea->setStyleSheet("QScrollArea{border:none;}");
-    appWidget->appArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    appWidget->appArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-    appWidget->appArea->viewport()->setAttribute(Qt::WA_TranslucentBackground);
+//    appWidget->appArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+//    appWidget->appArea->viewport()->setAttribute(Qt::WA_TranslucentBackground);
 
     if (appnum <= 0) {
         appWidget->upWidget->hide();
@@ -496,8 +508,6 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
         appWidget->upWidget->show();
     }
 }
-
-
 
 /*!
  * \brief
@@ -1410,7 +1420,8 @@ void DeviceSwitchWidget::list_device(DeviceSwitchWidget *w,MateMixerContext *con
             }
             if (strstr(pStreamName,"alsa_input")) {
                 w->input = MATE_MIXER_STREAM (m_pList->data);
-                mate_mixer_context_set_default_input_stream(context,MATE_MIXER_STREAM (m_pList->data));
+                if (MATE_MIXER_IS_STREAM(w->input))
+                    mate_mixer_context_set_default_input_stream(context,MATE_MIXER_STREAM (m_pList->data));
             }
         }
         m_pList = m_pList->next;
@@ -1488,7 +1499,8 @@ void DeviceSwitchWidget::add_stream (DeviceSwitchWidget *w, MateMixerStream *str
 
                 bar_set_stream (w, stream);
                 w->input = stream;
-                mate_mixer_context_set_default_input_stream(w->context,stream);
+                if (MATE_MIXER_IS_STREAM(stream))
+                    mate_mixer_context_set_default_input_stream(w->context,stream);
             }
             w->input_stream_list->append(name);
         }
@@ -1879,6 +1891,7 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
         app_icon_name = "firefox";
     }
 
+
     iconName.append(app_icon_name);
     iconName.append(".desktop");
     if (strcmp(iconName.toLatin1().data(),"/usr/share/applications/firefox.desktop") == 0) {
@@ -1891,17 +1904,22 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
     w->appWidget->app_volume_list->append(app_icon_name);
     qDebug() << "应用名为:" << pAppName << "desktop 名：" << iconName << "app icon name" << app_icon_name << "app name " << app_name << mate_mixer_stream_control_get_volume(control) << mate_mixer_stream_control_get_mute(control);
     //widget显示应用音量
+
     QWidget *app_widget = new QWidget(w->appWidget->displayAppVolumeWidget);
-    app_widget->setFixedSize(306,60);
+    app_widget->setFixedSize(306,70);//bjc将60改为70就可以
+//    app_widget->setStyleSheet("background-color:pink;");
+
     QHBoxLayout *hlayout = new QHBoxLayout(app_widget);
     QVBoxLayout *vlayout = new QVBoxLayout();
     QSpacerItem *item1 = new QSpacerItem(18,20);
     QSpacerItem *item2 = new QSpacerItem(12,20);
-    QWidget *wid = new QWidget(app_widget);
+    QWidget *wid = new QWidget(app_widget);//wid为应用图标、音量Slider和mute图标
     wid->setAttribute(Qt::WA_TranslucentBackground);
     wid->setFixedSize(306,38);
+//    wid->setStyleSheet("background-color:blue;");
     w->appWidget->appLabel = new QLabel(app_widget);
     w->appWidget->appLabel->setParent(app_widget);
+
     w->appWidget->appIconBtn = new QPushButton(wid);
     w->appWidget->appSlider = new UkmediaVolumeSlider(wid,true);
     w->appWidget->appMuteBtn = new QPushButton(wid);
@@ -1933,12 +1951,12 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
 
     vlayout->addWidget(w->appWidget->appLabel);
     vlayout->addWidget(wid);
-    vlayout->setSpacing(8);
+    vlayout->setSpacing(10);
     app_widget->setLayout(vlayout);
     app_widget->layout()->setContentsMargins(0,0,0,0);
 
     //设置每项的固定大小
-    w->appWidget->appLabel->setFixedSize(260,18);
+    w->appWidget->appLabel->setFixedSize(260,22);//bjc高度改为22即可
 
     QSize icon_size(32,32);
     w->appWidget->appIconBtn->setIconSize(icon_size);
@@ -2025,18 +2043,25 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
             }
         }
     });
+
     connect(w,&DeviceSwitchWidget::font_change,[=](){
-        QString fontType;
+
         if (w->m_pFontSetting->keys().contains("systemFont")) {
+            QString fontType;
             fontType = w->m_pFontSetting->get("systemFont").toString();
+            qDebug()<<"当前字体:"<<fontType<<"*****************";
+//            w->appWidget->appLabel->setFont(fontType);
         }
         if (w->m_pFontSetting->keys().contains("systemFontSize")) {
             int font = w->m_pFontSetting->get("system-font-size").toInt();
-            QFont fontSize(fontType,font);
+            qDebug()<<"当前字体大小:"<<font<<"*****************";
+//            QFont fontSize(fontType,font);
+//            w->appWidget->appLabel->setFont(fontSize);
 
-            w->appWidget->appLabel->setFont(fontSize);
         }
     });
+//    fontType = w->m_pFontSetting->get("systemFont").toString();
+//    w->appWidget->appLabel->setFont(fontType);
     /*滑动条控制应用音量*/
     connect(w->appWidget->appSlider,&QSlider::valueChanged,[=](int value){
         application_name = appSliderStr;
@@ -2182,7 +2207,7 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
     //设置布局的垂直间距以及设置vlayout四周的间距
     w->appWidget->m_pVlayout->setSpacing(18);
     w->appWidget->displayAppVolumeWidget->resize(358,14+appnum*78);
-    w->appWidget->m_pVlayout->setContentsMargins(18,14,34,18);
+    w->appWidget->m_pVlayout->setContentsMargins(18,0,34,0);
     w->appWidget->m_pVlayout->update();
 
     w->appWidget->appMuteBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
@@ -2422,6 +2447,7 @@ void DeviceSwitchWidget::add_device (DeviceSwitchWidget *w, MateMixerDevice *dev
 
 void DeviceSwitchWidget::updateOutputDeviceLabel()
 {
+
     MateMixerSwitch *outputPortSwitch;
     const GList  *options ;
     const gchar *outputPortLabel = nullptr;
@@ -2448,9 +2474,10 @@ void DeviceSwitchWidget::updateOutputDeviceLabel()
         if (G_LIKELY (outputActivePort != NULL))
             outputPortLabel = mate_mixer_switch_option_get_label(outputActivePort);
         if (!MATE_MIXER_IS_SWITCH_OPTION (outputActivePort)) {
-            setOutputLabelDummyOutput();
+            setOutputLabelDummyOutput();//伪输出
         }
         else {
+
             const gchar *outputStreamName = mate_mixer_stream_get_name(outputStream);
             if (strstr(outputStreamName,"bluez")) {
                 miniWidget->deviceLabel->setText(tr("Bluetooth"));
@@ -2458,17 +2485,17 @@ void DeviceSwitchWidget::updateOutputDeviceLabel()
             }
             else {
                 QString str =(QString)outputPortLabel;
-                if(str == "多声道输出")
-                {
-                    qDebug()<<"当前设备名:"<<outputPortLabel;
-                    devWidget->outputDeviceBtn->setIcon(QIcon("/usr/share/ukui-media/img/audiocard.svg"));
-                    miniWidget->deviceBtn->setIcon(QIcon("/usr/share/ukui-media/img/audiocard.svg"));
-                }
-                else if(str == "模拟耳机")
+                if(str.contains("耳机"))
                 {
                     qDebug()<<"当前设备名:"<<outputPortLabel;
                     devWidget->outputDeviceBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-headphones.svg"));
                     miniWidget->deviceBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-headphones.svg"));
+                }
+                else
+                {
+                    qDebug()<<"当前设备名:"<<outputPortLabel;
+                    devWidget->outputDeviceBtn->setIcon(QIcon("/usr/share/ukui-media/img/audiocard.svg"));
+                    miniWidget->deviceBtn->setIcon(QIcon("/usr/share/ukui-media/img/audiocard.svg"));
                 }
                 miniWidget->deviceLabel->setText(outputPortLabel);
                 devWidget->outputDeviceDisplayLabel->setText(outputPortLabel);
@@ -2518,6 +2545,9 @@ void DeviceSwitchWidget::setOutputLabelDummyOutput()
 {
     miniWidget->deviceLabel->setText(tr("Dummy output"));
     devWidget->outputDeviceDisplayLabel->setText(tr("Dummy output"));
+    //伪输出还用输出图标
+    devWidget->outputDeviceBtn->setIcon(QIcon("/usr/share/ukui-media/img/audiocard.svg"));
+    miniWidget->deviceBtn->setIcon(QIcon("/usr/share/ukui-media/img/audiocard.svg"));
 }
 
 void DeviceSwitchWidget::onOutputSwitchActiveOptionNotify (MateMixerSwitch *swtch,GParamSpec *pspec,DeviceSwitchWidget *w)
@@ -2657,10 +2687,19 @@ void DeviceSwitchWidget::on_context_default_input_stream_notify (MateMixerContex
 
     stream = mate_mixer_context_get_default_input_stream (context);
     g_debug ("Default input stream has changed");
-    qDebug() << "Default input stream has changed" << mate_mixer_stream_get_name(stream);
-    set_input_stream (w, stream);
-    update_icon_input (w,stream);
-    w->updateInputDeviceLabel();
+    if (MATE_MIXER_IS_STREAM(stream)) {
+
+        qDebug()<<"拔插耳机";
+        //发送DBus信号
+        QDBusMessage message =QDBusMessage::createSignal("/", "org.ukui.media", "DbusSingleTest");
+        message<<"拔插";
+        QDBusConnection::sessionBus().send(message);
+
+        qDebug() << "Default input stream has changed" << mate_mixer_stream_get_name(stream);
+        set_input_stream (w, stream);
+        update_icon_input (w,stream);
+        w->updateInputDeviceLabel();
+    }
 }
 
 void DeviceSwitchWidget::set_input_stream (DeviceSwitchWidget *w, MateMixerStream *stream)
@@ -3354,8 +3393,11 @@ void DeviceSwitchWidget::bar_set_stream (DeviceSwitchWidget  *w,MateMixerStream 
 {
     MateMixerStreamControl *control = nullptr;
 
-    if (stream != nullptr) {
+    if (MATE_MIXER_IS_STREAM(stream)) {
         control = mate_mixer_stream_get_default_control (stream);
+    }
+    else {
+        return;
     }
     MateMixerDirection direction = mate_mixer_stream_get_direction(stream);
     bar_set_stream_control (w,direction, control);
