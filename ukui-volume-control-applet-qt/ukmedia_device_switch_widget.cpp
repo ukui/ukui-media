@@ -216,7 +216,8 @@ void DeviceSwitchWidget::context_state_callback(pa_context *c, void *userdata) {
 
 DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
 {
-
+    QPalette pal = this->palette();//调色板
+    pal.setColor(QPalette::Background,QColor(0xFF,0xFF,0xFF,0x00));
     QDBusConnection::sessionBus().unregisterService("org.ukui.media");
     QDBusConnection::sessionBus().registerService("org.ukui.media");
     QDBusConnection::sessionBus().registerObject("/", this,QDBusConnection :: ExportAllSlots | QDBusConnection :: ExportAllSignals);
@@ -265,14 +266,16 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     appWidget->m_pVlayout = new QVBoxLayout(appWidget->displayAppVolumeWidget);
 
 //    appWidget->displayAppVolumeWidget->setAttribute(Qt::WA_TranslucentBackground);
-    appWidget->appArea->setAttribute(Qt::WA_TranslucentBackground);
+//    appWidget->appArea->setAttribute(Qt::WA_TranslucentBackground);
+//    appWidget->displayAppVolumeWidget->setPalette(pal);
     appWidget->appArea->setFixedSize(355,168);
     appWidget->appArea->move(0,143);
 
+//    appWidget->appArea->setPalette(pal); // 背景色
 
 //    appWidget->appArea->setStyleSheet("background-color:purple;");
     appWidget->displayAppVolumeWidget->setFixedWidth(355);
-//    appWidget->displayAppVolumeWidget->setStyleSheet("background-color:pink;");
+//    appWidget->displayAppVolumeWidget->setStyleSheet(".QWidget{background-color:pink;]");
     appWidget->displayAppVolumeWidget->move(0,143);
 
     switchToMiniBtn = new UkuiMediaButton(this);
@@ -494,12 +497,16 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
 //    this->setObjectName("mainWidget");
 //    appWidget->setObjectName("appWidget");
     appWidget->appArea->setFrameShape(QFrame::NoFrame);//bjc去掉appArea的边框
-    appWidget->appArea->setWindowOpacity(0);
+//    appWidget->appArea->setWindowOpacity(0);
+//    QPalette pal = this->palette();//调色板
+//    pal.setColor(QPalette::Background,QColor(0xFF,0xFF,0xFF,0x00));
+//    appWidget->setPalette(pal); // 背景色
 //    appWidget->appArea->setStyleSheet("QScrollArea{border:none;}");//此句代码导致其widget内部的字体不随主题变化了
 //    appWidget->appArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
 //    appWidget->appArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 //    appWidget->appArea->viewport()->setAttribute(Qt::WA_TranslucentBackground);
+    appWidget->appArea->setAttribute(Qt::WA_TranslucentBackground);
 
     if (appnum <= 0) {
         appWidget->upWidget->hide();
@@ -1625,7 +1632,7 @@ void DeviceSwitchWidget::add_application_control (DeviceSwitchWidget *w, MateMix
     const gchar *app_icon_name = mate_mixer_app_info_get_icon(info);
     app_name = mate_mixer_app_info_get_name (info);
     qDebug() << "add application control ,app name :" << app_name <<"appIconname" <<app_icon_name ;
-    w->stream_control_list->append(name);
+
     if (app_name == nullptr) {
         app_name = mate_mixer_stream_control_get_label(control);
     }
@@ -1646,8 +1653,15 @@ void DeviceSwitchWidget::add_application_control (DeviceSwitchWidget *w, MateMix
             app_icon_name = "kylin-video";
         }
     }
-    //添加应用添加到应用音量中
-    add_app_to_appwidget(w,app_name,app_icon_name,control);
+    qDebug()<<"应用:"<<w->judgetAppList;
+
+    if (!w->judgetAppList.contains(app_icon_name)) {
+        w->stream_control_list->append(name);
+        w->judgetAppList.append(app_icon_name);
+        qDebug()<<"应用111111111111111:"<<w->judgetAppList;
+        //添加应用添加到应用音量中
+        add_app_to_appwidget(w,app_name,app_icon_name,control);
+    }
 
     if (app_name == nullptr)
         app_name = mate_mixer_stream_control_get_label (control);
@@ -1758,6 +1772,7 @@ void DeviceSwitchWidget::remove_application_control (DeviceSwitchWidget *w,const
     w->stream_control_list->removeAt(index);
     w->app_name_list->removeAt(index);
     w->appBtnNameList->removeAt(index);
+    w->judgetAppList.removeAt(index);
     QLayoutItem *item ;
 
     if ((item = w->appWidget->m_pVlayout->takeAt(index)) != 0) {
@@ -1873,7 +1888,7 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
      * 视频的时候不会出现应用名和图标显示不正确的问题
      */
     else if (strcmp(app_name,"Chromium") == 0 && strcmp(app_icon_name.toLatin1().data(),"chromium-browser") == 0) {
-        app_icon_name = "TencentVideo";
+        app_icon_name = "qaxbrowser";
     }
     else if (strcmp(app_name,"ALSA plug-in [kylin-music]") == 0 ) {
         app_icon_name = "kylin-music";
@@ -1897,6 +1912,9 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
     if (strcmp(iconName.toLatin1().data(),"/usr/share/applications/firefox.desktop") == 0) {
         iconName = "/usr/share/applications/firefox-esr.desktop";
     }
+    if (strcmp(iconName.toLatin1().data(),"/usr/share/applications/qaxbrowser.desktop") == 0) {
+        iconName = "/usr/share/applications/qaxbrowser-safe.desktop";
+    }
 
     QString pAppName = w->getAppName(iconName);
     QString pAppIcon = w->getAppIcon(iconName);
@@ -1908,6 +1926,8 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
     QWidget *app_widget = new QWidget(w->appWidget->displayAppVolumeWidget);
     app_widget->setFixedSize(306,70);//bjc将60改为70就可以
 //    app_widget->setStyleSheet("background-color:pink;");
+
+
 
     QHBoxLayout *hlayout = new QHBoxLayout(app_widget);
     QVBoxLayout *vlayout = new QVBoxLayout();

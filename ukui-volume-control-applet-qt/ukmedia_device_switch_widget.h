@@ -241,6 +241,7 @@ private Q_SLOTS:
     void volumeSettingChangedSlot();
 private:
 
+
     QPushButton *deviceBtn;
     QPushButton *appVolumeBtn;
     UkuiMediaButton *switchToMiniBtn;
@@ -267,6 +268,8 @@ private:
     QStringList *stream_control_list;
     QStringList *app_name_list;
     QStringList *m_pOutputPortList;
+    QStringList judgetAppList ;
+
 
     QFrame *dividerFrame;
     MyTimer *timer;
@@ -303,5 +306,6 @@ protected:
 
 //    void mouseReleaseEvent(QMouseEvent *event);
 };
+
 
 #endif // DEICESWITCHWIDGET_H

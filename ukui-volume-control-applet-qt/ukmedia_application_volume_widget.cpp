@@ -16,6 +16,7 @@
  *
  */
 #include "ukmedia_application_volume_widget.h"
+
 #include <QDebug>
 #include <QScrollBar>
 #include <QHBoxLayout>
@@ -81,7 +82,7 @@ ApplicationVolumeWidget::ApplicationVolumeWidget(QWidget *parent) : QWidget (par
 //    QPainter p(this);
 ////    double transparence = transparency * 255;
 ////    p.setBrush(this->palette().base());
-//    p.setBrush(QBrush(QColor(19, 19, 20, 0)));
+//    p.setBrush(QBrush(QColor(0xFF,0xFF,0xFF,0x00)));
 //    p.setPen(Qt::NoPen);
 //    QPainterPath path;
 //    opt.rect.adjust(0,0,0,0);
