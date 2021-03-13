@@ -2839,6 +2839,11 @@ void DeviceSwitchWidget::update_icon_input (DeviceSwitchWidget *w,MateMixerStrea
     gboolean show = false;
 
     stream = mate_mixer_context_get_default_input_stream(w->context);
+    if(!MATE_MIXER_IS_CONTEXT(stream))
+    {
+        qDebug()<<"*****对于台式机切换时要确保source切换不为空*****";
+        return ;
+    }
     const GList *inputs =mate_mixer_stream_list_controls(stream);
     control = mate_mixer_stream_get_default_control(stream);
     inputControlName = mate_mixer_stream_control_get_name(control);

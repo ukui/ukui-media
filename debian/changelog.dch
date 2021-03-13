@@ -1,0 +1,98 @@
+ukui-media (3.0.1-1ubuntu1) UNRELEASED; urgency=medium
+
+  * 
+
+ -- handsome_feng <bjc@bjc-PC>  Fri, 12 Mar 2021 10:41:50 +0800
+
+ukui-media (3.0.1-1) unstable; urgency=medium
+
+  * New upstream release.
+  * d/ukui-media.posinst: drop the execute permission.
+  * d/copyright: update copyright.
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Tue, 25 Aug 2020 13:41:32 +0800
+
+ukui-media (3.0.0-1) unstable; urgency=medium
+
+  * New upstream release.
+  * debian/control:
+    - Add libglib2.0-bin to depends.
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Wed, 29 Jul 2020 07:41:17 +0000
+
+ukui-media (2.0.4-2) unstable; urgency=medium
+
+  [ Helmut Grohne ]
+  * Fix FTCBFS: Let dh_auto_configure use a cross qmake. (Closes: #965229)
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Sat, 18 Jul 2020 20:51:51 +0800
+
+ukui-media (2.0.4-1) unstable; urgency=medium
+
+  * New upstream release.
+  * debian/control:
+    - Drop libqt5xdg-dev.
+    - Add qtmultimedia5-dev, qttools5-dev-tools.
+  * debian/postinst:
+    - Add interpreter and debhelper token.
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Fri, 17 Jul 2020 15:04:45 +0800
+
+ukui-media (2.0.3-1) unstable; urgency=medium
+
+  * New upstream bugfix release.
+    - Fix the i18n issue.
+    - Fix that the tooltip doesn't disappear.
+    - Fix that the slider disapplears when switching music.
+    - Fix that sometimes 'mute' doesn't take effect.
+    - Fix the incorrect position of popup window.
+    - Fix the wrong output volume when insert new card device.
+  * debian/watch:
+    - Updated to monitor the upstream orig.tar.gz.
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Mon, 06 Apr 2020 16:26:05 +0800
+
+ukui-media (2.0.2-1) unstable; urgency=medium
+
+  * New upstream bugfix release.
+    - Fix the crash caused by shortcut keys.
+    - Fix that when playing media, adjust the volume will cause the
+      icon disappear.
+    - Fix the crash when switch media.
+    - Fix the inconsistent value when playing multiple media.
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Mon, 30 Mar 2020 15:35:50 +0800
+
+ukui-media (2.0.1-1) unstable; urgency=medium
+
+  * New upstream release.
+    - Update the translation.
+    - Adjust the style and layout.
+    - Fix the focus issue.
+    - Fix the crash when switching profiles.
+    - Fix the wrong place on multi-screen.
+    - Add keyboard support to change the volume.
+    - Show scrollbar when there are multiple apps.
+    - Update default input stream.
+    - Add mini mode.
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Fri, 20 Mar 2020 19:50:01 +0800
+
+ukui-media (2.0.0-1) unstable; urgency=medium
+
+  * New upstream release.
+    - Rewrite the UI using Qt.
+  * d/control:
+    - Bump standards-version to 4.5.0
+    - Bump compat level to 12.
+    - Set Rules-Requires-Root to no.
+    - Refresh the build-depends.
+    - Refresh the copyright entry.
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Tue, 11 Feb 2020 22:48:25 +0800
+
+ukui-media (1.1.2-1) unstable; urgency=medium
+
+  * Initial release. (Closes: #903950)
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Tue, 17 Jul 2018 14:19:24 +0800
