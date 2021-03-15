@@ -2665,6 +2665,15 @@ void DeviceSwitchWidget::onInputSwitchActiveOptionNotify (MateMixerSwitch *swtch
     mate_mixer_switch_option_get_label(action);
     const gchar *inputPortLabel = nullptr;
     inputPortLabel = mate_mixer_switch_option_get_label(action);
+    if(w->isInputPortSame!=inputPortLabel)
+    {
+        qDebug()<<"Port不同:";
+        //发送DBus信号
+        QDBusMessage message =QDBusMessage::createSignal("/", "org.ukui.media", "DbusSingleTest");
+        message<<"拔插";
+        QDBusConnection::sessionBus().send(message);
+
+    }
 
     if (MATE_MIXER_IS_SWITCH_OPTION (action)) {
         w->devWidget->inputDeviceDisplayLabel->setText(inputPortLabel);
