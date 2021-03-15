@@ -300,6 +300,10 @@ private:
     pa_mainloop_api* api;
     pa_ext_stream_restore_info info;
 
+    const gchar *isInputPortSame ;//判断是否是port端口
+
+    void plug_IconChange(MateMixerSwitchOption *outputActivePort);
+
 protected:
     void paintEvent(QPaintEvent *event);
     bool event(QEvent *event);//重写窗口事件

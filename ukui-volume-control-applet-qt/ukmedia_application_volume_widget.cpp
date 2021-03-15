@@ -42,8 +42,8 @@ ApplicationVolumeWidget::ApplicationVolumeWidget(QWidget *parent) : QWidget (par
     systemVolumeSliderWidget->setFixedSize(312,32);
     systemVolumeLabel->setFixedSize(220,24);
     systemVolumeBtn->setFixedSize(32,32);
-    systemVolumeSlider->setFixedSize(220,22);
-    systemVolumeDisplayLabel->setFixedSize(40,32);
+    systemVolumeSlider->setFixedSize(200,22);
+    systemVolumeDisplayLabel->setFixedSize(55,32);
     applicationLabel->setFixedSize(200,24);
     QSize iconSize(32,32);
     systemVolumeBtn->setIconSize(iconSize);

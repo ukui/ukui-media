@@ -553,7 +553,7 @@ void DeviceSwitchWidget::miniMastrerSliderChangedSlot(int value)
     mate_mixer_stream_control_set_volume(control,guint(volume));
     appWidget->systemVolumeSlider->blockSignals(true);
     devWidget->outputDeviceSlider->blockSignals(true);
-    miniWidget->displayVolumeLabel->setText(percent);
+    miniWidget->displayVolumeLabel->setText(percent+"%");
     appWidget->systemVolumeSlider->setValue(value);
     devWidget->outputDeviceSlider->setValue(value);
     appWidget->systemVolumeSlider->blockSignals(false);
@@ -582,7 +582,7 @@ void DeviceSwitchWidget::advancedSystemSliderChangedSlot(int value)
     appWidget->systemVolumeSlider->blockSignals(true);
     miniWidget->masterVolumeSlider->blockSignals(true);
     miniWidget->masterVolumeSlider->setValue(value);
-    appWidget->systemVolumeDisplayLabel->setText(percent);
+    appWidget->systemVolumeDisplayLabel->setText(percent+"%");
     appWidget->systemVolumeSlider->blockSignals(false);
     miniWidget->masterVolumeSlider->blockSignals(false);
 }
@@ -2508,14 +2508,14 @@ void DeviceSwitchWidget::updateOutputDeviceLabel()
                 if(str.contains("耳机"))
                 {
                     qDebug()<<"当前设备名:"<<outputPortLabel;
-                    devWidget->outputDeviceBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-headphones.svg"));
-                    miniWidget->deviceBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-headphones.svg"));
+                    devWidget->outputDeviceBtn->setIcon(QIcon::fromTheme("audio-headphones",QIcon("/usr/share/ukui-media/img/audio-headphones.svg")));
+                    miniWidget->deviceBtn->setIcon(QIcon::fromTheme("audio-headphones",QIcon("/usr/share/ukui-media/img/audio-headphones.svg")));
                 }
                 else
                 {
                     qDebug()<<"当前设备名:"<<outputPortLabel;
-                    devWidget->outputDeviceBtn->setIcon(QIcon("/usr/share/ukui-media/img/audiocard.svg"));
-                    miniWidget->deviceBtn->setIcon(QIcon("/usr/share/ukui-media/img/audiocard.svg"));
+                    devWidget->outputDeviceBtn->setIcon(QIcon::fromTheme("audio-card",QIcon("/usr/share/ukui-media/img/audiocard.svg")));
+                    miniWidget->deviceBtn->setIcon(QIcon::fromTheme("audio-card",QIcon("/usr/share/ukui-media/img/audiocard.svg")));
                 }
                 miniWidget->deviceLabel->setText(outputPortLabel);
                 devWidget->outputDeviceDisplayLabel->setText(outputPortLabel);
@@ -2566,8 +2566,8 @@ void DeviceSwitchWidget::setOutputLabelDummyOutput()
     miniWidget->deviceLabel->setText(tr("Dummy output"));
     devWidget->outputDeviceDisplayLabel->setText(tr("Dummy output"));
     //伪输出还用输出图标
-    devWidget->outputDeviceBtn->setIcon(QIcon("/usr/share/ukui-media/img/audiocard.svg"));
-    miniWidget->deviceBtn->setIcon(QIcon("/usr/share/ukui-media/img/audiocard.svg"));
+    devWidget->outputDeviceBtn->setIcon(QIcon::fromTheme("audio-card",QIcon("/usr/share/ukui-media/img/audiocard.svg")));
+    miniWidget->deviceBtn->setIcon(QIcon::fromTheme("audio-card",QIcon("/usr/share/ukui-media/img/audiocard.svg")));
 }
 
 void DeviceSwitchWidget::onOutputSwitchActiveOptionNotify (MateMixerSwitch *swtch,GParamSpec *pspec,DeviceSwitchWidget *w)
@@ -2589,11 +2589,43 @@ void DeviceSwitchWidget::onOutputSwitchActiveOptionNotify (MateMixerSwitch *swtc
             w->devWidget->outputDeviceDisplayLabel->setText(tr("Bluetooth"));
         }
         else {
+            QString str =(QString)outputPortLabel;
+            if(str.contains("耳机"))
+            {
+                qDebug()<<"当前设备名:"<<outputPortLabel;
+                w->devWidget->outputDeviceBtn->setIcon(QIcon::fromTheme("audio-headphones",QIcon("/usr/share/ukui-media/img/audio-headphones.svg")));
+                w->miniWidget->deviceBtn->setIcon(QIcon::fromTheme("audio-headphones",QIcon("/usr/share/ukui-media/img/audio-headphones.svg")));
+            }
+            else
+            {
+                qDebug()<<"当前设备名:"<<outputPortLabel;
+                w->devWidget->outputDeviceBtn->setIcon(QIcon::fromTheme("audio-card",QIcon("/usr/share/ukui-media/img/audiocard.svg")));
+                w->miniWidget->deviceBtn->setIcon(QIcon::fromTheme("audio-card",QIcon("/usr/share/ukui-media/img/audiocard.svg")));
+            }
             w->miniWidget->deviceLabel->setText(outputPortLabel);
             w->devWidget->outputDeviceDisplayLabel->setText(outputPortLabel);
         }
     }
     w->osdWidgetShow(outputPortName);
+}
+
+//拔插耳机图标改变
+void DeviceSwitchWidget::plug_IconChange(MateMixerSwitchOption *outputActivePort)
+{
+    const gchar *outputPortLabel = nullptr;
+    outputPortLabel = mate_mixer_switch_option_get_label(outputActivePort);
+    if(strstr(outputPortLabel,"耳机"))
+    {
+        qDebug()<<"当前设备名:"<<outputPortLabel;
+        devWidget->outputDeviceBtn->setIcon(QIcon::fromTheme("audio-headphones",QIcon("/usr/share/ukui-media/img/audio-headphones.svg")));
+        miniWidget->deviceBtn->setIcon(QIcon::fromTheme("audio-headphones",QIcon("/usr/share/ukui-media/img/audio-headphones.svg")));
+    }
+    else
+    {
+        qDebug()<<"当前设备名:"<<outputPortLabel;
+        devWidget->outputDeviceBtn->setIcon(QIcon::fromTheme("audio-card",QIcon("/usr/share/ukui-media/img/audiocard.svg")));
+        miniWidget->deviceBtn->setIcon(QIcon::fromTheme("audio-card",QIcon("/usr/share/ukui-media/img/audiocard.svg")));
+    }
 }
 
 void DeviceSwitchWidget::osdWidgetShow(const gchar *portName)
@@ -2944,8 +2976,8 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
     w->appWidget->systemVolumeSlider->setValue(value);
     w->miniWidget->masterVolumeSlider->setValue(value);
     QString percentStr = QString::number(value) ;
-    w->miniWidget->displayVolumeLabel->setText(percentStr);
-    w->appWidget->systemVolumeDisplayLabel->setText(percentStr);
+    w->miniWidget->displayVolumeLabel->setText(percentStr+"%");
+    w->appWidget->systemVolumeDisplayLabel->setText(percentStr+"%");
     w->devWidget->outputDeviceSlider->blockSignals(false);
     w->appWidget->systemVolumeSlider->blockSignals(false);
     w->miniWidget->masterVolumeSlider->blockSignals(false);
@@ -2997,8 +3029,8 @@ void DeviceSwitchWidget::update_icon_output (DeviceSwitchWidget *w,MateMixerCont
     w->m_pMuteAction->setIcon(QIcon::fromTheme(muteComboxStr));
     w->soundSystemTrayIcon->setIcon(QIcon(trayIcon));
     w->appWidget->systemVolumeBtn->setIcon(QIcon(audioIcon));
-    w->miniWidget->displayVolumeLabel->setText(percent);
-    w->appWidget->systemVolumeDisplayLabel->setText(percent);
+    w->miniWidget->displayVolumeLabel->setText(percent+"%");
+    w->appWidget->systemVolumeDisplayLabel->setText(percent+"%");
 
     if (control != nullptr) {
             g_debug ("Output icon enabled");
@@ -3240,8 +3272,8 @@ void DeviceSwitchWidget::on_stream_control_volume_notify (MateMixerStreamControl
         w->appWidget->systemVolumeSlider->setValue(value);
         w->miniWidget->masterVolumeSlider->setValue(value);
         QString percentStr = QString::number(value) ;
-        w->miniWidget->displayVolumeLabel->setText(percentStr);
-        w->appWidget->systemVolumeDisplayLabel->setText(percentStr);
+        w->miniWidget->displayVolumeLabel->setText(percentStr+"%");
+        w->appWidget->systemVolumeDisplayLabel->setText(percentStr+"%");
         w->devWidget->outputDeviceSlider->blockSignals(false);
         w->appWidget->systemVolumeSlider->blockSignals(false);
         w->miniWidget->masterVolumeSlider->blockSignals(false);
