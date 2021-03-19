@@ -105,6 +105,7 @@ Q_SIGNALS:
 class DeviceSwitchWidget:public QWidget
 {
     Q_OBJECT
+    Q_CLASSINFO("D-Bus Interface", "org.ukui.media")//ukui-media的dbus借口
 public:
     DeviceSwitchWidget(QWidget *parent = nullptr);
     ~DeviceSwitchWidget();
@@ -240,6 +241,7 @@ private Q_SLOTS:
     void volumeSettingChangedSlot();
 private:
 
+
     QPushButton *deviceBtn;
     QPushButton *appVolumeBtn;
     UkuiMediaButton *switchToMiniBtn;
@@ -266,6 +268,8 @@ private:
     QStringList *stream_control_list;
     QStringList *app_name_list;
     QStringList *m_pOutputPortList;
+    QStringList judgetAppList ;
+
 
     QFrame *dividerFrame;
     MyTimer *timer;
@@ -296,11 +300,16 @@ private:
     pa_mainloop_api* api;
     pa_ext_stream_restore_info info;
 
+    const gchar *isInputPortSame ;//判断是否是port端口
+
+    void plug_IconChange(MateMixerSwitchOption *outputActivePort);
+
 protected:
     void paintEvent(QPaintEvent *event);
     bool event(QEvent *event);//重写窗口事件
 
 //    void mouseReleaseEvent(QMouseEvent *event);
 };
+
 
 #endif // DEICESWITCHWIDGET_H

@@ -31,6 +31,7 @@
 
 MediaSliderTipLabel::MediaSliderTipLabel(){
     setAttribute(Qt::WA_TranslucentBackground);
+
 }
 
 MediaSliderTipLabel::~MediaSliderTipLabel(){

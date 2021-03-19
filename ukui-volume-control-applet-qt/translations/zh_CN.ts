@@ -4,12 +4,12 @@
 <context>
     <name>ApplicationVolumeWidget</name>
     <message>
-        <location filename="../ukmedia_application_volume_widget.cpp" line="28"/>
+        <location filename="../ukmedia_application_volume_widget.cpp" line="29"/>
         <source>Application Volume</source>
         <translation>应用音量</translation>
     </message>
     <message>
-        <location filename="../ukmedia_application_volume_widget.cpp" line="30"/>
+        <location filename="../ukmedia_application_volume_widget.cpp" line="31"/>
         <source>System Volume</source>
         <translation>系统音量</translation>
     </message>
@@ -17,58 +17,58 @@
 <context>
     <name>DeviceSwitchWidget</name>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="276"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="289"/>
         <source>Go Into Mini Mode</source>
         <translation>进入Mini模式</translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="232"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="238"/>
         <source>Output volume control</source>
         <translation>输出音量控制</translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="234"/>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="237"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="240"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="243"/>
         <source>Mute</source>
         <translation>静音</translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="235"/>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="238"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="241"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="244"/>
         <source>Sound preference(S)</source>
         <translation>声音首选项</translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="1284"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="1301"/>
         <source>Device Volume</source>
         <translation>设备音量</translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="1285"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="1302"/>
         <source>Application Volume</source>
         <translation>应用音量</translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="2279"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="2330"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="2279"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="2330"/>
         <source>Unable to connect to the sound system, please check whether the pulseaudio service is running!</source>
         <translation>无法连接到系统声音，请检查pulseaudio服务是否正在运行！</translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="2450"/>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="2451"/>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="2519"/>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="2520"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="2503"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="2504"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="2588"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="2589"/>
         <source>Bluetooth</source>
         <translation>蓝牙</translation>
     </message>
     <message>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="2500"/>
-        <location filename="../ukmedia_device_switch_widget.cpp" line="2501"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="2566"/>
+        <location filename="../ukmedia_device_switch_widget.cpp" line="2567"/>
         <source>Dummy output</source>
         <translation>伪输出</translation>
     </message>
@@ -122,7 +122,7 @@
         <translation type="vanished">扬声器(Realtek Audio)</translation>
     </message>
     <message>
-        <location filename="../ukmedia_mini_master_volume_widget.cpp" line="114"/>
+        <location filename="../ukmedia_mini_master_volume_widget.cpp" line="115"/>
         <source>Go Into Full Mode</source>
         <translation>进入完整模式</translation>
     </message>

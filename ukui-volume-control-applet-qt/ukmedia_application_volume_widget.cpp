@@ -16,6 +16,7 @@
  *
  */
 #include "ukmedia_application_volume_widget.h"
+
 #include <QDebug>
 #include <QScrollBar>
 #include <QHBoxLayout>
@@ -41,8 +42,8 @@ ApplicationVolumeWidget::ApplicationVolumeWidget(QWidget *parent) : QWidget (par
     systemVolumeSliderWidget->setFixedSize(312,32);
     systemVolumeLabel->setFixedSize(220,24);
     systemVolumeBtn->setFixedSize(32,32);
-    systemVolumeSlider->setFixedSize(220,22);
-    systemVolumeDisplayLabel->setFixedSize(40,32);
+    systemVolumeSlider->setFixedSize(200,22);
+    systemVolumeDisplayLabel->setFixedSize(55,32);
     applicationLabel->setFixedSize(200,24);
     QSize iconSize(32,32);
     systemVolumeBtn->setIconSize(iconSize);
@@ -81,7 +82,7 @@ ApplicationVolumeWidget::ApplicationVolumeWidget(QWidget *parent) : QWidget (par
 //    QPainter p(this);
 ////    double transparence = transparency * 255;
 ////    p.setBrush(this->palette().base());
-//    p.setBrush(QBrush(QColor(19, 19, 20, 0)));
+//    p.setBrush(QBrush(QColor(0xFF,0xFF,0xFF,0x00)));
 //    p.setPen(Qt::NoPen);
 //    QPainterPath path;
 //    opt.rect.adjust(0,0,0,0);

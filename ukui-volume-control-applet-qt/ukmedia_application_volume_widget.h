@@ -31,6 +31,7 @@ public:
     ApplicationVolumeWidget(QWidget *parent = nullptr);
     ~ApplicationVolumeWidget();
     friend class DeviceSwitchWidget;
+    friend class MyScrollArea;
 private:
     QLabel *applicationLabel;
     QLabel *systemVolumeLabel;
