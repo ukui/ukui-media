@@ -2327,8 +2327,8 @@ void DeviceSwitchWidget::app_volume_mute (MateMixerStreamControl *control, QStri
 
 void DeviceSwitchWidget::pulseDisconnectMseeageBox()
 {
-    QMessageBox::critical(NULL, tr("Error"), tr("Unable to connect to the sound system, please check whether the pulseaudio service is running!"),  QMessageBox::Abort);
-    exit(-1);
+//    QMessageBox::critical(NULL, tr("Error"), tr("Unable to connect to the sound system, please check whether the pulseaudio service is running!"),  QMessageBox::Abort);
+//    exit(-1);
 }
 
 /*!
