@@ -261,21 +261,20 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     dividerFrame->setPalette(palette);
     dividerFrame->move(40,0);
     appWidget->appArea = new QScrollArea(appWidget);
+    QPalette palette1 = appWidget->appArea->palette();
+    palette1.setColor(QPalette::Window, QColor(0x00,0xff,0x00,0x00));  //改变appArea背景色透明
+    appWidget->appArea->setPalette(palette1);
     appWidget->displayAppVolumeWidget = new UkuiApplicationWidget(appWidget->appArea);
     appWidget->appArea->setWidget(appWidget->displayAppVolumeWidget);
     appWidget->m_pVlayout = new QVBoxLayout(appWidget->displayAppVolumeWidget);
 
 //    appWidget->displayAppVolumeWidget->setAttribute(Qt::WA_TranslucentBackground);
 //    appWidget->appArea->setAttribute(Qt::WA_TranslucentBackground);
-//    appWidget->displayAppVolumeWidget->setPalette(pal);
+
     appWidget->appArea->setFixedSize(355,168);
     appWidget->appArea->move(0,143);
 
-//    appWidget->appArea->setPalette(pal); // 背景色
-
-//    appWidget->appArea->setStyleSheet("background-color:purple;");
     appWidget->displayAppVolumeWidget->setFixedWidth(355);
-//    appWidget->displayAppVolumeWidget->setStyleSheet(".QWidget{background-color:pink;]");
     appWidget->displayAppVolumeWidget->move(0,143);
 
     switchToMiniBtn = new UkuiMediaButton(this);
@@ -1649,7 +1648,7 @@ void DeviceSwitchWidget::add_application_control (DeviceSwitchWidget *w, MateMix
         }
     }
     else {
-        if (strstr(app_name,"MPlayer")) {
+        if (strstr(app_name,"MPlayer")||strstr(app_name,"mpv")) {
             app_icon_name = "kylin-video";
         }
     }

@@ -47,10 +47,10 @@ void UkuiApplicationWidget::paintEvent(QPaintEvent *e)
     QStyleOption opt;
     opt.init(this);
     QPainter p(this);
-    double transparence = transparency * 255;
-    QColor color = palette().color(QPalette::Base);
-    color.setAlpha(transparence);
-    QBrush brush = QBrush(color);
+//    double transparence = transparency * 255;
+//    QColor color = palette().color(QPalette::Base);
+//    color.setAlpha(transparence);
+    QBrush brush = QBrush(QColor(0,0,0,0));
     p.setBrush(brush);
 //    p.setBrush(this->palette().base());
 //    p.setBrush(QBrush(QColor(19, 19, 20, 0)));
