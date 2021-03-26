@@ -207,7 +207,6 @@ Q_SIGNALS:
     void mouse_middle_clicked_signal();
     void mouse_wheel_signal(bool step);
     void app_name_signal(QString app_name);
-    void system_muted_signal(bool status);
     void theme_change();
     void font_change();
 //    void appvolume_mute_change_mastervolume_status();

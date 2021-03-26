@@ -633,7 +633,6 @@ void DeviceSwitchWidget::devWidgetMuteButtonClickedSlot()
         mate_mixer_stream_control_set_mute(control,status);
     }
     themeChangeIcons();
-    Q_EMIT system_muted_signal(status);
 }
 
 /*!
@@ -661,8 +660,6 @@ void DeviceSwitchWidget::miniWidgetMuteButtonClickedSlot()
         m_pMuteAction->setIcon(muteActionIcon);
         mate_mixer_stream_control_set_mute(control,status);
     }
-
-    Q_EMIT system_muted_signal(status);
     themeChangeIcons();
 }
 
@@ -692,7 +689,6 @@ void DeviceSwitchWidget::appWidgetMuteButtonCLickedSlot()
         mate_mixer_stream_control_set_mute(control,status);
     }
     themeChangeIcons();
-    Q_EMIT system_muted_signal(status);
 }
 
 /*!
@@ -721,7 +717,6 @@ void DeviceSwitchWidget::muteCheckBoxReleasedSlot()
         mate_mixer_stream_control_set_mute(control,status);
     }
     themeChangeIcons();
-    Q_EMIT system_muted_signal(status);
 }
 
 /*!
@@ -753,7 +748,6 @@ void DeviceSwitchWidget::actionMuteTriggeredSLot()
     int volume = int(mate_mixer_stream_control_get_volume(control));
     volume = int(volume*100/65536.0+0.5);
     themeChangeIcons();
-    Q_EMIT system_muted_signal(isMute);
 }
 
 /*!
@@ -779,9 +773,6 @@ void DeviceSwitchWidget::mouseMeddleClickedTraySlot()
     int volume = int(mate_mixer_stream_control_get_volume(control));
     volume = int(volume*100/65536.0+0.5);
     themeChangeIcons();
-
-    //发送系统静音信号给应用音量
-    Q_EMIT system_muted_signal(isMute);
 }
 
 /*!
@@ -2175,46 +2166,6 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
         btn->setPalette(paleteBtn);
     });
 
-    connect(w,&DeviceSwitchWidget::system_muted_signal,[=](bool isMute){
-        mate_mixer_stream_control_set_mute(control,isMute);
-        QString muteButtonStr;
-        QIcon muteButtonIcon;
-        int volume = mate_mixer_stream_control_get_volume(control);
-        volume = volume*100/65536.0;
-        QPushButton *btn = w->findChild<QPushButton *>(appMuteBtnlStr);
-        if (btn == nullptr)
-            return;
-        if (isMute) {
-            muteButtonStr = "audio-volume-muted-symbolic";
-        }
-        else if (volume <= 0) {
-            muteButtonStr = "audio-volume-mute-symbolicd";
-        }
-        else if (volume > 0 && volume <= 33) {
-            muteButtonStr = "audio-volume-low-symbolic";
-        }
-        else if(volume > 33 && volume <= 66) {
-            muteButtonStr = "audio-volume-medium-symbolic";
-        }
-        else if (volume > 66) {
-            muteButtonStr = "audio-volume-high-symbolic";
-        }
-        muteButtonIcon = QIcon::fromTheme(muteButtonStr);
-        QSize iconSize(24,24);
-        if ( w->mThemeName == "ukui-white" || w->mThemeName == "ukui-light") {
-            btn->setIcon(QIcon(w->drawDarkColoredPixmap((QIcon::fromTheme(audioIconStr).pixmap(iconSize)))));
-        }
-        else if (w->mThemeName == UKUI_THEME_BLACK || w->mThemeName == "ukui-black" || w->mThemeName == "ukui-default") {
-            btn->setIcon(QIcon(w->drawLightColoredPixmap((QIcon::fromTheme(audioIconStr).pixmap(iconSize)))));
-        }
-        qDebug() << "系统音量改变" << volume << muteButtonStr;
-
-        QPalette paleteBtn = btn->palette();
-        paleteBtn.setColor(QPalette::Highlight,Qt::transparent);
-        paleteBtn.setBrush(QPalette::Button,QBrush(QColor(1,1,1,0)));
-        btn->setPalette(paleteBtn);
-    });
-
     if (appnum <= 0) {
         w->appWidget->upWidget->hide();
     }
@@ -2879,9 +2830,9 @@ void DeviceSwitchWidget::update_icon_input (DeviceSwitchWidget *w,MateMixerStrea
     gboolean show = false;
 
     stream = mate_mixer_context_get_default_input_stream(w->context);
-    if(!MATE_MIXER_IS_CONTEXT(stream))
+    if(!MATE_MIXER_IS_STREAM(stream))
     {
-        qDebug()<<"*****对于台式机切换时要确保source切换不为空*****";
+        qDebug()<<"input stream is not a stream" << mate_mixer_stream_get_name(stream);
         return ;
     }
     const GList *inputs =mate_mixer_stream_list_controls(stream);
@@ -3207,7 +3158,6 @@ void DeviceSwitchWidget::on_control_mute_notify (MateMixerStreamControl *control
         }
     }
     w->themeChangeIcons();
-    Q_EMIT w->system_muted_signal(mute);
 }
 
 /*!
