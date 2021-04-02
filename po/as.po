@@ -38,30 +38,6 @@ msgstr "শব্দৰ মাত্ৰা নিয়ন্ত্ৰণকৰ্�
 msgid "Show desktop volume control"
 msgstr "ডেস্কটপত শব্দৰ মাত্ৰা নিয়ন্ত্ৰণ ব্যৱস্থা প্ৰদৰ্শন কৰা হ'ব"
 
-#. Translators: This is the name of an audio file that sounds like the bark of a dog.
-#. You might want to translate it into the equivalent words of your language.
-#: ../data/sounds/ukui-sounds-default.xml.in.in.h:3
-msgid "Bark"
-msgstr "সাৰমেয়ৰ-ধ্বনি"
-
-#. Translators: This is the name of an audio file that sounds like a water drip.
-#. You might want to translate it into the equivalent words of your language.
-#: ../data/sounds/ukui-sounds-default.xml.in.in.h:6
-msgid "Drip"
-msgstr "টিপটিপ"
-
-#. Translators: This is the name of an audio file that sounds like tapping glass.
-#. You might want to translate it into the equivalent words of your language.
-#: ../data/sounds/ukui-sounds-default.xml.in.in.h:9
-msgid "Glass"
-msgstr "কাঁচ"
-
-#. Translators: This is the name of an audio file that sounds sort of like a submarine sonar ping.
-#. You might want to translate it into the equivalent words of your language.
-#: ../data/sounds/ukui-sounds-default.xml.in.in.h:12
-msgid "Sonar"
-msgstr "সোনাৰ"
-
 #: ../ukui-volume-control/applet-main.c:45
 #: ../ukui-volume-control/dialog-main.c:193
 msgid "Version of this application"

@@ -36,30 +36,6 @@ msgstr "Fanamafisam-peo"
 msgid "Show desktop volume control"
 msgstr ""
 
-#. Translators: This is the name of an audio file that sounds like the bark of a dog.
-#. You might want to translate it into the equivalent words of your language.
-#: ../data/sounds/ukui-sounds-default.xml.in.in.h:3
-msgid "Bark"
-msgstr ""
-
-#. Translators: This is the name of an audio file that sounds like a water drip.
-#. You might want to translate it into the equivalent words of your language.
-#: ../data/sounds/ukui-sounds-default.xml.in.in.h:6
-msgid "Drip"
-msgstr ""
-
-#. Translators: This is the name of an audio file that sounds like tapping glass.
-#. You might want to translate it into the equivalent words of your language.
-#: ../data/sounds/ukui-sounds-default.xml.in.in.h:9
-msgid "Glass"
-msgstr ""
-
-#. Translators: This is the name of an audio file that sounds sort of like a submarine sonar ping.
-#. You might want to translate it into the equivalent words of your language.
-#: ../data/sounds/ukui-sounds-default.xml.in.in.h:12
-msgid "Sonar"
-msgstr ""
-
 #: ../ukui-volume-control/applet-main.c:45
 #: ../ukui-volume-control/dialog-main.c:193
 msgid "Version of this application"

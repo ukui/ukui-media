@@ -1,5 +1,4 @@
 data/ukui-volume-control.desktop.in
-data/sounds/ukui-sounds-default.xml.in
 ukui-volume-control/ukui-volume-control-applet-qt/ukmedia_systemtray_widget.cpp
 ukui-volume-control/ukui-volume-control-applet-qt/ukmedia_systemtray_widget.h
 ukui-volume-control/ukui-volume-control-applet-qt/ukmedia.pro
