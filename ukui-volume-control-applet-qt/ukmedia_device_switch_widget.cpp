@@ -1417,8 +1417,8 @@ void DeviceSwitchWidget::list_device(DeviceSwitchWidget *w,MateMixerContext *con
             }
             if (strstr(pStreamName,"alsa_input")) {
                 w->input = MATE_MIXER_STREAM (m_pList->data);
-                if (MATE_MIXER_IS_STREAM(w->input))
-                    mate_mixer_context_set_default_input_stream(context,MATE_MIXER_STREAM (m_pList->data));
+//                if (MATE_MIXER_IS_STREAM(w->input))
+//                    mate_mixer_context_set_default_input_stream(context,MATE_MIXER_STREAM (m_pList->data));
             }
         }
         m_pList = m_pList->next;
@@ -1496,8 +1496,8 @@ void DeviceSwitchWidget::add_stream (DeviceSwitchWidget *w, MateMixerStream *str
 
                 bar_set_stream (w, stream);
                 w->input = stream;
-                if (MATE_MIXER_IS_STREAM(stream))
-                    mate_mixer_context_set_default_input_stream(w->context,stream);
+//                if (MATE_MIXER_IS_STREAM(stream))
+//                    mate_mixer_context_set_default_input_stream(w->context,stream);
             }
             w->input_stream_list->append(name);
         }
