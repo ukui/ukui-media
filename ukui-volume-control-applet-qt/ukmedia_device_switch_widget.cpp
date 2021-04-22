@@ -308,7 +308,7 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
      * mixer初始化
      */
     if (mate_mixer_init() == FALSE) {
-        qDebug() << "libmatemixer initialization failed, exiting";
+        qFatal("libmatemixer initialization failed, exiting");
     }
     /*!
      * \brief
@@ -328,7 +328,7 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
      * 打开context，如果context打开失败将导致无法加载声音
      */
     if G_UNLIKELY (mate_mixer_context_open(context) == FALSE) {
-        g_warning ("Failed to connect to a sound system**********************");
+        qFatal ("Failed to connect to a sound system**********************");
     }
 
     appWidget->setFixedSize(358,320);
@@ -1461,7 +1461,6 @@ void DeviceSwitchWidget::list_device(DeviceSwitchWidget *w,MateMixerContext *con
     else {
         system("echo no > /tmp/kylin_output_muted.log");
     }
-    qDebug() << "初始输出静音状态为 :" << bOutputMuteState;
 
     if (bInputMuteState) {
         system("echo mute > /tmp/kylin_input_muted.log");
@@ -1469,7 +1468,6 @@ void DeviceSwitchWidget::list_device(DeviceSwitchWidget *w,MateMixerContext *con
     else {
         system("echo no > /tmp/kylin_input_muted.log");
     }
-    qDebug() << "初始输入静音状态为 :" << bInputMuteState << mate_mixer_stream_control_get_name(pDefaultInputControl);
 }
 
 void DeviceSwitchWidget::add_stream (DeviceSwitchWidget *w, MateMixerStream *stream,MateMixerContext *context)
@@ -1525,7 +1523,6 @@ void DeviceSwitchWidget::add_stream (DeviceSwitchWidget *w, MateMixerStream *str
             MateMixerSwitchOption *opt = mate_mixer_switch_get_active_option(swt);
             const char *name = mate_mixer_switch_option_get_name(opt);
             const char *label = mate_mixer_switch_option_get_label(opt);
-//            qDebug() << "name is :" << name << "label is" << label;
             switchList = switchList->next;
         }
         /*w->device_name_list->append(name);
@@ -1594,7 +1591,6 @@ void DeviceSwitchWidget::add_application_control (DeviceSwitchWidget *w, MateMix
     const gchar *app_name;
     const gchar *app_icon;
     app_count = appnum;
-    qDebug() << "add application control -----------------";
     media_role = mate_mixer_stream_control_get_media_role (control);
     /* Add stream to the applications page, but make sure the stream qualifies
      * for the inclusion */
@@ -1643,12 +1639,10 @@ void DeviceSwitchWidget::add_application_control (DeviceSwitchWidget *w, MateMix
             app_icon_name = "kylin-video";
         }
     }
-    qDebug()<<"应用:"<<w->judgetAppList;
 
     if (!w->judgetAppList.contains(app_icon_name)) {
         w->stream_control_list->append(name);
         w->judgetAppList.append(app_icon_name);
-        qDebug()<<"应用111111111111111:"<<w->judgetAppList;
         //添加应用添加到应用音量中
         add_app_to_appwidget(w,app_name,app_icon_name,control);
     }
@@ -1758,7 +1752,6 @@ void DeviceSwitchWidget::remove_application_control (DeviceSwitchWidget *w,const
         return;
     }
 
-    qDebug() << "删除应用名：" << w->app_name_list->at(index);
     w->stream_control_list->removeAt(index);
     w->app_name_list->removeAt(index);
     w->appBtnNameList->removeAt(index);
@@ -1910,14 +1903,11 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
     QString pAppIcon = w->getAppIcon(iconName);
 
     w->appWidget->app_volume_list->append(app_icon_name);
-    qDebug() << "应用名为:" << pAppName << "desktop 名：" << iconName << "app icon name" << app_icon_name << "app name " << app_name << mate_mixer_stream_control_get_volume(control) << mate_mixer_stream_control_get_mute(control);
+    qDebug() << "app name:" << pAppName << "desktop 名：" << iconName << "app icon name" << app_icon_name  << mate_mixer_stream_control_get_volume(control) << mate_mixer_stream_control_get_mute(control);
     //widget显示应用音量
 
     QWidget *app_widget = new QWidget(w->appWidget->displayAppVolumeWidget);
     app_widget->setFixedSize(306,70);//bjc将60改为70就可以
-//    app_widget->setStyleSheet("background-color:pink;");
-
-
 
     QHBoxLayout *hlayout = new QHBoxLayout(app_widget);
     QVBoxLayout *vlayout = new QVBoxLayout();
@@ -2007,7 +1997,6 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
 
     QString audioIconStr;
     QIcon audioIcon;
-    QPixmap btnPixmap;
 
     if (is_mute) {
         audioIconStr = "audio-volume-muted-symbolic";
@@ -2059,7 +2048,6 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
         if (w->m_pFontSetting->keys().contains("systemFont")) {
             QString fontType;
             fontType = w->m_pFontSetting->get("systemFont").toString();
-            qDebug()<<"当前字体:"<<fontType<<"*****************";
 //            w->appWidget->appLabel->setFont(fontType);
         }
         if (w->m_pFontSetting->keys().contains("systemFontSize")) {
@@ -2111,7 +2099,7 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
             btn->setIcon(QIcon(w->drawLightColoredPixmap((QIcon::fromTheme(audioIconStr).pixmap(iconSize)))));
         }
 
-        qDebug() << "应用音量更改" << audioIconStr;
+        qDebug() << "app volume change:" << audioIconStr;
         Q_EMIT w->app_name_signal(appSliderStr);
     });
     /*应用音量同步*/
@@ -2229,7 +2217,6 @@ void DeviceSwitchWidget::update_app_volume(MateMixerStreamControl *control, QStr
     else if (volume > 66) {
         sliderMuteButtonStr = "audio-volume-high-symbolic";
     }
-    qDebug() << "应用音量图标更改：" << sliderMuteButtonStr;
     QSize iconSize(24,24);
     if ( w->mThemeName == "ukui-white" || w->mThemeName == "ukui-light") {
         btn->setIcon(QIcon(w->drawDarkColoredPixmap((QIcon::fromTheme(sliderMuteButtonStr).pixmap(iconSize)))));
@@ -2255,7 +2242,7 @@ void DeviceSwitchWidget::app_volume_mute (MateMixerStreamControl *control, QStri
     bool is_mute = mate_mixer_stream_control_get_mute(control);
     int volume = mate_mixer_stream_control_get_volume(control);
     volume = volume*100/65536.0+0.5;
-    qDebug() << "应用音量静音通知" << is_mute;
+    qDebug() << "app name mute notify" << is_mute;
     /*if (is_mute) {
         w->appWidget->appMuteBtn->setIcon(QIcon("/usr/share/ukui-media/img/audio-volume-muted.svg"));
     }
@@ -2366,6 +2353,7 @@ void DeviceSwitchWidget::on_context_device_added (MateMixerContext *context, con
     device = mate_mixer_context_get_device (context, name);
     if (G_UNLIKELY (device == nullptr))
         return;
+    qDebug() << "add device" << name;
     add_device (w, device);
 }
 
@@ -2376,7 +2364,6 @@ void DeviceSwitchWidget::on_context_device_added (MateMixerContext *context, con
  */
 void DeviceSwitchWidget::add_device (DeviceSwitchWidget *w, MateMixerDevice *device)
 {
-    g_debug("add device");
     const gchar *pName;
     const gchar *pLabel;
     /*
@@ -2388,7 +2375,7 @@ void DeviceSwitchWidget::add_device (DeviceSwitchWidget *w, MateMixerDevice *dev
     if (w->device_name_list->contains(pName) == false) {
         w->device_name_list->append(pName);
     }
-
+    qDebug() << "add device:" << pName << pLabel;
     MateMixerSwitch *profileSwitch;
     const gchar *profileLabel = NULL;
     profileSwitch = w->findDeviceProfileSwitch(w,device);
@@ -2457,13 +2444,13 @@ void DeviceSwitchWidget::updateOutputDeviceLabel()
                 QString str =(QString)outputPortLabel;
                 if(str.contains("耳机"))
                 {
-                    qDebug()<<"当前设备名:"<<outputPortLabel;
+                    qDebug()<<"current output port:"<<outputPortLabel;
                     devWidget->outputDeviceBtn->setIcon(QIcon::fromTheme("audio-headphones",QIcon("/usr/share/ukui-media/img/audio-headphones.svg")));
                     miniWidget->deviceBtn->setIcon(QIcon::fromTheme("audio-headphones",QIcon("/usr/share/ukui-media/img/audio-headphones.svg")));
                 }
                 else
                 {
-                    qDebug()<<"当前设备名:"<<outputPortLabel;
+                    qDebug()<<"current output port:"<<outputPortLabel;
                     devWidget->outputDeviceBtn->setIcon(QIcon::fromTheme("audio-card",QIcon("/usr/share/ukui-media/img/audiocard.svg")));
                     miniWidget->deviceBtn->setIcon(QIcon::fromTheme("audio-card",QIcon("/usr/share/ukui-media/img/audiocard.svg")));
                 }
@@ -2542,13 +2529,13 @@ void DeviceSwitchWidget::onOutputSwitchActiveOptionNotify (MateMixerSwitch *swtc
             QString str =(QString)outputPortLabel;
             if(str.contains("耳机"))
             {
-                qDebug()<<"当前设备名:"<<outputPortLabel;
+                qDebug()<<"current output port:"<<outputPortLabel;
                 w->devWidget->outputDeviceBtn->setIcon(QIcon::fromTheme("audio-headphones",QIcon("/usr/share/ukui-media/img/audio-headphones.svg")));
                 w->miniWidget->deviceBtn->setIcon(QIcon::fromTheme("audio-headphones",QIcon("/usr/share/ukui-media/img/audio-headphones.svg")));
             }
             else
             {
-                qDebug()<<"当前设备名:"<<outputPortLabel;
+                qDebug()<<"current output port:"<<outputPortLabel;
                 w->devWidget->outputDeviceBtn->setIcon(QIcon::fromTheme("audio-card",QIcon("/usr/share/ukui-media/img/audiocard.svg")));
                 w->miniWidget->deviceBtn->setIcon(QIcon::fromTheme("audio-card",QIcon("/usr/share/ukui-media/img/audiocard.svg")));
             }
@@ -2566,13 +2553,13 @@ void DeviceSwitchWidget::plug_IconChange(MateMixerSwitchOption *outputActivePort
     outputPortLabel = mate_mixer_switch_option_get_label(outputActivePort);
     if(strstr(outputPortLabel,"耳机"))
     {
-        qDebug()<<"当前设备名:"<<outputPortLabel;
+        qDebug()<<"current output port:"<<outputPortLabel;
         devWidget->outputDeviceBtn->setIcon(QIcon::fromTheme("audio-headphones",QIcon("/usr/share/ukui-media/img/audio-headphones.svg")));
         miniWidget->deviceBtn->setIcon(QIcon::fromTheme("audio-headphones",QIcon("/usr/share/ukui-media/img/audio-headphones.svg")));
     }
     else
     {
-        qDebug()<<"当前设备名:"<<outputPortLabel;
+        qDebug()<<"current output port:"<<outputPortLabel;
         devWidget->outputDeviceBtn->setIcon(QIcon::fromTheme("audio-card",QIcon("/usr/share/ukui-media/img/audiocard.svg")));
         miniWidget->deviceBtn->setIcon(QIcon::fromTheme("audio-card",QIcon("/usr/share/ukui-media/img/audiocard.svg")));
     }
@@ -2617,7 +2604,6 @@ void DeviceSwitchWidget::onInputSwitchActiveOptionNotify (MateMixerSwitch *swtch
     inputPortLabel = mate_mixer_switch_option_get_label(action);
     if(w->isInputPortSame!=inputPortLabel)
     {
-        qDebug()<<"Port不同:";
         //发送DBus信号
         QDBusMessage message =QDBusMessage::createSignal("/", "org.ukui.media", "DbusSingleTest");
         message<<"拔插";
@@ -2660,7 +2646,7 @@ MateMixerSwitch * DeviceSwitchWidget::findDeviceProfileSwitch (DeviceSwitchWidge
         const gchar * deviceName = bba.data();
         qDebug() << "profilelabel :" << devName << "device name :" << mate_mixer_device_get_name(device) <<deviceName;
         if (strcmp(deviceName,devName) == 0) {
-            qDebug() << "设置当前配置*****************" << deviceName;
+            qDebug() << "set current device name *****************" << deviceName;
         }
         if (mate_mixer_device_switch_get_role (swtch) == MATE_MIXER_DEVICE_SWITCH_ROLE_PROFILE)
             return MATE_MIXER_SWITCH (swtch);
@@ -2697,10 +2683,7 @@ void DeviceSwitchWidget::on_context_default_input_stream_notify (MateMixerContex
     MateMixerStream *stream;
 
     stream = mate_mixer_context_get_default_input_stream (context);
-    g_debug ("Default input stream has changed");
     if (MATE_MIXER_IS_STREAM(stream)) {
-
-        qDebug()<<"拔插耳机";
         //发送DBus信号
         QDBusMessage message =QDBusMessage::createSignal("/", "org.ukui.media", "DbusSingleTest");
         message<<"拔插";
@@ -3206,12 +3189,10 @@ void DeviceSwitchWidget::on_stream_control_volume_notify (MateMixerStreamControl
         if (direction == MATE_MIXER_DIRECTION_OUTPUT) {
             set_output_stream(w,stream);
             /*mate_mixer_context_set_default_output_stream(w->context,stream);*/
-            qDebug() << "从control 获取的output stream不为stream" << mate_mixer_stream_get_label(stream);
         }
         else if (direction == MATE_MIXER_DIRECTION_INPUT) {
             set_input_stream(w,stream);
             /*mate_mixer_context_set_default_input_stream(w->context,stream);*/
-            qDebug() << "从control 获取的input stream不为stream" << mate_mixer_stream_get_label(stream);
         }
     }
 
@@ -3237,7 +3218,7 @@ void DeviceSwitchWidget::on_stream_control_volume_notify (MateMixerStreamControl
         w->miniWidget->masterVolumeSlider->blockSignals(false);
         w->themeChangeIcons();
 
-        qDebug() << "输出音量值:" << mate_mixer_stream_control_get_name(control) << value;
+        qDebug() << "get output volume:" << mate_mixer_stream_control_get_name(control) << value;
 
         w->setVolumeSettingValue(value);
         w->updateSystemTrayIcon(value,muted);
@@ -3281,7 +3262,7 @@ void DeviceSwitchWidget::on_stream_control_volume_notify (MateMixerStreamControl
         }
     }
     else if (direction == MATE_MIXER_DIRECTION_INPUT) {
-        qDebug() << "输入音量值:" << mate_mixer_stream_control_get_name(control) << value;
+        qDebug() << "get input volume:" << mate_mixer_stream_control_get_name(control) << value;
         w->setInputVolume = true;
         w->devWidget->inputDeviceSlider->blockSignals(true);
         w->devWidget->inputDeviceSlider->setValue(value);
@@ -3335,9 +3316,8 @@ void DeviceSwitchWidget::update_output_settings (DeviceSwitchWidget *w,MateMixer
             MateMixerSwitchOption *opt = MATE_MIXER_SWITCH_OPTION(options->data);
             QString label = mate_mixer_switch_option_get_label(opt);
             QString name = mate_mixer_switch_option_get_name(opt);
-            qDebug() << "opt label******: "<< label << "opt name :" << mate_mixer_switch_option_get_name(opt);
+//            qDebug() << "opt label******: "<< label << "opt name :" << mate_mixer_switch_option_get_name(opt);
             if (!w->m_pOutputPortList->contains(name)) {
-                qDebug() << "设置组合框当前值为:" << label << outputPortLabel;
 //                w->m_pOutputPortList->append(name);
 //                w->m_pOutputWidget->m_pOutputPortCombobox->addItem(label);
             }
@@ -3631,7 +3611,7 @@ gboolean DeviceSwitchWidget::update_default_input_stream (DeviceSwitchWidget *w)
     MateMixerStream *stream;
     stream = mate_mixer_context_get_default_input_stream (w->context);
     if (w->input == nullptr) {
-        qDebug() << "input stream is null ";
+        qWarning() << "input stream is null ";
     }
     w->input = (stream == nullptr) ? nullptr : stream;
     if (w->input != nullptr) {
@@ -3651,7 +3631,7 @@ gboolean DeviceSwitchWidget::update_default_input_stream (DeviceSwitchWidget *w)
 void DeviceSwitchWidget::on_input_stream_control_added (MateMixerStream *stream,const gchar *name,DeviceSwitchWidget *w)
 {
     MateMixerStreamControl *control;
-    qDebug() << "on inpu stream control add ";
+    qDebug() << "on inpu stream control add " << name;
     control = mate_mixer_stream_get_control (stream, name);
     if G_LIKELY (control != nullptr) {
         MateMixerStreamControlRole role = mate_mixer_stream_control_get_role (control);
@@ -3686,7 +3666,7 @@ void DeviceSwitchWidget::update_input_settings (DeviceSwitchWidget *w,MateMixerS
     Q_UNUSED(w);
     MateMixerStream            *stream;
     MateMixerStreamControlFlags flags;
-    g_debug ("Updating input settings");
+    qDebug() << "Updating input settings";
 
     /* Get the control currently associated with the input slider */
     if (control == nullptr)
@@ -3775,7 +3755,7 @@ void DeviceSwitchWidget::addValue(QString name,QString filename)
             g_warning("full path: %s", allpath);
             qDebug() << filenameStr << FILENAME_KEY <<NAME_KEY << nameStr;
             if (nameStr == name) {
-                qDebug() << "找到窗口关闭" ;
+
             }
             delete settings;
         }

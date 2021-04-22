@@ -41,6 +41,8 @@ PKGCONFIG += \
     libpulse-mainloop-glib
 #    libwnck-1.0
 
+LIBS += -lukui-log4qt
+
 HEADERS += \
     customstyle.h \
     ukmedia_device_switch_widget.h \

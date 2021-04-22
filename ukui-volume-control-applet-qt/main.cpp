@@ -32,54 +32,17 @@
 #include <QMessageBox>
 #include <QLibraryInfo>
 #include <X11/Xlib.h>
-
-/*! The ukui-media is the media of UKUI.
-
-  Usage: ukui-media [CONFIG_ID]
-
-    CONFIG_ID      Section qInstallMessageHandlername in config file ~/.config/ukui/ukui-media.conf
-
-                   (default main)
-
- */
-void outputMessage(QtMsgType type, const QMessageLogContext &context, const QString &msg)
-{
-    QString txt;
-    switch (type) {
-    //调试信息提示
-    case QtDebugMsg:
-        txt = QString("Debug: %1").arg(msg);
-        break;
-        //一般的warning提示
-    case QtWarningMsg:
-        txt = QString("Warning: %1").arg(msg);
-        break;
-        //严重错误提示
-    case QtCriticalMsg:
-        txt = QString("Critical: %1").arg(msg);
-        break;
-        //致命错误提示
-    case QtFatalMsg:
-        txt = QString("Fatal: %1").arg(msg);
-        abort();
-    }
-
-    QFile outFile(qgetenv("HOME") +"/.config/ukui/ukui-media.log");
-    outFile.open(QIODevice::WriteOnly | QIODevice::Append);
-    QTextStream ts(&outFile);  //
-    ts << txt << endl;
-
-}
+#include <ukui-log4qt.h>
 
 int main(int argc, char *argv[])
 {
+    initUkuiLog4qt("ukui-media");
     Display *display = XOpenDisplay(NULL);
     Screen *scrn = DefaultScreenOfDisplay(display);
     if(scrn == nullptr) {
         return 0;
     }
     int width = scrn->width;
-//    QApplication app(argc,argv);
     if (width >= 2560) {
     #if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
         QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
@@ -105,17 +68,13 @@ int main(int argc, char *argv[])
     translator.load("/usr/share/ukui-media/translations/" + QLocale::system().name());
     app.installTranslator(&translator);
 
-    //注册MessageHandler
-//    qInstallMessageHandler(outputMessage);
     //加载qss文件
     QFile qss(":/data/qss/ukuimedia.qss");
     qss.open(QFile::ReadOnly);
-
     qss.close();
     DeviceSwitchWidget w;
     KWindowEffects::enableBlurBehind(w.winId(),true);
     w.raise();
-//    w.show();
     XCloseDisplay(display);
     return app.exec();
 }
