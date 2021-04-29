@@ -2831,7 +2831,9 @@ void DeviceSwitchWidget::update_icon_input (DeviceSwitchWidget *w,MateMixerStrea
     int volume = int(mate_mixer_stream_control_get_volume(control));
     int value = int(volume *100 /65536.0+0.5);
     w->setInputVolume = true;
+    w->devWidget->inputDeviceSlider->blockSignals(true);
     w->devWidget->inputDeviceSlider->setValue(value);
+    w->devWidget->inputDeviceSlider->blockSignals(false);
     w->themeChangeIcons();
     while (inputs != nullptr) {
         MateMixerStreamControl *input = MATE_MIXER_STREAM_CONTROL (inputs->data);
