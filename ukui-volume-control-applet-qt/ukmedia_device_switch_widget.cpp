@@ -1911,7 +1911,7 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
 
     QHBoxLayout *hlayout = new QHBoxLayout(app_widget);
     QVBoxLayout *vlayout = new QVBoxLayout();
-    QSpacerItem *item1 = new QSpacerItem(18,20);
+    QSpacerItem *item1 = new QSpacerItem(12,20);
     QSpacerItem *item2 = new QSpacerItem(12,20);
     QWidget *wid = new QWidget(app_widget);//wid为应用图标、音量Slider和mute图标
     wid->setAttribute(Qt::WA_TranslucentBackground);
@@ -1926,6 +1926,11 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
     w->appWidget->appSlider->setOrientation(Qt::Horizontal);
     w->appWidget->appIconBtn->setFixedSize(38,38);
     w->appWidget->appMuteBtn->setFixedSize(24,24);
+
+    QPalette p;
+
+    p.setColor(QPalette::Highlight,QColor(79,184,88));
+    w->appWidget->appSlider->setPalette(p);
     QPalette paleteAppIcon =  w->appWidget->appIconBtn->palette();
     paleteAppIcon.setColor(QPalette::Highlight,Qt::transparent);
     paleteAppIcon.setBrush(QPalette::Button,QBrush(QColor(1,1,1,0)));

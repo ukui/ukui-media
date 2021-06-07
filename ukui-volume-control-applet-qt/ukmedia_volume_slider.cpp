@@ -182,6 +182,10 @@ void UkuiMediaButton::mouseReleaseEvent(QMouseEvent *e)
 UkmediaVolumeSlider::UkmediaVolumeSlider(QWidget *parent,bool needTip)
 {
     Q_UNUSED(parent);  
+    QPalette p;
+
+    p.setColor(QPalette::Highlight,QColor(61,107,229));
+    this->setPalette(p);
     if (needTip) {
         state = needTip;
         m_pTiplabel = new UkuiMediaSliderTipLabel();
@@ -243,8 +247,6 @@ void UkmediaVolumeSlider::paintEvent(QPaintEvent *e)
         m_pTiplabel->setText(percent);
         m_pTiplabel->move(gPos.x()-(m_pTiplabel->width()/2)+9,gPos.y()-m_pTiplabel->height()-1);
     }
-
-
 }
 
 UkmediaVolumeSlider::~UkmediaVolumeSlider()
