@@ -406,8 +406,8 @@ void UkuiQMenu::hideEvent(QHideEvent *e)
 {
     this->activateWindow();
     this->setAttribute(Qt::WA_NoMouseReplay);
-    qDebug() << "菜单隐藏" << e->type();
 }
 
 UkuiQMenu::~UkuiQMenu(){
 }
+

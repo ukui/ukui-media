@@ -255,8 +255,8 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     dividerFrame->setFixedSize(1,320);
     dividerFrame->setParent(this);
     QPalette palette = dividerFrame->palette();
-    QColor color = palette.color(palette.Button);
-    color.setAlphaF(0.5);
+    QColor color = QColor(255,255,255);
+    color.setAlphaF(0.08);
     palette.setColor(QPalette::WindowText, color);
     dividerFrame->setPalette(palette);
     dividerFrame->move(40,0);
@@ -271,7 +271,7 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
 //    appWidget->displayAppVolumeWidget->setAttribute(Qt::WA_TranslucentBackground);
 //    appWidget->appArea->setAttribute(Qt::WA_TranslucentBackground);
 
-    appWidget->appArea->setFixedSize(355,168);
+    appWidget->appArea->setFixedSize(358,168);
     appWidget->appArea->move(0,143);
 
     appWidget->displayAppVolumeWidget->setFixedWidth(355);
@@ -337,8 +337,6 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     devWidget->move(42,0);
     appWidget->move(42,0);
     this->setFixedSize(400,320);
-    devWidget->show();
-    appWidget->hide();
 
     /*!
      * \brief
@@ -347,7 +345,10 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
      */
     systemTrayMenuInit();
     deviceSwitchWidgetInit();
-
+    devWidget->show();
+    appWidget->hide();
+    appVolumeBtn->setChecked(false);
+    deviceBtn->setChecked(true);
     connect(switchToMiniBtn,SIGNAL(moveAdvanceSwitchBtnSignal()),this,SLOT(moveAdvanceSwitchBtnSlot()));
     /*!
      * \brief
@@ -501,7 +502,7 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
 //    pal.setColor(QPalette::Background,QColor(0xFF,0xFF,0xFF,0x00));
 //    appWidget->setPalette(pal); // 背景色
 //    appWidget->appArea->setStyleSheet("QScrollArea{border:none;}");//此句代码导致其widget内部的字体不随主题变化了
-//    appWidget->appArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    appWidget->appArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
 //    appWidget->appArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 //    appWidget->appArea->viewport()->setAttribute(Qt::WA_TranslucentBackground);
@@ -1290,6 +1291,29 @@ void DeviceSwitchWidget::deviceSwitchWidgetInit()
     //切换按钮设置tooltip
     deviceBtn->setToolTip(tr("Device Volume"));
     appVolumeBtn->setToolTip(tr("Application Volume"));
+
+    switch(btnType) {
+        case DEVICE_VOLUME_BUTTON:
+        appVolumeBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
+                                    "padding-left:0px;}"
+                                    "QPushButton::hover{background:rgba(255,255,255,0.12);"
+                                    "border-radius:4px;}"
+                                    "QPushButton::pressed{background:rgba(61,107,229,1);"
+                                    "border-radius:4px;padding-left:0px;}");
+        deviceBtn->setStyleSheet("QPushButton{background:rgba(61,107,229,1);"
+                                 "border-radius:4px;padding-left:0px;}");
+        break;
+    case APP_VOLUME_BUTTON:
+        deviceBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
+                                 "padding-left:0px;}"
+                                 "QPushButton::hover{background:rgba(255,255,255,0.12);"
+                                 "border-radius:4px;}"
+                                 "QPushButton::pressed{background:rgba(61,107,229,1);"
+                                 "border-radius:4px;padding-left:0px;}");
+        appVolumeBtn->setStyleSheet("QPushButton{background:rgba(61,107,229,1);"
+                                    "border-radius:4px;padding-left:0px;}");
+        break;
+    }
 }
 
 /*!
@@ -1300,6 +1324,15 @@ void DeviceSwitchWidget::deviceSwitchWidgetInit()
 void DeviceSwitchWidget::deviceButtonClickedSlot()
 {
     btnType = DEVICE_VOLUME_BUTTON;
+
+    appVolumeBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
+                                "padding-left:0px;}"
+                                "QPushButton::hover{background:rgba(255,255,255,0.12);"
+                                "border-radius:4px;}"
+                                "QPushButton::pressed{background:rgba(61,107,229,1);"
+                                "border-radius:4px;}");
+    deviceBtn->setStyleSheet("QPushButton{background:rgba(61,107,229,1);"
+                             "border-radius:4px;}");
     appWidget->hide();
     devWidget->show();
 }
@@ -1312,6 +1345,14 @@ void DeviceSwitchWidget::deviceButtonClickedSlot()
 void DeviceSwitchWidget::appVolumeButtonClickedSlot()
 {
     btnType = APP_VOLUME_BUTTON;
+    deviceBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
+                             "padding-left:0px;}"
+                             "QPushButton::hover{background:rgba(255,255,255,0.12);"
+                             "border-radius:4px;}"
+                             "QPushButton::pressed{background:rgba(61,107,229,1);"
+                             "border-radius:4px;}");
+    appVolumeBtn->setStyleSheet("QPushButton{background:rgba(61,107,229,1);"
+                             "border-radius:4px;}");
     appWidget->show();
     devWidget->hide();
     //切换按钮样式
@@ -1774,8 +1815,8 @@ void DeviceSwitchWidget::remove_application_control (DeviceSwitchWidget *w,const
 
     //设置布局的间距以及设置vlayout四周的间距
     w->appWidget->m_pVlayout->setSpacing(18);
-    w->appWidget->displayAppVolumeWidget->resize(358,14+appnum*78);
-    w->appWidget->m_pVlayout->setContentsMargins(18,14,34,18);
+    w->appWidget->displayAppVolumeWidget->resize(358,14+appnum*68);
+    w->appWidget->m_pVlayout->setContentsMargins(18,14,34,0);
     w->appWidget->m_pVlayout->update();
     if (appnum <= 0) {
         w->appWidget->upWidget->hide();
@@ -1907,15 +1948,15 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
     //widget显示应用音量
 
     QWidget *app_widget = new QWidget(w->appWidget->displayAppVolumeWidget);
-    app_widget->setFixedSize(306,70);//bjc将60改为70就可以
+    app_widget->setFixedSize(306,68);//bjc将60改为70就可以
 
     QHBoxLayout *hlayout = new QHBoxLayout(app_widget);
     QVBoxLayout *vlayout = new QVBoxLayout();
-    QSpacerItem *item1 = new QSpacerItem(12,20);
+    QSpacerItem *item1 = new QSpacerItem(18,20);
     QSpacerItem *item2 = new QSpacerItem(12,20);
     QWidget *wid = new QWidget(app_widget);//wid为应用图标、音量Slider和mute图标
     wid->setAttribute(Qt::WA_TranslucentBackground);
-    wid->setFixedSize(306,38);
+    wid->setFixedSize(306,32);
 //    wid->setStyleSheet("background-color:blue;");
     w->appWidget->appLabel = new QLabel(app_widget);
     w->appWidget->appLabel->setParent(app_widget);
@@ -1924,16 +1965,24 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
     w->appWidget->appSlider = new UkmediaVolumeSlider(wid,true);
     w->appWidget->appMuteBtn = new QPushButton(wid);
     w->appWidget->appSlider->setOrientation(Qt::Horizontal);
-    w->appWidget->appIconBtn->setFixedSize(38,38);
+    w->appWidget->appIconBtn->setFixedSize(32,32);
     w->appWidget->appMuteBtn->setFixedSize(24,24);
+    //设置每项的固定大小
+    w->appWidget->appLabel->setFixedSize(260,22);//bjc高度改为22即可
+
+    QSize icon_size(32,32);
+    w->appWidget->appIconBtn->setIconSize(icon_size);
+    w->appWidget->appIconBtn->setIcon(QIcon::fromTheme(pAppIcon));
+    w->appWidget->appIconBtn->setAttribute(Qt::WA_TranslucentBackground);
+    w->appWidget->appIconBtn->setStyleSheet("QPushButton{background:raba(255,0,0,0);}");
 
     QPalette p;
-
     p.setColor(QPalette::Highlight,QColor(79,184,88));
     w->appWidget->appSlider->setPalette(p);
     QPalette paleteAppIcon =  w->appWidget->appIconBtn->palette();
+
     paleteAppIcon.setColor(QPalette::Highlight,Qt::transparent);
-    paleteAppIcon.setBrush(QPalette::Button,QBrush(QColor(1,1,1,0)));
+    paleteAppIcon.setBrush(QPalette::Button,QBrush(QColor(0,0,0,0)));
     w->appWidget->appIconBtn->setPalette(paleteAppIcon);
 
     QPalette paleteMuteIcon =  w->appWidget->appMuteBtn->palette();
@@ -1941,6 +1990,11 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
     paleteMuteIcon.setBrush(QPalette::Button,QBrush(QColor(1,1,1,0)));
     w->appWidget->appMuteBtn->setPalette(paleteMuteIcon);
 
+    w->appWidget->appSlider->setMaximum(100);
+    w->appWidget->appSlider->setFixedSize(220,22);
+    w->appWidget->appIconBtn->adjustSize();
+    w->appWidget->appIconBtn->setProperty("useIconHighlightEffect",true);
+    w->appWidget->appIconBtn->setProperty("iconHighlightEffectMode",true);
     w->appWidget->appMuteBtn->setProperty("useIconHighlightEffect",true);
     w->appWidget->appMuteBtn->setProperty("iconHighlightEffectMode",true);
     QSize appSize(24,24);
@@ -1956,23 +2010,10 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
 
     vlayout->addWidget(w->appWidget->appLabel);
     vlayout->addWidget(wid);
-    vlayout->setSpacing(10);
+    vlayout->setSpacing(14);
     app_widget->setLayout(vlayout);
     app_widget->layout()->setContentsMargins(0,0,0,0);
 
-    //设置每项的固定大小
-    w->appWidget->appLabel->setFixedSize(260,22);//bjc高度改为22即可
-
-    QSize icon_size(32,32);
-    w->appWidget->appIconBtn->setIconSize(icon_size);
-    w->appWidget->appIconBtn->setIcon(QIcon::fromTheme(pAppIcon));
-    w->appWidget->appIconBtn->setFocusPolicy(Qt::NoFocus);
-    QPalette palete = w->appWidget->appIconBtn->palette();
-    palete.setColor(QPalette::Highlight,Qt::transparent);
-    palete.setBrush(QPalette::Button,QBrush(QColor(1,1,1,0)));
-    w->appWidget->appIconBtn->setPalette(palete);
-    w->appWidget->appSlider->setMaximum(100);
-    w->appWidget->appSlider->setFixedSize(220,22);
 
     QString appSliderStr = app_name;
     QString appMuteBtnlStr = app_name;
@@ -2169,7 +2210,7 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
     w->appWidget->m_pVlayout->addWidget(app_widget);
     //设置布局的垂直间距以及设置vlayout四周的间距
     w->appWidget->m_pVlayout->setSpacing(18);
-    w->appWidget->displayAppVolumeWidget->resize(358,14+appnum*78);
+    w->appWidget->displayAppVolumeWidget->resize(358,14+appnum*68);
     w->appWidget->m_pVlayout->setContentsMargins(18,0,34,0);
     w->appWidget->m_pVlayout->update();
 

@@ -37,7 +37,7 @@ ApplicationVolumeWidget::ApplicationVolumeWidget(QWidget *parent) : QWidget (par
 
     systemVolumeSlider->setOrientation(Qt::Horizontal);
     systemVolumeSlider->setRange(0,100);
-    upWidget->setFixedSize(358,140);
+    upWidget->setFixedSize(358,138);
     systemVolumeWidget->setFixedSize(332,66);
     systemVolumeSliderWidget->setFixedSize(332,32);
     systemVolumeLabel->setFixedSize(220,24);
@@ -48,6 +48,17 @@ ApplicationVolumeWidget::ApplicationVolumeWidget(QWidget *parent) : QWidget (par
     QSize iconSize(32,32);
     systemVolumeBtn->setIconSize(iconSize);
 
+    QFrame *dividerFrame = new QFrame(this);
+    dividerFrame->setFrameShape(QFrame::NoFrame);
+    dividerFrame->setFrameStyle(QFrame::HLine);
+    dividerFrame->setFixedSize(358,1);
+    dividerFrame->setParent(this);
+    QPalette palette = dividerFrame->palette();
+    QColor color = QColor(255,255,255);
+    color.setAlphaF(0.08);
+    palette.setColor(QPalette::WindowText, color);
+    dividerFrame->setPalette(palette);
+    dividerFrame->move(0,138);
     upWidget->move(0,0);
     systemVolumeWidget->move(18,62);
     applicationLabel->move(18,22);
