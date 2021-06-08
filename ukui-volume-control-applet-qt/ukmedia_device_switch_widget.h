@@ -109,7 +109,10 @@ class DeviceSwitchWidget:public QWidget
 public:
     DeviceSwitchWidget(QWidget *parent = nullptr);
     ~DeviceSwitchWidget();
-
+    void initSystemTrayIcon();
+    void initWidget();
+    void initGsettingSet();
+    void secondaryStartFunction();
     static gboolean connect_to_pulse(gpointer userdata);
     static void context_state_callback(pa_context *c, void *userdata);
     void get_window_nameAndid();
@@ -209,6 +212,7 @@ Q_SIGNALS:
     void app_name_signal(QString app_name);
     void theme_change();
     void font_change();
+    void sendClickSig();
 //    void appvolume_mute_change_mastervolume_status();
 private Q_SLOTS:
     void deviceButtonClickedSlot();
@@ -238,6 +242,7 @@ private Q_SLOTS:
     void fontSizeChangedSlot(const QString &themeStr);
     void osdDisplayWidgetHide();
     void volumeSettingChangedSlot();
+    void onExeSecStar();
 private:
 
 

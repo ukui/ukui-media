@@ -216,81 +216,16 @@ void DeviceSwitchWidget::context_state_callback(pa_context *c, void *userdata) {
 
 DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
 {
-    QPalette pal = this->palette();//调色板
-    pal.setColor(QPalette::Background,QColor(0xFF,0xFF,0xFF,0x00));
+    //创建系统托盘
+    initSystemTrayIcon();
+    systemTrayMenuInit();
+    initWidget();
+
     QDBusConnection::sessionBus().unregisterService("org.ukui.media");
     QDBusConnection::sessionBus().registerService("org.ukui.media");
     QDBusConnection::sessionBus().registerObject("/", this,QDBusConnection :: ExportAllSlots | QDBusConnection :: ExportAllSignals);
     qDebug()<<"dbus绑定成功!";
     connect_to_pulse(this);
-    setAttribute(Qt::WA_TranslucentBackground);
-    setMouseTracking(true);
-    setWindowFlags(Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint|Qt::Popup);
-    mThemeName = UKUI_THEME_WHITE;
-    devWidget = new UkmediaDeviceWidget(this);
-    appWidget = new ApplicationVolumeWidget(this);//appScrollWidget->area);
-    miniWidget = new UkmediaMiniMasterVolumeWidget();
-    osdWidget = new UkmediaOsdDisplayWidget();
-
-    soundSystemTrayIcon = new UkmediaTrayIcon(this);
-
-    //为系统托盘图标添加菜单静音和声音首选项
-    soundSystemTrayIcon->setToolTip(tr("Output volume control"));
-#if (QT_VERSION <= QT_VERSION_CHECK(5,6,1))
-    m_pMuteAction = new QAction(QIcon(""),tr("Mute"),this);
-    m_pSoundPreferenceAction = new QAction(tr("Sound preference(S)"),this);
-#elif (QT_VERSION > QT_VERSION_CHECK(5,6,1))
-    m_pMuteAction = new QAction(QIcon(""),tr("Mute"));
-    m_pSoundPreferenceAction = new QAction(tr("Sound preference(S)"));
-#endif
-    QString settingsIconStr = "document-page-setup-symbolic";
-    QIcon settingsIcon = QIcon::fromTheme(settingsIconStr);
-    m_pSoundPreferenceAction->setIcon(settingsIcon);
-
-    soundSystemTrayIcon->setVisible(true);
-
-    dividerFrame = new QFrame(this);
-    dividerFrame->setFrameShape(QFrame::NoFrame);
-    dividerFrame->setFrameStyle(QFrame::VLine);
-    dividerFrame->setFixedSize(1,320);
-    dividerFrame->setParent(this);
-    QPalette palette = dividerFrame->palette();
-    QColor color = QColor(255,255,255);
-    color.setAlphaF(0.08);
-    palette.setColor(QPalette::WindowText, color);
-    dividerFrame->setPalette(palette);
-    dividerFrame->move(40,0);
-    appWidget->appArea = new QScrollArea(appWidget);
-    QPalette palette1 = appWidget->appArea->palette();
-    palette1.setColor(QPalette::Window, QColor(0x00,0xff,0x00,0x00));  //改变appArea背景色透明
-    appWidget->appArea->setPalette(palette1);
-    appWidget->displayAppVolumeWidget = new UkuiApplicationWidget(appWidget->appArea);
-    appWidget->appArea->setWidget(appWidget->displayAppVolumeWidget);
-    appWidget->m_pVlayout = new QVBoxLayout(appWidget->displayAppVolumeWidget);
-
-//    appWidget->displayAppVolumeWidget->setAttribute(Qt::WA_TranslucentBackground);
-//    appWidget->appArea->setAttribute(Qt::WA_TranslucentBackground);
-
-    appWidget->appArea->setFixedSize(358,168);
-    appWidget->appArea->move(0,143);
-
-    appWidget->displayAppVolumeWidget->setFixedWidth(355);
-    appWidget->displayAppVolumeWidget->move(0,143);
-
-    switchToMiniBtn = new UkuiMediaButton(this);
-    switchToMiniBtn->setParent(this);
-
-    switchToMiniBtn->setFlat(true);
-    switchToMiniBtn->setCheckable(false);
-    switchToMiniBtn->setProperty("useIconHighlightEffect",true);
-    switchToMiniBtn->setProperty("iconHighlightEffectMode",true);
-    
-    switchToMiniBtn->setToolTip(tr("Go Into Mini Mode"));
-    QSize switchSize(16,16);
-    switchToMiniBtn->setIconSize(switchSize);
-    switchToMiniBtn->setFixedSize(36,36);
-    switchToMiniBtn->move(361,6);
-    switchToMiniBtn->setIcon(QIcon("/usr/share/ukui-media/img/mini-module.svg"));
 
     output_stream_list = new QStringList;
     input_stream_list = new QStringList;
@@ -331,25 +266,13 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
         qFatal ("Failed to connect to a sound system**********************");
     }
 
-    appWidget->setFixedSize(358,320);
-    devWidget->setFixedSize(358,320);
-
-    devWidget->move(42,0);
-    appWidget->move(42,0);
-    this->setFixedSize(400,320);
-
     /*!
      * \brief
      * \details
      * 菜单及设备界面的初始化
      */
-    systemTrayMenuInit();
     deviceSwitchWidgetInit();
-    devWidget->show();
-    appWidget->hide();
-    appVolumeBtn->setChecked(false);
-    deviceBtn->setChecked(true);
-    connect(switchToMiniBtn,SIGNAL(moveAdvanceSwitchBtnSignal()),this,SLOT(moveAdvanceSwitchBtnSlot()));
+    initGsettingSet();
     /*!
      * \brief
      * \details
@@ -362,53 +285,17 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
                       G_CALLBACK (on_context_state_notify),
                       this);
 
-    //获取声音gsettings值
-    m_pSoundSettings = g_settings_new (KEY_SOUNDS_SCHEMA);
-    //检测系统主题
-    if (QGSettings::isSchemaInstalled(UKUI_THEME_SETTING)){
-        m_pThemeSetting = new QGSettings(UKUI_THEME_SETTING);
-        m_pFontSetting = new QGSettings(UKUI_THEME_SETTING);
-        QString fontType;
-        if (m_pThemeSetting->keys().contains("styleName")) {
-            mThemeName = m_pThemeSetting->get(UKUI_THEME_NAME).toString();
-        }
-        if (m_pFontSetting->keys().contains("systemFont")) {
-            fontType = m_pFontSetting->get("systemFont").toString();
-        }
-        if (m_pFontSetting->keys().contains("systemFontSize")) {
-            int font = m_pFontSetting->get("system-font-size").toInt();
-            QFont fontSize(fontType,font);
-            devWidget->outputDeviceDisplayLabel->setFont(fontSize);
-            appWidget->systemVolumeLabel->setFont(fontSize);
-            devWidget->inputDeviceDisplayLabel->setFont(fontSize);
-        }
-        connect(m_pFontSetting , SIGNAL(changed(const QString &)),this,SLOT(fontSizeChangedSlot(const QString &)));
-        connect(m_pThemeSetting, SIGNAL(changed(const QString &)),this,SLOT(ukuiThemeChangedSlot(const QString &)));
-    }
-
-    //获取透明度
-    if (QGSettings::isSchemaInstalled(UKUI_TRANSPARENCY_SETTING)){
-        m_pTransparencySetting = new QGSettings(UKUI_TRANSPARENCY_SETTING);
-        if (m_pTransparencySetting->keys().contains("transparency")) {
-            transparency = m_pTransparencySetting->get("transparency").toInt();
-        }
-    }
-
-    //给侧边栏提供音量之设置
-    if (QGSettings::isSchemaInstalled(UKUI_VOLUME_BRIGHTNESS_GSETTING_ID)) {
-        m_pVolumeSetting = new QGSettings(UKUI_VOLUME_BRIGHTNESS_GSETTING_ID);
-
-        connect(m_pVolumeSetting,SIGNAL(changed(const QString &)),this,SLOT(volumeSettingChangedSlot()));
-    }
 
     UkmediaMonitorWindowThread *m_pThread = new UkmediaMonitorWindowThread();
     m_pThread->start();
+    connect(this, &DeviceSwitchWidget::sendClickSig, this, &DeviceSwitchWidget::onExeSecStar);
     /*!
      * \brief
      * \details
      * mini模式下,当滑动条值改变时更改系统音量
      */
     connect(miniWidget->masterVolumeSlider,SIGNAL(valueChanged(int)),this,SLOT(miniMastrerSliderChangedSlot(int)));
+    connect(switchToMiniBtn,SIGNAL(moveAdvanceSwitchBtnSignal()),this,SLOT(moveAdvanceSwitchBtnSlot()));
 
     /*!
      * \brief
@@ -489,23 +376,95 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     connect(soundSystemTrayIcon,SIGNAL(activated(QSystemTrayIcon::ActivationReason)),\
             this,SLOT(activatedSystemTrayIconSlot(QSystemTrayIcon::ActivationReason)));
     connect(m_pSoundPreferenceAction,SIGNAL(triggered()),this,SLOT(jumpControlPanelSlot()));
+}
 
+/*
+    创建系统托盘
+*/
+void DeviceSwitchWidget::initSystemTrayIcon()
+{
+    soundSystemTrayIcon = new UkmediaTrayIcon(this);
+
+    //为系统托盘图标添加菜单静音和声音首选项
+    soundSystemTrayIcon->setToolTip(tr("Output volume control"));
+#if (QT_VERSION <= QT_VERSION_CHECK(5,6,1))
+    m_pMuteAction = new QAction(QIcon(""),tr("Mute"),this);
+    m_pSoundPreferenceAction = new QAction(tr("Sound preference(S)"),this);
+#elif (QT_VERSION > QT_VERSION_CHECK(5,6,1))
+    m_pMuteAction = new QAction(QIcon(""),tr("Mute"));
+    m_pSoundPreferenceAction = new QAction(tr("Sound preference(S)"));
+#endif
+    QString settingsIconStr = "document-page-setup-symbolic";
+    QIcon settingsIcon = QIcon::fromTheme(settingsIconStr);
+    m_pSoundPreferenceAction->setIcon(settingsIcon);
+
+    soundSystemTrayIcon->setVisible(true);
+}
+
+void DeviceSwitchWidget::initWidget()
+{
+    setAttribute(Qt::WA_TranslucentBackground);
+    setMouseTracking(true);
+    setWindowFlags(Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint|Qt::Popup);
+    mThemeName = UKUI_THEME_WHITE;
+    devWidget = new UkmediaDeviceWidget(this);
+    appWidget = new ApplicationVolumeWidget(this);//appScrollWidget->area);
+    miniWidget = new UkmediaMiniMasterVolumeWidget();
+    osdWidget = new UkmediaOsdDisplayWidget();
+
+    dividerFrame = new QFrame(this);
+    dividerFrame->setFrameShape(QFrame::NoFrame);
+    dividerFrame->setFrameStyle(QFrame::VLine);
+    dividerFrame->setFixedSize(1,320);
+    dividerFrame->setParent(this);
+    QPalette palette = dividerFrame->palette();
+    QColor color = QColor(255,255,255);
+    color.setAlphaF(0.08);
+    palette.setColor(QPalette::WindowText, color);
+    dividerFrame->setPalette(palette);
+    dividerFrame->move(40,0);
+    appWidget->appArea = new QScrollArea(appWidget);
+    QPalette palette1 = appWidget->appArea->palette();
+    palette1.setColor(QPalette::Window, QColor(0x00,0xff,0x00,0x00));  //改变appArea背景色透明
+    appWidget->appArea->setPalette(palette1);
+    appWidget->displayAppVolumeWidget = new UkuiApplicationWidget(appWidget->appArea);
+    appWidget->appArea->setWidget(appWidget->displayAppVolumeWidget);
+    appWidget->m_pVlayout = new QVBoxLayout(appWidget->displayAppVolumeWidget);
+
+    appWidget->appArea->setFixedSize(358,168);
+    appWidget->appArea->move(0,143);
+    appWidget->displayAppVolumeWidget->setFixedWidth(355);
+    appWidget->displayAppVolumeWidget->move(0,143);
+
+    switchToMiniBtn = new UkuiMediaButton(this);
+    switchToMiniBtn->setParent(this);
+
+    switchToMiniBtn->setFlat(true);
+    switchToMiniBtn->setCheckable(false);
+    switchToMiniBtn->setProperty("useIconHighlightEffect",true);
+    switchToMiniBtn->setProperty("iconHighlightEffectMode",true);
+
+    switchToMiniBtn->setToolTip(tr("Go Into Mini Mode"));
+    QSize switchSize(16,16);
+    switchToMiniBtn->setIconSize(switchSize);
+    switchToMiniBtn->setFixedSize(36,36);
+    switchToMiniBtn->move(361,6);
+    switchToMiniBtn->setIcon(QIcon("/usr/share/ukui-media/img/mini-module.svg"));
+
+    appWidget->setFixedSize(358,320);
+    devWidget->setFixedSize(358,320);
+    devWidget->move(42,0);
+    appWidget->move(42,0);
+    this->setFixedSize(400,320);
+
+    devWidget->show();
+    appWidget->hide();
 
     trayRect = soundSystemTrayIcon->geometry();
     appWidget->displayAppVolumeWidget->setLayout(appWidget->m_pVlayout);
 
-//    this->setObjectName("mainWidget");
-//    appWidget->setObjectName("appWidget");
     appWidget->appArea->setFrameShape(QFrame::NoFrame);//bjc去掉appArea的边框
-//    appWidget->appArea->setWindowOpacity(0);
-//    QPalette pal = this->palette();//调色板
-//    pal.setColor(QPalette::Background,QColor(0xFF,0xFF,0xFF,0x00));
-//    appWidget->setPalette(pal); // 背景色
-//    appWidget->appArea->setStyleSheet("QScrollArea{border:none;}");//此句代码导致其widget内部的字体不随主题变化了
     appWidget->appArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-
-//    appWidget->appArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-//    appWidget->appArea->viewport()->setAttribute(Qt::WA_TranslucentBackground);
     appWidget->appArea->setAttribute(Qt::WA_TranslucentBackground);
 
     if (appnum <= 0) {
@@ -513,6 +472,47 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     }
     else {
         appWidget->upWidget->show();
+    }
+}
+
+void DeviceSwitchWidget::initGsettingSet()
+{
+    //获取声音gsettings值
+    m_pSoundSettings = g_settings_new (KEY_SOUNDS_SCHEMA);
+    //检测系统主题
+    if (QGSettings::isSchemaInstalled(UKUI_THEME_SETTING)){
+        m_pThemeSetting = new QGSettings(UKUI_THEME_SETTING);
+        m_pFontSetting = new QGSettings(UKUI_THEME_SETTING);
+        QString fontType;
+        if (m_pThemeSetting->keys().contains("styleName")) {
+            mThemeName = m_pThemeSetting->get(UKUI_THEME_NAME).toString();
+        }
+        if (m_pFontSetting->keys().contains("systemFont")) {
+            fontType = m_pFontSetting->get("systemFont").toString();
+        }
+        if (m_pFontSetting->keys().contains("systemFontSize")) {
+            int font = m_pFontSetting->get("system-font-size").toInt();
+            QFont fontSize(fontType,font);
+            devWidget->outputDeviceDisplayLabel->setFont(fontSize);
+            appWidget->systemVolumeLabel->setFont(fontSize);
+            devWidget->inputDeviceDisplayLabel->setFont(fontSize);
+        }
+        connect(m_pFontSetting , SIGNAL(changed(const QString &)),this,SLOT(fontSizeChangedSlot(const QString &)));
+        connect(m_pThemeSetting, SIGNAL(changed(const QString &)),this,SLOT(ukuiThemeChangedSlot(const QString &)));
+    }
+    //获取透明度
+    if (QGSettings::isSchemaInstalled(UKUI_TRANSPARENCY_SETTING)){
+        m_pTransparencySetting = new QGSettings(UKUI_TRANSPARENCY_SETTING);
+        if (m_pTransparencySetting->keys().contains("transparency")) {
+            transparency = m_pTransparencySetting->get("transparency").toInt();
+        }
+    }
+
+    //给侧边栏提供音量之设置
+    if (QGSettings::isSchemaInstalled(UKUI_VOLUME_BRIGHTNESS_GSETTING_ID)) {
+        m_pVolumeSetting = new QGSettings(UKUI_VOLUME_BRIGHTNESS_GSETTING_ID);
+
+        connect(m_pVolumeSetting,SIGNAL(changed(const QString &)),this,SLOT(volumeSettingChangedSlot()));
     }
 }
 
@@ -1206,10 +1206,27 @@ void DeviceSwitchWidget::activatedSystemTrayIconSlot(QSystemTrayIcon::Activation
         break;
     }
     case QSystemTrayIcon::Context:{
+        Q_EMIT sendClickSig();
     }
     default:
         break;
     }
+}
+
+void DeviceSwitchWidget::onExeSecStar()
+{
+    disconnect(this, &DeviceSwitchWidget::sendClickSig, this, &DeviceSwitchWidget::onExeSecStar);
+    secondaryStartFunction();
+}
+
+/**
+ * @brief Widget::secondaryStartFunction
+ * 二级启动
+ */
+void DeviceSwitchWidget::secondaryStartFunction()
+{
+    QPalette pal = this->palette();//调色板
+    pal.setColor(QPalette::Background,QColor(0xFF,0xFF,0xFF,0x00));
 }
 
 /*!
@@ -1815,7 +1832,7 @@ void DeviceSwitchWidget::remove_application_control (DeviceSwitchWidget *w,const
 
     //设置布局的间距以及设置vlayout四周的间距
     w->appWidget->m_pVlayout->setSpacing(18);
-    w->appWidget->displayAppVolumeWidget->resize(358,14+appnum*68);
+    w->appWidget->displayAppVolumeWidget->resize(358,14+appnum*78);
     w->appWidget->m_pVlayout->setContentsMargins(18,14,34,0);
     w->appWidget->m_pVlayout->update();
     if (appnum <= 0) {
@@ -2210,7 +2227,7 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
     w->appWidget->m_pVlayout->addWidget(app_widget);
     //设置布局的垂直间距以及设置vlayout四周的间距
     w->appWidget->m_pVlayout->setSpacing(18);
-    w->appWidget->displayAppVolumeWidget->resize(358,14+appnum*68);
+    w->appWidget->displayAppVolumeWidget->resize(358,14+appnum*78);
     w->appWidget->m_pVlayout->setContentsMargins(18,0,34,0);
     w->appWidget->m_pVlayout->update();
 
