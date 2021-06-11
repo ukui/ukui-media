@@ -55,7 +55,6 @@ msgid "Enable debug"
 msgstr "Hata ayıklamayı etkinleştir"
 
 #: ../ukui-volume-control/applet-main.c:55
-#, fuzzy
 msgid " — UKUI Volume Control Applet"
 msgstr " — UKUI Ses Seviyesi Kontrol Programcığı"
 
@@ -76,7 +75,6 @@ msgid "Startup page"
 msgstr "Başlangıç sayfası"
 
 #: ../ukui-volume-control/dialog-main.c:202
-#, fuzzy
 msgid " — UKUI Volume Control"
 msgstr " — UKUI Ses Seviyesi Kontrolü"
 
