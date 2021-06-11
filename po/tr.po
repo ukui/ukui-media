@@ -57,7 +57,7 @@ msgstr "Hata ayıklamayı etkinleştir"
 #: ../ukui-volume-control/applet-main.c:55
 #, fuzzy
 msgid " — UKUI Volume Control Applet"
-msgstr " — MATE Ses Seviyesi Kontrol Programcığı"
+msgstr " — UKUI Ses Seviyesi Kontrol Programcığı"
 
 #: ../ukui-volume-control/dialog-main.c:143
 msgid "Sound system is not available"
@@ -78,7 +78,7 @@ msgstr "Başlangıç sayfası"
 #: ../ukui-volume-control/dialog-main.c:202
 #, fuzzy
 msgid " — UKUI Volume Control"
-msgstr " — MATE Ses Seviyesi Kontrolü"
+msgstr " — UKUI Ses Seviyesi Kontrolü"
 
 #: ../ukui-volume-control/gvc-applet.c:322
 #: ../ukui-volume-control/gvc-mixer-dialog.c:1999
@@ -101,7 +101,7 @@ msgstr "Ses Çıktı Seviyesi"
 #: ../ukui-volume-control/gvc-applet.c:333
 #, fuzzy
 msgid "UKUI Volume Control Applet"
-msgstr "MATE Ses Seviyesi Kontrol Programcığı"
+msgstr "UKUI Ses Seviyesi Kontrol Programcığı"
 
 #: ../ukui-volume-control/gvc-balance-bar.c:140
 msgctxt "balance"
