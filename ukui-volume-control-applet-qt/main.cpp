@@ -49,7 +49,8 @@ int main(int argc, char *argv[])
         QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
     #endif
     }
-    QtSingleApplication app("ukui-volume-control-applet",argc,argv);
+    QString id = QString("QtSingleApplication-Name"+QLatin1String(getenv("DISPLAY")));
+    QtSingleApplication app(id,argc,argv);
     if (app.isRunning()) {
        app.sendMessage("raise_window_noop");
        return EXIT_SUCCESS;
