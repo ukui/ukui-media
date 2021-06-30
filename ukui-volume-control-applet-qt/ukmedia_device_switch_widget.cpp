@@ -545,11 +545,9 @@ void DeviceSwitchWidget::miniMastrerSliderChangedSlot(int value)
     percent = QString::number(value);
     //音量值改变时添加提示音
     if (firstEnterSystem != true) {
-        qDebug() <<111111;
         mate_mixer_stream_control_set_mute(control,FALSE);
     }
     int volume = value*65536/100;
-    qDebug() << "设置输出音量为:" << value;
     mate_mixer_stream_control_set_volume(control,guint(volume));
     appWidget->systemVolumeSlider->blockSignals(true);
     devWidget->outputDeviceSlider->blockSignals(true);
@@ -3174,6 +3172,15 @@ void DeviceSwitchWidget::on_control_mute_notify (MateMixerStreamControl *control
     int volume = int(mate_mixer_stream_control_get_volume(control));
     volume = int(volume*100/65536.0+0.5);
     MateMixerStream *stream = mate_mixer_stream_control_get_stream(control);
+      if(!MATE_MIXER_IS_STREAM(stream)){
+          qDebug() << "on_control_mute_notify  Exception handling --------------";
+          stream = mate_mixer_context_get_stream(w->context,mate_mixer_stream_control_get_name(control));
+          //使用命令重新设置音量
+          bool isMuted = mate_mixer_stream_control_get_mute(control);
+          QString cmd = "pactl set-sink-mute "+ QString(mate_mixer_stream_control_get_name(control)) +" "+ QString::number(isMuted,10);
+          system(cmd.toLocal8Bit().data());
+          return;
+      }
     MateMixerDirection direction;
     if (stream != nullptr) {
         direction = mate_mixer_stream_get_direction(stream);
@@ -3217,8 +3224,18 @@ void DeviceSwitchWidget::on_stream_control_volume_notify (MateMixerStreamControl
 {
     Q_UNUSED(pspec);
     QString decscription;
+    guint volume = 0;
     MateMixerStream *stream = mate_mixer_stream_control_get_stream(control);
     MateMixerDirection direction = mate_mixer_stream_get_direction(stream);
+       //异常处理：libmatemixer 的 mate_mixer_stream_control_get_stream() 存在bug，会导致stream failed，这里重新获取一下
+       if(!MATE_MIXER_IS_STREAM(stream)){
+           stream = mate_mixer_context_get_stream(w->context,mate_mixer_stream_control_get_name(control));
+           //使用命令重新设置音量
+           volume = mate_mixer_stream_control_get_volume(control);
+           QString cmd = "pactl set-sink-volume "+ QString(mate_mixer_stream_control_get_name(control)) +" "+ QString::number(volume,10);
+           qDebug() << "on_control_volume_notify  Exception handling --------------";
+           system(cmd.toLocal8Bit().data());
+       }
 
     if (w->setOutputVolume == true && direction == MATE_MIXER_DIRECTION_OUTPUT) {
         w->setOutputVolume = false;
@@ -3228,7 +3245,6 @@ void DeviceSwitchWidget::on_stream_control_volume_notify (MateMixerStreamControl
     MateMixerStreamControlFlags flags;
     gboolean muted = FALSE;
     gdouble decibel = 0.0;
-    guint volume = 0;
 
     direction = MATE_MIXER_DIRECTION_OUTPUT;
     if (control != nullptr)
