@@ -16,7 +16,6 @@
  *
  */
 #include "ukmedia_application_volume_widget.h"
-
 #include <QDebug>
 #include <QScrollBar>
 #include <QHBoxLayout>
@@ -93,7 +92,7 @@ ApplicationVolumeWidget::ApplicationVolumeWidget(QWidget *parent) : QWidget (par
 //    QPainter p(this);
 ////    double transparence = transparency * 255;
 ////    p.setBrush(this->palette().base());
-//    p.setBrush(QBrush(QColor(0xFF,0xFF,0xFF,0x00)));
+//    p.setBrush(QBrush(QColor(19, 19, 20, 0)));
 //    p.setPen(Qt::NoPen);
 //    QPainterPath path;
 //    opt.rect.adjust(0,0,0,0);
@@ -104,6 +103,42 @@ ApplicationVolumeWidget::ApplicationVolumeWidget(QWidget *parent) : QWidget (par
 //    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 ////    QWidget::paintEvent(event);
 //}
+
+void ApplicationVolumeWidget::fullushBlueRecordStream()
+{
+    isRecording = true;
+    outputFile.setFileName("/tmp/test.raw");
+    outputFile.open( QIODevice::WriteOnly | QIODevice::Truncate );
+    QAudioFormat format;
+
+    format.setSampleRate(8000);
+    format.setChannelCount(1);
+    format.setSampleSize(8);
+    format.setCodec("audio/pcm");
+    format.setByteOrder(QAudioFormat::LittleEndian);
+
+    format.setSampleType(QAudioFormat::UnSignedInt);
+    QAudioDeviceInfo info = QAudioDeviceInfo::defaultInputDevice();
+    qDebug() << "input device" << info.deviceName();
+    if (!info.isFormatSupported(format))
+    {
+       qWarning()<<"default format not supported try to use nearest";
+       format = info.nearestFormat(format);
+    }
+    qDebug() << "准备蓝牙录音-------";
+    audio = new QAudioInput(info, format, this);
+    audio->start(&outputFile);
+}
+
+void ApplicationVolumeWidget::deleteBlueRecordStream()
+{
+    isRecording = false;
+    qDebug() << "停止录制-------";
+    audio->stop();
+    outputFile.close();
+    system("rm /tmp/test.raw");
+    delete audio;
+}
 
 ApplicationVolumeWidget::~ApplicationVolumeWidget()
 {

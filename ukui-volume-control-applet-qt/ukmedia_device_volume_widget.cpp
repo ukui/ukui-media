@@ -62,14 +62,14 @@ UkmediaDeviceWidget::UkmediaDeviceWidget(QWidget *parent) : QWidget (parent)
     inputDeviceBtn->setFocusPolicy(Qt::NoFocus);
     outputDeviceBtn->setFocusPolicy(Qt::NoFocus);
     noInputWidgetInit();
+    inputWidgetShow();
+    inputWidgetHide();
 
     inputDeviceBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
                                 "padding-left:0px;}");
     outputDeviceBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
                                  "padding-left:0px;}");
 }
-
-
 
 void UkmediaDeviceWidget::noInputWidgetInit()
 {

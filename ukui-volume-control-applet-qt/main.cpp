@@ -31,6 +31,7 @@
 #include <KWindowEffects>
 #include <QMessageBox>
 #include <QLibraryInfo>
+#include <QStandardPaths>
 #include <X11/Xlib.h>
 #include <ukui-log4qt.h>
 
@@ -42,15 +43,16 @@ int main(int argc, char *argv[])
     if(scrn == nullptr) {
         return 0;
     }
-    int width = scrn->width;
-    if (width >= 2560) {
-    #if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
+
+    #if (QT_VERSION >= QT_VERSION_CHECK(5, 12, 0))
         QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
         QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
     #endif
-    }
-    QString id = QString("QtSingleApplication-Name"+QLatin1String(getenv("DISPLAY")));
-    QtSingleApplication app(id,argc,argv);
+    #if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+        QApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
+    #endif
+
+    QtSingleApplication app("ukui-volume-control-applet",argc,argv);
     if (app.isRunning()) {
        app.sendMessage("raise_window_noop");
        return EXIT_SUCCESS;
@@ -72,10 +74,12 @@ int main(int argc, char *argv[])
     //加载qss文件
     QFile qss(":/data/qss/ukuimedia.qss");
     qss.open(QFile::ReadOnly);
+
     qss.close();
     DeviceSwitchWidget w;
     KWindowEffects::enableBlurBehind(w.winId(),true);
     w.raise();
+//    w.show();
     XCloseDisplay(display);
     return app.exec();
 }

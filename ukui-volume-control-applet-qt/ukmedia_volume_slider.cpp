@@ -30,7 +30,7 @@ SwitchButtonState buttonState = SWITCH_BUTTON_NORMAL;
 extern double transparency;
 UkuiApplicationWidget::UkuiApplicationWidget(QWidget *parent)
 {
-    this->setAttribute(Qt::WA_TranslucentBackground);
+//    this->setAttribute(Qt::WA_TranslucentBackground);
 //    this->setStyleSheet("QWiget{background:rgba(0,0,0,0);}");
     Q_UNUSED(parent);
 }
@@ -182,23 +182,20 @@ void UkuiMediaButton::mouseReleaseEvent(QMouseEvent *e)
 UkmediaVolumeSlider::UkmediaVolumeSlider(QWidget *parent,bool needTip)
 {
     Q_UNUSED(parent);  
-    QPalette p;
-
-    p.setColor(QPalette::Highlight,QColor(61,107,229));
-    this->setPalette(p);
     if (needTip) {
         state = needTip;
         m_pTiplabel = new UkuiMediaSliderTipLabel();
         m_pTiplabel->setWindowFlags(Qt::ToolTip);
     //    qApp->installEventFilter(new AppEventFilter(this));
         m_pTiplabel->setFixedSize(52,30);
-//        m_pTiplabel->setAttribute(Qt::WA_TranslucentBackground);
         m_pTiplabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     }
 }
 
 void UkmediaVolumeSlider::mousePressEvent(QMouseEvent *ev)
 {
+    mousePress = true;
+    Q_EMIT silderPressSignal();
     if (state) {
         m_pTiplabel->show();
     }
@@ -210,6 +207,17 @@ void UkmediaVolumeSlider::mousePressEvent(QMouseEvent *ev)
     //向父窗口发送自定义事件event type，这样就可以在父窗口中捕获这个事件进行处理
     QEvent evEvent(static_cast<QEvent::Type>(QEvent::User + 1));
     QCoreApplication::sendEvent(parentWidget(), &evEvent);
+    QSlider::mousePressEvent(ev);
+}
+
+void UkmediaVolumeSlider::mouseReleaseEvent(QMouseEvent *e)
+{
+    if(mousePress){
+        Q_EMIT silderReleaseSignal();
+    }
+    mousePress = false;
+    QSlider::mouseReleaseEvent(e);
+
 }
 
 void UkmediaVolumeSlider::initStyleOption(QStyleOptionSlider *option)
@@ -247,6 +255,8 @@ void UkmediaVolumeSlider::paintEvent(QPaintEvent *e)
         m_pTiplabel->setText(percent);
         m_pTiplabel->move(gPos.x()-(m_pTiplabel->width()/2)+9,gPos.y()-m_pTiplabel->height()-1);
     }
+
+
 }
 
 UkmediaVolumeSlider::~UkmediaVolumeSlider()
@@ -406,8 +416,8 @@ void UkuiQMenu::hideEvent(QHideEvent *e)
 {
     this->activateWindow();
     this->setAttribute(Qt::WA_NoMouseReplay);
+    qDebug() << "菜单隐藏" << e->type();
 }
 
 UkuiQMenu::~UkuiQMenu(){
 }
-
