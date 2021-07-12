@@ -264,7 +264,7 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
         mouseReleaseState = true;
     });
     osdWidget = new UkmediaOsdDisplayWidget();
-
+    headsetWidget = new UkuiMediaSetHeadsetWidget;
     soundSystemTrayIcon = new UkmediaTrayIcon(this);
 
     //为系统托盘图标添加菜单静音和声音首选项
@@ -4234,7 +4234,7 @@ void DeviceSwitchWidget::setHeadsetPort(QString str)
         MateMixerSwitchOption *opt = MATE_MIXER_SWITCH_OPTION(options->data);
         QString label = mate_mixer_switch_option_get_label(opt);
         QString name = mate_mixer_switch_option_get_name(opt);
-       qDebug() <<"switch label name" <<label <<name;
+        qDebug() <<"switch label name" <<label <<name;
         options = options->next;
     }
     MateMixerSwitchOption *outputActiveOption = mate_mixer_switch_get_active_option(outputPortSwitch);
@@ -4255,7 +4255,20 @@ void DeviceSwitchWidget::setHeadsetPort(QString str)
         }
         if (strcmp(inputActiveOptionName,internalmic_name)) {
             inputOption = mate_mixer_switch_get_option(inputPortSwitch,internalmic_name);
-            mate_mixer_switch_set_active_option(inputPortSwitch,inputOption);
+            /*
+             *当需要设置的输入端口不在同一个sink上时，需要设置默认的输入设备
+            */
+            if (!MATE_MIXER_IS_SWITCH_OPTION(inputOption)) {
+
+                qDebug() << "internalmic_name" << internalmic_name;
+//                QString portName = internalmic_name;
+                 QString sourceName = findPortSource(internalmic_name);
+                 MateMixerStream *stream = mate_mixer_context_get_stream(context,sourceName.toLatin1().data());
+                 mate_mixer_context_set_default_input_stream(context,stream);
+            }
+            else
+                mate_mixer_switch_set_active_option(inputPortSwitch,inputOption);
+
         }
         qDebug() << "setHeadsetPort" <<str <<outputActiveOptionName << inputActiveOptionName;
     } /*output: headphone     input: headset mic*/
@@ -4266,9 +4279,21 @@ void DeviceSwitchWidget::setHeadsetPort(QString str)
         }
         if (strcmp(inputActiveOptionName,headsetmic_name)) {
             inputOption = mate_mixer_switch_get_option(inputPortSwitch,headsetmic_name);
-            mate_mixer_switch_set_active_option(inputPortSwitch,inputOption);
+            /*
+             *当需要设置的输入端口不在同一个sink上时，需要设置默认的输入设备
+            */
+            if (!MATE_MIXER_IS_SWITCH_OPTION(inputOption)) {
+
+//                QString portName = internalmic_name;
+                 QString sourceName = findPortSource(headsetmic_name);
+                 MateMixerStream *stream = mate_mixer_context_get_stream(context,sourceName.toLatin1().data());
+                 mate_mixer_context_set_default_input_stream(context,stream);
+                 qDebug() << "headsetmic_name" << headsetmic_name << inputActiveOptionName;
+            }
+            else
+                mate_mixer_switch_set_active_option(inputPortSwitch,inputOption);
         }
-        qDebug() << "setHeadsetPort" <<str;
+        qDebug() << "setHeadsetPort" <<str << outputActiveOptionName << inputActiveOptionName;
     }/*output: speaker     input: headphone mic*/
     else if (strcmp(str.toLatin1().data(),"headphone mic") == 0) {
         if (strcmp(outputActiveOptionName,internalspk_name)) {
@@ -4277,9 +4302,22 @@ void DeviceSwitchWidget::setHeadsetPort(QString str)
         }
         if (strcmp(inputActiveOptionName,headphonemic_name)) {
             inputOption = mate_mixer_switch_get_option(inputPortSwitch,headphonemic_name);
-            mate_mixer_switch_set_active_option(inputPortSwitch,inputOption);
+
+            /*
+             *当需要设置的输入端口不在同一个sink上时，需要设置默认的输入设备
+            */
+            if (!MATE_MIXER_IS_SWITCH_OPTION(inputOption)) {
+
+//                QString portName = internalmic_name;
+                 QString sourceName = findPortSource(headphonemic_name);
+                 MateMixerStream *stream = mate_mixer_context_get_stream(context,sourceName.toLatin1().data());
+                 qDebug() << "headphonemic_name" << headphonemic_name << sourceName;
+                 mate_mixer_context_set_default_input_stream(context,stream);
+            }
+            else
+                mate_mixer_switch_set_active_option(inputPortSwitch,inputOption);
         }
-        qDebug() << "setHeadsetPort" <<str;
+        qDebug() << "setHeadsetPort" <<str << outputActiveOptionName << inputActiveOptionName;
     }
 }
 
@@ -4833,11 +4871,25 @@ void DeviceSwitchWidget::context_state_callback(pa_context *c, void *userdata) {
                 return;
             }
             pa_operation_unref(o);
+
             if (!(o = pa_context_get_card_info_list(c, card_cb, w))) {
                 w->show_error(QObject::tr("pa_context_get_card_info_list() failed").toUtf8().constData());
                 return;
             }
             pa_operation_unref(o);
+
+            if (!(o = pa_context_get_sink_info_list(c, sinkCb, w))) {
+                w->show_error(QObject::tr("pa_context_get_sink_info_list() failed").toUtf8().constData());
+                return;
+            }
+            pa_operation_unref(o);
+
+            if (!(o = pa_context_get_source_info_list(c, sourceCb, w))) {
+                w->show_error(QObject::tr("pa_context_get_source_info_list() failed").toUtf8().constData());
+                return;
+            }
+            pa_operation_unref(o);
+
             /* These calls are not always supported */
             if ((o = pa_ext_stream_restore_read(c, ext_stream_restore_read_cb, w))) {
                 pa_operation_unref(o);
@@ -4894,6 +4946,35 @@ void DeviceSwitchWidget::subscribe_cb(pa_context *c, pa_subscription_event_type_
     DeviceSwitchWidget *w = static_cast<DeviceSwitchWidget*>(userdata);
 
     switch (t & PA_SUBSCRIPTION_EVENT_FACILITY_MASK) {
+    case PA_SUBSCRIPTION_EVENT_SINK:
+        if ((t & PA_SUBSCRIPTION_EVENT_TYPE_MASK) == PA_SUBSCRIPTION_EVENT_REMOVE){
+
+//            w->removeSink(index);
+        }
+        else {
+            pa_operation *o;
+            if (!(o = pa_context_get_sink_info_by_index(c, index, sinkCb, w))) {
+                w->show_error(QObject::tr("pa_context_get_sink_info_by_index() failed").toUtf8().constData());
+                return;
+            }
+            pa_operation_unref(o);
+        }
+        break;
+
+    case PA_SUBSCRIPTION_EVENT_SOURCE:
+        if ((t & PA_SUBSCRIPTION_EVENT_TYPE_MASK) == PA_SUBSCRIPTION_EVENT_REMOVE){
+//            w->removeSource(index);
+        }
+        else {
+            pa_operation *o;
+            if (!(o = pa_context_get_source_info_by_index(c, index, sourceCb, w))) {
+                w->show_error(QObject::tr("pa_context_get_source_info_by_index() failed").toUtf8().constData());
+                return;
+            }
+            pa_operation_unref(o);
+        }
+        break;
+
     case PA_SUBSCRIPTION_EVENT_CARD:
         if ((t & PA_SUBSCRIPTION_EVENT_TYPE_MASK) == PA_SUBSCRIPTION_EVENT_REMOVE) {
             pa_operation *o;
@@ -5051,6 +5132,7 @@ void DeviceSwitchWidget::updateCard(const pa_card_info &info) {
         this->hasSinks = this->hasSinks || ((*p_profile)->n_sinks > 0);
         this->hasSources = this->hasSources || ((*p_profile)->n_sources > 0);
         profile_priorities.insert(*p_profile);
+
         profileName.append((*p_profile)->name);
         profilePriorityMap.insertMulti((*p_profile)->name,(*p_profile)->priority);
     }
@@ -5272,6 +5354,7 @@ void DeviceSwitchWidget::updateCard(const pa_card_info &info) {
     }
 
     this->profiles.clear();
+
     for (auto p_profile : profile_priorities) {
         bool hasNo = false, hasOther = false;
         std::map<QByteArray, PortInfo>::iterator portIt;
@@ -5338,7 +5421,6 @@ pa_context* DeviceSwitchWidget::get_context()
 void DeviceSwitchWidget::updatePorts(DeviceSwitchWidget *w, const pa_card_info &info, std::map<QByteArray, PortInfo> &ports) {
     std::map<QByteArray, PortInfo>::iterator it;
     PortInfo p;
-
     for (auto & port : w->ports) {
         QByteArray desc;
         it = ports.find(port.first);
@@ -5438,15 +5520,15 @@ DeviceSwitchWidget::get_headset_ports (MateMixerStreamControl    *control,
     for (i = 0; i < c->n_ports; i++) {
         pa_card_port_info *p = c->ports[i];
         //                if (control->priv->server_protocol_version < 34) {
-        if (g_str_equal (p->name, "analog-output-headphones"))
+        if (g_str_equal (p->name, "analog-output-headphones") || g_str_equal (p->name, "[Out] Headphones1"))
             h->headphones = p;
-        else if (g_str_equal (p->name, "analog-input-headset-mic"))
+        else if (g_str_equal (p->name, "analog-input-headset-mic") || g_str_equal (p->name, "[In] Headset"))
             h->headsetmic = p;
-        else if (g_str_equal (p->name, "analog-input-headphone-mic"))
+        else if (g_str_equal (p->name, "analog-input-headphone-mic") || g_str_equal (p->name, "[In] Headphones2"))
             h->headphonemic = p;
-        else if (g_str_equal (p->name, "analog-input-internal-mic"))
+        else if (g_str_equal (p->name, "analog-input-internal-mic") || g_str_equal (p->name, "[In] Mic"))
             h->internalmic = p;
-        else if (g_str_equal (p->name, "analog-output-speaker"))
+        else if (g_str_equal (p->name, "analog-output-speaker") || g_str_equal (p->name, "[Out] Speaker"))
             h->internalspk = p;
         //                } else {
 #if (PA_PROTOCOL_VERSION >= 34)
@@ -5558,7 +5640,7 @@ DeviceSwitchWidget::check_audio_device_selection_needed (DeviceSwitchWidget *wid
 
     if (!h->headphones ||
             (!h->headsetmic && !h->headphonemic)) {
-        qDebug() << "no headset jack";
+        qDebug() << "no headset jack" ;
         /* Not a headset jack */
         goto out;
     }
@@ -5601,7 +5683,6 @@ DeviceSwitchWidget::check_audio_device_selection_needed (DeviceSwitchWidget *wid
         widget->firstLoad = false;
     else {
         if (widget->headset_plugged_in) {
-            widget->headsetWidget = new UkuiMediaSetHeadsetWidget;
             widget->headsetWidget->showWindow();
         }
         else {
@@ -5653,6 +5734,258 @@ void DeviceSwitchWidget::free_priv_port_names (MateMixerStreamControl    *contro
     g_clear_pointer (&internalmic_name, g_free);
 }
 
+void DeviceSwitchWidget::sinkCb(pa_context *c, const pa_sink_info *i, int eol, void *userdata)
+{
+    DeviceSwitchWidget *w = static_cast<DeviceSwitchWidget*>(userdata);
+
+    if (eol < 0) {
+        if (pa_context_errno(w->m_paContext) == PA_ERR_NOENTITY)
+            return;
+
+        w->show_error(QObject::tr("Sink callback failure").toUtf8().constData());
+        return;
+    }
+
+    if (eol > 0) {
+//        dec_outstanding(w);
+        return;
+    }
+#if HAVE_EXT_DEVICE_RESTORE_API
+    if (w->updateSink(*i)) {
+//        ext_device_restore_subscribe_cb(c, PA_DEVICE_TYPE_SINK, i->index, w);
+    }
+#else
+    w->updateSink(*i);
+#endif
+}
+
+void DeviceSwitchWidget::sourceCb(pa_context *, const pa_source_info *i, int eol, void *userdata)
+{
+    DeviceSwitchWidget *w = static_cast<DeviceSwitchWidget*>(userdata);
+
+    if (eol < 0) {
+        if (pa_context_errno(w->m_paContext) == PA_ERR_NOENTITY)
+            return;
+
+        w->show_error(QObject::tr("Source callback failure").toUtf8().constData());
+        return;
+    }
+
+    if (eol > 0) {
+//        dec_outstanding(w);
+        return;
+    }
+
+    w->updateSource(*i);
+}
+
+bool DeviceSwitchWidget::updateSink(const pa_sink_info &info)
+{
+    bool isNew = false;
+    QMap<QString,QString>temp;
+
+    for (pa_sink_port_info ** sinkPort = info.ports; *sinkPort != nullptr; ++sinkPort) {
+        temp.insertMulti(info.name,(*sinkPort)->name);
+        qDebug() << "update sink " << info.card<< info.name << "port:" << (*sinkPort)->name << (*sinkPort)->name;
+    }
+    sinkPortMap.insertMulti(info.index,temp);
+    qDebug() <<sinkPortMap.count();
+//    SinkWidget *w;
+
+
+//    const char *icon;
+//    std::map<uint32_t, CardWidget*>::iterator cw;
+//    std::set<pa_sink_port_info,sink_port_prio_compare> port_priorities;
+
+//    if (sinkWidgets.count(info.index))
+//        w = sinkWidgets[info.index];
+//    else {
+//        sinkWidgets[info.index] = w = new SinkWidget(this);
+//        w->setChannelMap(info.channel_map, !!(info.flags & PA_SINK_DECIBEL_VOLUME));
+//        sinksVBox->layout()->addWidget(w);
+//        w->index = info.index;
+//        w->monitor_index = info.monitor_source;
+//        is_new = true;
+
+//        w->setBaseVolume(info.base_volume);
+//        w->setVolumeMeterVisible(showVolumeMetersCheckButton->isChecked());
+//    }
+
+//    w->updating = true;
+
+//    w->card_index = info.card;
+//    w->name = info.name;
+//    w->description = info.description;
+//    w->type = info.flags & PA_SINK_HARDWARE ? SINK_HARDWARE : SINK_VIRTUAL;
+
+//    w->boldNameLabel->setText("");
+//    gchar *txt;
+//    w->nameLabel->setText(txt = g_markup_printf_escaped("%s", info.description));
+//    w->nameLabel->setToolTip(info.description);
+//    g_free(txt);
+
+//    icon = pa_proplist_gets(info.proplist, PA_PROP_DEVICE_ICON_NAME);
+//    setIconByName(w->iconImage, icon ? icon : "audio-card");
+
+//    w->setVolume(info.volume);
+//    w->muteToggleButton->setChecked(info.mute);
+
+//    w->setDefault(w->name == defaultSinkName);
+
+//    port_priorities.clear();
+//    for (uint32_t i=0; i<info.n_ports; ++i) {
+//        port_priorities.insert(*info.ports[i]);
+//    }
+
+//    w->ports.clear();
+//    for (const auto & port_prioritie : port_priorities)
+//        w->ports.push_back(std::pair<QByteArray,QByteArray>(port_prioritie.name, port_prioritie.description));
+
+//    w->activePort = info.active_port ? info.active_port->name : "";
+
+//    cw = cardWidgets.find(info.card);
+
+//    if (cw != cardWidgets.end())
+//        updatePorts(w, cw->second->ports);
+
+//#ifdef PA_SINK_SET_FORMATS
+//    w->setDigital(info.flags & PA_SINK_SET_FORMATS);
+//#endif
+
+//    w->prepareMenu();
+
+//    w->updating = false;
+//    if (is_new)
+//        updateDeviceVisibility();
+
+    return isNew;
+}
+
+void DeviceSwitchWidget::updateSource(const pa_source_info &info)
+{
+    bool isNew = false;
+    QMap<QString,QString>temp;
+
+    if(info.ports) {
+        for (pa_source_port_info ** sourcePort = info.ports; *sourcePort != nullptr; ++sourcePort) {
+            temp.insertMulti(info.name,(*sourcePort)->name);
+            qDebug() << "update source " << info.card<< info.name << "port:" << (*sourcePort)->name << (*sourcePort)->name;
+        }
+        sourcePortMap.insertMulti(info.index,temp);
+    }
+
+//    SourceWidget *w;
+//    bool is_new = false;
+//    const char *icon;
+//    std::map<uint32_t, CardWidget*>::iterator cw;
+//    std::set<pa_source_port_info,source_port_prio_compare> port_priorities;
+
+//    if (sourceWidgets.count(info.index))
+//        w = sourceWidgets[info.index];
+//    else {
+//        sourceWidgets[info.index] = w = new SourceWidget(this);
+//        w->setChannelMap(info.channel_map, !!(info.flags & PA_SOURCE_DECIBEL_VOLUME));
+//        sourcesVBox->layout()->addWidget(w);
+
+//        w->index = info.index;
+//        is_new = true;
+
+//        w->setBaseVolume(info.base_volume);
+//        w->setVolumeMeterVisible(showVolumeMetersCheckButton->isChecked());
+
+//        if (pa_context_get_server_protocol_version(get_context()) >= 13)
+//            w->peak = createMonitorStreamForSource(info.index, -1, !!(info.flags & PA_SOURCE_NETWORK));
+//    }
+
+//    w->updating = true;
+
+//    w->card_index = info.card;
+//    w->name = info.name;
+//    w->description = info.description;
+//    w->type = info.monitor_of_sink != PA_INVALID_INDEX ? SOURCE_MONITOR : (info.flags & PA_SOURCE_HARDWARE ? SOURCE_HARDWARE : SOURCE_VIRTUAL);
+
+//    w->boldNameLabel->setText("");
+//    gchar *txt;
+//    w->nameLabel->setText(txt = g_markup_printf_escaped("%s", info.description));
+//    w->nameLabel->setToolTip(info.description);
+//    g_free(txt);
+
+//    icon = pa_proplist_gets(info.proplist, PA_PROP_DEVICE_ICON_NAME);
+//    setIconByName(w->iconImage, icon ? icon : "audio-input-microphone");
+
+//    w->setVolume(info.volume);
+//    w->muteToggleButton->setChecked(info.mute);
+
+//    w->setDefault(w->name == defaultSourceName);
+
+//    port_priorities.clear();
+//    for (uint32_t i=0; i<info.n_ports; ++i) {
+//        port_priorities.insert(*info.ports[i]);
+//    }
+
+
+//    w->ports.clear();
+//    for (const auto & port_prioritie : port_priorities)
+//        w->ports.push_back(std::pair<QByteArray,QByteArray>(port_prioritie.name, port_prioritie.description));
+
+//    w->activePort = info.active_port ? info.active_port->name : "";
+
+//    cw = cardWidgets.find(info.card);
+
+//    if (cw != cardWidgets.end())
+//        updatePorts(w, cw->second->ports);
+
+//    w->prepareMenu();
+
+//    w->updating = false;
+
+//    if (is_new)
+//        updateDeviceVisibility();
+}
+
+QString DeviceSwitchWidget::findPortSink(QString portName)
+{
+    QMap<int, QMap<QString,QString>>::iterator it;
+    QMap<QString,QString> portNameMap;
+    QMap<QString,QString>::iterator tempMap;
+
+    for (it=sinkPortMap.begin();it!=sinkPortMap.end();) {
+        portNameMap = it.value();
+        for (tempMap=portNameMap.begin();tempMap!=portNameMap.end();) {
+            qDebug() <<"find port sink" << tempMap.value() << portName<< tempMap.key();
+            if ( tempMap.value() == portName) {
+                break;
+            }
+            ++tempMap;
+        }
+
+        ++it;
+    }
+    return tempMap.key();
+}
+
+QString DeviceSwitchWidget::findPortSource(QString portName)
+{
+    QMap<int, QMap<QString,QString>>::iterator it;
+    QMap<QString,QString> portNameMap;
+    QMap<QString,QString>::iterator tempMap;
+    QString sourceStr = "";
+    for (it=sourcePortMap.begin();it!=sourcePortMap.end();) {
+        portNameMap = it.value();
+        for (tempMap=portNameMap.begin();tempMap!=portNameMap.end();) {
+            if ( tempMap.value() == portName) {
+                sourceStr = tempMap.key();
+                qDebug() <<"find port source" << tempMap.value() << portName<< tempMap.key();
+                break;
+            }
+            ++tempMap;
+        }
+
+        ++it;
+    }
+    return sourceStr;
+}
+
 MyTimer::MyTimer(QObject *parent)
     :QObject(parent)
 {
@@ -5676,6 +6009,7 @@ void MyTimer::handleTimeout()
 {
     killTimer(m_nTimerID);
 }
+
 
 DeviceSwitchWidget::~DeviceSwitchWidget()
 {

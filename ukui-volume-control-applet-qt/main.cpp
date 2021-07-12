@@ -37,7 +37,7 @@
 
 int main(int argc, char *argv[])
 {
-    initUkuiLog4qt("ukui-media");
+//    initUkuiLog4qt("ukui-media");
     Display *display = XOpenDisplay(NULL);
     Screen *scrn = DefaultScreenOfDisplay(display);
     if(scrn == nullptr) {

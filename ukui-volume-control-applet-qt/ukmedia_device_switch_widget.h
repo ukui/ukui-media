@@ -63,6 +63,8 @@ extern "C" {
 #include <alsa/asoundlib.h>
 #include <set>
 
+#define HAVE_EXT_DEVICE_RESTORE_API PA_CHECK_VERSION(0,99,0)
+
 #define UKUI_THEME_SETTING "org.ukui.style"
 #define UKUI_TRANSPARENCY_SETTING "org.ukui.control-center.personalise"
 #define UKUI_THEME_NAME "style-name"
@@ -279,6 +281,13 @@ public:
     static headset_ports *get_headset_ports (MateMixerStreamControl *control,const pa_card_info *c);
     void free_priv_port_names (MateMixerStreamControl    *control);
 
+    static void sinkCb(pa_context *c, const pa_sink_info *i, int eol, void *userdata);
+    static void sourceCb(pa_context *, const pa_source_info *i, int eol, void *userdata);
+    bool updateSink(const pa_sink_info &info);
+    void updateSource(const pa_source_info &info);
+    QString findPortSink(QString portName);
+    QString findPortSource(QString portName);
+
     friend class UkmediaSystemTrayIcon;
 Q_SIGNALS:
     void mouse_middle_clicked_signal();
@@ -427,8 +436,8 @@ private:
     QMap<int, QMap<QString,int>> cardProfilePriorityMap;
     QMap<QString,QString> inputCardStreamMap;
     QMap<QString,QString> outputCardStreamMap;
-
-
+    QMap<int,QMap<QString,QString>> sinkPortMap;
+    QMap<int,QMap<QString,QString>> sourcePortMap;
 
     int      headset_card;
     gboolean has_headsetmic;
