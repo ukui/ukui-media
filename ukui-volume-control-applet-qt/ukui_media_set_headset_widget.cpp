@@ -125,7 +125,7 @@ void UkuiMediaSetHeadsetWidget::paintEvent(QPaintEvent *event)
 void UkuiMediaSetHeadsetWidget::headphoneButtonClickedSlot()
 {
     isShow = false;
-    cset("name=Capture Source", HW_CARD, "2", 0, 0);
+    /*cset("name=Capture Source", HW_CARD, "2", 0, 0);*/
     QDBusMessage message =QDBusMessage::createSignal("/", "org.ukui.media", "DbusSignalHeadsetJack");
     message<<"headphone";
     QDBusConnection::sessionBus().send(message);
@@ -140,7 +140,7 @@ void UkuiMediaSetHeadsetWidget::headphoneButtonClickedSlot()
 void UkuiMediaSetHeadsetWidget::headsetButtonClickedSlot()
 {
     isShow = false;
-    cset("name=Capture Source", HW_CARD, "0", 0, 0);
+    /*cset("name=Capture Source", HW_CARD, "0", 0, 0);*/
     QDBusMessage message =QDBusMessage::createSignal("/", "org.ukui.media", "DbusSignalHeadsetJack");
     message<<"headset";
     QDBusConnection::sessionBus().send(message);
@@ -155,11 +155,9 @@ void UkuiMediaSetHeadsetWidget::headsetButtonClickedSlot()
 void UkuiMediaSetHeadsetWidget::microphoneButtonClickedSlot()
 {
     isShow = false;
-    int ret = cset("name=Capture Source", HW_CARD, "1", 0, 0);
+    /*int ret = cset("name=Capture Source", HW_CARD, "1", 0, 0);*/
     QDBusMessage message =QDBusMessage::createSignal("/", "org.ukui.media", "DbusSignalHeadsetJack");
     message<<"headphone mic" ;
-    if (ret < 0)
-        cset("name=Input Source", HW_CARD, "1", 0, 0);
     QDBusConnection::sessionBus().send(message);
     this->hide();
 }
