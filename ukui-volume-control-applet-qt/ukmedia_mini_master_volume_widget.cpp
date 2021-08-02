@@ -64,8 +64,7 @@ UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QWidget *parent) : 
     masterWidget->setFixedSize(345,31);
     switchBtn->resize(36,36);
     deviceCombox->setFixedSize(300,36);
-    displayVolumeLabel->setFixedSize(55,20);
-//    displayVolumeLabel->setStyleSheet("background-color:pink;");
+    displayVolumeLabel->setFixedSize(55,20);//bjc修复16号字体后最大音量不全
 
     displayWidget->move(0,0);
     deviceCombox->move(2,6);

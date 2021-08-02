@@ -22,6 +22,8 @@
 #include <QPushButton>
 #include <QScrollArea>
 #include <QVBoxLayout>
+#include <QAudioInput>
+#include <QAudioOutput>
 #include "ukmedia_volume_slider.h"
 
 class ApplicationVolumeWidget : public QWidget
@@ -30,8 +32,9 @@ class ApplicationVolumeWidget : public QWidget
 public:
     ApplicationVolumeWidget(QWidget *parent = nullptr);
     ~ApplicationVolumeWidget();
+    void fullushBlueRecordStream();
+    void deleteBlueRecordStream();
     friend class DeviceSwitchWidget;
-    friend class MyScrollArea;
 private:
     QLabel *applicationLabel;
     QLabel *systemVolumeLabel;
@@ -50,6 +53,11 @@ private:
     QSlider *appSlider;
     QScrollArea *appArea;
     QVBoxLayout *m_pVlayout;
+
+    QFile outputFile;   // class member.
+    QAudioInput* audio; // class member.
+    QAudioOutput *outAudio;
+    bool isRecording = false;
 protected:
 //    void paintEvent(QPaintEvent *event);
 

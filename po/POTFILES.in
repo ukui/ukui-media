@@ -3,7 +3,6 @@
 [encoding: UTF-8]
 data/ukui-volume-control.desktop.in.in
 data/ukui-volume-control-applet.desktop.in
-data/sounds/ukui-sounds-default.xml.in.in
 ukui-volume-control/applet-main.c
 ukui-volume-control/dialog-main.c
 ukui-volume-control/gvc-applet.c

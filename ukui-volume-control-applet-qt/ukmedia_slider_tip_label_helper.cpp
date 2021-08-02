@@ -31,7 +31,6 @@
 
 MediaSliderTipLabel::MediaSliderTipLabel(){
     setAttribute(Qt::WA_TranslucentBackground);
-
 }
 
 MediaSliderTipLabel::~MediaSliderTipLabel(){
@@ -104,7 +103,6 @@ bool SliderTipLabelHelper::eventFilter(QObject *obj, QEvent *e)
 
 void SliderTipLabelHelper::mouseMoveEvent(QObject *obj, QMouseEvent *e)
 {
-
     Q_UNUSED(e);
     QRect rect;
     QStyleOptionSlider m_option;

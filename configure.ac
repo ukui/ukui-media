@@ -149,7 +149,6 @@ data/icons/32x32/status/Makefile
 data/icons/scalable/Makefile
 data/icons/scalable/devices/Makefile
 data/icons/scalable/status/Makefile
-data/sounds/Makefile
 man/Makefile
 po/Makefile.in
 ukui-volume-control/Makefile

@@ -11,7 +11,7 @@ for USER in $(who | grep tty | awk '{print $1}' | sort | uniq);do
     index="$line"
     echo $line
     if [ -n "$index" ];then
-      OUTPUT_MODE=${index##*, }
+      OUTPUT_MODE=${index#*usec, }
       OUTPUT_MODE=${OUTPUT_MODE%%)}
       echo "输出模式为"  $OUTPUT_MODE
     fi

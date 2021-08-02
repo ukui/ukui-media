@@ -24,6 +24,8 @@
 #include "ukmedia_application_volume_widget.h"
 #include "ukmedia_mini_master_volume_widget.h"
 #include "ukmedia_osd_display_widget.h"
+#include "ukmedia_custom_sound.h"
+#include "ukui_media_set_headset_widget.h"
 
 #include <QMenu>
 #include <QCheckBox>
@@ -42,6 +44,9 @@
 #include <QTimer>
 #include <QTime>
 #include <QFrame>
+#include <QDesktopWidget>
+#include <QMap>
+
 extern "C" {
 #include <libmatemixer/matemixer.h>
 #include <gio/gio.h>
@@ -52,13 +57,20 @@ extern "C" {
 #include <pulse/glib-mainloop.h>
 #include <pulse/error.h>
 #include <pulse/subscribe.h>
+#include <pulse/introspect.h>
+#include <pulse/pulseaudio.h>
 }
+#include <alsa/asoundlib.h>
+#include <set>
+
+#define HAVE_EXT_DEVICE_RESTORE_API PA_CHECK_VERSION(0,99,0)
 
 #define UKUI_THEME_SETTING "org.ukui.style"
 #define UKUI_TRANSPARENCY_SETTING "org.ukui.control-center.personalise"
 #define UKUI_THEME_NAME "style-name"
 #define UKUI_THEME_WHITE "ukui-default"
 #define UKUI_THEME_BLACK "ukui-dark"
+#define PORT_NUM 5
 
 //为平板模式提供设置音量值
 #define UKUI_VOLUME_BRIGHTNESS_GSETTING_ID "org.ukui.quick-operation.panel"
@@ -71,6 +83,48 @@ extern "C" {
 #define GVC_APPLET_DBUS_NAME    "org.mate.VolumeControlApplet"
 #define KEY_SOUNDS_SCHEMA   "org.ukui.sound"
 #define TIMER_TIMEOUT   (2*1000)
+
+#define DBUS_NAME       "org.ukui.SettingsDaemon"
+#define DBUS_PATH       "/org/ukui/SettingsDaemon/wayland"
+#define DBUS_INTERFACE  "org.ukui.SettingsDaemon.wayland"
+
+//第一次运行时初始化音量
+#define UKUI_AUDIO_SCHEMA "org.ukui.audio"  //定制音量
+#define FIRST_RUN "first-run" //是否第一次运行
+#define HEADPHONE_OUTPUT_VOLUME "headphone-output-volume"
+#define OUTPUT_VOLUME "output-volume"
+#define MIC_VOLUME "mic-volume"
+#define HDMI_VOLUME "hdmi-volume"
+#define PLUGIN_INIT_VOLUME "plugin-init-volume"
+#define INTEL_MIC "intel-mic"
+#define REAR_MIC "rear-mic"
+#define HEADSET_MIC "headset-mic"
+#define LINEIN "linein"
+#define SPEAKER "speaker"
+#define HDMI "hdmi"
+#define HEADPHONES_1 "headphones-1"
+#define HEADPHONES_2 "headphones-2"
+
+typedef struct {
+        const pa_card_port_info *headphones;
+        const pa_card_port_info *headsetmic;
+        const pa_card_port_info *headphonemic;
+        const pa_card_port_info *internalmic;
+        const pa_card_port_info *internalspk;
+} headset_ports;
+
+class PortInfo {
+public:
+
+      QByteArray name;
+      QByteArray description;
+      uint32_t priority;
+      int available;
+      int direction;
+      int64_t latency_offset;
+      std::vector<QByteArray> profiles;
+
+};
 
 class UkmediaTrayIcon : public QSystemTrayIcon
 {
@@ -110,8 +164,6 @@ public:
     DeviceSwitchWidget(QWidget *parent = nullptr);
     ~DeviceSwitchWidget();
 
-    static gboolean connect_to_pulse(gpointer userdata);
-    static void context_state_callback(pa_context *c, void *userdata);
     void get_window_nameAndid();
     void pulseDisconnectMseeageBox();
     QList<char *> listExistsPath();
@@ -160,11 +212,12 @@ public:
     static void on_context_stream_removed (MateMixerContext *context,const gchar *name,DeviceSwitchWidget *w);
     static void remove_stream (DeviceSwitchWidget *w, const gchar *name);
     static void add_stream (DeviceSwitchWidget *w, MateMixerStream *stream,MateMixerContext *context);
-    static void add_application_control (DeviceSwitchWidget *w, MateMixerStreamControl *control,const gchar *name);
+    static void add_application_control (DeviceSwitchWidget *w, MateMixerStreamControl *control,const gchar *name,MateMixerDirection direction);
     static void on_stream_control_added (MateMixerStream *stream,const gchar *name,DeviceSwitchWidget  *w);
     static void on_stream_control_removed (MateMixerStream *stream,const gchar *name,DeviceSwitchWidget *w);
     static void remove_application_control (DeviceSwitchWidget *w,const gchar *name);
-    static void add_app_to_appwidget(DeviceSwitchWidget *w,const gchar *app_name,QString app_icon_name,MateMixerStreamControl *control);
+    static void add_app_to_appwidget(DeviceSwitchWidget *w,const gchar *app_name,QString app_icon_name,MateMixerStreamControl *control,MateMixerDirection direction);
+
     static void on_context_stored_control_added (MateMixerContext *context,const gchar *name,DeviceSwitchWidget *w);
     static void update_app_volume (MateMixerStreamControl *control, QString *pspec ,DeviceSwitchWidget *w);
 
@@ -201,17 +254,51 @@ public:
     static void on_input_stream_control_added (MateMixerStream *stream,const gchar *name,DeviceSwitchWidget *w);
     static void on_input_stream_control_removed (MateMixerStream *stream,const gchar *name,DeviceSwitchWidget *w);
     static gboolean update_default_input_stream (DeviceSwitchWidget *w);
+
+    int getScreenGeometry(QString methodName);
+    void initSystemVolume();
+    void initHuaweiAudio(DeviceSwitchWidget *w);
+
+    //记录端口改变
+    pa_context* get_context(void);
+    void show_error(const char *txt);
+    static void context_state_callback(pa_context *c, void *userdata);
+    static gboolean connect_to_pulse(gpointer userdata);
+    void setConnectingMessage(const char *string);
+    static void ext_stream_restore_read_cb(pa_context *,const pa_ext_stream_restore_info *i,int eol,void *userdata);
+    static void ext_stream_restore_subscribe_cb(pa_context *c, void *userdata);
+    static void subscribe_cb(pa_context *c, pa_subscription_event_type_t t, uint32_t index, void *userdata);
+    void updateCard(const pa_card_info &info);
+    static void card_cb(pa_context *, const pa_card_info *i, int eol, void *userdata);
+
+    static void updatePorts(DeviceSwitchWidget *w,const pa_card_info &info, std::map<QByteArray, PortInfo> &ports);
+
+    void notifySend(QString arg,QString appName , QString appIconName,QString deviceName);
+
+    //添加拔插headset提示
+    static void check_audio_device_selection_needed (DeviceSwitchWidget *widget,MateMixerStreamControl *control,const pa_card_info *info);
+    static gboolean verify_alsa_card (int cardindex,gboolean *headsetmic,gboolean *headphonemic);
+    static headset_ports *get_headset_ports (MateMixerStreamControl *control,const pa_card_info *c);
+    void free_priv_port_names (MateMixerStreamControl    *control);
+
+    static void sinkCb(pa_context *c, const pa_sink_info *i, int eol, void *userdata);
+    static void sourceCb(pa_context *, const pa_source_info *i, int eol, void *userdata);
+    bool updateSink(const pa_sink_info &info);
+    void updateSource(const pa_source_info &info);
+    QString findPortSink(QString portName);
+    QString findPortSource(QString portName);
+
     friend class UkmediaSystemTrayIcon;
 Q_SIGNALS:
-    void app_volume_changed(bool isMute,int volume,QString app_name,QString appBtnName);
     void mouse_middle_clicked_signal();
     void mouse_wheel_signal(bool step);
     void app_name_signal(QString app_name);
-    void system_muted_signal(bool status);
     void theme_change();
     void font_change();
 //    void appvolume_mute_change_mastervolume_status();
 private Q_SLOTS:
+
+    void priScreenChanged(int x, int y, int width, int height);
     void deviceButtonClickedSlot();
     void appVolumeButtonClickedSlot();
     void activatedSystemTrayIconSlot(QSystemTrayIcon::ActivationReason reason);
@@ -239,8 +326,10 @@ private Q_SLOTS:
     void fontSizeChangedSlot(const QString &themeStr);
     void osdDisplayWidgetHide();
     void volumeSettingChangedSlot();
-private:
+    void handleTimeout();
+    void setHeadsetPort(QString );
 
+private:
 
     QPushButton *deviceBtn;
     QPushButton *appVolumeBtn;
@@ -250,15 +339,20 @@ private:
     ApplicationVolumeWidget *appWidget;
     UkmediaMiniMasterVolumeWidget *miniWidget;
     UkmediaOsdDisplayWidget *osdWidget;
+    UkuiMediaSetHeadsetWidget *headsetWidget;
+
     MateMixerStream *stream;
     MateMixerStream *input;
     MateMixerContext *context;
     MateMixerStreamControl *control;
-    MateMixerStreamControl *currentControl;
+    MateMixerStreamControl *currentControl = nullptr;
+    MateMixerSwitch *privOutputSwitch = nullptr;
     MateMixerStreamControl *m_pOutputBarStreamControl;
     MateMixerStreamControl *m_pInputBarStreamControl;
 
     QLine *dividLine;
+    QStringList *eventList;
+    QStringList *eventIdNameList;
     QStringList *soundlist;
     QStringList *appBtnNameList;
     QStringList *device_name_list;
@@ -268,7 +362,9 @@ private:
     QStringList *stream_control_list;
     QStringList *app_name_list;
     QStringList *m_pOutputPortList;
-    QStringList judgetAppList ;
+    QStringList judgetAppList;
+    QVector<QStringList> appDisplayVector;  //存放app音量滑动条名称和按钮名称
+    QVector<QMap<QString,QStringList>> appControlVector;  //QMap<应用名，(control1, control2)>  例如：<奇安信，(pulse-output-control-1,pulse-output-control-2)>
 
 
     QFrame *dividerFrame;
@@ -279,6 +375,7 @@ private:
     QGSettings *m_pTransparencySetting;
     QGSettings *m_pVolumeSetting;
     QGSettings *m_pFontSetting;
+    QGSettings *m_pInitSystemVolumeSetting;
 
     QAction *m_pMuteAction;
     QAction *m_pSoundPreferenceAction;
@@ -291,6 +388,21 @@ private:
     ca_context *caContext;
     bool setOutputVolume = false;
     bool setInputVolume = false;
+    bool firstLoad = true;
+
+    QDBusInterface  *mDbusXrandInter;
+
+    void plug_IconChange(MateMixerSwitchOption *outputActivePort);
+
+    int tag = 0;
+    const gchar *isInputPortSame ;
+
+    QTimer *m_pTimer;
+    QTimer *m_pTimer2;
+    bool mouseReleaseState = false;
+    bool mousePress = false;
+    CustomSound *customSoundFile;
+    QDBusInterface *m_areaInterface;
 
     QByteArray role;
     QByteArray device;
@@ -300,9 +412,44 @@ private:
     pa_mainloop_api* api;
     pa_ext_stream_restore_info info;
 
-    const gchar *isInputPortSame ;//判断是否是port端口
+    int callBackCount = 0;
+    bool firstEntry = true;
+    bool hasSinks;
+    bool hasSources;
+    bool setBluezProfile = false;   //当输入切换到非蓝牙输入时需要将连接的蓝牙设备的profile设置成a2dp-sink
+    QString bluezDeviceName;
+    QByteArray activeProfile;
+    QByteArray noInOutProfile;
+    QByteArray lastActiveProfile;
+    std::map<QByteArray, PortInfo> ports;
+    std::vector< std::pair<QByteArray,QByteArray> > profiles;
+    QMap<int, QString> cardMap;
+    QMap<int, QString> outputPortNameMap;
+    QMap<int, QString> inputPortNameMap;
+    QMap<int, QString> outputPortLabelMap;
+    QMap<int, QString> currentOutputPortLabelMap;
+    QMap<int, QString> currentInputPortLabelMap;
+    QMap<int, QString> inputPortLabelMap;
+    QMap<QString, QString> profileNameMap;
+    QMap<QString, QString> inputPortProfileNameMap;
+    QMap<int, QList<QString>> cardProfileMap;
+    QMap<int, QMap<QString,int>> cardProfilePriorityMap;
+    QMap<QString,QString> inputCardStreamMap;
+    QMap<QString,QString> outputCardStreamMap;
+    QMap<int,QMap<QString,QString>> sinkPortMap;
+    QMap<int,QMap<QString,QString>> sourcePortMap;
 
-    void plug_IconChange(MateMixerSwitchOption *outputActivePort);
+    int      headset_card;
+    gboolean has_headsetmic;
+    gboolean has_headphonemic;
+    gboolean headset_plugged_in;
+    char    *headphones_name;
+    char    *headsetmic_name;
+    char    *headphonemic_name;
+    char    *internalspk_name;
+    char    *internalmic_name;
+
+    bool    shortcutMute = false;
 
 protected:
     void paintEvent(QPaintEvent *event);
@@ -310,6 +457,5 @@ protected:
 
 //    void mouseReleaseEvent(QMouseEvent *event);
 };
-
 
 #endif // DEICESWITCHWIDGET_H

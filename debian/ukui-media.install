@@ -6,10 +6,10 @@ ukui-volume-control-applet-qt/translations/*.qm usr/share/ukui-media/translation
 ukui-volume-control-applet-qt/data/img/* /usr/share/ukui-media/img
 ukui-volume-control-applet-qt/data/qss/* /usr/share/ukui-media/qss
 ukui-volume-control-applet-qt/data/sounds/ukui-sound.xml /usr/share/ukui-media/sounds
-ukui-volume-control-applet-qt/data/sounds/ubuntu-sound.xml /usr/share/ukui-media/sounds
 ukui-volume-control-applet-qt/data/sounds/index.theme /usr/share/sounds/ukui
 ukui-volume-control-applet-qt/data/sounds/*.ogg /usr/share/ukui-media/sounds
 ukui-volume-control-applet-qt/data/sounds/*.ogg /usr/share/sounds
+ukui-volume-control-applet-qt/data/org.ukui.audio.gschema.xml /usr/share/glib-2.0/schemas
 ukui-volume-control-applet-qt/data/org.ukui.sound.gschema.xml /usr/share/glib-2.0/schemas
 scripts/detection_output_mode.sh /usr/share/ukui-media/scripts
 data/org.ukui.media.sound.gschema.xml /usr/share/glib-2.0/schemas

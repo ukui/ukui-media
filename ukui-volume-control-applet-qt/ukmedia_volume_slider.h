@@ -117,19 +117,40 @@ public:
     UkmediaVolumeSlider(QWidget *parent = nullptr,bool needTip = false);
     void initStyleOption(QStyleOptionSlider *option);
     ~UkmediaVolumeSlider();
+Q_SIGNALS:
+    void silderPressSignal();
+    void silderReleaseSignal();
 private:
     UkuiMediaSliderTipLabel *m_pTiplabel;
     bool state = false;
-Q_SIGNALS:
-    void silderPressedSignal(int);
+    bool mousePress = false;
+
 
 protected:
     void mousePressEvent(QMouseEvent *ev);
+    void mouseReleaseEvent(QMouseEvent *e);
     void mouseMoveEvent(QMouseEvent *e)
     {
+        int value = 0;
+        int currentX = e->pos().x();
+        double per = currentX * 1.0 / this->width();
+        if ((this->maximum() - this->minimum()) >= 50) { //减小鼠标点击像素的影响
+            value = qRound(per*(this->maximum() - this->minimum())) + this->minimum();
+            if (value <= (this->maximum() / 2 - this->maximum() / 10 + this->minimum() / 10)) {
+                value = qRound(per*(this->maximum() - this->minimum() - 1)) + this->minimum();
+            } else if (value > (this->maximum() / 2 + this->maximum() / 10 + this->minimum() / 10)) {
+                value = qRound(per*(this->maximum() - this->minimum() + 1)) + this->minimum();
+            } else {
+                value = qRound(per*(this->maximum() - this->minimum())) + this->minimum();
+            }
+        } else {
+            value = qRound(per*(this->maximum() - this->minimum())) + this->minimum();
+        }
+        this->setValue(value);
+        QSlider::mousePressEvent(e);
 //        setCursor(QCursor(Qt::OpenHandCursor));
 //        m_displayLabel->move((this->width()-m_displayLabel->width())*this->value()/(this->maximum()-this->minimum()),3);
-        QSlider::mouseMoveEvent(e);
+//        QSlider::mouseMoveEvent(e);
     }
     void leaveEvent(QEvent *e);
 
