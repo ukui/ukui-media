@@ -5766,11 +5766,12 @@ bool DeviceSwitchWidget::updateSink(const pa_sink_info &info)
     bool isNew = false;
     QMap<QString,QString>temp;
 
-    for (pa_sink_port_info ** sinkPort = info.ports; *sinkPort != nullptr; ++sinkPort) {
-        temp.insertMulti(info.name,(*sinkPort)->name);
+    if (info.ports) {
+        for (pa_sink_port_info ** sinkPort = info.ports; *sinkPort != nullptr; ++sinkPort) {
+            temp.insertMulti(info.name,(*sinkPort)->name);
+        }
+        sinkPortMap.insert(info.index,temp);
     }
-    sinkPortMap.insert(info.index,temp);
-
     return isNew;
 }
 
