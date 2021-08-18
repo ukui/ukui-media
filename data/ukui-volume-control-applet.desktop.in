@@ -13,6 +13,5 @@ X-UKUI-Bugzilla-Bugzilla=UKUI
 X-UKUI-Bugzilla-Product=ukui-media
 X-UKUI-Bugzilla-Component=ukui-volume-control
 # See http://bugzilla.ukui.org/show_bug.cgi?id=568320
-#X-UKUI-Autostart-Phase=Panel
 X-UKUI-AutoRestart=true
-X-UKUI-Autostart-Phase=Desktop
+X-UKUI-Autostart-Phase=Application
