@@ -42,7 +42,7 @@ PKGCONFIG += \
     alsa
 #    libwnck-1.0
 
-LIBS += -lukui-log4qt
+# LIBS += -lukui-log4qt
 
 HEADERS += \
     customstyle.h \

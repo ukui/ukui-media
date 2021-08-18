@@ -33,7 +33,7 @@
 #include <QLibraryInfo>
 #include <QStandardPaths>
 #include <X11/Xlib.h>
-#include <ukui-log4qt.h>
+//#include <ukui-log4qt.h>
 
 int main(int argc, char *argv[])
 {
