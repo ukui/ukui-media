@@ -23,6 +23,7 @@ Build-Depends: debhelper-compat (= 12),
                libkf5windowsystem-dev,
                libukui-log4qt-dev,
                libasound2-dev,
+               libpulse-dev,		
 Standards-Version: 4.5.0
 Rules-Requires-Root: no
 Homepage: http://www.ukui.org/
