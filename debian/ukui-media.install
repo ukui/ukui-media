@@ -1,5 +1,6 @@
 usr/bin/
 usr/share/applications/
+lib/systemd/system/
 ukui-volume-control-applet-qt/build/ukui-volume-control-applet-qt usr/bin
 ukui-volume-control-applet-qt/ukui-media-control-led/build/ukui-media-control-led usr/bin
 ukui-volume-control-applet-qt/translations/*.qm usr/share/ukui-media/translations/
@@ -13,4 +14,3 @@ ukui-volume-control-applet-qt/data/org.ukui.audio.gschema.xml /usr/share/glib-2.
 ukui-volume-control-applet-qt/data/org.ukui.sound.gschema.xml /usr/share/glib-2.0/schemas
 scripts/detection_output_mode.sh /usr/share/ukui-media/scripts
 data/org.ukui.media.sound.gschema.xml /usr/share/glib-2.0/schemas
-data/ukui-media-control-mute-led.service /lib/systemd/system

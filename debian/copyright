@@ -10,7 +10,6 @@ Comment:
  Using license from COPYING file.
 
 Files: data/images/*
-       scripts/*
 Copyright: 2020, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+
 
@@ -19,32 +18,42 @@ Copyright: 2017, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-2+ or GPL-3+ or LGPL-2+
 
 Files: debian/*
-Copyright: 2014, Mike Gabriel <sunweaver@debian.org>
-           2011-2014, Stefano Karapetsas <stefano@karapetsas.com>
-           2020, handsome_feng <jianfengli@ubuntukylin.com>
+Copyright: 2020, handsome_feng <jianfengli@ubuntukylin.com>
+  2014, Mike Gabriel <sunweaver@debian.org>
+  2011-2014, Stefano Karapetsas <stefano@karapetsas.com>
 License: GPL-2+ or GPL-3+ or LGPL-2+
 
+Files: scripts/*
+Copyright: 2020, Tianjin KYLIN Information Technology Co., Ltd.
+License: GPL-2+
+
 Files: ukui-volume-control-applet-qt/*
-Copyright: 2019, Tianjin KYLIN Information Technology Co., Ltd.
+Copyright: 2019, 2020, Tianjin KYLIN Information Technology Co., Ltd.
 License: GPL-3+
 
 Files: ukui-volume-control-applet-qt/QtSingleApplication/*
 Copyright: 2013, Digia Plc and/or its subsidiary(-ies).
-License: BSD-3-clause
-
-Files: ukui-volume-control-applet-qt/QtSingleApplication/QtLockedFile
-       ukui-volume-control-applet-qt/QtSingleApplication/QtSingleApplication
-Copyright: 2013, Digia Plc and/or its subsidiary(-ies).
 License: BSD-3-Clause
 
+Files: ukui-volume-control-applet-qt/ukmedia_custom_sound.cpp
+  ukui-volume-control-applet-qt/ukmedia_custom_sound.h
+  ukui-volume-control-applet-qt/ukui_media_set_headset_widget.cpp
+  ukui-volume-control-applet-qt/ukui_media_set_headset_widget.h
+Copyright: 2021, KylinSoft Co., Ltd.
+License: GPL-3+
+
 Files: ukui-volume-control-applet-qt/ukmedia_monitor_window_thread.cpp
-       ukui-volume-control-applet-qt/ukmedia_monitor_window_thread.h
+  ukui-volume-control-applet-qt/ukmedia_monitor_window_thread.h
 Copyright: 2020
+License: GPL-3+
+
+Files: ukui-volume-control-applet-qt/ukui-media-control-led/*
+Copyright: 2021, KylinSoft Co., Ltd.
 License: GPL-3+
 
 Files: ukui-volume-control/*
 Copyright: 2014, Michal Ratajsky <michal.ratajsky@gmail.com>
-           2008, 2009, Red Hat, Inc.
+  2008, 2009, Red Hat, Inc.
 License: GPL-2+
 
 Files: ukui-volume-control/Makefile.am
@@ -55,38 +64,38 @@ Comment:
 
 Files: ukui-volume-control/gvc-balance-bar.c
 Copyright: 2014, Michal Ratajsky <michal.ratajsky@gmail.com>
-           2008, William Jon McCann
+  2008, William Jon McCann
 License: GPL-2+
 
 Files: ukui-volume-control/gvc-channel-bar.c
-       ukui-volume-control/gvc-mixer-dialog.c
-       ukui-volume-control/gvc-stream-status-icon.c
+  ukui-volume-control/gvc-mixer-dialog.c
+  ukui-volume-control/gvc-stream-status-icon.c
 Copyright: 2017, Tianjin KYLIN Information Technology Co., Ltd.
-           2014, Michal Ratajsky <michal.ratajsky@gmail.com>
-           2008, William Jon McCann
+  2014, Michal Ratajsky <michal.ratajsky@gmail.com>
+  2008, William Jon McCann
 License: GPL-2+
 
 Files: ukui-volume-control/gvc-channel-bar.h
 Copyright: 2017, Tianjin KYLIN Information Technology Co., Ltd.
-           2014, Michal Ratajsky <michal.ratajsky@gmail.com>
-           2008, Red Hat, Inc.
+  2014, Michal Ratajsky <michal.ratajsky@gmail.com>
+  2008, Red Hat, Inc.
 License: GPL-2+
 
 Files: ukui-volume-control/gvc-combo-box.c
-       ukui-volume-control/gvc-speaker-test.c
+  ukui-volume-control/gvc-speaker-test.c
 Copyright: 2014, Michal Ratajsky <michal.ratajsky@gmail.com>
-           2009, Bastien Nocera
+  2009, Bastien Nocera
 License: GPL-2+
 
 Files: ukui-volume-control/gvc-level-bar.c
-       ukui-volume-control/gvc-level-bar.h
+  ukui-volume-control/gvc-level-bar.h
 Copyright: 2014, Michal Ratajsky <michal.ratajsky@gmail.com>
-           2008, William Jon McCann <william.jon.mccann@gmail.com>
+  2008, William Jon McCann <william.jon.mccann@gmail.com>
 License: GPL-2+
 
 Files: ukui-volume-control/gvc-sound-theme-chooser.c
 Copyright: 2008, William Jon McCann
-           2008, Bastien Nocera <hadess@hadess.net>
+  2008, Bastien Nocera <hadess@hadess.net>
 License: GPL-2+
 
 Files: ukui-volume-control/gvc-sound-theme-chooser.h
@@ -94,12 +103,12 @@ Copyright: 2008, Red Hat, Inc.
 License: GPL-2+
 
 Files: ukui-volume-control/gvc-utils.c
-       ukui-volume-control/gvc-utils.h
+  ukui-volume-control/gvc-utils.h
 Copyright: 2014, Michal Ratajsky <michal.ratajsky@gmail.com>
 License: GPL-2+
 
 Files: ukui-volume-control/sound-theme-file-utils.c
-       ukui-volume-control/sound-theme-file-utils.h
+  ukui-volume-control/sound-theme-file-utils.h
 Copyright: 2008, Bastien Nocera <hadess@hadess.net>
 License: GPL-2+
 

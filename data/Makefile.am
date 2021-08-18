@@ -13,6 +13,9 @@ appsdir = $(datadir)/applications
 apps_in_files = ukui-volume-control.desktop.in
 apps_DATA = $(apps_in_files:.desktop.in=.desktop)
 
+systemddir = /lib/systemd/system
+systemd_DATA = ukui-media-control-mute-led.service
+
 gsettingsschema_in_files = org.ukui.media.gschema.xml.in
 gsettings_SCHEMAS = $(gsettingsschema_in_files:.xml.in=.xml)
 @GSETTINGS_RULES@
