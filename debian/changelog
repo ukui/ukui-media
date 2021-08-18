@@ -2,7 +2,7 @@ ukui-media (3.0.0-50) v101; urgency=medium
 
   BUG ID: 67977
   TASK ID: 无
-  OTHER MODIFY: 无 
+  OTHER MODIFY: 无
 
  -- fengzhaoxiang <fengzhaoxiang@kylinos.cn>  Tue, 20 Jul 2021 11:07:37 +0800
 
@@ -10,7 +10,7 @@ ukui-media (3.0.0-49) v101; urgency=medium
 
   BUG ID: 67708
   TASK ID: 无
-  OTHER MODIFY: 无 
+  OTHER MODIFY: 无
 
  -- fengzhaoxiang <fengzhaoxiang@kylinos.cn>  Mon, 19 Jul 2021 14:26:12 +0800
 
@@ -56,9 +56,9 @@ ukui-media (3.0.0-43) v101; urgency=medium
 
 ukui-media (3.0.0-42) v101; urgency=medium
 
-  BUG ID:49638 
+  BUG ID:49638
   TASK ID:无
-  OTHER MODIFY:无 
+  OTHER MODIFY:无
 
  -- fengzhaoxiang <fengzhaoxiang@kylinos.cn>  Mon, 10 May 2021 12:14:37 +0800
 
@@ -145,7 +145,7 @@ ukui-media (3.0.0-31) v101; urgency=medium
 
 ukui-media (3.0.0-30) v101; urgency=medium
 
-  * 修改托盘右键菜单图标 
+  * 修改托盘右键菜单图标
 
  -- fengzhaoxiang <fengzhaoxiang@kylinos.cn>  Thu, 21 Jan 2021 19:11:07 +0800
 
@@ -157,7 +157,7 @@ ukui-media (3.0.0-29) v101; urgency=medium
 
 ukui-media (3.0.0-28) v101; urgency=medium
 
-  * 解决输出音量静音时键盘按键灯不会静音的问题 
+  * 解决输出音量静音时键盘按键灯不会静音的问题
 
  -- fengzhaoxiang <fengzhaoxiang@kylinos.cn>  Tue, 19 Jan 2021 10:36:34 +0800
 
@@ -179,7 +179,7 @@ ukui-media (3.0.0-26) v101; urgency=medium
 ukui-media (3.0.0-25) v101; urgency=medium
 
   * 更新提示音效
-  * 添加检测机制，当pulseaudio异常退出时结束进程 
+  * 添加检测机制，当pulseaudio异常退出时结束进程
 
  -- fengzhaoxiang <fengzhaoxiang@kylinos.cn>  Fri, 08 Jan 2021 14:21:54 +0800
 
@@ -226,7 +226,7 @@ ukui-media (3.0.0-17) v101; urgency=medium
 
   * Solve the problem that the sound in the lower right corner is in full mode, and the input device is inserted, and no input device is displayed
   * 解决右下角声音在全模式下，插入输入设备，无输入设备显示的问题
-  * http://172.17.66.192/biz/bug-view-23271.html 
+  * http://172.17.66.192/biz/bug-view-23271.html
 
  -- fengzhaoxiang <fengzhaoxiang@kylinos.cn>  Fri, 13 Nov 2020 09:41:42 +0800
 
@@ -259,7 +259,7 @@ ukui-media (3.0.0-13) v101; urgency=medium
 
   * Solve the problem that there are many repeated options in the connector drop-down box in the device-sound
   * 解决设备-声音中的连接器下拉框中存在重复很多选项
-  * Link:http://172.17.66.192/biz/bug-view-23603.html 
+  * Link:http://172.17.66.192/biz/bug-view-23603.html
 
  -- fengzhaoxiang <fengzhaoxiang@kylinos.cn>  Thu, 05 Nov 2020 15:24:19 +0800
 
@@ -278,7 +278,7 @@ ukui-media (3.0.0-11) v101; urgency=medium
 
   * Solve the problem that after the sound is muted in the taskbar, and then unmute by adjusting the volume, the video and music being played have no sound output
   * 解决任务栏将声音静音后，然后通过调节音量大小解除静音，正在播放的视频音乐无声音输出
-  * Link:http://172.17.66.192/biz/bug-view-22307.html 
+  * Link:http://172.17.66.192/biz/bug-view-22307.html
   * Solve the problem that when the system is playing video, drag the application volume bar corresponding to the system volume bar to flicker or to create an extra volume bar and flicker
   * 解决系统播放视频时拖动系统音量条对应的应用音量条频闪或多出一条音量条并且频闪
   * Link:http://172.17.66.192/biz/bug-view-22323.html
@@ -306,7 +306,7 @@ ukui-media (3.0.0-9) v101; urgency=medium
 ukui-media (3.0.0-8) v101; urgency=medium
 
   * Fix:Solve the problem that the right-click taskbar tray icon menu can be opened at the same time
-  * Link:http://172.17.66.192/biz/bug-view-20164.html 
+  * Link:http://172.17.66.192/biz/bug-view-20164.html
 
  -- fengzhaoxiang <fengzhaoxiang@kylinos.cn>  Sun, 27 Sep 2020 15:43:13 +0800
 
@@ -318,7 +318,7 @@ ukui-media (3.0.0-7) v101; urgency=medium
 
 ukui-media (3.0.0-6) v101; urgency=medium
 
-  * Link:https://172.17.66.192/biz/bug-view-18397.html 
+  * Link:https://172.17.66.192/biz/bug-view-18397.html
 
  -- fengzhaoxiang <fengzhaoxiang@kylinos.cn>  Thu, 17 Sep 2020 21:09:44 +0800
 
@@ -336,7 +336,7 @@ ukui-media (3.0.0-4) v101; urgency=medium
 
 ukui-media (3.0.0-3) v101; urgency=medium
 
-  * Add scripts files 
+  * Add scripts files
 
  -- fengzhaoxiang <fengzhaoxiang@kylinos.cn>  Tue, 15 Sep 2020 10:39:14 +0800
 
@@ -361,7 +361,7 @@ ukui-media (2.0.3-1kylin6) v101; urgency=medium
 
 ukui-media (2.0.3-1kylin5) v101; urgency=medium
 
-  * Add libkf5windowsystem-dev compilation dependencies 
+  * Add libkf5windowsystem-dev compilation dependencies
 
  -- fengzhaoxiang <fengzhaoxiang@kylinos.cn>  Sat, 15 Aug 2020 17:49:53 +0800
 
@@ -397,7 +397,7 @@ ukui-media (2.0.3-1kylin3k0) v101; urgency=medium
 
   * Fix bug #3607 that the sound volume icon and other controls in the start menu are not on the same horizontal line
     - By adding NoDisaply = true to the desktop file, set it to hide in the start menu
-    - patch:debian/patches/kylin_fixed_icon_layout_abnormal.patch    
+    - patch:debian/patches/kylin_fixed_icon_layout_abnormal.patch
 
  -- fengzhaoxiang <fengzhaoxiang@kylinos.cn>  Sat, 16 May 2020 17:44:03 +0800
 
