@@ -5550,7 +5550,7 @@ DeviceSwitchWidget::get_headset_ports (MateMixerStreamControl    *control,
     }
 
 #if (PA_PROTOCOL_VERSION >= 35)
-    if (h->headphones && (control->priv->server_protocol_version >= 34)) {
+    if (h->headphones) {
         for (i = 0; i < c->n_ports; i++) {
             pa_card_port_info *p = c->ports[i];
             if (g_strcmp0(h->headphones->availability_group, p->availability_group))
