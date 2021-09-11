@@ -1,3 +1,9 @@
+ukui-media (3.0.3.1-1) unstable; urgency=medium
+
+  * Fix FTBFS (Closes: #992929)
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Sat, 11 Sep 2021 14:46:52 +0800
+
 ukui-media (3.0.3-1) unstable; urgency=medium
 
   * New upstream release.
