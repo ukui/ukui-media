@@ -30,5 +30,10 @@
       <summary>Input feedback sounds</summary>
       <description>Whether to play sounds on input events.</description>
     </key>
+    <key name="dns-noise-reduction" type="b">
+      <default>true</default>
+      <summary>Noise Reduction</summary>
+      <description>Mic noise reduction option</description>
+    </key>
   </schema>
 </schemalist>

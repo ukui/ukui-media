@@ -487,9 +487,12 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
             const gchar *id = text.data();
             const gchar *eventId =id;
             if(desc){
-                retval = ca_context_play (this->caContext, 0,
-                                          CA_PROP_EVENT_ID, eventId,
-                                          CA_PROP_EVENT_DESCRIPTION, desc, NULL);
+                bool status = g_settings_get_boolean(m_pSoundSettings, EVENT_SOUNDS_KEY);
+                if (status)
+                    retval = ca_context_play (this->caContext, 0,
+                                              CA_PROP_EVENT_ID, eventId,
+                                              CA_PROP_EVENT_DESCRIPTION, desc, NULL);
+                qDebug() << "ca_context_play " << id << desc << retval << status;
             }
             m_pTimer->stop();
             mousePress = false;
@@ -585,6 +588,8 @@ DeviceSwitchWidget::DeviceSwitchWidget(QWidget *parent) : QWidget (parent)
     connect(soundSystemTrayIcon,SIGNAL(activated(QSystemTrayIcon::ActivationReason)),\
             this,SLOT(activatedSystemTrayIconSlot(QSystemTrayIcon::ActivationReason)));
     connect(m_pSoundPreferenceAction,SIGNAL(triggered()),this,SLOT(jumpControlPanelSlot()));
+    QDBusConnection::sessionBus().connect( QString(), "/", "org.kylin.music", "sinkInputVolumeChanged", this, SLOT(updateAppVolume(QString,int,bool)));
+    QDBusConnection::sessionBus().connect( QString(), "/", "org.kylin.video", "sinkInputVolumeChanged", this, SLOT(updateAppVolume(QString,int,bool)));
 
     QDBusConnection::sessionBus().connect( QString(), "/", "org.ukui.media", "DbusSignalHeadsetJack", this, SLOT(setHeadsetPort(QString)));
 
@@ -639,65 +644,6 @@ void DeviceSwitchWidget::initSystemVolume()
     }
 }
 
-void DeviceSwitchWidget::initHuaweiAudio(DeviceSwitchWidget *w)
-{
-//    //使用 pactl list sinks 命令判断是耳机还是板载扬声器
-//    //获取当前语言
-//    bool isSpeaker = true;
-//    QString language("信宿 #");
-//    QString actPort("活动端口：");
-//    if(w->m_areaInterface->property("Language").toString() == "en_US"){
-//        language = "Sink #";
-//        actPort = "Active Port:";
-//    }else{
-//        language = "信宿 #";
-//        actPort = "活动端口：";
-//    }
-//    QProcess process;
-//    process.start("pactl list sinks");
-//    process.waitForFinished();
-//    QString sinkMsg = process.readAllStandardOutput();
-//    QStringList sinkMsgList =sinkMsg.split(language);
-//    QString activePort("analog-output-speaker-huawei");
-//    for(int i=0;i<sinkMsgList.size();i++){
-//        QString curSink = sinkMsgList.at(i);
-//        if(curSink.contains("RUNNING") && !curSink.contains("histen_sink")){//处于运行状态但名称不是‘histen_sink’的sink
-//            if(curSink.contains(actPort + "analog-output-headphones-huawei")){
-//                isSpeaker = false;
-//                activePort = "analog-output-headphones-huawei"; //活动端口为耳机
-//                break;
-//            }
-//            else if(curSink.contains(actPort + "analog-output-speaker-huawei")){
-//                isSpeaker = true;
-//                activePort = "analog-output-speaker-huawei";  //活动端口是扬声器
-//                break;
-//            }
-//        }
-//    }
-//    //根据活动端初始化音量
-//    if(isSpeaker){
-//        if(!w->customSoundFile->isExist(activePort)){  //histen端口的话，使用当前活动端口作为初始化依据
-//            if (w->m_pInitSystemVolumeSetting->keys().contains("outputVolume")) {
-//                int outputVolume = w->m_pInitSystemVolumeSetting->get(OUTPUT_VOLUME).toInt();
-//                w->miniWidget->masterVolumeSlider->setValue(outputVolume);
-//                w->customSoundFile->addXmlNode(activePort,false);
-//                qDebug()<<"初始化扬声器";
-//            }
-//        }
-//    }
-//    else{
-//        if(!w->customSoundFile->isExist(activePort)){
-//            if (w->m_pInitSystemVolumeSetting->keys().contains("headphoneOutputVolume"))
-//            {
-//                int outputVolume = w->m_pInitSystemVolumeSetting->get(HEADPHONE_OUTPUT_VOLUME).toInt();
-//                w->miniWidget->masterVolumeSlider->setValue(outputVolume);
-//                w->customSoundFile->addXmlNode(activePort,false);
-//                qDebug()<<"初始化耳机";
-//            }
-//        }
-//    }
-}
-
 /*!
  * \brief
  * \details
@@ -735,7 +681,7 @@ void DeviceSwitchWidget::miniMastrerSliderChangedSlot(int value)
         mate_mixer_stream_control_set_mute(control,FALSE);
     }
     int volume = value*65536/100;
-    qDebug() << "set output volume:" << value << mate_mixer_stream_control_get_name(control);
+    qDebug() << "set output volume:" << value << volume << mate_mixer_stream_control_get_name(control) << miniWidget->masterVolumeSlider->singleStep();;
     bool ret = mate_mixer_stream_control_set_volume(control,guint(volume));
     //异常处理
     if(!ret){
@@ -800,7 +746,17 @@ void DeviceSwitchWidget::outputDeviceSliderChangedSlot(int value)
     }
     int volume = value*65536/100;
     mate_mixer_stream_control_set_volume(control,guint(volume));
+    appWidget->systemVolumeSlider->blockSignals(true);
+    devWidget->outputDeviceSlider->blockSignals(true);
+    miniWidget->masterVolumeSlider->blockSignals(true);
+    miniWidget->displayVolumeLabel->setText(percent+"%");
     miniWidget->masterVolumeSlider->setValue(value);
+    appWidget->systemVolumeSlider->setValue(value);
+    devWidget->outputDeviceSlider->setValue(value);
+    miniWidget->masterVolumeSlider->blockSignals(false);
+    appWidget->systemVolumeSlider->blockSignals(false);
+    devWidget->outputDeviceSlider->blockSignals(false);
+    themeChangeIcons();
 }
 
 /*!
@@ -1654,100 +1610,6 @@ void DeviceSwitchWidget::on_context_state_notify (MateMixerContext *context,GPar
             bool isRun = w->m_pInitSystemVolumeSetting->get(FIRST_RUN).toBool();
         }
     }
-
-//    if (QGSettings::isSchemaInstalled(UKUI_AUDIO_SCHEMA)){
-//        w->m_pInitSystemVolumeSetting = new QGSettings(UKUI_AUDIO_SCHEMA);
-//        if(strstr(deviceStr.toLocal8Bit().data(),"模拟耳机")) {
-//            if (w->m_pInitSystemVolumeSetting->keys().contains("headphoneOutputVolume")) {
-//                int headphoneVolume = w->m_pInitSystemVolumeSetting->get(HEADPHONE_OUTPUT_VOLUME).toInt();
-//                if (strcmp(deviceStr.toLocal8Bit().data(),"模拟耳机") == 0) {
-//                    if(!w->customSoundFile->isExist(deviceStr)){
-//                        //if (w->m_pInitSystemVolumeSetting->get(HEADPHONES_1).toBool())
-//                        {
-
-//                            w->miniWidget->masterVolumeSlider->setValue(headphoneVolume);
-//                            qDebug() << "set headphone volume --------"  << headphoneVolume << w->miniWidget->deviceLabel->text() << deviceStr.toLocal8Bit().data();
-//                        }
-//                        QString str = QString(deviceStr);
-//                        w->customSoundFile->addXmlNode(str,false);  //将未初始化的端口，加入到xml文件中
-//                    }
-//                }
-//                else if (strstr(deviceStr.toLocal8Bit().data(),"HDMI")) {
-//                    if(!w->customSoundFile->isExist(deviceStr)){
-//                        //if (w->m_pInitSystemVolumeSetting->get(HDMI).toBool())
-//                        {
-//                            int hdmiVolume = w->m_pInitSystemVolumeSetting->get(HDMI_VOLUME).toInt();
-//                            w->miniWidget->masterVolumeSlider->setValue(hdmiVolume);
-//                            w->m_pInitSystemVolumeSetting->set(HDMI,false);
-//                            qDebug() << "set hdmi volume --------"  << hdmiVolume << w->miniWidget->deviceLabel->text() << deviceStr.toLocal8Bit().data();
-//                        }
-//                        QString str = QString(deviceStr);
-//                        w->customSoundFile->addXmlNode(str,false);
-//                    }
-//                }
-//                else {
-//                    if(!w->customSoundFile->isExist(deviceStr)){
-//                        //if (w->m_pInitSystemVolumeSetting->get(HEADPHONES_1).toBool() || w->m_pInitSystemVolumeSetting->get(HEADPHONES_2).toBool())
-//                        {
-
-//                            w->miniWidget->masterVolumeSlider->setValue(headphoneVolume);
-//                            qDebug() << "set speaker volume --------"  << headphoneVolume << w->miniWidget->deviceLabel->text() << deviceStr.toLocal8Bit().data();
-//                        }
-//                        QString str = QString(deviceStr);
-//                        w->customSoundFile->addXmlNode(str,false);
-//                    }
-//                }
-//            }
-//        }
-//        else if(strstr(deviceStr.toLocal8Bit().data(),"HUAWEI Histen")){
-//            w->initHuaweiAudio(w);
-//        }
-
-        //qDebug() << "设置麦克风音量值为"   <<w->devWidget->inputDeviceDisplayLabel->text() << inputDeviceStr.toLocal8Bit().data();
-//        if (strstr(inputDeviceStr.toLocal8Bit().data(),"头挂麦克风")) {
-//            if (w->m_pInitSystemVolumeSetting->keys().contains("headsetMic")) {
-//                w->m_pInitSystemVolumeSetting->set(HEADSET_MIC,false);
-//            }
-//        }
-//        else if (strstr(inputDeviceStr.toLocal8Bit().data(),"后麦克风")) {
-//            if (w->m_pInitSystemVolumeSetting->keys().contains("rearMic")) {
-//                w->m_pInitSystemVolumeSetting->set(REAR_MIC,false);
-//            }
-//        }
-//        else if (strstr(inputDeviceStr.toLocal8Bit().data(),"输入插孔")) {
-//            if (w->m_pInitSystemVolumeSetting->keys().contains("linein")) {
-//                w->m_pInitSystemVolumeSetting->set(LINEIN,false);
-//            }
-//        }
-//        if (strstr(inputDeviceStr.toLocal8Bit().data(),"内部话筒")) {
-//            if (w->m_pInitSystemVolumeSetting->keys().contains("intelMic")) {
-//                bool setIntelMic = w->m_pInitSystemVolumeSetting->get(INTEL_MIC).toBool();
-//                if(!w->customSoundFile->isExist(inputDeviceStr)){
-//                //if (setIntelMic)
-//                    {
-//                        int intelMicVolume = w->m_pInitSystemVolumeSetting->get(MIC_VOLUME).toInt();
-//                        w->devWidget->inputDeviceSlider->setValue(intelMicVolume);
-//                        w->m_pInitSystemVolumeSetting->set(INTEL_MIC,false);
-//                    }
-//                    QString str = QString(deviceStr);
-//                    w->customSoundFile->addXmlNode(str,false);
-//                }
-//            }
-//        }
-//            else if (strcmp(deviceStr.toLocal8Bit().data(),"模拟耳机 2") == 0) {
-//                if (w->m_pInitSystemVolumeSetting->keys().contains("headphones2")) {
-//                    bool setHeadphone1 = w->m_pInitSystemVolumeSetting->get(HEADPHONES_2).toBool();
-//                    if (setHeadphone1) {
-//                        int headphoneVolume = w->m_pInitSystemVolumeSetting->get(HEADPHONE_OUTPUT_VOLUME).toInt();
-//                        w->miniWidget->masterVolumeSlider->setValue(headphoneVolume);
-//                        w->m_pInitSystemVolumeSetting->set(HEADPHONES_2,false);
-//                    }
-//                }
-//            }
-
-//        w->m_pInitSystemVolumeSetting->set(PLUGIN_INIT_VOLUME,true);
-//        w->m_pInitSystemVolumeSetting->set(FIRST_RUN,false);
-//    }
 }
 
 
@@ -1936,17 +1798,18 @@ void DeviceSwitchWidget::add_stream (DeviceSwitchWidget *w, MateMixerStream *str
                     appIconName = "kylin-recorder";
                 }
                 else if (!appIconName){
-                    if (strstr(m_pAppName,"MPlayer")) {
+                    if (m_pAppName && strstr(m_pAppName,"MPlayer")) {
                         appIconName = "kylin-video";
                     }
                 }
                 if (appIconName && strstr(appIconName,"kylin-camera")) {
                     m_pAppName = "kylin-camera";
                 }
-                if (strcmp(m_pAppName,"ukui-session") != 0 && strcmp(m_pAppName,"ukui-volume-control-applet-qt") != 0 && strcmp(m_pAppName,"Volume Control") && \
-                        strcmp(m_pAppName,"ALSA plug-in [mate-screenshot]") && strcmp(m_pAppName,"ALSA plug-in [ukui-volume-control-applet-qt]") && \
-                        strcmp(m_pAppName,"Ukui Volume Control App") && !strstr(m_pAppName,"QtPulseAudio") && strcmp(m_pAppName,"ukuimedia-volume-control") != 0 && \
-                        !strstr(m_pAppName,"ukui-settings-daemon") && strcmp(m_pAppName,"multimedia-volume-control") != 0) {
+                if (m_pAppName && strcmp(m_pAppName,"ukui-session") != 0 && strcmp(m_pAppName,"ukui-volume-control-applet-qt") != 0 && strcmp(m_pAppName,"Volume Control") && \
+                    strcmp(m_pAppName,"ALSA plug-in [mate-screenshot]") && strcmp(m_pAppName,"ALSA plug-in [ukui-volume-control-applet-qt]") && !strstr(m_pAppName,"paplay") && \
+                    strcmp(m_pAppName,"Ukui Volume Control App") && !strstr(m_pAppName,"QtPulseAudio") && strcmp(m_pAppName,"ukuimedia-volume-control") != 0 && \
+                    !strstr(m_pAppName,"ukui-settings-daemon") && strcmp(m_pAppName,"multimedia-volume-control") != 0  && !strstr(m_pAppName,"ukui-notification") && \
+                    !strstr(m_pAppName,"kylin-kmre-audio")) {
                     if G_UNLIKELY (w->control == nullptr)
                             return;
                     add_application_control (w, w->control,m_pStreamControlName,direction);
@@ -2005,9 +1868,9 @@ void DeviceSwitchWidget::add_application_control (DeviceSwitchWidget *w, MateMix
 
     /* These applications may have associated streams because they do peak
      * level monitoring, skip these too */
-    if (!g_strcmp0 (appId, "org.mate.VolumeControl") ||
+    if (appId && (!g_strcmp0 (appId, "org.mate.VolumeControl") ||
             !g_strcmp0 (appId, "org.gnome.VolumeControl") ||
-            !g_strcmp0 (appId, "org.PulseAudio.pavucontrol"))
+            !g_strcmp0 (appId, "org.PulseAudio.pavucontrol")))
         return;
 
     const gchar *appIconName = mate_mixer_app_info_get_icon(info);
@@ -2029,7 +1892,7 @@ void DeviceSwitchWidget::add_application_control (DeviceSwitchWidget *w, MateMix
         }
     }
     else {
-        if (strstr(appName,"MPlayer")||strstr(appName,"mpv")) {
+        if (appName && (strstr(appName,"MPlayer")||strstr(appName,"mpv"))) {
             appIconName = "kylin-video";
         }
     }
@@ -2050,7 +1913,7 @@ void DeviceSwitchWidget::add_application_control (DeviceSwitchWidget *w, MateMix
         QMap<QString,QStringList> map;
         QStringList strList;
         strList.append(name);
-        map.insert(QString(appName),strList);
+        map.insert(QString(appIconName),strList);
         w->appControlVector.append(map);
         //添加应用添加到应用音量中
         add_app_to_appwidget(w,appName,appIconName,control,direction);
@@ -2102,9 +1965,10 @@ void DeviceSwitchWidget::on_stream_control_added (MateMixerStream *stream,const 
             m_pAppName = "kylin-camera";
         }
         if (strcmp(m_pAppName,"ukui-session") != 0 && strcmp(m_pAppName,"ukui-volume-control-applet-qt") != 0 && strcmp(m_pAppName,"Volume Control") && \
-                strcmp(m_pAppName,"ALSA plug-in [mate-screenshot]") && strcmp(m_pAppName,"ALSA plug-in [ukui-volume-control-applet-qt]") && \
-                strcmp(m_pAppName,"Ukui Volume Control App") && !strstr(m_pAppName,"QtPulseAudio") && strcmp(m_pAppName,"ukuimedia-volume-control") != 0 && \
-                !strstr(m_pAppName,"ukui-settings-daemon") && strcmp(m_pAppName,"multimedia-volume-control") != 0) {
+            strcmp(m_pAppName,"ALSA plug-in [mate-screenshot]") && strcmp(m_pAppName,"ALSA plug-in [ukui-volume-control-applet-qt]") && !strstr(m_pAppName,"paplay") && \
+            strcmp(m_pAppName,"Ukui Volume Control App") && !strstr(m_pAppName,"QtPulseAudio") && strcmp(m_pAppName,"ukuimedia-volume-control") != 0 && \
+            !strstr(m_pAppName,"ukui-settings-daemon") && strcmp(m_pAppName,"multimedia-volume-control") != 0 && !strstr(m_pAppName,"ukui-notification") && \
+            !strstr(m_pAppName,"kylin-kmre-audio")) {
             if G_UNLIKELY (w->control == nullptr)
                     return;
 
@@ -2144,10 +2008,7 @@ void DeviceSwitchWidget::on_stream_control_removed (MateMixerStream *stream,cons
                     --j;
                 }
                 else{
-                    std::string str =strName.toStdString();
-                    const gchar *name = str.c_str();
-                    MateMixerStreamControl *control = mate_mixer_stream_get_control (stream, name);
-                    if(!MATE_MIXER_IS_STREAM_CONTROL(control)){
+                    if(strName == name){
                         strList.removeAt(j);
                         --j;
                     }
@@ -2326,7 +2187,7 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
      * 正确的icon名来保证找到正确的desktop,从而设置
      * 应用音量正确的应用名和图标
      */
-    if (strcmp(app_name,"KylinVideo") == 0) {
+    if (app_name && strcmp(app_name,"KylinVideo") == 0) {
         app_icon_name = "kylin-video";
     }
     /*!
@@ -2369,7 +2230,7 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
     QString pAppIcon = w->getAppIcon(iconName);
 
     w->appWidget->app_volume_list->append(app_icon_name);
-    qDebug() << "add application to widget" << app_icon_name <<direction;
+    qDebug() << "add application to widget" << app_name << app_icon_name <<direction;
 
     //widget显示应用音量
     QWidget *app_widget = new QWidget(w->appWidget->displayAppVolumeWidget);
@@ -2439,15 +2300,15 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
     app_widget->layout()->setContentsMargins(0,0,0,0);
 
 
-    QString appSliderStr = app_name;
-    QString appMuteBtnlStr = app_name;
-    QString appVolumeLabelStr = app_name;
+    QString appSliderStr = app_icon_name;
+    QString appMuteBtnlStr = app_icon_name;
+    QString appVolumeLabelStr = app_icon_name;
 
-    appSliderStr.append("Slider");
-    appMuteBtnlStr.append("button");
+//    appSliderStr.append("Slider");
+//    appMuteBtnlStr.append("button");
     appVolumeLabelStr.append("VolumeLabel");
-    appSliderStr.append(QString::number(app_count));
-    appMuteBtnlStr.append(QString::number(app_count));
+//    appSliderStr.append(QString::number(app_count));
+//    appMuteBtnlStr.append(QString::number(app_count));
     appVolumeLabelStr.append(QString::number(app_count));
 
     QStringList strList;
@@ -2460,7 +2321,9 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
     QSlider *slider = w->appWidget->findChild<QSlider*>(appSliderStr);
     if (slider == nullptr)
         return;
+    slider->blockSignals(true);
     slider->setValue(display_volume);
+    slider->blockSignals(false);
 
     QPushButton *btn = w->appWidget->findChild<QPushButton *>(appMuteBtnlStr);
     if (btn == nullptr)
@@ -2505,7 +2368,7 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
     if (direction == MATE_MIXER_DIRECTION_INPUT) {
         MateMixerStream *inputStream = mate_mixer_context_get_default_input_stream(w->context);
         if (MATE_MIXER_IS_STREAM(inputStream)) {
-            w->notifySend(w->devWidget->inputDeviceDisplayLabel->text(),pAppName,pAppIcon,tr("is using"));
+            //w->notifySend(w->devWidget->inputDeviceDisplayLabel->text(),pAppName,pAppIcon,tr("is using"));
         }
     }
     //主题更改
@@ -2535,10 +2398,23 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
     /*滑动条控制应用音量*/
     connect(w->appWidget->appSlider,&QSlider::valueChanged,[=](int value){
         QString appName = appSliderStr.split("Slider").at(0);
+        application_name = appSliderStr;
+        QSlider *slider = w->findChild<QSlider*>(appSliderStr);
+        if (slider == nullptr)
+            return;
+        QPushButton *btn = w->findChild<QPushButton*>(appMuteBtnlStr);
+        if (btn == nullptr)
+            return;
+        qDebug() << "appslider value changed -------------" << value << application_name << appSliderStr;
+        QString audioIconStr;
         int index = -1;
         bool isMute = false;
+        QDBusMessage message =QDBusMessage::createSignal("/", "org.ukui.media", "sinkVolumeChanged");
+        message<<app_icon_name<<value<<false;
+        QDBusConnection::sessionBus().send(message);
         for (int i=0;i<w->appControlVector.size();i++){
             if(w->appControlVector.at(i).begin().key() == appName){
+                qDebug() <<"set application volume " <<appName;
                QStringList strList = w->appControlVector.at(i).begin().value();
                //qDebug()<<"strList :"<<strList;
                 for (int j=0; j<strList.size(); j++) {
@@ -2547,7 +2423,7 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
                     std::string strr = str.toStdString();
                     const char *ctrlName = strr.c_str();
                     MateMixerStreamControl *control = mate_mixer_stream_get_control(stream,ctrlName);
-                    //qDebug()<<"control name:"<<QString(mate_mixer_stream_control_get_name(control));
+                    qDebug()<<"control name:"<<QString(mate_mixer_stream_control_get_name(control));
                     if(value>0){
                         if(mate_mixer_stream_control_get_mute(control) == true){
                             isMute = false;
@@ -2567,14 +2443,6 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
             }
         }
 
-        application_name = appSliderStr;
-        QSlider *slider = w->findChild<QSlider*>(appSliderStr);
-        if (slider == nullptr)
-            return;
-        QPushButton *btn = w->findChild<QPushButton*>(appMuteBtnlStr);
-        if (btn == nullptr)
-            return;
-        QString audioIconStr;
         if (value > 0) {
             //mate_mixer_stream_control_set_mute(control,false);
         }
@@ -2646,7 +2514,15 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
                     std::string strr = str.toStdString();
                     const char *ctrlName = strr.c_str();
                     MateMixerStreamControl *control = mate_mixer_stream_get_control(stream,ctrlName);
-                    mate_mixer_stream_control_set_mute(control,isMute);
+                    if (w->isAppMuteBtnPress) {
+                        if (w->sinkInputMute == isMute)
+                            mate_mixer_stream_control_set_mute(control,isMute);
+                    }
+                    else {
+
+                        mate_mixer_stream_control_set_mute(control,isMute);
+                    }
+                    qDebug() << "set muted status :" << ctrlName << isMute;
                 }
 
                 index = i;
@@ -2654,8 +2530,17 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
             }
         }
 
-        volume = int(volume*100/65536 + 0.5);
+        volume = int(volume*100/65536.0 + 0.5);
+        if (w->isAppMuteBtnPress) {
+            w->isAppMuteBtnPress = false;
+            isMute = w->sinkInputMute;
+        }
+
+        QDBusMessage message =QDBusMessage::createSignal("/", "org.ukui.media", "sinkVolumeChanged");
+        message<<app_icon_name<<volume<<isMute;
+        QDBusConnection::sessionBus().send(message);
         QPushButton *btn = w->appWidget->findChild<QPushButton *>(appMuteBtnlStr);
+        qDebug() <<"appIconName:" << app_icon_name <<volume <<isMute;
         if (btn == nullptr)
             return;
         QString muteButtonStr;
@@ -2702,12 +2587,55 @@ void DeviceSwitchWidget::add_app_to_appwidget(DeviceSwitchWidget *w,const gchar 
     w->appWidget->m_pVlayout->addWidget(app_widget);
     //设置布局的垂直间距以及设置vlayout四周的间距
     w->appWidget->m_pVlayout->setSpacing(18);
-    w->appWidget->displayAppVolumeWidget->resize(358,14+appnum*68);
-    w->appWidget->m_pVlayout->setContentsMargins(18,0,34,0);
+    w->appWidget->displayAppVolumeWidget->resize(358,14+appnum*86);
+    w->appWidget->m_pVlayout->setContentsMargins(18,0,34,18);
     w->appWidget->m_pVlayout->update();
 
     w->appWidget->appMuteBtn->setStyleSheet("QPushButton{background:transparent;border:0px;"
                                             "padding-left:0px;}");
+}
+
+void DeviceSwitchWidget::updateAppVolume(QString str, int value, bool state)
+{
+    qDebug() << "update app volume" << isFirstRecive;
+    if (isFirstRecive && updateAppVolumeCount == 1) {
+        isFirstRecive = false;
+        return;
+    }
+    else {
+        ++updateAppVolumeCount;
+    }
+    bool found = true;
+    if (str == "kylin-video")
+        str.append("-990");
+//    if (state) {
+//        state = !state;
+        QPushButton *btn = appWidget->findChild<QPushButton*>(str);
+        if (btn == nullptr) {
+            found = false;
+        }
+        else {
+            qDebug() << "founded ------------" << str;
+            isAppMuteBtnPress = true;
+            sinkInputMute = state;
+            btn->setChecked(true);
+            btn->click();
+        }
+//    }
+    QSlider *slider = appWidget->findChild<QSlider*>(str);
+    if (slider == nullptr) {
+        found = false;
+    }
+    if (found) {
+        slider->setValue(value);
+    }
+    else
+        value = -1;
+
+    QDBusMessage message =QDBusMessage::createSignal("/", "org.ukui.media", "sinkVolumeChanged");
+    message<<str<<value<<state;
+    QDBusConnection::sessionBus().send(message);
+    qDebug() << "sinkInputVlumeChanged" << str << value << state << found;
 }
 
 /*!
@@ -2746,7 +2674,9 @@ void DeviceSwitchWidget::update_app_volume(MateMixerStreamControl *control, QStr
     QSlider *slider = w->findChild<QSlider*>(slider_str);
     if (slider == nullptr)
         return;
+    slider->blockSignals(true);
     slider->setValue(volume);
+    slider->blockSignals(false);
     QPushButton *btn = w->findChild<QPushButton *>(appBtnName);
     if (btn == nullptr)
         return;
@@ -2942,7 +2872,7 @@ void DeviceSwitchWidget::add_device (DeviceSwitchWidget *w, MateMixerDevice *dev
         profileName = mate_mixer_switch_option_get_name(activeProfile);
     }
 
-    if (strstr(pName,"bluez_card") && strcmp(profileName,"a2dp_sink") != 0) {
+    if (strstr(pName,"bluez_card") && strcmp(profileName,"off") != 0) {
         QString deviceName = pName;
         QString cmd = "pactl set-card-profile " + deviceName + " a2dp_sink";
         qDebug() << "set card profile" << cmd;
@@ -3090,19 +3020,6 @@ void DeviceSwitchWidget::updateOutputDeviceLabel()
                         }
                     }
                 }
-//                else if(outputPortName == "histen-algo"){
-//                    initHuaweiAudio(this);
-//                }
-//                else {
-//                    if (m_pInitSystemVolumeSetting->keys().contains("outputVolume")) {
-//                        if(!customSoundFile->isExist(outputPortName)){
-//                            int outputVolume = m_pInitSystemVolumeSetting->get(OUTPUT_VOLUME).toInt();
-//                            miniWidget->masterVolumeSlider->setValue(outputVolume);
-//                            m_pInitSystemVolumeSetting->set(SPEAKER,false);
-//                            customSoundFile->addXmlNode(outputPortName,false);
-//                        }
-//                    }
-//                }
             }
 
             //            osdWidgetShow(outputPortName);
@@ -3234,78 +3151,7 @@ void DeviceSwitchWidget::onOutputSwitchActiveOptionNotify (MateMixerSwitch *swtc
             w->miniWidget->deviceLabel->setText(tr("Bluetooth"));
             w->devWidget->outputDeviceDisplayLabel->setText(tr("Bluetooth"));
         }
-        /*else {
-            QString str =(QString)outputPortLabel;
-            if(str.contains("耳机"))
-            {
-                //w->devWidget->outputDeviceBtn->setIcon(QIcon::fromTheme("audio-headphones",QIcon("/usr/share/ukui-media/img/audio-headphones.svg")));
-                //w->miniWidget->deviceBtn->setIcon(QIcon::fromTheme("audio-headphones",QIcon("/usr/share/ukui-media/img/audio-headphones.svg")));
-            }
-            else
-            {
-                //w->devWidget->outputDeviceBtn->setIcon(QIcon::fromTheme("audio-card",QIcon("/usr/share/ukui-media/img/audiocard.svg")));
-                //w->miniWidget->deviceBtn->setIcon(QIcon::fromTheme("audio-card",QIcon("/usr/share/ukui-media/img/audiocard.svg")));
-            }
-            //w->miniWidget->deviceLabel->setText(outputPortLabel);
-            //w->devWidget->outputDeviceDisplayLabel->setText(outputPortLabel);
-        }*/
     }
-
-//    if (QGSettings::isSchemaInstalled(UKUI_AUDIO_SCHEMA)){
-//        if (w->m_pInitSystemVolumeSetting->keys().contains("pluginInitVolume")) {
-//            //bool needInit = w->m_pInitSystemVolumeSetting->get(PLUGIN_INIT_VOLUME).toBool();
-//            //if (needInit) {
-//            if(outputPortName.contains("headphones-huawei")) {
-//                if (outputPortName == "analog-output-headphones-huawei") {
-//                    if (w->m_pInitSystemVolumeSetting->keys().contains("headphones1")) {
-//                    //bool setHeadphoneVoulme = w->m_pInitSystemVolumeSetting->get(HEADPHONES_1).toBool();
-
-//                        if (w->m_pInitSystemVolumeSetting->keys().contains("headphoneOutputVolume")) {
-//                            if(!w->customSoundFile->isExist(outputPortName)){
-//                                int headphoneVolume = w->m_pInitSystemVolumeSetting->get(HEADPHONE_OUTPUT_VOLUME).toInt();
-//                                w->miniWidget->masterVolumeSlider->setValue(headphoneVolume);
-//                                w->m_pInitSystemVolumeSetting->set(HEADPHONES_1,false);
-//                                QString str = QString(outputPortName);
-//                                w->customSoundFile->addXmlNode(str,false);
-//                            }
-
-//                        }
-
-//                    }
-//                }
-//            }
-//                else if (outputPortName.contains("hdmi-output")) {
-//                    if (w->m_pInitSystemVolumeSetting->keys().contains("hdmi")) {
-//                        //bool setHdmiVolume = w->m_pInitSystemVolumeSetting->get(HDMI).toBool();
-
-//                        if (w->m_pInitSystemVolumeSetting->keys().contains("hdmiVolume")) {
-//                            if(!w->customSoundFile->isExist(outputPortName)){
-//                                int hdmiVolume = w->m_pInitSystemVolumeSetting->get(HDMI_VOLUME).toInt();
-//                                w->miniWidget->masterVolumeSlider->setValue(hdmiVolume);
-//                                w->m_pInitSystemVolumeSetting->set(HDMI,false);
-//                                w->customSoundFile->addXmlNode(outputPortName,false);
-//                            }
-//                        }
-
-//                    }
-//                }
-//                else if(outputPortName == "histen-algo"){
-//                    w->initHuaweiAudio(w);
-//                }
-//                else {
-//                    if (w->m_pInitSystemVolumeSetting->keys().contains("outputVolume")) {
-//                        if(!w->customSoundFile->isExist(outputPortName)){
-//                            int outputVolume = w->m_pInitSystemVolumeSetting->get(OUTPUT_VOLUME).toInt();
-//                            w->miniWidget->masterVolumeSlider->setValue(outputVolume);
-//                            w->m_pInitSystemVolumeSetting->set(SPEAKER,false);
-//                            w->customSoundFile->addXmlNode(outputPortName,false);
-//                        }
-//                    }
-//                }
-//            }
-//        }
-
-    //w->osdWidgetShow(outputPortName.toStdString().c_str());
 }
 
 void DeviceSwitchWidget::osdWidgetShow(const gchar *portName)
@@ -3357,77 +3203,6 @@ void DeviceSwitchWidget::onInputSwitchActiveOptionNotify (MateMixerSwitch *swtch
 
     }
     w->isInputPortSame = inputPortLabel;
-//    if (QGSettings::isSchemaInstalled(UKUI_AUDIO_SCHEMA)){
-//        if (strcmp(inputPortName,"analog-input-headset-mic-huawei") == 0) {
-//            if (w->m_pInitSystemVolumeSetting->keys().contains("micVolume")) {
-//                //bool setHeadset = w->m_pInitSystemVolumeSetting->get(HEADSET_MIC).toBool();
-//                //if (setHeadset)
-//                if(!w->customSoundFile->isExist(inputPortName)) {
-//                    int headsetVolume = w->m_pInitSystemVolumeSetting->get(MIC_VOLUME).toInt();
-//                    w->devWidget->inputDeviceSlider->setValue(headsetVolume);
-//                    //w->m_pInitSystemVolumeSetting->set(HEADSET_MIC,false);
-//                    QString str = QString(inputPortName);
-//                    w->customSoundFile->addXmlNode(str,false);
-//                }
-//            }
-//            w->initHuaweiAudio(w); //HW定制音量初始化
-//        }
-//        else if (strcmp(inputPortName,"analog-input-rear-mic-huawei") == 0) {
-//            if (w->m_pInitSystemVolumeSetting->keys().contains("micVolume")) {
-//                //bool setRearMic = w->m_pInitSystemVolumeSetting->get(REAR_MIC).toBool();
-//                //if (setRearMic)
-//                if(!w->customSoundFile->isExist(inputPortName)) {
-//                    int rearMicVolume = w->m_pInitSystemVolumeSetting->get(MIC_VOLUME).toInt();
-//                    w->devWidget->inputDeviceSlider->setValue(rearMicVolume);
-//                    //w->m_pInitSystemVolumeSetting->set(REAR_MIC,false);
-//                    QString str = QString(inputPortName);
-//                    w->customSoundFile->addXmlNode(str,false);
-//                }
-//            }
-//            w->initHuaweiAudio(w); //HW定制音量初始化
-//        }
-//        else if (strcmp(inputPortName,"analog-input-linein-huawei") == 0) {
-//            if (w->m_pInitSystemVolumeSetting->keys().contains("micVolume")) {
-//                //bool setLinein = w->m_pInitSystemVolumeSetting->get(LINEIN).toBool();
-//                //if (setLinein)
-//                if(!w->customSoundFile->isExist(inputPortName)){
-//                    int lineinVolume = w->m_pInitSystemVolumeSetting->get(MIC_VOLUME).toInt();
-//                    w->devWidget->inputDeviceSlider->setValue(lineinVolume);
-//                    //w->m_pInitSystemVolumeSetting->set(LINEIN,false);
-//                    QString str = QString(inputPortName);
-//                    w->customSoundFile->addXmlNode(str,false);
-//                }
-//            }
-//            w->initHuaweiAudio(w); //HW定制音量初始化
-//        }
-//        else if (strcmp(inputPortName,"analog-input-internal-mic-huawei") == 0) {
-
-//            if (w->m_pInitSystemVolumeSetting->keys().contains("micVolume")) {
-//                //bool setIntelMic = w->m_pInitSystemVolumeSetting->get(INTEL_MIC).toBool();
-//                //if (setIntelMic)
-//                if(!w->customSoundFile->isExist(inputPortName)){
-//                    int intelMicVolume = w->m_pInitSystemVolumeSetting->get(MIC_VOLUME).toInt();
-//                    w->devWidget->inputDeviceSlider->setValue(intelMicVolume);
-//                    //w->m_pInitSystemVolumeSetting->set(INTEL_MIC,false);
-//                    QString str = QString(inputPortName);
-//                    w->customSoundFile->addXmlNode(str,false);
-//                }
-//            }
-//            w->initHuaweiAudio(w); //HW定制音量初始化
-//        }
-//        else{
-//            if (w->m_pInitSystemVolumeSetting->keys().contains("micVolume")) {
-//                if(!w->customSoundFile->isExist(inputPortName)){
-//                    int intelMicVolume = w->m_pInitSystemVolumeSetting->get(MIC_VOLUME).toInt();
-//                    w->devWidget->inputDeviceSlider->setValue(intelMicVolume);
-//                    //w->m_pInitSystemVolumeSetting->set(INTEL_MIC,false);
-//                    QString str = QString(inputPortName);
-//                    w->customSoundFile->addXmlNode(str,false);
-//                }
-//            }
-//            w->initHuaweiAudio(w); //HW定制音量初始化
-//        }
-//    }
 
     if (MATE_MIXER_IS_SWITCH_OPTION (action)) {
 //        w->devWidget->inputDeviceDisplayLabel->setText(inputPortLabel);
@@ -3838,6 +3613,7 @@ void DeviceSwitchWidget::volumeSettingChangedSlot()
 
     if (m_pVolumeSetting->keys().contains("volumesize")) {
         int valueSetting = m_pVolumeSetting->get(UKUI_VOLUME_KEY).toInt();
+        qDebug() << "volumeSettingChangedSlot----" << valueSetting;
         miniWidget->masterVolumeSlider->setValue(valueSetting);
     }
 
@@ -4020,11 +3796,6 @@ void DeviceSwitchWidget::on_stream_control_volume_notify (MateMixerStreamControl
         system(cmd.toLocal8Bit().data());
     }
     MateMixerDirection direction = mate_mixer_stream_get_direction(stream);
-//    qDebug()<<"control name:"<<mate_mixer_stream_control_get_name(control);
-//    qDebug()<<"stream  name:"<<mate_mixer_stream_get_name(stream);
-//    if (outputStream != stream && inputStream != stream) {
-//        return;
-//    }
 
     if (w->setOutputVolume == true && direction == MATE_MIXER_DIRECTION_OUTPUT) {
         w->setOutputVolume = false;
@@ -4168,9 +3939,12 @@ void DeviceSwitchWidget::handleTimeout()
             const gchar *id = text.data();
             const gchar *eventId =id;
             if(desc){
-                retval = ca_context_play (this->caContext, 0,
-                                          CA_PROP_EVENT_ID, eventId,
-                                          CA_PROP_EVENT_DESCRIPTION, desc, NULL);
+                bool status = g_settings_get_boolean(m_pSoundSettings, EVENT_SOUNDS_KEY);
+                if (status)
+                    retval = ca_context_play (this->caContext, 0,
+                                              CA_PROP_EVENT_ID, eventId,
+                                              CA_PROP_EVENT_DESCRIPTION, desc, NULL);
+                qDebug() << "ca_context_play" << id << desc << retval << status;
             }
             m_pTimer->stop();
             mousePress = false;
@@ -4206,9 +3980,16 @@ void DeviceSwitchWidget::handleTimeout()
         const gchar *id = text.data();
         const gchar *eventId =id;
         if(desc){
-            retval = ca_context_play (this->caContext, 0,
-                                      CA_PROP_EVENT_ID, eventId,
-                                      CA_PROP_EVENT_DESCRIPTION, desc, NULL);
+            bool status = g_settings_get_boolean(m_pSoundSettings, EVENT_SOUNDS_KEY);
+            if (status && isPlay) {
+                retval = ca_context_play (this->caContext, 0,
+                                          CA_PROP_EVENT_ID, eventId,
+                                          CA_PROP_EVENT_DESCRIPTION, desc, NULL);
+                qDebug() << "ca_contet_play" << id  << desc << retval << status ;
+            }
+            else {
+                isPlay = true;
+            }
         }
         m_pTimer->stop();
     }
@@ -5094,15 +4875,7 @@ void DeviceSwitchWidget::card_cb(pa_context *, const pa_card_info *i, int eol, v
 //        dec_outstanding(w);
         return;
     }
-//    bool alreadyInclude = false;
-//    QMap <int,QString>::iterator it;
-//    for(it=w->cardMap.begin();it!=w->cardMap.end();) {
-//        if (it.key() == i->index) {
-//            alreadyInclude = true;
-//            break;
-//        }
-//    }
-//    if (alreadyInclude)
+
     w->cardMap.insert(i->index,i->name);
     //qDebug() << "update card" << i->name <<"--" << i->active_profile->name << i->index << i->ports << "card count: "<< w->cardMap.count()<<i->active_profile;
     w->updateCard(*i);
@@ -5129,7 +4902,6 @@ void DeviceSwitchWidget::updateCard(const pa_card_info &info) {
         this->hasSinks = this->hasSinks || ((*p_profile)->n_sinks > 0);
         this->hasSources = this->hasSources || ((*p_profile)->n_sources > 0);
         profile_priorities.insert(*p_profile);
-
         profileName.append((*p_profile)->name);
         profilePriorityMap.insertMulti((*p_profile)->name,(*p_profile)->priority);
     }
@@ -5638,9 +5410,9 @@ DeviceSwitchWidget::check_audio_device_selection_needed (DeviceSwitchWidget *wid
     stop_dialog = FALSE;
     h = get_headset_ports (control, info);
 
-    if (!h->headphones ||
-            (!h->headsetmic && !h->headphonemic)) {
-        qDebug() << "no headset jack" ;
+    if (!h->headphones || (!h->headsetmic && !h->headphonemic)) {
+        widget->isPlay = false;
+        qDebug() << "no headset jack";
         /* Not a headset jack */
         goto out;
     }
@@ -5765,13 +5537,13 @@ bool DeviceSwitchWidget::updateSink(const pa_sink_info &info)
 {
     bool isNew = false;
     QMap<QString,QString>temp;
+
     if (info.ports) {
         for (pa_sink_port_info ** sinkPort = info.ports; *sinkPort != nullptr; ++sinkPort) {
             temp.insertMulti(info.name,(*sinkPort)->name);
         }
         sinkPortMap.insert(info.index,temp);
     }
-
     return isNew;
 }
 

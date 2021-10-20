@@ -78,7 +78,6 @@ extern "C" {
 #define UKUI_VOLUME_STATE "soundstate"
 
 #define UKUI_PANEL_SETTING "org.ukui.panel.settings"
-#define dsdasdasdasda
 #define VERSION "1.12.1"
 #define GVC_APPLET_DBUS_NAME    "org.mate.VolumeControlApplet"
 #define KEY_SOUNDS_SCHEMA   "org.ukui.sound"
@@ -257,7 +256,6 @@ public:
 
     int getScreenGeometry(QString methodName);
     void initSystemVolume();
-    void initHuaweiAudio(DeviceSwitchWidget *w);
 
     //记录端口改变
     pa_context* get_context(void);
@@ -327,7 +325,8 @@ private Q_SLOTS:
     void osdDisplayWidgetHide();
     void volumeSettingChangedSlot();
     void handleTimeout();
-    void setHeadsetPort(QString );
+    void setHeadsetPort(QString);
+    void updateAppVolume(QString str,int value, bool state);
 
 private:
 
@@ -366,7 +365,6 @@ private:
     QVector<QStringList> appDisplayVector;  //存放app音量滑动条名称和按钮名称
     QVector<QMap<QString,QStringList>> appControlVector;  //QMap<应用名，(control1, control2)>  例如：<奇安信，(pulse-output-control-1,pulse-output-control-2)>
 
-
     QFrame *dividerFrame;
     MyTimer *timer;
     QMenu *menu;
@@ -389,6 +387,11 @@ private:
     bool setOutputVolume = false;
     bool setInputVolume = false;
     bool firstLoad = true;
+    bool isPlay = true;
+    bool sinkInputMute = false;
+    bool isFirstRecive = true;
+    bool isAppMuteBtnPress = false;
+    int updateAppVolumeCount = 0;
 
     QDBusInterface  *mDbusXrandInter;
 

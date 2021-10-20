@@ -33,11 +33,11 @@
 #include <QLibraryInfo>
 #include <QStandardPaths>
 #include <X11/Xlib.h>
-//#include <ukui-log4qt.h>
+#include <ukui-log4qt.h>
 
 int main(int argc, char *argv[])
 {
-//    initUkuiLog4qt("ukui-media");
+    initUkuiLog4qt("ukui-media");
     Display *display = XOpenDisplay(NULL);
     Screen *scrn = DefaultScreenOfDisplay(display);
     if(scrn == nullptr) {

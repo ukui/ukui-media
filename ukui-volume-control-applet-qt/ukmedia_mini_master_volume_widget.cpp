@@ -76,6 +76,7 @@ UkmediaMiniMasterVolumeWidget::UkmediaMiniMasterVolumeWidget(QWidget *parent) : 
     QSize iconSize(32,32);
     muteBtn->setFixedSize(32,32);
     masterVolumeSlider->setFixedSize(200,22);
+
     muteBtn->setIconSize(iconSize);
     switchBtn->setIconSize(switchSize);
     deviceBtn->setIconSize(deviceSize);
