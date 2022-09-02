@@ -13,9 +13,6 @@ include /usr/share/dpkg/buildflags.mk
 #	make install INSTALL_ROOT=$(QT_INSTALL_DIR) -C ukui-volume-control/ukui-volume-control-applet-qt/build/
 #	dh_install
 
-override_dh_missing:
-	dh_missing --fail-missing
-
 override_dh_auto_configure:
 	# upstream tarball is without configure. autogen.sh will create it
 	NOCONFIGURE=1 ./autogen.sh
