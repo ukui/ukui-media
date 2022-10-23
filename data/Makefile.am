@@ -16,7 +16,11 @@ apps_DATA = $(apps_in_files:.desktop.in=.desktop)
 systemddir = /lib/systemd/system
 systemd_DATA = ukui-media-control-mute-led.service
 
-gsettingsschema_in_files = org.ukui.media.gschema.xml.in
+gsettingsschema_in_files = \
+	org.ukui.media.gschema.xml.in \
+	org.ukui.media.sound.gschema.xml.in \
+	org.ukui.sound.gschema.xml.in \
+	org.ukui.audio.gschema.xml.in 
 gsettings_SCHEMAS = $(gsettingsschema_in_files:.xml.in=.xml)
 @GSETTINGS_RULES@
 @INTLTOOL_XML_RULE@
