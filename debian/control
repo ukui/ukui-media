@@ -24,7 +24,7 @@ Build-Depends: debhelper-compat (= 13),
                libasound2-dev,
                libpulse-dev,
                libukui-log4qt-dev
-Standards-Version: 4.6.1
+Standards-Version: 4.6.2
 Rules-Requires-Root: no
 Homepage: https://www.ukui.org/
 Vcs-Git: https://github.com/ukui/ukui-media.git
